@@ -1,0 +1,292 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Matt Weber
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Solr for WordPress 0.2.0\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/solr-for-wordpress\n"
+"POT-Creation-Date: 2009-05-13 10:15-0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: solr-for-wordpress.php:36
+msgid "Solr for WordPress requires WordPress 2.7 or greater. "
+msgstr ""
+
+#: solr-for-wordpress.php:108
+msgid "Post Information is NULL"
+msgstr ""
+
+#: solr-for-wordpress.php:215
+#, php-format
+msgid ""
+"<form name=\"searchbox\" method=\"get\" id=\"searchbox\" action=\"\"><input "
+"type=\"text\" id=\"qrybox\" name=\"s\" value=\"%s\"/><input type=\"submit\" "
+"id=\"searchbtn\" /></form>"
+msgstr ""
+
+#: solr-for-wordpress.php:262
+#, php-format
+msgid ""
+"<div id=\"resultinfo\"><p>Found <em id=\"resultcnt\">%d</em> results for <em "
+"id=\"resultqry\">%s</em> in <em id=\"qrytime\">%.3f</em> seconds.</p></"
+"div><div id=\"infoclear\"></div>"
+msgstr ""
+
+#: solr-for-wordpress.php:275
+msgid "<div id=\"resultpager\"><ul>"
+msgstr ""
+
+#: solr-for-wordpress.php:279
+#, php-format
+msgid "<li><a href=\"?s=%s&offset=%d&count=%d\">%d</a></li>"
+msgstr ""
+
+#: solr-for-wordpress.php:282
+#, php-format
+msgid "<li>%d</li>"
+msgstr ""
+
+#: solr-for-wordpress.php:285
+msgid "</ul></div><div id=\"pagerclear\"></div>"
+msgstr ""
+
+#: solr-for-wordpress.php:290
+msgid "<div id=\"facets\"><ul class=\"facets\">"
+msgstr ""
+
+#: solr-for-wordpress.php:299
+#, php-format
+msgid "<li class=\"facet\"><h3>%s</h3><ul class=\"facetitems\">"
+msgstr ""
+
+#: solr-for-wordpress.php:314 solr-for-wordpress.php:364
+#, php-format
+msgid "?s=%s&fq=%s:%s%s"
+msgstr ""
+
+#: solr-for-wordpress.php:315 solr-for-wordpress.php:365
+#, php-format
+msgid "<li class=\"facetitem\"><a href=\"%s\">%s</a> (%d)</li>"
+msgstr ""
+
+#: solr-for-wordpress.php:318 solr-for-wordpress.php:370
+msgid "</ul></li>"
+msgstr ""
+
+#: solr-for-wordpress.php:323
+msgid "</ul></div><div id=\"facetclear\"></div>"
+msgstr ""
+
+#: solr-for-wordpress.php:324
+msgid "<div id=\"results\">"
+msgstr ""
+
+#: solr-for-wordpress.php:327
+msgid "<div id=\"noresults\">No Results Found</div>"
+msgstr ""
+
+#: solr-for-wordpress.php:331
+msgid "<div class=\"result\">"
+msgstr ""
+
+#: solr-for-wordpress.php:332
+#, php-format
+msgid ""
+"<h2><a href=\"%s\">%s</a></h2><h3>by <em id=\"resultauthor\">%s</em> has a "
+"score of <em id=\"resultscore\">%f</em></h3>"
+msgstr ""
+
+#: solr-for-wordpress.php:337
+#, php-format
+msgid "<p>...%s...</p></div>"
+msgstr ""
+
+#: solr-for-wordpress.php:341
+#, php-format
+msgid "<p>%s...</p></div>"
+msgstr ""
+
+#: solr-for-wordpress.php:345
+msgid "</div><div id=\"resultsclear\"></div>"
+msgstr ""
+
+#: solr-for-wordpress.php:358
+msgid "<li><ul class=\"facetchildren\">"
+msgstr ""
+
+#: solr-for-wordpress.php:493
+msgid "<p>Couldn't locate the options page.</p>"
+msgstr ""
+
+#: solr-options-page.php:60
+msgid "Ping Success!"
+msgstr ""
+
+#: solr-options-page.php:64
+msgid "Ping Failed!"
+msgstr ""
+
+#: solr-options-page.php:70
+msgid "Pages Loaded!"
+msgstr ""
+
+#: solr-options-page.php:75
+msgid "Posts Loaded!"
+msgstr ""
+
+#: solr-options-page.php:80
+msgid "All Indexed Pages Deleted!"
+msgstr ""
+
+#: solr-options-page.php:86
+msgid "Solr For WordPress"
+msgstr ""
+
+#: solr-options-page.php:89
+msgid "Connection Information"
+msgstr ""
+
+#: solr-options-page.php:92
+msgid "Solr Host"
+msgstr ""
+
+#: solr-options-page.php:97
+msgid "Solr Port"
+msgstr ""
+
+#: solr-options-page.php:102
+msgid "Solr Path"
+msgstr ""
+
+#: solr-options-page.php:107
+msgid "Indexing Options"
+msgstr ""
+
+#: solr-options-page.php:110
+msgid "Index Pages"
+msgstr ""
+
+#: solr-options-page.php:112
+msgid "Index Posts"
+msgstr ""
+
+#: solr-options-page.php:117
+msgid "Remove Page on Delete"
+msgstr ""
+
+#: solr-options-page.php:119
+msgid "Remove Post on Delete"
+msgstr ""
+
+#: solr-options-page.php:124
+msgid "Remove Page on Status Change"
+msgstr ""
+
+#: solr-options-page.php:126
+msgid "Remove Post on Status Change"
+msgstr ""
+
+#: solr-options-page.php:131
+msgid "Excludes (comma-separated integer ids)"
+msgstr ""
+
+#: solr-options-page.php:136
+msgid "Result Options"
+msgstr ""
+
+#: solr-options-page.php:139
+msgid "Output Result Info"
+msgstr ""
+
+#: solr-options-page.php:141
+msgid "Output Result Pager"
+msgstr ""
+
+#: solr-options-page.php:146
+msgid "Output Facets"
+msgstr ""
+
+#: solr-options-page.php:148
+msgid "Category Facet as Taxonomy"
+msgstr ""
+
+#: solr-options-page.php:153
+msgid "Categories as Facet"
+msgstr ""
+
+#: solr-options-page.php:155
+msgid "Tags as Facet"
+msgstr ""
+
+#: solr-options-page.php:160
+msgid "Author as Facet"
+msgstr ""
+
+#: solr-options-page.php:162
+msgid "Type as Facet"
+msgstr ""
+
+#: solr-options-page.php:167
+msgid "Number of Results Per Page"
+msgstr ""
+
+#: solr-options-page.php:172
+msgid "Max Number of Tags to Display"
+msgstr ""
+
+#: solr-options-page.php:180
+msgid "Save Changes"
+msgstr ""
+
+#: solr-options-page.php:186
+msgid "Actions"
+msgstr ""
+
+#: solr-options-page.php:189
+msgid "Check Server Settings"
+msgstr ""
+
+#: solr-options-page.php:190 solr-options-page.php:195
+#: solr-options-page.php:200 solr-options-page.php:205
+msgid "Execute"
+msgstr ""
+
+#: solr-options-page.php:194
+msgid "Load All Pages"
+msgstr ""
+
+#: solr-options-page.php:199
+msgid "Load All Posts"
+msgstr ""
+
+#: solr-options-page.php:204
+msgid "Delete All"
+msgstr ""
+
+#. Plugin Name of an extension
+msgid "Solr for WordPress"
+msgstr ""
+
+#. Plugin URI of an extension
+msgid "https://launchpad.net/solr4wordpress"
+msgstr ""
+
+#. Description of an extension
+msgid "Indexes, removes, and updates documents in the Solr search engine."
+msgstr ""
+
+#. Author of an extension
+msgid "Matt Weber"
+msgstr ""
+
+#. Author URI of an extension
+msgid "http://www.mattweber.org"
+msgstr ""
