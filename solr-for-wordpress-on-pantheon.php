@@ -1448,11 +1448,12 @@ function s4wp_admin_head() {
 		}
 
 
-		function doLoad( $type, $prev ) {
+		function doLoad( type, prev ) {
+			var pluginDirPath = "<?php plugin_dir_path( __FILE__ );?>";
 			if ($prev == null) {
-				$j.post("options-general.php?page=" . plugin_dir_path( __FILE__ ) . "solr-for-wordpress-on-pantheon.php", {method: "load", type: $type}, handleResults, "json");
+				$j.post("options-general.php?page=" + pluginDirPath + "solr-for-wordpress-on-pantheon.php", {method: "load", type: $type}, handleResults, "json");
 			} else {
-				$j.post("options-general.php?page=" . plugin_dir_path( __FILE__ ) . "solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: $prev}, handleResults, "json");
+				$j.post("options-general.php?page=" + pluginDirPath + "solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: $prev}, handleResults, "json");
 			}
 		}
 
