@@ -112,8 +112,12 @@ function s4wp_activate() {
 	if ( $errorMessage = s4wp_submit_schema() ) {
 		wp_die('Submitting the schema failed with the message ' . $errorMessage);
 	}
-	$options = s4wp_initalize_options();
-	s4wp_update_option($options);
+
+	if ( s4wp_get_option()===false ) {
+		$options = s4wp_initalize_options();
+		s4wp_update_option($options);
+	}
+	
 	return;
 }
 
