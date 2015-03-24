@@ -242,7 +242,6 @@ function s4wp_build_document( Solarium\QueryType\Update\Query\Document\Document 
 			return NULL;
 		}
 
-		//$doc = new Apache_Solr_Document();
 		$auth_info = get_userdata($post_info->post_author);
 
 		# wpmu specific info
@@ -374,7 +373,6 @@ function s4wp_post( $documents, $commit = TRUE, $optimize = FALSE ) {
 		}
 	} catch (Exception $e) {
 		syslog( LOG_INFO, "ERROR: " . $e->getMessage() );
-		//echo $e->getMessage();
 	}
 }
 
@@ -583,12 +581,13 @@ function s4wp_handle_new_blog( $blogid ) {
 function s4wp_load_all_posts( $prev ) {
 	global $wpdb, $current_blog, $current_site;
 	$documents = array();
-	$cnt = 0;
+	$cnt       = 0;
 	$batchsize = 250;
-	$last = "";
-	$found = FALSE;
-	$end = FALSE;
-	$percent = 0;
+	$last      = "";
+	$found     = FALSE;
+	$end       = FALSE;
+	$percent   = 0;
+
 	//multisite logic is decided s4wp_get_option
 	$plugin_s4wp_settings = s4wp_get_option();
 	$blog_id = $blog->blog_id;
@@ -711,12 +710,13 @@ function s4wp_load_all_posts( $prev ) {
 function s4wp_load_all_pages( $prev ) {
 	global $wpdb;
 	$documents = array();
-	$cnt = 0;
+	$cnt       = 0;
 	$batchsize = 100;
-	$last = "";
-	$found = FALSE;
-	$end = FALSE;
-	$percent = 0;
+	$last      = "";
+	$found     = FALSE;
+	$end       = FALSE;
+	$percent   = 0;
+
 	$plugin_s4wp_settings = s4wp_get_option();
 
 	if ( $plugin_s4wp_settings['s4wp_index_all_sites'] ) {
@@ -1186,7 +1186,7 @@ function s4wp_query( $qry, $offset, $count, $fq, $sortby, $order, $server = 'mas
 	$plugin_s4wp_settings = s4wp_get_option();
 
 	$solr = s4wp_get_solr();
-// refactor this becase server id is no longer a thing. - Cal
+    // refactor this becase server id is no longer a thing. - Cal
 	if ( !function_exists( $function = 's4wp_' . $server . '_query' ) ) {
 		$function = 's4wp_master_query';
 	}
@@ -1320,12 +1320,6 @@ function s4wp_options_init() {
  * @return $options sanitised values
  */
 function s4wp_sanitise_options( $options ) {
-	//$options['s4wp_solr_host'] = wp_filter_nohtml_kses($options['s4wp_solr_host']);
-	//$options['s4wp_solr_port'] = absint($options['s4wp_solr_port']);
-	//$options['s4wp_solr_path'] = wp_filter_nohtml_kses($options['s4wp_solr_path']);
-	//$options['s4wp_solr_update_host'] = wp_filter_nohtml_kses($options['s4wp_solr_update_host']);
-	//$options['s4wp_solr_update_port'] = absint($options['s4wp_solr_update_port']);
-	//$options['s4wp_solr_update_path'] = wp_filter_nohtml_kses($options['s4wp_solr_update_path']);
 	$options['s4wp_index_pages']            = absint($options['s4wp_index_pages']);
 	$options['s4wp_index_posts']            = absint($options['s4wp_index_posts']);
 	$options['s4wp_index_comments']         = absint($options['s4wp_index_comments']);

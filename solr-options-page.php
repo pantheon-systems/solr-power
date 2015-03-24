@@ -36,10 +36,6 @@ if ( $s4wp_settings['s4wp_solr_initialized'] != 1 ) {
 	
 	$options = s4wp_initalize_options();
 	$options['s4wp_index_all_sites'] = 0;
-	//$options['s4wp_server']['info']['single'] = array('host'=>'localhost','port'=>8983, 'path'=>'/solr');
-	//$options['s4wp_server']['info']['master'] = array('host'=>'localhost','port'=>8983, 'path'=>'/solr');
-	//$options['s4wp_server']['type']['search'] = 'master';
-	//$options['s4wp_server']['type']['update'] = 'master';
 	
 		 
 	//update existing settings from multiple option record to a single array
@@ -113,19 +109,7 @@ if ( isset($_POST['action']) and $_POST['action'] == 'update' ) {
 		$value = stripslashes_deep( $value );
 		$s4wp_settings[ $option ] = $value;
 	}
-	// if we are in single server mode set the server types to master
-	// and configure the master server to the values of the single server
-	//if ($s4wp_settings['s4wp_connect_type'] =='solr_single'){
-	//	$s4wp_settings['s4wp_server']['info']['master']= $s4wp_settings['s4wp_server']['info']['single'];
-	//	$s4wp_settings['s4wp_server']['type']['search'] = 'master';
-	//	$s4wp_settings['s4wp_server']['type']['update'] = 'master';
-	//}
-	// if this is a multi server setup we steal the master settings
-	// and stuff them into the single server settings in case the user
-	// decides to change it later 
-	//else {
-	//	$s4wp_settings['s4wp_server']['info']['single']= $s4wp_settings['s4wp_server']['info']['master'];
-	//}
+
 	//lets save our options array
 	s4wp_update_option( $s4wp_settings );
 
