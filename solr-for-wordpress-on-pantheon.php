@@ -3,7 +3,7 @@
   Plugin Name: Solr for WordPress on Pantheon
   Donate link: http://www.mattweber.org
   Description: Allows Pantheon sites to use Solr for searching.
-  Version: 0.6.0
+  Version: 0.7.0
   Author: Pantheon, Matt Weber
   Author URI: http://pantheon.io
  */
@@ -112,7 +112,13 @@ function s4wp_activate() {
 	if ( $errorMessage = s4wp_submit_schema() ) {
 		wp_die('Submitting the schema failed with the message ' . $errorMessage);
 	}
+
 	$options = s4wp_initalize_options();
+
+	if ( !isset($options['s4wp_solr_host']) or empty($options['s4wp_solr_host']) ) {
+		$options = s4wp_initalize_pantheon_options( $options );
+	}
+
 	s4wp_update_option($options);
 	return;
 }
@@ -122,9 +128,7 @@ function s4wp_sanity_check() {
 	$returnValue = '';
 	$wp_version  = get_bloginfo('version');
 
-	if ( getenv('PANTHEON_INDEX_HOST')===false ) {
-		$returnValue = __( 'Before you can activate this plugin, you must first activate Solr in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' );
-	} elseif ( version_compare($wp_version, '3.0', '<') ) {
+	if ( version_compare($wp_version, '3.0', '<') ) {
 		$returnValue = __( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' );
 	}
 
@@ -174,14 +178,16 @@ function s4wp_get_solr() {
 	$solarium_config = array(
 		'endpoint' => array(
 			'localhost'  => array(
-				'host'   => getenv('PANTHEON_INDEX_HOST'),
-				'port'   => getenv('PANTHEON_INDEX_PORT'),
+				'host'   => $plugin_s4wp_settings['s4wp_solr_host'],
+				'port'   => $plugin_s4wp_settings['s4wp_solr_port'],
 				'scheme' => 'https',
-				'path'   => s4wp_compute_path(),
-				'ssl'    => array('local_cert' => realpath(ABSPATH.'../certs/binding.pem')),
+				'path'   => $plugin_s4wp_settings['s4wp_solr_path'],
 			)
 		)
 	);
+
+
+	$solarium_config['ssl'] = array('local_cert' => realpath(ABSPATH.'../certs/binding.pem'));
 
 	apply_filters('s4wp_connection_options',$solarium_config);
 
@@ -1320,12 +1326,13 @@ function s4wp_options_init() {
  * @return $options sanitised values
  */
 function s4wp_sanitise_options( $options ) {
-	//$options['s4wp_solr_host'] = wp_filter_nohtml_kses($options['s4wp_solr_host']);
-	//$options['s4wp_solr_port'] = absint($options['s4wp_solr_port']);
-	//$options['s4wp_solr_path'] = wp_filter_nohtml_kses($options['s4wp_solr_path']);
-	//$options['s4wp_solr_update_host'] = wp_filter_nohtml_kses($options['s4wp_solr_update_host']);
-	//$options['s4wp_solr_update_port'] = absint($options['s4wp_solr_update_port']);
-	//$options['s4wp_solr_update_path'] = wp_filter_nohtml_kses($options['s4wp_solr_update_path']);
+	$options['s4wp_solr_host']              = wp_filter_nohtml_kses($options['s4wp_solr_host']);
+	$options['s4wp_solr_port']              = absint($options['s4wp_solr_port']);
+	$options['s4wp_solr_path']              = wp_filter_nohtml_kses($options['s4wp_solr_path']);
+	$options['s4wp_solr_scheme']            =wp_filter_nohtml_kses($options['s4wp_solr_scheme']);
+	$options['s4wp_solr_update_host']       = wp_filter_nohtml_kses($options['s4wp_solr_update_host']);
+	$options['s4wp_solr_update_port']       = absint($options['s4wp_solr_update_port']);
+	$options['s4wp_solr_update_path']       = wp_filter_nohtml_kses($options['s4wp_solr_update_path']);
 	$options['s4wp_index_pages']            = absint($options['s4wp_index_pages']);
 	$options['s4wp_index_posts']            = absint($options['s4wp_index_posts']);
 	$options['s4wp_index_comments']         = absint($options['s4wp_index_comments']);
@@ -1757,9 +1764,32 @@ function s4wp_apply_config_to_blog( $blogid ) {
 	wp_cache_flush();
 }
 
+function s4wp_initalize_pantheon_options( $options ) {
+		$options['s4wp_solr_host']              = getenv('PANTHEON_INDEX_HOST');
+		$options['s4wp_solr_port']              = getenv('PANTHEON_INDEX_PORT');
+		$options['s4wp_solr_path']              = s4wp_compute_path();
+		$options['s4wp_solr_update_host']       = getenv('PANTHEON_INDEX_HOST');
+		$options['s4wp_solr_update_port']       = getenv('PANTHEON_INDEX_PORT');
+		$options['s4wp_solr_update_path']       = s4wp_compute_path();		
+		return $options;
+}		
+
+
 function s4wp_initalize_options()
 {
 	$options = [];
+	$options['s4wp_solr_scheme']            = 'https';
+
+	if (isset($_ENV['PANTHEON_ENVIRONMENT'])) {
+		$options = s4wp_initalize_pantheon_options($options);
+	} else {
+		$options['s4wp_solr_host']              = '';
+		$options['s4wp_solr_port']              = '';
+		$options['s4wp_solr_path']              = '';
+		$options['s4wp_solr_update_host']       = '';
+		$options['s4wp_solr_update_port']       = '';
+		$options['s4wp_solr_update_path']       = '';
+	}
 
 	$options['s4wp_index_pages']			= 1;
 	$options['s4wp_index_posts']			= 1;

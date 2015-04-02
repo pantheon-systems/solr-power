@@ -36,10 +36,6 @@ if ( $s4wp_settings['s4wp_solr_initialized'] != 1 ) {
 	
 	$options = s4wp_initalize_options();
 	$options['s4wp_index_all_sites'] = 0;
-	//$options['s4wp_server']['info']['single'] = array('host'=>'localhost','port'=>8983, 'path'=>'/solr');
-	//$options['s4wp_server']['info']['master'] = array('host'=>'localhost','port'=>8983, 'path'=>'/solr');
-	//$options['s4wp_server']['type']['search'] = 'master';
-	//$options['s4wp_server']['type']['update'] = 'master';
 	
 		 
 	//update existing settings from multiple option record to a single array
@@ -199,11 +195,23 @@ if ( isset( $_POST['s4wp_ping'] ) and $_POST['s4wp_ping'] ) {
 <form method="post" action="options-general.php?page=<?php echo plugin_dir_path( __FILE__ );?>solr-for-wordpress-on-pantheon.php">
 <h3><?php _e('Configure Solr', 'solr4wp') ?></h3>
 <?php // @todo add the rest of the discovered info here. ?>
-<pre>
-Solr Server IP address : <?php echo getenv( 'PANTHEON_INDEX_HOST' ); ?><br />
-Solr Server Port       : <?php echo getenv( 'PANTHEON_INDEX_PORT' ); ?><br />
-Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
-</pre>
+
+<label><?php _e('Solr Scheme', 'solr4wp') ?></label>
+<select name="settings[s4wp_solr_scheme]">
+  <option value="https" <?php echo $s4wp_settings['s4wp_solr_scheme']==='https'?' SELECTED ':''; ?> >https</option>
+  <option value="http" <?php echo $s4wp_settings['s4wp_solr_scheme']==='http'?' SELECTED ':''; ?> >http</option>
+</select>
+
+<label><?php _e('Solr Host', 'solr4wp') ?></label>
+<input name="settings[s4w_server][type][update]" type="hidden" value="master" />
+<input name="settings[s4w_server][type][search]" type="hidden" value="master" />
+
+<p><input type="text" name="settings[s4wp_solr_host]" value="<?php echo $s4wp_settings['s4wp_solr_host']?>" /></p>
+<label><?php _e('Solr Port', 'solr4wp') ?></label>
+<p><input type="text" name="settings[s4wp_solr_port]" value="<?php echo $s4wp_settings['s4wp_solr_port']?>" /></p>
+<label><?php _e('Solr Path', 'solr4wp') ?></label>
+<p><input type="text" name="settings[s4wp_solr_path]" value="<?php echo $s4wp_settings['s4wp_solr_path']?>" /></p>
+
 <hr />
 <h3><?php _e( 'Indexing Options', 'solr4wp' ) ?></h3>
 <table class="form-table">
@@ -242,7 +250,10 @@ if ( is_multisite() && is_main_site() ) {
 		<th scope="row" style="width:200px;"><?php _e('Index all Sites', 'solr4wp') ?></th>
 		<td style="width:10px;float:left;"><input type="checkbox" name="settings[s4wp_index_all_sites]" value="1" <?php echo s4wp_checkCheckbox($s4wp_settings['s4wp_index_all_sites']); ?> /></td>
 	</tr>
+<?php } else {?>
+	<input type="hidden" name="settings[s4wp_index_all_sites]" value="<?php echo $s4wp_settings['s4wp_index_all_sites']; ?>" />
 <?php } ?>
+
 <?php // @todo drop-down combo box off all custom fields ?>
 	<tr valign="top">
 		<th scope="row"><?php _e('Index custom fields (comma separated names list)') ?></th>
