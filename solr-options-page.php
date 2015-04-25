@@ -1,5 +1,5 @@
 <?php
-/*  
+/*
     Copyright (c) 2009 Matt Weber
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,22 +26,22 @@
  * @todo add button to submit schema
  *
  * Do we need to custom build a schema based on custom post types, etc?
- * 
+ *
  */
 //get the plugin settings
 $s4wp_settings = s4wp_get_option('plugin_s4wp_settings');
 
 #set defaults if not initialized
 if ($s4wp_settings['s4wp_solr_initialized'] != 1) {
-  
+
   $options = s4wp_initalize_options();
   $options['s4wp_index_all_sites'] = 0;
   //$options['s4wp_server']['info']['single'] = array('host'=>'localhost','port'=>8983, 'path'=>'/solr');
   //$options['s4wp_server']['info']['master'] = array('host'=>'localhost','port'=>8983, 'path'=>'/solr');
   //$options['s4wp_server']['type']['search'] = 'master';
   //$options['s4wp_server']['type']['update'] = 'master';
-  
-     
+
+
   //update existing settings from multiple option record to a single array
   //if old options exist, update to new system
   // Pretty sure we don't need any of this. Seems left over from an older version. - Cal
@@ -62,7 +62,7 @@ if ($s4wp_settings['s4wp_solr_initialized'] != 1) {
       $delete_option_function($key);
     }
   }
-  
+
   // WTH?
   $s4wp_settings = $options;
   //save our options array
@@ -77,9 +77,9 @@ wp_reset_vars(array('action'));
 # s4wp_update_option instead of update option.
 # As it stands we have 27 options instead of making 27 insert calls (which is what update_options does)
 # Lets create an array of all our options and save it once.
-if (isset($_POST['action']) and $_POST['action'] == 'update') {   
+if (isset($_POST['action']) and $_POST['action'] == 'update') {
   //lets loop through our setting fields $_POST['settings']
-  
+
   foreach ($s4wp_settings as $option => $old_value ) {
     if (!isset($_POST['settings'][$option])) {
       continue;
@@ -93,7 +93,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'update') {
     case 's4wp_server':
       //remove empty server entries
       $s_value = &$value['info'];
-      
+
       foreach ($s_value as $key => $v) {
         //lets rename the array_keys
         if(!$v['host']) unset($s_value[$key]);
@@ -101,7 +101,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'update') {
       break;
 
     }
-    if ( !is_array($value) ) $value = trim($value); 
+    if ( !is_array($value) ) $value = trim($value);
     $value = stripslashes_deep($value);
     $s4wp_settings[$option] = $value;
   }
@@ -114,14 +114,14 @@ if (isset($_POST['action']) and $_POST['action'] == 'update') {
   //}
   // if this is a multi server setup we steal the master settings
   // and stuff them into the single server settings in case the user
-  // decides to change it later 
+  // decides to change it later
   //else {
   //  $s4wp_settings['s4wp_server']['info']['single']= $s4wp_settings['s4wp_server']['info']['master'];
   //}
   //lets save our options array
   s4wp_update_option($s4wp_settings);
 
-  //we need to make call for the options again 
+  //we need to make call for the options again
   //as we need them to come out in an a sanitised format
   //otherwise fields that need to run s4wp_filter_list2str will come up with nothin
   $s4wp_settings = s4wp_get_option('plugin_s4wp_settings');
@@ -149,6 +149,7 @@ function s4wp_checkConnectOption($optionType, $connectType) {
 # check for any POST settings
 /*
  * @todo Fix this. If Statement sucks. -- Cal
+ *
  */
 if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
     if (s4wp_ping_server()) {
@@ -172,8 +173,40 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
 <?php
 } else if (isset($_POST['s4wp_init_blogs']) and $_POST['s4wp_init_blogs']) {
     s4wp_copy_config_to_all_blogs();
-  }  ?>
-        <div id="message" class="updated fade"><p><strong><?php _e('Solr for Wordpress Configured for All Blogs!', 'solr4wp') ?></strong></p></div>
+} else if(isset($_POST['s4wp_query']) && $_POST['solrQuery']) {
+  // function s4wp_query($qry, $offset, $count, $fq, $sortby, $order, $server = 'master') {
+  $qry      = filter_input(INPUT_POST,'solrQuery',FILTER_SANITIZE_STRING);
+  $offset   = null;
+  $count    = null;
+  $fq       = null;
+  $sortby   = null;
+  $order    = null;
+  $results  = s4wp_query($qry, $offset, $count, $fq, $sortby, $order);
+  if(isset($results)) {
+    $plugin_s4wp_settings = s4wp_get_option();
+    $output_info  = $plugin_s4wp_settings['s4wp_output_info'];
+    $data         = $results->getData();
+    $response     = $data['response'];
+    $header       = $data['responseHeader'];
+    if ($output_info) {
+        $out['hits'] = $response['numFound'];
+        $out['qtime'] = sprintf(__("%.3f"), $header['QTime'] / 1000);
+    } else {
+        $out['hits'] = 0;
+        $out['qtime'] = 0;
+    }
+  } else {
+    $data = $results;
+  }
+  ?>
+  <div id="message" class="updated fade"><p><strong>Solr Results for string "<?php echo $qry; ?>":</strong>
+    <br />Hits:<?php echo $out['hits']; ?>
+    <br />Query Time:<?php echo $out['qtime']; ?>
+    </p></div>
+<?php
+}
+
+?>
 
 
 <div class="wrap">
@@ -182,6 +215,7 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
 <form method="post" action="options-general.php?page=<?php echo plugin_dir_path( __FILE__ );?>solr-for-wordpress-on-pantheon.php">
 <h3><?php _e('Configure Solr', 'solr4wp') ?></h3>
 <?php // @todo add the rest of the discovered info here. ?>
+
 <pre>
 Solr Server IP address : <?php echo getenv('PANTHEON_INDEX_HOST'); ?><br />
 Solr Server Port       : <?php echo getenv('PANTHEON_INDEX_PORT'); ?><br />
@@ -203,7 +237,7 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
         <th scope="row" style="width:200px;float:left;margin-left:20px;"><?php _e('Remove Post on Delete', 'solr4wp') ?></th>
         <td style="width:10px;float:left;"><input type="checkbox" name="settings[s4wp_delete_post]" value="1" <?php echo s4wp_checkCheckbox($s4wp_settings['s4wp_delete_post']); ?> /></td>
     </tr>
-    
+
     <tr valign="top">
         <th scope="row" style="width:200px;"><?php _e('Remove Page on Status Change', 'solr4wp') ?></th>
         <td style="width:10px;float:left;"><input type="checkbox" name="settings[s4wp_private_page]" value="1" <?php echo s4wp_checkCheckbox($s4wp_settings['s4wp_private_page']); ?> /></td>
@@ -215,12 +249,12 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
         <th scope="row" style="width:200px;"><?php _e('Index Comments', 'solr4wp') ?></th>
         <td style="width:10px;float:left;"><input type="checkbox" name="settings[s4wp_index_comments]" value="1" <?php echo s4wp_checkCheckbox($s4wp_settings['s4wp_index_comments']); ?> /></td>
     </tr>
-        
+
     <?php
     //is this a multisite installation
     if (is_multisite() && is_main_site()) {
     ?>
-    
+
     <tr valign="top">
         <th scope="row" style="width:200px;"><?php _e('Index all Sites', 'solr4wp') ?></th>
         <td style="width:10px;float:left;"><input type="checkbox" name="settings[s4wp_index_all_sites]" value="1" <?php echo s4wp_checkCheckbox($s4wp_settings['s4wp_index_all_sites']); ?> /></td>
@@ -248,7 +282,7 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
         <th scope="row" style="width:200px;float:left;margin-left:20px;"><?php _e('Output Result Pager', 'solr4wp') ?></th>
         <td style="width:10px;float:left;"><input type="checkbox" name="settings[s4wp_output_pager]" value="1" <?php echo s4wp_checkCheckbox($s4wp_settings['s4wp_output_pager']); ?> /></td>
     </tr>
- 
+
     <tr valign="top">
         <th scope="row" style="width:200px;"><?php _e('Output Facets', 'solr4wp') ?></th>
         <td style="width:10px;float:left;"><input type="checkbox" name="settings[s4wp_output_facets]" value="1" <?php echo s4wp_checkCheckbox($s4wp_settings['s4wp_output_facets']); ?> /></td>
@@ -262,7 +296,7 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
         <th scope="row" style="width:200px;float:left;margin-left:20px;"><?php _e('Tags as Facet', 'solr4wp') ?></th>
         <td style="width:10px;float:left;"><input type="checkbox" name="settings[s4wp_facet_on_tags]" value="1" <?php echo s4wp_checkCheckbox($s4wp_settings['s4wp_facet_on_tags']); ?> /></td>
     </tr>
-    
+
     <tr valign="top">
         <th scope="row" style="width:200px;"><?php _e('Author as Facet', 'solr4wp') ?></th>
         <td style="width:10px;float:left;"><input type="checkbox" name="settings[s4wp_facet_on_author]" value="1" <?php echo s4wp_checkCheckbox($s4wp_settings['s4wp_facet_on_author']); ?> /></td>
@@ -274,17 +308,17 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
          <th scope="row" style="width:200px;"><?php _e('Taxonomy as Facet', 'solr4wp') ?></th>
          <td style="width:10px;float:left;"><input type="checkbox" name="settings[s4wp_facet_on_taxonomy]" value="1" <?php echo s4wp_checkCheckbox($s4wp_settings['s4wp_facet_on_taxonomy']); ?> /></td>
       </tr>
-      
+
     <tr valign="top">
         <th scope="row"><?php _e('Custom fields as Facet (comma separated ordered names list)') ?></th>
         <td><input type="text" name="settings[s4wp_facet_on_custom_fields]" value="<?php print( s4wp_filter_list2str($s4wp_settings['s4wp_facet_on_custom_fields'], 'solr4wp')); ?>" /></td>
     </tr>
-                   
+
     <tr valign="top">
         <th scope="row"><?php _e('Number of Results Per Page', 'solr4wp') ?></th>
         <td><input type="text" name="settings[s4wp_num_results]" value="<?php _e($s4wp_settings['s4wp_num_results'], 'solr4wp'); ?>" /></td>
-    </tr>   
-    
+    </tr>
+
     <tr valign="top">
         <th scope="row"><?php _e('Max Number of Tags to Display', 'solr4wp') ?></th>
         <td><input type="text" name="settings[s4wp_max_display_tags]" value="<?php _e($s4wp_settings['s4wp_max_display_tags'], 'solr4wp'); ?>" /></td>
@@ -301,7 +335,7 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
 
 </form>
 <hr />
-<form method="post" action="options-general.php?page=<?php echo plugin_dir_path( __FILE__ );?>solr-for-wordpress-on-pantheon.php">
+<form method="post" action="options-general.php?page=<?php echo plugin_dir_path( __FILE__ );?>solr-for-wordpress-on-pantheon.php" -->
 <h3><?php _e('Actions', 'solr4wp') ?></h3>
 <table class="form-table">
     <tr valign="top">
@@ -315,28 +349,57 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
         <td><input type="submit" class="button-primary" name="s4wp_init_blogs" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
     </tr>
     <?php } ?>
-    
- 
+
     <tr valign="top">
+        <th scope="row"><?php _e('Optimize Index', 'solr4wp') ?></th>
+        <td><input type="submit" class="button-primary" name="s4wp_optimize" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
+    </tr>
+
+    <tr valign="top">
+        <th scope="row"><?php _e('Delete All', 'solr4wp') ?></th>
+        <td><input type="submit" class="button-primary" name="s4wp_deleteall" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
+    </tr>
+</form -->
+
+    <!-- tr valign="top">
         <th scope="row"><?php _e('Load All Pages', 'solr4wp') ?></th>
         <td><input type="submit" class="button-primary" name="s4wp_pageload" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
     </tr>
 
     <tr valign="top">
         <th scope="row"><?php _e('Load All Posts', 'solr4wp') ?></th>
-        <td><input type="submit" class="button-primary" name="s4wp_postload" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
-    </tr>
-    
-    <tr valign="top">
-        <th scope="row"><?php _e('Optimize Index', 'solr4wp') ?></th>
-        <td><input type="submit" class="button-primary" name="s4wp_optimize" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
-    </tr>
-        
-    <tr valign="top">
-        <th scope="row"><?php _e('Delete All', 'solr4wp') ?></th>
-        <td><input type="submit" class="button-primary" name="s4wp_deleteall" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
-    </tr>
+        <td><input type="submit" class="button-primary" name="s4wp_postload['posts']" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
+    </tr -->
+
+<!--
+  Let's loop through each Post type, and give an option to add them into the
+  Solr index.
+-->
+<?php
+  $postTypes = s4wp_get_post_types();
+  foreach($postTypes as $postType) {
+?>
+<tr valign="top">
+    <th scope="row"><?php _e('Load All '.$postType->post_type.'(s)', 'solr4wp') ?></th>
+    <td><input type="submit" class="button-primary" name="s4wp_postload_<?php print($postType->post_type); ?>" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
+</tr>
+<?php } ?>
 </table>
-</form>
+
+<form method="post" action="options-general.php?page=<?php echo plugin_dir_path( __FILE__ );?>solr-for-wordpress-on-pantheon.php">
+<h3><?php _e('Solr Query', 'solr4wp') ?></h3>
+<table class="form-table">
+  <tr valign="top">
+      <th scope="row"><?php _e('Words or phrases to search for.', 'solr4wp') ?></th>
+      <td><textarea rows="3" cols="50" name="solrQuery"></textarea>
+      </td>
+  </tr>
+  <tr valign="top">
+      <th scope="row"><?php _e('Submit Query', 'solr4wp') ?></th>
+      <td><input type="submit" class="button-primary" name="s4wp_query" value="<?php _e('Execute', 'solr4wp') ?>" />
+      </td>
+  </tr>
+</table>
+
 
 </div>

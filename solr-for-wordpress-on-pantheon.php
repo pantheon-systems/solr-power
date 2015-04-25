@@ -30,17 +30,17 @@
  */
 
 /*
- * NOTE: We have had to hack the Solarium Curl class to get it to support 
- * https:. There is probably a better way to do this and a future version 
- * may include a new "Pantheon" provider for Solarium. Until then, if you 
- * do a composer update, and it updates, Solarium, things WILL STOP 
- * WORKING. 
+ * NOTE: We have had to hack the Solarium Curl class to get it to support
+ * https:. There is probably a better way to do this and a future version
+ * may include a new "Pantheon" provider for Solarium. Until then, if you
+ * do a composer update, and it updates, Solarium, things WILL STOP
+ * WORKING.
  *
  * Make a backup!
  *  - Cal
  *
  * @TODO refactor as an object
- * 
+ *
  */
 
 require_once(dirname(__FILE__) . '/vendor/autoload.php');
@@ -49,12 +49,12 @@ register_activation_hook( __FILE__, 's4wp_activate' );
 function s4wp_submit_schema()
 {
     // Solarium does not currently support submitting schemas to the server.
-    // So we'll do it ourselves 
-    
+    // So we'll do it ourselves
+
     $returnValue = '';
     $path        = s4wp_compute_path();
     $schema      = dirname(__FILE__) . '/schema.xml';
-    $url         = 'https://'. getenv('PANTHEON_INDEX_HOST') . ':' .getenv('PANTHEON_INDEX_PORT') . '/' . $path;    
+    $url         = 'https://'. getenv('PANTHEON_INDEX_HOST') . ':' .getenv('PANTHEON_INDEX_PORT') . '/' . $path;
     $client_cert = realpath(ABSPATH.'../certs/binding.pem');
 
     /*
@@ -62,7 +62,7 @@ function s4wp_submit_schema()
      */
     if ($errorMessage=s4wp_sanity_check()) {
         return $errorMessage;
-    } 
+    }
 
     if (!file_exists($schema)) {
         return $schema . ' does not exist.';
@@ -71,7 +71,7 @@ function s4wp_submit_schema()
     if (!file_exists($client_cert)) {
         return $client_cert . ' does not exist.';
     }
-    
+
 
     $file = fopen($schema, 'r');
     // set URL and other appropriate options
@@ -102,7 +102,7 @@ function s4wp_submit_schema()
 }
 
 
-function s4wp_activate() 
+function s4wp_activate()
 {
 
     // Check to see if we have  environment variables. If not, bail. If so, create the initial options.
@@ -126,9 +126,9 @@ function s4wp_sanity_check()
     $wp_version  = get_bloginfo('version');
 
     if (getenv('PANTHEON_INDEX_HOST')===false) {
-        $returnValue = __( 'Before you can activate this plugin, you must first activate Solr in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' ); 
+        $returnValue = __( 'Before you can activate this plugin, you must first activate Solr in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' );
     } else if (version_compare($wp_version, '3.0', '<')) {
-        $returnValue = __( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' ); 
+        $returnValue = __( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' );
     }
 
     return $returnValue;
@@ -190,10 +190,11 @@ function s4wp_get_solr() {
 
 
     # double check everything has been set
-    if (!($solarium_config['endpoint']['localhost']['host'] and 
-          $solarium_config['endpoint']['localhost']['port'] and 
+    if (!($solarium_config['endpoint']['localhost']['host'] and
+          $solarium_config['endpoint']['localhost']['port'] and
           $solarium_config['endpoint']['localhost']['path'])) {
         syslog(LOG_ERR, "host, port or path are empty, host:$host, port:$port, path:$path");
+        // SimpleLogger()->info("s4wp_get_solr host, port or path are empty, host:$host, port:$port, path:$path");
         return NULL;
     }
 
@@ -285,8 +286,8 @@ function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $
         $doc->setField('title', $post_info->post_title);
         $doc->setField('content', strip_tags($post_info->post_content));
         $doc->setField('numcomments', $numcomments);
-        $doc->setField('author', $auth_info->display_name);
-        $doc->setField('author_s', get_author_posts_url($auth_info->ID, $auth_info->user_nicename));
+        if(isset($auth_info->display_name)) { $doc->setField('author', $auth_info->display_name); }
+        if(isset($auth_info->user_nicename)) { $doc->setField('author_s', get_author_posts_url($auth_info->ID, $auth_info->user_nicename)); }
         $doc->setField('type', $post_info->post_type);
         $doc->setField('date', s4wp_format_date($post_info->post_date_gmt));
         $doc->setField('modified', s4wp_format_date($post_info->post_modified_gmt));
@@ -348,6 +349,7 @@ function s4wp_format_date($thedate) {
 }
 
 function s4wp_post($documents, $commit = TRUE, $optimize = FALSE) {
+    // SimpleLogger()->info("s4wp_post start");
     try {
         $solr = s4wp_get_solr();
         if (!$solr == NULL) {
@@ -356,11 +358,16 @@ function s4wp_post($documents, $commit = TRUE, $optimize = FALSE) {
 
             if ($documents) {
                 syslog(LOG_INFO, "posting " . count($documents) . " documents for blog:" . get_bloginfo('wpurl'));
+                // SimpleLogger()->info("posting " . count($documents) . " documents for blog:" . get_bloginfo('wpurl'));
                 $update->addDocuments($documents);
+            } else {
+              syslog(LOG_INFO, "posting failed documents for blog:" . get_bloginfo('wpurl'));
+              // SimpleLogger()->info("posting failed documents for blog:" . get_bloginfo('wpurl'));
             }
 
             if ($commit) {
                 syslog(LOG_INFO, "telling Solr to commit");
+                // SimpleLogger()->info("s4wp_post telling Solr to commit");
                 $update->addCommit();
                 $solr->update($update);
             }
@@ -369,13 +376,16 @@ function s4wp_post($documents, $commit = TRUE, $optimize = FALSE) {
                 $update = $solr->createUpdate();
                 $update->addOptimize();
                 $solr->update($update);
+                syslog(LOG_INFO, "Optimizing: " . get_bloginfo('wpurl'));
+                // SimpleLogger()->info( "s4wp_post Optimizing: " . get_bloginfo('wpurl'));
             }
         } else {
             syslog(LOG_ERR, "failed to get a solr instance created");
+            // SimpleLogger()->info("failed to get a solr instance created");
         }
     } catch (Exception $e) {
         syslog(LOG_INFO, "ERROR: " . $e->getMessage());
-        //echo $e->getMessage();
+        // SimpleLogger()->info("s4wp_post error: ".$e->getMessage());
     }
 }
 
@@ -389,6 +399,7 @@ function s4wp_optimize() {
         }
     } catch (Exception $e) {
         syslog(LOG_ERR, $e->getMessage());
+        // SimpleLogger()->info("s4wp_optimize error: ".$e->getMessage());
     }
 }
 
@@ -407,16 +418,20 @@ function s4wp_delete($doc_id) {
 }
 
 function s4wp_delete_all() {
+    // SimpleLogger()->info("s4wp_delete_all start.");
     try {
         $solr = s4wp_get_solr();
         if (!$solr == NULL) {
             $update = $solr->createUpdate();
             $update->addDeleteQuery('*:*');
+            // SimpleLogger()->info("s4wp_delete_all addDeleteQuery.");
             $update->addCommit();
             $solr->update($update);
+            // SimpleLogger()->info("s4wp_delete_all update.");
         }
     } catch (Exception $e) {
-        echo $e->getMessage();
+      // SimpleLogger()->info("s4wp_delete_all error: ".$e->getMessage());
+      echo $e->getMessage();
     }
 }
 
@@ -443,7 +458,7 @@ function s4wp_load_blog_all($blogid) {
     $bloginfo = get_blog_details($blogid, FALSE);
 
     if ($bloginfo->public && !$bloginfo->archived && !$bloginfo->spam && !$bloginfo->deleted) {
-        $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$blogid}_posts WHERE post_status = 'publish';");
+        $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$blogid}_posts WHERE post_type = 'post' and post_status = 'publish';");
 
         $solr = s4wp_get_solr();
         $update = $solr->createUpdate();
@@ -574,18 +589,19 @@ function s4wp_handle_new_blog($blogid) {
     s4wp_load_blog_all($blogid);
 }
 
-function s4wp_load_all_posts($prev) {
+function s4wp_load_all_posts($prev, $post_type = 'post') {
     global $wpdb, $current_blog, $current_site;
+    // SimpleLogger()->info("s4wp_load_all_posts start: ".$prev." - ".$post_type);
     $documents = array();
     $cnt = 0;
-    $batchsize = 250;
+    $batchsize = 500;
     $last = "";
     $found = FALSE;
     $end = FALSE;
     $percent = 0;
     //multisite logic is decided s4wp_get_option
     $plugin_s4wp_settings = s4wp_get_option();
-    $blog_id = $blog->blog_id;
+    if(isset($blog)) { $blog_id = $blog->blog_id; }
     if ($plugin_s4wp_settings['s4wp_index_all_sites']) {
 
         // there is potential for this to run for an extended period of time, depending on the # of blgos
@@ -598,7 +614,7 @@ function s4wp_load_all_posts($prev) {
         syslog(LOG_INFO, "pushing posts from " . count($bloglist) . " blogs into Solr");
         foreach ($bloglist as $bloginfo) {
 
-            // for each blog we need to import we get their id 
+            // for each blog we need to import we get their id
             // and tell wordpress to switch to that blog
             $blog_id = trim($bloginfo);
             syslog(LOG_INFO, "switching to blogid $blog_id");
@@ -612,7 +628,7 @@ function s4wp_load_all_posts($prev) {
             switch_to_blog($blog_id);
 
             // now we actually gather the blog posts
-            $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$bloginfo}_posts WHERE post_status = 'publish' AND post_type = 'post' ORDER BY ID;");
+            $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$bloginfo}_posts WHERE post_status = 'publish' AND post_type = '".$post_type."' ORDER BY ID;");
             $postcount = count($postids);
             syslog(LOG_INFO, "building $postcount documents for " . substr(get_bloginfo('wpurl'), 7));
             for ($idx = 0; $idx < $postcount; $idx++) {
@@ -659,8 +675,10 @@ function s4wp_load_all_posts($prev) {
         // done importing so lets switch back to the proper blog id
         restore_current_blog();
     } else {
-        $posts = $wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' ORDER BY ID;");
+
+        $posts = $wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = '".$post_type."' ORDER BY ID;");
         $postcount = count($posts);
+        // SimpleLogger()->info("s4wp_load_all_posts: ".$prev.":".$post_type.":".$postcount);
         for ($idx = 0; $idx < $postcount; $idx++) {
             $postid = $posts[$idx]->ID;
             $last = $postid;
@@ -694,14 +712,18 @@ function s4wp_load_all_posts($prev) {
     }
 
     if ($end) {
-        s4wp_post(FALSE, TRUE, FALSE);
-        printf("{\"type\": \"post\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, $percent);
+        // SimpleLogger()->info("s4wp_load_all_posts end: ".$post_type.":".$last.":".$percent);
+        printf("{\"type\": \"".$post_type."\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100);
+        // wp_die();
     } else {
-        printf("{\"type\": \"post\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent);
+        // SimpleLogger()->info("s4wp_load_all_posts no end: ".$post_type.":".$last.":".$percent);
+        printf("{\"type\": \"".$post_type."\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent);
+
+        // wp_die();
     }
 }
 
-function s4wp_load_all_pages($prev) {
+function s4wp_load_all_pages($prev, $post_type = 'post') {
     global $wpdb;
     $documents = array();
     $cnt = 0;
@@ -710,11 +732,12 @@ function s4wp_load_all_pages($prev) {
     $found = FALSE;
     $end = FALSE;
     $percent = 0;
+    // SimpleLogger()->info("s4wp_load_all_pages start: ".$prev." - ".$post_type);
     $plugin_s4wp_settings = s4wp_get_option();
     if ($plugin_s4wp_settings['s4wp_index_all_sites']) {
         $bloglist = $wpdb->get_col("SELECT * FROM {$wpdb->base_prefix}blogs", 0);
         foreach ($bloglist as $bloginfo) {
-            $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$bloginfo->blog_id}_posts WHERE post_status = 'publish' AND post_type = 'page' ORDER BY ID;");
+            $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$bloginfo->blog_id}_posts WHERE post_status = 'publish' AND post_type = '".$post_type."' ORDER BY ID;");
             $postcount = count($postids);
             for ($idx = 0; $idx < $postcount; $idx++) {
                 $postid = $postids[$idx]->ID;
@@ -745,14 +768,19 @@ function s4wp_load_all_pages($prev) {
             }
         }
     } else {
-        $pages = $wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'page' ORDER BY ID;");
+      // SimpleLogger()->info("s4wp_load_all_pages: ".$post_type);
+
+        $pages = $wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = '".$post_type."' ORDER BY ID;");
         $pagecount = count($pages);
+        // SimpleLogger()->info("s4wp_load_all_pages pagecount: ".$pagecount);
+        // SimpleLogger()->info("s4wp_load_all_pages prev: ".$prev);
         for ($idx = 0; $idx < $pagecount; $idx++) {
             $pageid = $pages[$idx]->ID;
             $last = $pageid;
             $percent = (floatval($idx) / floatval($pagecount)) * 100;
             if ($prev && !$found) {
                 if ($pageid === $prev) {
+                    // SimpleLogger()->info("s4wp_load_all_pages pageid found. Record #: ".$idx);
                     $found = TRUE;
                 }
 
@@ -760,6 +788,7 @@ function s4wp_load_all_pages($prev) {
             }
 
             if ($idx === $pagecount - 1) {
+              // SimpleLogger()->info("s4wp_load_all_pages end found. Record #: ".$idx);
                 $end = TRUE;
             }
 
@@ -776,15 +805,18 @@ function s4wp_load_all_pages($prev) {
         }
     }
 
+
+
     if ($documents) {
         s4wp_post($documents, true, FALSE);
     }
 
     if ($end) {
         s4wp_post(FALSE, TRUE, FALSE);
-        printf("{\"type\": \"page\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, $percent);
+        printf("{\"type\": \"".$post_type."\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, $percent);
     } else {
-        printf("{\"type\": \"page\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent);
+        // SimpleLogger()->info("s4wp_load_all_pages end } else {. Record #: ".$idx);
+        printf("{\"type\": \"".$post_type."\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent);
     }
 }
 
@@ -832,13 +864,13 @@ function s4wp_search_results() {
     $output_facets       = $plugin_s4wp_settings['s4wp_output_facets'];
     $results_per_page    = $plugin_s4wp_settings['s4wp_num_results'];
     $categoy_as_taxonomy = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
-    
+
     $out = array();
 
     if (!$qry) {
         $qry = '';
     }
-    //if server value has been set lets set it up here 
+    //if server value has been set lets set it up here
     // and add it to all the search urls henceforth
     $serverval = isset($server)?('&server=' . $server):'';
 
@@ -898,7 +930,9 @@ function s4wp_search_results() {
         }
     }
 
+
     if ($qry) {
+
         $results = s4wp_query($qry, $offset, $count, $fqitms, $sortby, $order, $server);
 
         if ($results) {
@@ -1024,7 +1058,7 @@ function s4wp_search_results() {
 
                     $docteaser = $teasers[$docid];
                     $docteaser = $docteaser->getFields();
-                    
+
                     if ($docteaser) {
                         $resultinfo['teaser'] = sprintf(__("...%s..."), implode("...", $docteaser['content']));
                     } else {
@@ -1221,7 +1255,7 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
                 $response = NULL;
             }
         } catch (Exception $e) {
-            syslog(LOG_ERR, "failed to query solr for " . print_r($qry, true));
+            syslog(LOG_ERR, "failed to query solr. ".$e->getMessage());
             $response = NULL;
         }
     }
@@ -1230,21 +1264,21 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
 }
 
 function s4wp_options_init() {
-
     $method = (isset($_POST['method'])?$_POST['method']:''); // Totally guessing as to the default
     if ($method === "load") {
         $type = $_POST['type'];
         $prev = $_POST['prev'];
-
-        if ($type === 'post') {
-            s4wp_load_all_posts($prev);
-            exit;
-        } else if ($type === 'page') {
-            s4wp_load_all_pages($prev);
+        if(isset($type)) {
+            // SimpleLogger()->info("s4wp_options_init type other. ".$_POST['type']);
+            s4wp_load_all_posts($prev, $_POST['type']);
             exit;
         } else {
+            info("s4wp_options_init type else { return }.");
             return;
         }
+    } else {
+      $var = var_dump($_POST);
+      // SimpleLogger()->info("s4wp_options_init no _POST['method']. ".$var);
     }
     register_setting('s4w-options-group', 'plugin_s4wp_settings', 's4wp_sanitise_options');
 }
@@ -1351,7 +1385,8 @@ function s4wp_options_page() {
 }
 
 function s4wp_admin_head() {
-    // include our default css 
+    // include our default css
+    // SimpleLogger()->info("s4wp_admin_head start ");
     if (file_exists(dirname(__FILE__) . '/template/search.css')) {
         printf(__("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"screen\" />\n"), plugins_url('/template/search.css', __FILE__));
     }
@@ -1377,13 +1412,32 @@ function s4wp_admin_head() {
 
         function doLoad($type, $prev) {
             if ($prev == null) {
-                $j.post("options-general.php?page=" . plugin_dir_path( __FILE__ ) . "solr-for-wordpress-on-pantheon.php", {method: "load", type: $type}, handleResults, "json");
+                alert('doLoad:'+$type+' - '+$prev);
+                $j.post("options-general.php?page=<?php  echo plugin_dir_path( __FILE__ ) ?>solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: 0}, handleResults, "json");
             } else {
-                $j.post("options-general.php?page=" . plugin_dir_path( __FILE__ ) . "solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: $prev}, handleResults, "json");
+                alert('doLoad:'+$type);
+               $j.post("options-general.php?page=<?php  echo plugin_dir_path( __FILE__ ) ?>solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: $prev}, function(response) {
+            			alert('Got this from the server: ' + response);
+                  var data = JSON.parse(response);
+                  $j('#percentspan').text(data.percent + "%");
+                  if (!data.end) {
+                      doLoad(data.type, data.last);
+                  } else {
+                      $j('#percentspan').remove();
+                      enableAll();
+                  }
+            		});
+
+               // handleResults, "json");
             }
         }
 
         function handleResults(data) {
+            alert('handleResults %: '.text(data.percent + "%"));
+            alert('handleResults last: '.data.last);
+            alert('handleResults type: '.data.type);
+            alert('handleResults end: '.data.end);
+
             $j('#percentspan').text(data.percent + "%");
             if (!data.end) {
                 doLoad(data.type, data.last);
@@ -1394,16 +1448,20 @@ function s4wp_admin_head() {
         }
 
         function disableAll() {
-            $j('[name=s4wp_postload]').attr('disabled', 'disabled');
+          <?php $postTypes = s4wp_get_post_types(); foreach($postTypes as $postType) { ?>
+            $j('[name=s4wp_postload_<?php echo $postType->post_type ?>]').attr('disabled', 'disabled');
+          <?php } ?>
             $j('[name=s4wp_deleteall]').attr('disabled', 'disabled');
             $j('[name=s4wp_init_blogs]').attr('disabled', 'disabled');
             $j('[name=s4wp_optimize]').attr('disabled', 'disabled');
-            $j('[name=s4wp_pageload]').attr('disabled', 'disabled');
             $j('[name=s4wp_ping]').attr('disabled', 'disabled');
             $j('#settingsbutton').attr('disabled', 'disabled');
         }
 
         function enableAll() {
+          <?php $postTypes = s4wp_get_post_types(); foreach($postTypes as $postType) { ?>
+            $j('[name=s4wp_postload_<?php echo $postType->post_type ?>]').removeAttr('disabled');
+          <?php } ?>
             $j('[name=s4wp_postload]').removeAttr('disabled');
             $j('[name=s4wp_deleteall]').removeAttr('disabled');
             $j('[name=s4wp_init_blogs]').removeAttr('disabled');
@@ -1416,18 +1474,36 @@ function s4wp_admin_head() {
         $percentspan = '<span style="font-size:1.2em;font-weight:bold;margin:20px;padding:20px" id="percentspan">0%</span>';
 
         $j(document).ready(function() {
+          switch1();
+        <?php $postTypes = s4wp_get_post_types(); foreach($postTypes as $postType) { ?>
+            $j('[name=s4wp_postload_<?php echo $postType->post_type ?>]').click(function() {
+                $j(this).after($percentspan);
+                disableAll();
+                doLoad("<?php echo $postType->post_type ?>", 0);
+            });
+            $j('[name=s4wp_pageload_<?php echo $postType->post_type ?>]').click(function() {
+                $j(this).after($percentspan);
+                disableAll();
+                doLoad("<?php echo $postType->post_type ?>", 0);
+            });
+        <?php
+        }
+        ?>
+      });
+
+        $j(document).ready(function() {
             switch1();
             $j('[name=s4wp_postload]').click(function() {
                 $j(this).after($percentspan);
                 disableAll();
-                doLoad("post", null);
+                doLoad("post", 0);
                 $j(this).preventDefault();
             });
 
-            $j('[name=s4wp_pageload]').click(function() {
+            $j('[name=s4wp_pageload').click(function() {
                 $j(this).after($percentspan);
                 disableAll();
-                doLoad("page", null);
+                doLoad("page", 0);
                 $j(this).preventDefault();
             });
         });
@@ -1436,7 +1512,7 @@ function s4wp_admin_head() {
 }
 
 function s4wp_default_head() {
-    // include our default css 
+    // include our default css
     if (file_exists(dirname(__FILE__) . '/template/search.css')) {
         printf(__("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"screen\" />\n"), plugins_url('/template/search.css', __FILE__));
     }
@@ -1538,18 +1614,18 @@ class s4wp_MLTWidget extends WP_Widget {
         if ((!is_single() && !is_page()) || !$solr) {
             return;
         }
-        
+
         $query = $solr->createSelect();
         $query->setQuery('permalink:' . solr_escape(get_permalink()))->
                 getMoreLikeThis()->
                 setFields('title,content');
-        
+
         $response = $solr->select($query);
-        
+
         if (!$response->getResponse()->getStatusCode() == 200) {
             return;
         }
-        
+
         echo $before_widget;
         if ($title)
             echo $before_title . $title . $after_title;
@@ -1676,7 +1752,7 @@ function s4wp_initalize_options()
     $options['s4wp_output_pager']           = 1;
     $options['s4wp_output_facets']          = 1;
     $options['s4wp_exclude_pages']          = array();
-    $options['s4wp_exclude_pages']          = '';  
+    $options['s4wp_exclude_pages']          = '';
     $options['s4wp_num_results']            = 5;
     $options['s4wp_cat_as_taxo']            = 1;
     $options['s4wp_solr_initialized']       = 1;
@@ -1690,10 +1766,10 @@ function s4wp_initalize_options()
     $options['s4wp_connect_type']           = 'solr';
     $options['s4wp_index_custom_fields']    = array();
     $options['s4wp_facet_on_custom_fields'] = array();
-    $options['s4wp_index_custom_fields']    = '';  
-    $options['s4wp_facet_on_custom_fields'] = '';  
-    
-    return $options;    
+    $options['s4wp_index_custom_fields']    = '';
+    $options['s4wp_facet_on_custom_fields'] = '';
+
+    return $options;
 }
 
 
@@ -1707,6 +1783,11 @@ function s4wp_plugin_settings_link( $links, $file ) {
     return $links;
 }
 
+function s4wp_get_post_types() {
+  global $wpdb;
+  $postTypes = $wpdb->get_results("Select distinct post_type from {$wpdb->base_prefix}posts WHERE post_status = 'publish' AND post_type NOT IN ('nav_menu_item', 'revision');");
+  return $postTypes;
+}
 
 add_action('template_redirect', 's4wp_template_redirect', 1);
 add_action('publish_post', 's4wp_handle_modified');
@@ -1717,7 +1798,7 @@ add_action('admin_menu', 's4wp_add_pages');
 add_action('admin_init', 's4wp_options_init');
 add_action('widgets_init', 's4wp_mlt_widget');
 add_action('wp_head', 's4wp_autosuggest_head');
-add_action('admin_head', 's4wp_admin_head');
+add_action('admin_head', 's4wp_admin_head'); // In theory the AJAX functionality.
 add_filter( 'plugin_action_links', 's4wp_plugin_settings_link', 10, 2 );
 
 if (is_multisite()) {
