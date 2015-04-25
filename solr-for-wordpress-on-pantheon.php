@@ -1273,12 +1273,12 @@ function s4wp_options_init() {
             s4wp_load_all_posts($prev, $_POST['type']);
             exit;
         } else {
-            info("s4wp_options_init type else { return }.");
             return;
         }
     } else {
-      $var = var_dump($_POST);
+      // $var = var_dump($_POST);
       // SimpleLogger()->info("s4wp_options_init no _POST['method']. ".$var);
+      return;
     }
     register_setting('s4w-options-group', 'plugin_s4wp_settings', 's4wp_sanitise_options');
 }
