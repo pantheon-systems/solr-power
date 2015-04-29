@@ -1292,12 +1292,9 @@ function s4wp_admin_head() {
 
         function doLoad($type, $prev) {
             if ($prev == null) {
-                alert('doLoad:'+$type+' - '+$prev);
                 $j.post("options-general.php?page=<?php  echo plugin_dir_path( __FILE__ ) ?>solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: 0}, handleResults, "json");
             } else {
-                alert('doLoad:'+$type);
                $j.post("options-general.php?page=<?php  echo plugin_dir_path( __FILE__ ) ?>solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: $prev}, function(response) {
-            			alert('Got this from the server: ' + response);
                   var data = JSON.parse(response);
                   $j('#percentspan').text(data.percent + "%");
                   if (!data.end) {
@@ -1313,10 +1310,6 @@ function s4wp_admin_head() {
         }
 
         function handleResults(data) {
-            alert('handleResults %: '.text(data.percent + "%"));
-            alert('handleResults last: '.data.last);
-            alert('handleResults type: '.data.type);
-            alert('handleResults end: '.data.end);
 
             $j('#percentspan').text(data.percent + "%");
             if (!data.end) {
