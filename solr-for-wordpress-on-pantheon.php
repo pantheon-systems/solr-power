@@ -1119,10 +1119,12 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
             $facetSet->setLimit($number_of_tags);
         }
 
-        foreach ($fq as $filter) {
-            if ($filter !== "") {
-                $query->createFilterQuery($filter)->setQuery($filter);
-            }
+        if(isset($fq)) {
+          foreach ($fq as $filter) {
+              if ($filter !== "") {
+                  $query->createFilterQuery($filter)->setQuery($filter);
+              }
+          }
         }
 
         //$hl = $query->getHighlighting();
