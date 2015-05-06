@@ -327,11 +327,13 @@ function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $
 
         if (count($index_custom_fields) > 0 && count($custom_fields = get_post_custom($post_info->ID))) {
             foreach ((array) $index_custom_fields as $field_name) {
+              if(isset($custom_fields[$field_name])) {
                 $field = (array) $custom_fields[$field_name];
                 foreach ($field as $key => $value) {
                     $doc->addField($field_name . '_str', $value);
                     $doc->addField($field_name . '_srch', $value);
                 }
+              }
             }
         }
     } else {
@@ -588,7 +590,7 @@ function s4wp_load_all_posts($prev, $post_type = 'post') {
     //multisite logic is decided s4wp_get_option
     $plugin_s4wp_settings = s4wp_get_option();
     if(isset($blog)) { $blog_id = $blog->blog_id; }
-    if ($plugin_s4wp_settings['s4wp_index_all_sites']) {
+    if (isset($plugin_s4wp_settings['s4wp_index_all_sites'])) {
 
         // there is potential for this to run for an extended period of time, depending on the # of blgos
         syslog(LOG_ERR, "starting batch import, setting max execution time to unlimited");
@@ -925,8 +927,8 @@ function s4wp_search_results() {
                     $docid      = strval($doc['id']);
                     $resultinfo['permalink']   = $doc['permalink'];
                     $resultinfo['title']       = $doc['title'];
-                    $resultinfo['author']      = $doc['author'];
-                    $resultinfo['authorlink']  = htmlspecialchars($doc['author_s']);
+                    if(isset($doc['author'])) { $resultinfo['author'] = $doc['author']; }
+                    if(isset($doc['author_s'])) { $resultinfo['authorlink']  = htmlspecialchars($doc['author_s']); }
                     $resultinfo['numcomments'] = $doc['numcomments'];
                     $resultinfo['date']        = $doc['displaydate'];
 
@@ -1149,6 +1151,8 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
 }
 
 function s4wp_options_init() {
+    error_reporting(E_ERROR);
+    ini_set('display_errors', false);
     $method = (isset($_POST['method'])?$_POST['method']:''); // Totally guessing as to the default
     if ($method === "load") {
         $type = $_POST['type'];
@@ -1293,10 +1297,7 @@ function s4wp_admin_head() {
 
 
         function doLoad($type, $prev) {
-            if ($prev == null) {
-                $j.post("options-general.php?page=<?php  echo plugin_dir_path( __FILE__ ) ?>solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: 0}, handleResults, "json");
-            } else {
-               $j.post("options-general.php?page=<?php  echo plugin_dir_path( __FILE__ ) ?>solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: $prev}, function(response) {
+            $j.post("options-general.php?page=<?php  echo plugin_dir_path( __FILE__ ) ?>solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: $prev}, function(response) {
                   var data = JSON.parse(response);
                   $j('#percentspan').text(data.percent + "%");
                   if (!data.end) {
@@ -1308,7 +1309,6 @@ function s4wp_admin_head() {
             		});
 
                // handleResults, "json");
-            }
         }
 
         function handleResults(data) {
