@@ -212,7 +212,7 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
 <div class="wrap">
 <h2><?php _e('Solr For WordPress', 'solr4wp') ?></h2>
 
-<form method="post" action="options-general.php?page=<?php echo plugin_dir_path( __FILE__ );?>solr-for-wordpress-on-pantheon.php">
+<form method="post" action="options-general.php?page=solr-for-wordpress-on-pantheon/solr-for-wordpress-on-pantheon.php">
 <h3><?php _e('Configure Solr', 'solr4wp') ?></h3>
 <?php // @todo add the rest of the discovered info here. ?>
 
@@ -265,12 +265,13 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
     <?php // @todo drop-down combo box off all custom fields ?>
     <tr valign="top">
         <th scope="row"><?php _e('Index custom fields (comma separated names list)') ?></th>
-        <td><input type="text" name="settings[s4wp_index_custom_fields]" value="<?php print( s4wp_filter_list2str($s4wp_settings['s4wp_index_custom_fields'], 'solr4wp')); ?>" /></td>
+        <td><input type="text" name="settings[s4wp_index_custom_fields]" value="<?php print($s4wp_settings['s4wp_index_custom_fields']); ?>" /></td>
     </tr>
-    <?php // @todo drop-down combo box off all pages & posts?>
+    <?php
+    // @todo drop-down combo box off all pages & posts?>
     <tr valign="top">
         <th scope="row"><?php _e('Excludes Posts or Pages (comma separated ids list)') ?></th>
-        <td><input type="text" name="settings[s4wp_exclude_pages]" value="<?php print(s4wp_filter_list2str($s4wp_settings['s4wp_exclude_pages'], 'solr4wp')); ?>" /></td>
+        <td><input type="text" name="settings[s4wp_exclude_pages]" value="<?php print($s4wp_settings['s4wp_exclude_pages']); ?>" /></td>
     </tr>
 </table>
 <hr />
@@ -311,15 +312,15 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
 
     <tr valign="top">
         <th scope="row"><?php _e('Custom fields as Facet (comma separated ordered names list)') ?></th>
-        <td><input type="text" name="settings[s4wp_facet_on_custom_fields]" value="<?php print( s4wp_filter_list2str($s4wp_settings['s4wp_facet_on_custom_fields'], 'solr4wp')); ?>" /></td>
+        <td><input type="text" name="settings[s4wp_facet_on_custom_fields]" value="<?php print($s4wp_settings['s4wp_facet_on_custom_fields']); ?>" /></td>
     </tr>
 
     <tr valign="top">
         <th scope="row"><?php _e('Number of Results Per Page', 'solr4wp') ?></th>
-        <td><input type="text" name="settings[s4wp_num_results]" value="<?php _e($s4wp_settings['s4wp_num_results'], 'solr4wp'); ?>" /></td>
+        <td><input type="text" name="settings[s4wp_num_results]" value="<?php /*_e($s4wp_settings['s4wp_num_results'], 'solr4wp');*/ ?>10" readonly/></td>
     </tr>
 
-    <tr valign="top">
+    <tr valign="top" style="display: none; ">
         <th scope="row"><?php _e('Max Number of Tags to Display', 'solr4wp') ?></th>
         <td><input type="text" name="settings[s4wp_max_display_tags]" value="<?php _e($s4wp_settings['s4wp_max_display_tags'], 'solr4wp'); ?>" /></td>
     </tr>
@@ -381,7 +382,7 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
 ?>
 <tr valign="top">
     <th scope="row"><?php _e('Load All '.$postType->post_type.'(s)', 'solr4wp') ?></th>
-    <td><input type="submit" class="button-primary" name="s4wp_postload_<?php print($postType->post_type); ?>" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
+    <td><input type="button" class="button-primary s4wp_postload_<?php print($postType->post_type); ?>" name="s4wp_postload_<?php print($postType->post_type); ?>" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
 </tr>
 <?php } ?>
 </table>

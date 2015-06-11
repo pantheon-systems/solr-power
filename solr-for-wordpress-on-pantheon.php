@@ -154,6 +154,7 @@ function s4wp_get_option() {
 function s4wp_update_option($optval) {
     $indexall = FALSE;
     $option = 'plugin_s4wp_settings';
+
     if (is_multisite()) {
         $plugin_s4wp_settings = get_site_option($option);
         $indexall = $plugin_s4wp_settings['s4wp_index_all_sites'];
@@ -231,10 +232,10 @@ function s4wp_compute_path()
 
 function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $doc, $post_info, $domain = NULL, $path = NULL) {
     $plugin_s4wp_settings = s4wp_get_option();
-    $exclude_ids          = $plugin_s4wp_settings['s4wp_exclude_pages'];
+    $exclude_ids          = explode(',', $plugin_s4wp_settings['s4wp_exclude_pages']);
     $categoy_as_taxonomy  = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
     $index_comments       = $plugin_s4wp_settings['s4wp_index_comments'];
-    $index_custom_fields  = $plugin_s4wp_settings['s4wp_index_custom_fields'];
+    $index_custom_fields  = explode(',',$plugin_s4wp_settings['s4wp_index_custom_fields']);
 
     if ($post_info) {
 
@@ -327,6 +328,7 @@ function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $
 
         if (count($index_custom_fields) > 0 && count($custom_fields = get_post_custom($post_info->ID))) {
             foreach ((array) $index_custom_fields as $field_name) {
+              // test a php error notice.
               if(isset($custom_fields[$field_name])) {
                 $field = (array) $custom_fields[$field_name];
                 foreach ($field as $key => $value) {
@@ -471,29 +473,32 @@ function s4wp_load_blog_all($blogid) {
 
 function s4wp_handle_modified($post_id) {
     global $current_blog;
+    $valid_posts = array("article","authors","magazineissue","page");
     $post_info = get_post($post_id);
-    $plugin_s4wp_settings = s4wp_get_option();
-    $index_pages = $plugin_s4wp_settings['s4wp_index_pages'];
-    $index_posts = $plugin_s4wp_settings['s4wp_index_posts'];
+    if(in_array($post_info->post_type,$valid_posts))
+    {
+         $plugin_s4wp_settings = s4wp_get_option();
+         $index_pages = $plugin_s4wp_settings['s4wp_index_pages'];
+         $index_posts = $plugin_s4wp_settings['s4wp_index_posts'];
+         s4wp_handle_status_change($post_id, $post_info);
+         if($post_info->post_type == 'revision')
+         return;
 
-    s4wp_handle_status_change($post_id, $post_info);
+         # make sure this blog is not private or a spam if indexing on a multisite install
+             if (is_multisite() && ($current_blog->public != 1 || $current_blog->spam == 1 || $current_blog->archived == 1)) {
+                 return;
+             }
 
-    if (($index_pages && $post_info->post_type == 'page') || ($index_posts && $post_info->post_type == 'post')) {
-
-        # make sure this blog is not private or a spam if indexing on a multisite install
-        if (is_multisite() && ($current_blog->public != 1 || $current_blog->spam == 1 || $current_blog->archived == 1)) {
-            return;
-        }
-
-        $docs = array();
-        $solr = s4wp_get_solr();
-        $update = $solr->createUpdate();
-        $doc = s4wp_build_document($update->createDocument(), $post_info);
-        if ($doc) {
-            $docs[] = $doc;
-            s4wp_post($docs);
-        }
+             $docs = array();
+             $solr = s4wp_get_solr();
+             $update = $solr->createUpdate();
+             $doc = s4wp_build_document($update->createDocument(), $post_info);
+             if ($doc) {
+                 $docs[] = $doc;
+                 s4wp_post($docs);
+             }
     }
+    return;
 }
 
 function s4wp_handle_status_change($post_id, $post_info = null) {
@@ -507,7 +512,7 @@ function s4wp_handle_status_change($post_id, $post_info = null) {
     $private_page = $plugin_s4wp_settings['s4wp_private_page'];
     $private_post = $plugin_s4wp_settings['s4wp_private_post'];
 
-    if (($private_page && $post_info->post_type == 'page') || ($private_post && $post_info->post_type == 'post')) {
+
         /**
          * We need to check if the status of the post has changed.
          * Inline edits won't have the prev_status of original_post_status,
@@ -523,7 +528,7 @@ function s4wp_handle_status_change($post_id, $post_info = null) {
                 s4wp_delete($post_info->ID);
             }
         }
-    }
+
 }
 
 function s4wp_handle_delete($post_id) {
@@ -533,13 +538,13 @@ function s4wp_handle_delete($post_id) {
     $delete_page = $plugin_s4wp_settings['s4wp_delete_page'];
     $delete_post = $plugin_s4wp_settings['s4wp_delete_post'];
 
-    if (($delete_page && $post_info->post_type == 'page') || ($delete_post && $post_info->post_type == 'post')) {
+
         if (is_multisite()) {
             s4wp_delete($current_blog->domain . $current_blog->path . $post_info->ID);
         } else {
             s4wp_delete($post_info->ID);
         }
-    }
+
 }
 
 function s4wp_handle_deactivate_blog($blogid) {
@@ -728,13 +733,13 @@ function s4wp_search_form() {
     if ($server) {
         $serverval = '<input name="server" type="hidden" value="' . $server . '" />';
     }
-    $form = __('<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="s" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">Sort By:</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">Order By:</label><select name="order" id="orderselect">%s</select>%s</form>');
+    $form = __('<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="ssearch" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">Sort By:</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">Order By:</label><select name="order" id="orderselect">%s</select>%s</form>');
 
-    printf($form, filter_input(INPUT_GET,'s',FILTER_SANITIZE_STRING), $sortval, $orderval, $serverval);
+    printf($form, filter_input(INPUT_GET,'ssearch',FILTER_SANITIZE_STRING), $sortval, $orderval, $serverval);
 }
 
 function s4wp_search_results() {
-    $qry    = filter_input(INPUT_GET,'s',FILTER_SANITIZE_STRING);
+    $qry    = filter_input(INPUT_GET,'ssearch',FILTER_SANITIZE_STRING);
     $offset = filter_input(INPUT_GET,'offset',FILTER_SANITIZE_STRING);
     $count  = filter_input(INPUT_GET,'count',FILTER_SANITIZE_STRING);
     $fq     = filter_input(INPUT_GET,'fq',FILTER_SANITIZE_STRING);
@@ -751,10 +756,17 @@ function s4wp_search_results() {
     $categoy_as_taxonomy = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
 
     $out = array();
+    $out['hits'] = "0";
 
-    if (!$qry) {
+    $qry = html_entity_decode($qry);
+    $qry = trim($qry,'"');
+    $qry = trim($qry,"'");
+     if (!$qry) {
         $qry = '';
     }
+    global $wpdb;
+    //Sql Injection Prevention
+    $qry = $wpdb->_real_escape( trim($qry) );
     //if server value has been set lets set it up here
     // and add it to all the search urls henceforth
     $serverval = isset($server)?('&server=' . $server):'';
@@ -789,7 +801,7 @@ function s4wp_search_results() {
     $selectedfacets = array();
 
     foreach ($fqitms as $fqitem) {
-        if ($fqitem) {
+        if ($fqitem && $fqitem !=='any') {
             $splititm = explode(':', $fqitem);
             $selectedfacet = array();
             $selectedfacet['name'] = sprintf(__("%s:%s"), ucwords(preg_replace('/_str$/i', '', $splititm[0])), str_replace("^^", "/", $splititm[1]));
@@ -802,9 +814,9 @@ function s4wp_search_results() {
             }
 
             if ($removelink) {
-                $selectedfacet['removelink'] = htmlspecialchars(sprintf(__("?s=%s&fq=%s"), urlencode($qry), $removelink));
+                $selectedfacet['removelink'] = htmlspecialchars(sprintf(__("?ssearch=%s&fq=%s"), urlencode($qry), $removelink));
             } else {
-                $selectedfacet['removelink'] = htmlspecialchars(sprintf(__("?s=%s"), urlencode($qry)));
+                $selectedfacet['removelink'] = htmlspecialchars(sprintf(__("?ssearch=%s"), urlencode($qry)));
             }
             //if server is set add it on the end of the url
             $selectedfacet['removelink'] .=$serverval;
@@ -849,13 +861,13 @@ function s4wp_search_results() {
                         $pageritm = array();
                         $pageritm['page'] = sprintf(__("%d"), $pagenum);
                         if (!isset($sortby) || $sortby == "") {
-                            $pagersortby = "score";
+                            $pagersortby = "date";
                             $pagerorder = "desc";
                         } else {
                             $pagersortby = $sortby;
                             $pagerorder = $order;
                         }
-                        $pagerlink = sprintf(__("?s=%s&offset=%d&count=%d&sort=%s&order=%s"), urlencode($qry), $offsetnum, $count, $pagersortby, $pagerorder);
+                        $pagerlink = sprintf(__("?ssearch=%s&offset=%d&count=%d&sort=%s&order=%s"), urlencode($qry), $offsetnum, $count, $pagersortby, $pagerorder);
                         if ($fqstr) {
                             $pagerlink .= '&fq=' . $fqstr;
                         }
@@ -901,7 +913,7 @@ function s4wp_search_results() {
                             foreach ($facet as $facetval => $facetcnt) {
                                 $facetitm = array();
                                 $facetitm['count'] = sprintf(__("%d"), $facetcnt);
-                                $facetitm['link'] = htmlspecialchars(sprintf(__('?s=%s&fq=%s:%s%s', 'solr4wp'), urlencode($qry), $facetfield, urlencode('"' . $facetval . '"'), $fqstr));
+                                $facetitm['link'] = htmlspecialchars(sprintf(__('?ssearch=%s&fq=%s:%s%s', 'solr4wp'), urlencode($qry), $facetfield, urlencode('"' . $facetval . '"'), $fqstr));
                                 //if server is set add it on the end of the url
                                 $facetitm['link'] .=$serverval;
                                 $facetitm['name'] = $facetval;
@@ -969,14 +981,14 @@ function s4wp_search_results() {
     $out['sortby']      = $sortby;
     $out['order']       = $order;
     $out['sorting']     = array(
-        'scoreasc'     => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=score&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'scoredesc'    => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=score&order=desc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'dateasc'      => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=date&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'datedesc'     => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=date&order=desc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'modifiedasc'  => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=modified&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'modifieddesc' => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=modified&order=desc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'commentsasc'  => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=numcomments&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'commentsdesc' => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=numcomments&order=desc%s', urlencode($qry), stripslashes($fq), $serverval))
+        'scoreasc'     => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=score&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'scoredesc'    => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=score&order=desc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'dateasc'      => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=date&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'datedesc'     => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=date&order=desc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'modifiedasc'  => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=modified&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'modifieddesc' => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=modified&order=desc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'commentsasc'  => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=numcomments&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'commentsdesc' => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=numcomments&order=desc%s', urlencode($qry), stripslashes($fq), $serverval))
     );
     return $out;
 }
@@ -1009,7 +1021,7 @@ function s4wp_get_output_taxo($facet, $taxo, $prefix, $fqstr, $field) {
             $facetvars = $facet->getValues();
             $facetitm = array();
             $facetitm['count'] = sprintf(__("%d"), $facetvars[$newprefix]);
-            $facetitm['link'] = htmlspecialchars(sprintf(__('?s=%s&fq=%s:%s%s', 'solr4wp'), $qry, $field, urlencode('"' . $newprefix . '"'), $fqstr));
+            $facetitm['link'] = htmlspecialchars(sprintf(__('?ssearch=%s&fq=%s:%s%s', 'solr4wp'), $qry, $field, urlencode('"' . $newprefix . '"'), $fqstr));
             $facetitm['name'] = $taxoname;
             $outitms = s4wp_get_output_taxo($facet, $taxoval, $newprefix, $fqstr, $field);
             if ($outitms) {
@@ -1052,7 +1064,9 @@ function s4wp_query($qry, $offset, $count, $fq, $sortby, $order, $server = 'mast
         $function = 's4wp_master_query';
     }
 
+
     return $function($solr, $qry, $offset, $count, $fq, $sortby, $order, $plugin_s4wp_settings);
+
 }
 
 function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings) {
@@ -1105,12 +1119,12 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
         if ($sortby != "") {
             $select['sort'] = array($sortby => $order);
         }
+        else
+        {
+          $select['sort'] = array('date' => 'desc');
+        }
 
         $query = $solr->createSelect($select);
-
-        $dismax = $query->getDisMax();
-        $dismax->setQueryFields('tagssrch^5 title^10 categoriessrch^5 content^3.5 comments^1.5');
-        $dismax->setPhraseFields('title^15 text^10');
 
         $facetSet = $query->getFacetSet();
         foreach ($facet_fields as $facet_field) {
@@ -1121,7 +1135,7 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
             $facetSet->setLimit($number_of_tags);
         }
 
-        if(isset($fq)) {
+      if(isset($fq)) {
           foreach ($fq as $filter) {
               if ($filter !== "") {
                   $query->createFilterQuery($filter)->setQuery($filter);
@@ -1129,13 +1143,14 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
           }
         }
 
-        //$hl = $query->getHighlighting();
+		//$hl = $query->getHighlighting();
         $query->getHighlighting()->setFields('content');
         $query->getHighlighting()->setSimplePrefix('<b>');
         $query->getHighlighting()->setSimplePostfix('</b>');
-        $query->getHighlighting()->setSnippets('5');
-        $query->getHighlighting()->setFragsize('50');
+        $query->getHighlighting()->setHighlightMultiTerm(true);
 
+        // Set operator
+        $query->setQueryDefaultOperator('AND');
         try {
             $response = $solr->select($query);
             if (!$response->getResponse()->getStatusCode() == 200) {
@@ -1297,7 +1312,7 @@ function s4wp_admin_head() {
 
 
         function doLoad($type, $prev) {
-            $j.post("options-general.php?page=<?php  echo plugin_dir_path( __FILE__ ) ?>solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: $prev}, function(response) {
+            $j.post("options-general.php?page=solr-for-wordpress-on-pantheon/solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: $prev}, function(response) {
                   var data = JSON.parse(response);
                   $j('#percentspan').text(data.percent + "%");
                   if (!data.end) {
@@ -1332,7 +1347,6 @@ function s4wp_admin_head() {
             $j('[name=s4wp_ping]').attr('disabled', 'disabled');
             $j('#settingsbutton').attr('disabled', 'disabled');
         }
-
         function enableAll() {
           <?php $postTypes = s4wp_get_post_types(); foreach($postTypes as $postType) { ?>
             $j('[name=s4wp_postload_<?php echo $postType->post_type ?>]').removeAttr('disabled');
@@ -1341,7 +1355,7 @@ function s4wp_admin_head() {
             $j('[name=s4wp_deleteall]').removeAttr('disabled');
             $j('[name=s4wp_init_blogs]').removeAttr('disabled');
             $j('[name=s4wp_optimize]').removeAttr('disabled');
-            $j('[name=s4wp_pageload]').removeAttr('disabled');
+           // $j('[name=s4wp_pageload]').removeAttr('disabled');
             $j('[name=s4wp_ping]').removeAttr('disabled');
             $j('#settingsbutton').removeAttr('disabled');
         }
@@ -1351,12 +1365,12 @@ function s4wp_admin_head() {
         $j(document).ready(function() {
           switch1();
         <?php $postTypes = s4wp_get_post_types(); foreach($postTypes as $postType) { ?>
-            $j('[name=s4wp_postload_<?php echo $postType->post_type ?>]').click(function() {
+            $j('.s4wp_postload_<?php echo $postType->post_type ?>').click(function() {
                 $j(this).after($percentspan);
                 disableAll();
                 doLoad("<?php echo $postType->post_type ?>", 0);
             });
-            $j('[name=s4wp_pageload_<?php echo $postType->post_type ?>]').click(function() {
+            $j('.s4wp_pageload_<?php echo $postType->post_type ?>').click(function() {
                 $j(this).after($percentspan);
                 disableAll();
                 doLoad("<?php echo $postType->post_type ?>", 0);
@@ -1365,23 +1379,6 @@ function s4wp_admin_head() {
         }
         ?>
       });
-
-        $j(document).ready(function() {
-            switch1();
-            $j('[name=s4wp_postload]').click(function() {
-                $j(this).after($percentspan);
-                disableAll();
-                doLoad("post", 0);
-                $j(this).preventDefault();
-            });
-
-            $j('[name=s4wp_pageload').click(function() {
-                $j(this).after($percentspan);
-                disableAll();
-                doLoad("page", 0);
-                $j(this).preventDefault();
-            });
-        });
 
     </script> <?php
 }
@@ -1404,7 +1401,7 @@ function s4wp_autosuggest_head() {
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             $("#s").suggest("?method=autocomplete", {});
-            $("#qrybox").suggest("?method=autocomplete", {});
+            $("#search-value").suggest("?method=autocomplete", {});
         });
     </script>
     <?php
@@ -1415,7 +1412,7 @@ function s4wp_template_redirect() {
 
     // not a search page; don't do anything and return
     // thanks to the Better Search plugin for the idea:  http://wordpress.org/extend/plugins/better-search/
-    $search = stripos($_SERVER['REQUEST_URI'], '?s=');
+    $search = stripos($_SERVER['REQUEST_URI'], '?ssearch=');
     $autocomplete = stripos($_SERVER['REQUEST_URI'], '?method=autocomplete');
 
     if (($search || $autocomplete) == FALSE) {
@@ -1653,7 +1650,7 @@ function s4wp_plugin_settings_link( $links, $file ) {
         return $links;
     }
 
-    array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=' . plugin_dir_path( __FILE__ ) . 'solr-for-wordpress-on-pantheon.php">' . __( 'Settings', 's4wp' ) . '</a>' );
+    array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-for-wordpress-on-pantheon/solr-for-wordpress-on-pantheon.php">' . __( 'Settings', 's4wp' ) . '</a>' );
 
     return $links;
 }
