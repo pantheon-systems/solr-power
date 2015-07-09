@@ -166,7 +166,13 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
 ?>
     <div id="message" class="updated fade"><p><strong><?php _e('All Indexed Pages Deleted!', 'solr4wp') ?></strong></p></div>
 <?php
-} else if (isset($_POST['s4wp_optimize']) and $_POST['s4wp_optimize']) {
+}  else if (isset($_POST['s4wp_repost_schema']) and $_POST['s4wp_repost_schema']) {
+    s4wp_delete_all();
+    $output = s4wp_submit_schema();
+?>
+    <div id="message" class="updated fade"><p><strong><?php _e('All Indexed Pages Deleted!<br />'.$output, 'solr4wp') ?></strong></p></div>
+<?php
+}  else if (isset($_POST['s4wp_optimize']) and $_POST['s4wp_optimize']) {
     s4wp_optimize();
 ?>
     <div id="message" class="updated fade"><p><strong><?php _e('Index Optimized!', 'solr4wp') ?></strong></p></div>
@@ -176,12 +182,14 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
 } else if(isset($_POST['s4wp_query']) && $_POST['solrQuery']) {
   // function s4wp_query($qry, $offset, $count, $fq, $sortby, $order, $server = 'master') {
   $qry      = filter_input(INPUT_POST,'solrQuery',FILTER_SANITIZE_STRING);
+  // print_r($qry);
   $offset   = null;
   $count    = null;
   $fq       = null;
   $sortby   = null;
   $order    = null;
   $results  = s4wp_query($qry, $offset, $count, $fq, $sortby, $order);
+  // print_r($results);
   if(isset($results)) {
     $plugin_s4wp_settings = s4wp_get_option();
     $output_info  = $plugin_s4wp_settings['s4wp_output_info'];
@@ -316,6 +324,20 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
     </tr>
 
     <tr valign="top">
+        <th scope="row"><?php _e('Default Search Operator', 'solr4wp') ?></th>
+        <td>
+          <?php
+          if(isset($s4wp_settings['s4wp_default_operator']) && $s4wp_settings['s4wp_default_operator'] == "And" ) {
+            $and = 'checked';
+          } else {
+            $or = 'checked';
+          }
+          ?>
+          Or <input type="radio" name="settings[s4wp_default_operator]" value="Or" <?php echo $or; ?>> And <input type="radio" name="settings[s4wp_default_operator]" value="And" <?php echo $and; ?>>
+          </td>
+    </tr>
+
+    <tr valign="top">
         <th scope="row"><?php _e('Number of Results Per Page', 'solr4wp') ?></th>
         <td><input type="text" name="settings[s4wp_num_results]" value="<?php /*_e($s4wp_settings['s4wp_num_results'], 'solr4wp');*/ ?>10" readonly/></td>
     </tr>
@@ -336,7 +358,10 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
 
 </form>
 <hr />
-<form method="post" action="options-general.php?page=<?php echo plugin_dir_path( __FILE__ );?>solr-for-wordpress-on-pantheon.php" -->
+<?php
+$action = 'options-general.php?page=solr-for-wordpress-on-pantheon/solr-for-wordpress-on-pantheon.php';
+?>
+<form method="post" action="<?php echo $action; ?>" -->
 <h3><?php _e('Actions', 'solr4wp') ?></h3>
 <table class="form-table">
     <tr valign="top">
@@ -360,6 +385,13 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
         <th scope="row"><?php _e('Delete All', 'solr4wp') ?></th>
         <td><input type="submit" class="button-primary" name="s4wp_deleteall" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
     </tr>
+  <tr valign="top">
+      <th scope="row"><?php _e('Repost schema.xml', 'solr4wp') ?></th>
+      <td><input type="submit" class="button-primary" name="s4wp_repost_schema" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
+  </tr>
+<tr valign="top">
+    <td scope="row" colspan="2">To use a custom schema.xml, upload it to the <b>/wp-content/uploads/solr-for-wordpress-on-pantheon/</b> directory.</td>
+</tr>
 </form -->
 
     <!-- tr valign="top">
@@ -387,7 +419,7 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
 <?php } ?>
 </table>
 
-<form method="post" action="options-general.php?page=<?php echo plugin_dir_path( __FILE__ );?>solr-for-wordpress-on-pantheon.php">
+<form method="post" action="<?php echo $action;?>">
 <h3><?php _e('Solr Query', 'solr4wp') ?></h3>
 <table class="form-table">
   <tr valign="top">
@@ -401,6 +433,4 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
       </td>
   </tr>
 </table>
-
-
 </div>

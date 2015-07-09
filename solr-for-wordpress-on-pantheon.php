@@ -52,8 +52,17 @@ function s4wp_submit_schema()
     // So we'll do it ourselves
 
     $returnValue = '';
+    $upload_dir = wp_upload_dir();
+
+    // Let's check for a custom Schema.xml. It MUST be located in
+    // wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml
+    if(is_file(realpath(ABSPATH).'/'.$_ENV['FILEMOUNT'].'/solr-for-wordpress-on-pantheon/schema.xml')) {
+      $schema    = realpath(ABSPATH).'/'.$_ENV['FILEMOUNT'].'/solr-for-wordpress-on-pantheon/schema.xml';
+    } else {
+      $schema    = dirname(__FILE__) . '/schema.xml';
+    }
+
     $path        = s4wp_compute_path();
-    $schema      = dirname(__FILE__) . '/schema.xml';
     $url         = 'https://'. getenv('PANTHEON_INDEX_HOST') . ':' .getenv('PANTHEON_INDEX_PORT') . '/' . $path;
     $client_cert = realpath(ABSPATH.'../certs/binding.pem');
 
@@ -93,11 +102,13 @@ function s4wp_submit_schema()
 
     $response  = curl_exec($ch);
     $curl_opts = curl_getinfo($ch);
-
     fclose($file);
-
-    $returnValue = ((int)$curl_opts['http_code'] === 200) ? '' : 'Error: ' . $curl_opts['http_code'];
-
+    $returnValue = (int)$curl_opts['http_code'];
+    if((int)$curl_opts['http_code'] == 200) {
+      $returnValue = 'Schema Upload Success: ' . $curl_opts['http_code'];
+    } else {
+      $returnValue = 'Schema Upload Error: ' . $curl_opts['http_code'];
+    }
     return $returnValue;
 }
 
@@ -111,7 +122,9 @@ function s4wp_activate()
          wp_die($errMessage);
     }
 
-    if ($errorMessage = s4wp_submit_schema()) {
+    $schemaSubmit = s4wp_submit_schema();
+
+    if (strpos($schemaSubmit, 'Error')) {
         wp_die('Submitting the schema failed with the message ' . $errorMessage);
     }
     $options = s4wp_initalize_options();
@@ -154,7 +167,6 @@ function s4wp_get_option() {
 function s4wp_update_option($optval) {
     $indexall = FALSE;
     $option = 'plugin_s4wp_settings';
-
     if (is_multisite()) {
         $plugin_s4wp_settings = get_site_option($option);
         $indexall = $plugin_s4wp_settings['s4wp_index_all_sites'];
@@ -342,6 +354,7 @@ function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $
         // this will fire during blog sign up on multisite, not sure why
         _e('Post Information is NULL', 'solr4wp');
     }
+
     return $doc;
 }
 
@@ -364,7 +377,8 @@ function s4wp_post($documents, $commit = TRUE, $optimize = FALSE) {
             } else {
               syslog(LOG_INFO, "posting failed documents for blog:" . get_bloginfo('wpurl'));
             }
-
+            // print_r($update);
+            // exit;
             if ($commit) {
                 syslog(LOG_INFO, "telling Solr to commit");
                 $update->addCommit();
@@ -473,31 +487,39 @@ function s4wp_load_blog_all($blogid) {
 
 function s4wp_handle_modified($post_id) {
     global $current_blog;
-    $valid_posts = array("article","authors","magazineissue","page");
+    // $valid_posts = array("article","authors","magazineissue","page");
     $post_info = get_post($post_id);
-    if(in_array($post_info->post_type,$valid_posts))
-    {
+    // print_r($post_info->post_type);
+    // exit;
+    // if(in_array($post_info->post_type,$valid_posts))
+    // {
          $plugin_s4wp_settings = s4wp_get_option();
          $index_pages = $plugin_s4wp_settings['s4wp_index_pages'];
          $index_posts = $plugin_s4wp_settings['s4wp_index_posts'];
          s4wp_handle_status_change($post_id, $post_info);
-         if($post_info->post_type == 'revision')
-         return;
-
+         if($post_info->post_type == 'revision') {
+           return;
+         }
+         $index_posts = $plugin_s4wp_settings['s4wp_index_posts'];
+         s4wp_handle_status_change($post_id, $post_info);
+         if($post_info->post_type == 'revision') {
+           return;
+         }
          # make sure this blog is not private or a spam if indexing on a multisite install
              if (is_multisite() && ($current_blog->public != 1 || $current_blog->spam == 1 || $current_blog->archived == 1)) {
                  return;
              }
-
              $docs = array();
              $solr = s4wp_get_solr();
              $update = $solr->createUpdate();
              $doc = s4wp_build_document($update->createDocument(), $post_info);
+             // print_r($doc);
+             // exit;
              if ($doc) {
                  $docs[] = $doc;
                  s4wp_post($docs);
              }
-    }
+    // }
     return;
 }
 
@@ -767,6 +789,7 @@ function s4wp_search_results() {
     global $wpdb;
     //Sql Injection Prevention
     $qry = $wpdb->_real_escape( trim($qry) );
+    //print_r($qry);
     //if server value has been set lets set it up here
     // and add it to all the search urls henceforth
     $serverval = isset($server)?('&server=' . $server):'';
@@ -1142,15 +1165,16 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
               }
           }
         }
-
 		//$hl = $query->getHighlighting();
         $query->getHighlighting()->setFields('content');
         $query->getHighlighting()->setSimplePrefix('<b>');
         $query->getHighlighting()->setSimplePostfix('</b>');
         $query->getHighlighting()->setHighlightMultiTerm(true);
 
-        // Set operator
-        $query->setQueryDefaultOperator('AND');
+        if(isset($plugin_s4wp_settings['s4wp_default_operator']))
+		{
+		$query->setQueryDefaultOperator($plugin_s4wp_settings['s4wp_default_operator']);
+		}
         try {
             $response = $solr->select($query);
             if (!$response->getResponse()->getStatusCode() == 200) {
@@ -1640,6 +1664,7 @@ function s4wp_initalize_options()
     $options['s4wp_facet_on_custom_fields'] = array();
     $options['s4wp_index_custom_fields']    = '';
     $options['s4wp_facet_on_custom_fields'] = '';
+    $options['s4wp_default_operator'] = 'OR';
 
     return $options;
 }
