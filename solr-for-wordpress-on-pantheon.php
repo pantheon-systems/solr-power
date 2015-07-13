@@ -30,17 +30,17 @@
  */
 
 /*
- * NOTE: We have had to hack the Solarium Curl class to get it to support 
- * https:. There is probably a better way to do this and a future version 
- * may include a new "Pantheon" provider for Solarium. Until then, if you 
- * do a composer update, and it updates, Solarium, things WILL STOP 
- * WORKING. 
+ * NOTE: We have had to hack the Solarium Curl class to get it to support
+ * https:. There is probably a better way to do this and a future version
+ * may include a new "Pantheon" provider for Solarium. Until then, if you
+ * do a composer update, and it updates, Solarium, things WILL STOP
+ * WORKING.
  *
  * Make a backup!
  *  - Cal
  *
  * @TODO refactor as an object
- * 
+ *
  */
 
 require_once(dirname(__FILE__) . '/vendor/autoload.php');
@@ -49,12 +49,21 @@ register_activation_hook( __FILE__, 's4wp_activate' );
 function s4wp_submit_schema()
 {
     // Solarium does not currently support submitting schemas to the server.
-    // So we'll do it ourselves 
-    
+    // So we'll do it ourselves
+
     $returnValue = '';
+    $upload_dir = wp_upload_dir();
+
+    // Let's check for a custom Schema.xml. It MUST be located in
+    // wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml
+    if(is_file(realpath(ABSPATH).'/'.$_ENV['FILEMOUNT'].'/solr-for-wordpress-on-pantheon/schema.xml')) {
+      $schema    = realpath(ABSPATH).'/'.$_ENV['FILEMOUNT'].'/solr-for-wordpress-on-pantheon/schema.xml';
+    } else {
+      $schema    = dirname(__FILE__) . '/schema.xml';
+    }
+
     $path        = s4wp_compute_path();
-    $schema      = dirname(__FILE__) . '/schema.xml';
-    $url         = 'https://'. getenv('PANTHEON_INDEX_HOST') . ':' .getenv('PANTHEON_INDEX_PORT') . '/' . $path;    
+    $url         = 'https://'. getenv('PANTHEON_INDEX_HOST') . ':' .getenv('PANTHEON_INDEX_PORT') . '/' . $path;
     $client_cert = realpath(ABSPATH.'../certs/binding.pem');
 
     /*
@@ -62,7 +71,7 @@ function s4wp_submit_schema()
      */
     if ($errorMessage=s4wp_sanity_check()) {
         return $errorMessage;
-    } 
+    }
 
     if (!file_exists($schema)) {
         return $schema . ' does not exist.';
@@ -71,7 +80,7 @@ function s4wp_submit_schema()
     if (!file_exists($client_cert)) {
         return $client_cert . ' does not exist.';
     }
-    
+
 
     $file = fopen($schema, 'r');
     // set URL and other appropriate options
@@ -93,16 +102,18 @@ function s4wp_submit_schema()
 
     $response  = curl_exec($ch);
     $curl_opts = curl_getinfo($ch);
-
     fclose($file);
-
-    $returnValue = ((int)$curl_opts['http_code'] === 200) ? '' : 'Error: ' . $curl_opts['http_code'];
-
+    $returnValue = (int)$curl_opts['http_code'];
+    if((int)$curl_opts['http_code'] == 200) {
+      $returnValue = 'Schema Upload Success: ' . $curl_opts['http_code'];
+    } else {
+      $returnValue = 'Schema Upload Error: ' . $curl_opts['http_code'];
+    }
     return $returnValue;
 }
 
 
-function s4wp_activate() 
+function s4wp_activate()
 {
 
     // Check to see if we have  environment variables. If not, bail. If so, create the initial options.
@@ -111,7 +122,9 @@ function s4wp_activate()
          wp_die($errMessage);
     }
 
-    if ($errorMessage = s4wp_submit_schema()) {
+    $schemaSubmit = s4wp_submit_schema();
+
+    if (strpos($schemaSubmit, 'Error')) {
         wp_die('Submitting the schema failed with the message ' . $errorMessage);
     }
     $options = s4wp_initalize_options();
@@ -126,9 +139,9 @@ function s4wp_sanity_check()
     $wp_version  = get_bloginfo('version');
 
     if (getenv('PANTHEON_INDEX_HOST')===false) {
-        $returnValue = __( 'Before you can activate this plugin, you must first activate Solr in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' ); 
+        $returnValue = __( 'Before you can activate this plugin, you must first activate Solr in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' );
     } else if (version_compare($wp_version, '3.0', '<')) {
-        $returnValue = __( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' ); 
+        $returnValue = __( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' );
     }
 
     return $returnValue;
@@ -190,8 +203,8 @@ function s4wp_get_solr() {
 
 
     # double check everything has been set
-    if (!($solarium_config['endpoint']['localhost']['host'] and 
-          $solarium_config['endpoint']['localhost']['port'] and 
+    if (!($solarium_config['endpoint']['localhost']['host'] and
+          $solarium_config['endpoint']['localhost']['port'] and
           $solarium_config['endpoint']['localhost']['path'])) {
         syslog(LOG_ERR, "host, port or path are empty, host:$host, port:$port, path:$path");
         return NULL;
@@ -231,10 +244,10 @@ function s4wp_compute_path()
 
 function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $doc, $post_info, $domain = NULL, $path = NULL) {
     $plugin_s4wp_settings = s4wp_get_option();
-    $exclude_ids          = $plugin_s4wp_settings['s4wp_exclude_pages'];
+    $exclude_ids          = explode(',', $plugin_s4wp_settings['s4wp_exclude_pages']);
     $categoy_as_taxonomy  = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
     $index_comments       = $plugin_s4wp_settings['s4wp_index_comments'];
-    $index_custom_fields  = $plugin_s4wp_settings['s4wp_index_custom_fields'];
+    $index_custom_fields  = explode(',',$plugin_s4wp_settings['s4wp_index_custom_fields']);
 
     if ($post_info) {
 
@@ -285,8 +298,8 @@ function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $
         $doc->setField('title', $post_info->post_title);
         $doc->setField('content', strip_tags($post_info->post_content));
         $doc->setField('numcomments', $numcomments);
-        $doc->setField('author', $auth_info->display_name);
-        $doc->setField('author_s', get_author_posts_url($auth_info->ID, $auth_info->user_nicename));
+        if(isset($auth_info->display_name)) { $doc->setField('author', $auth_info->display_name); }
+        if(isset($auth_info->user_nicename)) { $doc->setField('author_s', get_author_posts_url($auth_info->ID, $auth_info->user_nicename)); }
         $doc->setField('type', $post_info->post_type);
         $doc->setField('date', s4wp_format_date($post_info->post_date_gmt));
         $doc->setField('modified', s4wp_format_date($post_info->post_modified_gmt));
@@ -327,17 +340,21 @@ function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $
 
         if (count($index_custom_fields) > 0 && count($custom_fields = get_post_custom($post_info->ID))) {
             foreach ((array) $index_custom_fields as $field_name) {
+              // test a php error notice.
+              if(isset($custom_fields[$field_name])) {
                 $field = (array) $custom_fields[$field_name];
                 foreach ($field as $key => $value) {
                     $doc->addField($field_name . '_str', $value);
                     $doc->addField($field_name . '_srch', $value);
                 }
+              }
             }
         }
     } else {
         // this will fire during blog sign up on multisite, not sure why
         _e('Post Information is NULL', 'solr4wp');
     }
+
     return $doc;
 }
 
@@ -357,8 +374,11 @@ function s4wp_post($documents, $commit = TRUE, $optimize = FALSE) {
             if ($documents) {
                 syslog(LOG_INFO, "posting " . count($documents) . " documents for blog:" . get_bloginfo('wpurl'));
                 $update->addDocuments($documents);
+            } else {
+              syslog(LOG_INFO, "posting failed documents for blog:" . get_bloginfo('wpurl'));
             }
-
+            // print_r($update);
+            // exit;
             if ($commit) {
                 syslog(LOG_INFO, "telling Solr to commit");
                 $update->addCommit();
@@ -369,13 +389,13 @@ function s4wp_post($documents, $commit = TRUE, $optimize = FALSE) {
                 $update = $solr->createUpdate();
                 $update->addOptimize();
                 $solr->update($update);
+                syslog(LOG_INFO, "Optimizing: " . get_bloginfo('wpurl'));
             }
         } else {
             syslog(LOG_ERR, "failed to get a solr instance created");
         }
     } catch (Exception $e) {
         syslog(LOG_INFO, "ERROR: " . $e->getMessage());
-        //echo $e->getMessage();
     }
 }
 
@@ -416,7 +436,7 @@ function s4wp_delete_all() {
             $solr->update($update);
         }
     } catch (Exception $e) {
-        echo $e->getMessage();
+      echo $e->getMessage();
     }
 }
 
@@ -443,7 +463,7 @@ function s4wp_load_blog_all($blogid) {
     $bloginfo = get_blog_details($blogid, FALSE);
 
     if ($bloginfo->public && !$bloginfo->archived && !$bloginfo->spam && !$bloginfo->deleted) {
-        $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$blogid}_posts WHERE post_status = 'publish';");
+        $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$blogid}_posts WHERE post_type = 'post' and post_status = 'publish';");
 
         $solr = s4wp_get_solr();
         $update = $solr->createUpdate();
@@ -467,29 +487,40 @@ function s4wp_load_blog_all($blogid) {
 
 function s4wp_handle_modified($post_id) {
     global $current_blog;
+    // $valid_posts = array("article","authors","magazineissue","page");
     $post_info = get_post($post_id);
-    $plugin_s4wp_settings = s4wp_get_option();
-    $index_pages = $plugin_s4wp_settings['s4wp_index_pages'];
-    $index_posts = $plugin_s4wp_settings['s4wp_index_posts'];
-
-    s4wp_handle_status_change($post_id, $post_info);
-
-    if (($index_pages && $post_info->post_type == 'page') || ($index_posts && $post_info->post_type == 'post')) {
-
-        # make sure this blog is not private or a spam if indexing on a multisite install
-        if (is_multisite() && ($current_blog->public != 1 || $current_blog->spam == 1 || $current_blog->archived == 1)) {
-            return;
-        }
-
-        $docs = array();
-        $solr = s4wp_get_solr();
-        $update = $solr->createUpdate();
-        $doc = s4wp_build_document($update->createDocument(), $post_info);
-        if ($doc) {
-            $docs[] = $doc;
-            s4wp_post($docs);
-        }
-    }
+    // print_r($post_info->post_type);
+    // exit;
+    // if(in_array($post_info->post_type,$valid_posts))
+    // {
+         $plugin_s4wp_settings = s4wp_get_option();
+         $index_pages = $plugin_s4wp_settings['s4wp_index_pages'];
+         $index_posts = $plugin_s4wp_settings['s4wp_index_posts'];
+         s4wp_handle_status_change($post_id, $post_info);
+         if($post_info->post_type == 'revision') {
+           return;
+         }
+         $index_posts = $plugin_s4wp_settings['s4wp_index_posts'];
+         s4wp_handle_status_change($post_id, $post_info);
+         if($post_info->post_type == 'revision') {
+           return;
+         }
+         # make sure this blog is not private or a spam if indexing on a multisite install
+             if (is_multisite() && ($current_blog->public != 1 || $current_blog->spam == 1 || $current_blog->archived == 1)) {
+                 return;
+             }
+             $docs = array();
+             $solr = s4wp_get_solr();
+             $update = $solr->createUpdate();
+             $doc = s4wp_build_document($update->createDocument(), $post_info);
+             // print_r($doc);
+             // exit;
+             if ($doc) {
+                 $docs[] = $doc;
+                 s4wp_post($docs);
+             }
+    // }
+    return;
 }
 
 function s4wp_handle_status_change($post_id, $post_info = null) {
@@ -503,7 +534,7 @@ function s4wp_handle_status_change($post_id, $post_info = null) {
     $private_page = $plugin_s4wp_settings['s4wp_private_page'];
     $private_post = $plugin_s4wp_settings['s4wp_private_post'];
 
-    if (($private_page && $post_info->post_type == 'page') || ($private_post && $post_info->post_type == 'post')) {
+
         /**
          * We need to check if the status of the post has changed.
          * Inline edits won't have the prev_status of original_post_status,
@@ -519,7 +550,7 @@ function s4wp_handle_status_change($post_id, $post_info = null) {
                 s4wp_delete($post_info->ID);
             }
         }
-    }
+
 }
 
 function s4wp_handle_delete($post_id) {
@@ -529,13 +560,13 @@ function s4wp_handle_delete($post_id) {
     $delete_page = $plugin_s4wp_settings['s4wp_delete_page'];
     $delete_post = $plugin_s4wp_settings['s4wp_delete_post'];
 
-    if (($delete_page && $post_info->post_type == 'page') || ($delete_post && $post_info->post_type == 'post')) {
+
         if (is_multisite()) {
             s4wp_delete($current_blog->domain . $current_blog->path . $post_info->ID);
         } else {
             s4wp_delete($post_info->ID);
         }
-    }
+
 }
 
 function s4wp_handle_deactivate_blog($blogid) {
@@ -574,19 +605,19 @@ function s4wp_handle_new_blog($blogid) {
     s4wp_load_blog_all($blogid);
 }
 
-function s4wp_load_all_posts($prev) {
+function s4wp_load_all_posts($prev, $post_type = 'post') {
     global $wpdb, $current_blog, $current_site;
     $documents = array();
     $cnt = 0;
-    $batchsize = 250;
+    $batchsize = 500;
     $last = "";
     $found = FALSE;
     $end = FALSE;
     $percent = 0;
     //multisite logic is decided s4wp_get_option
     $plugin_s4wp_settings = s4wp_get_option();
-    $blog_id = $blog->blog_id;
-    if ($plugin_s4wp_settings['s4wp_index_all_sites']) {
+    if(isset($blog)) { $blog_id = $blog->blog_id; }
+    if (isset($plugin_s4wp_settings['s4wp_index_all_sites'])) {
 
         // there is potential for this to run for an extended period of time, depending on the # of blgos
         syslog(LOG_ERR, "starting batch import, setting max execution time to unlimited");
@@ -598,7 +629,7 @@ function s4wp_load_all_posts($prev) {
         syslog(LOG_INFO, "pushing posts from " . count($bloglist) . " blogs into Solr");
         foreach ($bloglist as $bloginfo) {
 
-            // for each blog we need to import we get their id 
+            // for each blog we need to import we get their id
             // and tell wordpress to switch to that blog
             $blog_id = trim($bloginfo);
             syslog(LOG_INFO, "switching to blogid $blog_id");
@@ -612,7 +643,7 @@ function s4wp_load_all_posts($prev) {
             switch_to_blog($blog_id);
 
             // now we actually gather the blog posts
-            $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$bloginfo}_posts WHERE post_status = 'publish' AND post_type = 'post' ORDER BY ID;");
+            $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$bloginfo}_posts WHERE post_status = 'publish' AND post_type = '".$post_type."' ORDER BY ID;");
             $postcount = count($postids);
             syslog(LOG_INFO, "building $postcount documents for " . substr(get_bloginfo('wpurl'), 7));
             for ($idx = 0; $idx < $postcount; $idx++) {
@@ -659,7 +690,8 @@ function s4wp_load_all_posts($prev) {
         // done importing so lets switch back to the proper blog id
         restore_current_blog();
     } else {
-        $posts = $wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'post' ORDER BY ID;");
+
+        $posts = $wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = '".$post_type."' ORDER BY ID;");
         $postcount = count($posts);
         for ($idx = 0; $idx < $postcount; $idx++) {
             $postid = $posts[$idx]->ID;
@@ -694,97 +726,9 @@ function s4wp_load_all_posts($prev) {
     }
 
     if ($end) {
-        s4wp_post(FALSE, TRUE, FALSE);
-        printf("{\"type\": \"post\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, $percent);
+        printf("{\"type\": \"".$post_type."\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100);
     } else {
-        printf("{\"type\": \"post\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent);
-    }
-}
-
-function s4wp_load_all_pages($prev) {
-    global $wpdb;
-    $documents = array();
-    $cnt = 0;
-    $batchsize = 100;
-    $last = "";
-    $found = FALSE;
-    $end = FALSE;
-    $percent = 0;
-    $plugin_s4wp_settings = s4wp_get_option();
-    if ($plugin_s4wp_settings['s4wp_index_all_sites']) {
-        $bloglist = $wpdb->get_col("SELECT * FROM {$wpdb->base_prefix}blogs", 0);
-        foreach ($bloglist as $bloginfo) {
-            $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$bloginfo->blog_id}_posts WHERE post_status = 'publish' AND post_type = 'page' ORDER BY ID;");
-            $postcount = count($postids);
-            for ($idx = 0; $idx < $postcount; $idx++) {
-                $postid = $postids[$idx]->ID;
-                $last = $postid;
-                $percent = (floatval($idx) / floatval($postcount)) * 100;
-                if ($prev && !$found) {
-                    if ($postid === $prev) {
-                        $found = TRUE;
-                    }
-
-                    continue;
-                }
-
-                if ($idx === $postcount - 1) {
-                    $end = TRUE;
-                }
-
-                $solr = s4wp_get_solr();
-                $update = $solr->createUpdate();
-                $documents[] = s4wp_build_document($update->createDocument(), get_blog_post($bloginfo->blog_id, $postid), $bloginfo->domain, $bloginfo->path);
-                $cnt++;
-                if ($cnt == $batchsize) {
-                    s4wp_post($documents, true, FALSE);
-                    $cnt = 0;
-                    $documents = array();
-                    break;
-                }
-            }
-        }
-    } else {
-        $pages = $wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = 'page' ORDER BY ID;");
-        $pagecount = count($pages);
-        for ($idx = 0; $idx < $pagecount; $idx++) {
-            $pageid = $pages[$idx]->ID;
-            $last = $pageid;
-            $percent = (floatval($idx) / floatval($pagecount)) * 100;
-            if ($prev && !$found) {
-                if ($pageid === $prev) {
-                    $found = TRUE;
-                }
-
-                continue;
-            }
-
-            if ($idx === $pagecount - 1) {
-                $end = TRUE;
-            }
-
-            $solr = s4wp_get_solr();
-            $update = $solr->createUpdate();
-            $documents[] = s4wp_build_document($update->createDocument(), get_post($pageid));
-            $cnt++;
-            if ($cnt == $batchsize) {
-                s4wp_post($documents, true, FALSE);
-                $cnt = 0;
-                $documents = array();
-                break;
-            }
-        }
-    }
-
-    if ($documents) {
-        s4wp_post($documents, true, FALSE);
-    }
-
-    if ($end) {
-        s4wp_post(FALSE, TRUE, FALSE);
-        printf("{\"type\": \"page\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, $percent);
-    } else {
-        printf("{\"type\": \"page\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent);
+        printf("{\"type\": \"".$post_type."\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent);
     }
 }
 
@@ -811,13 +755,13 @@ function s4wp_search_form() {
     if ($server) {
         $serverval = '<input name="server" type="hidden" value="' . $server . '" />';
     }
-    $form = __('<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="s" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">Sort By:</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">Order By:</label><select name="order" id="orderselect">%s</select>%s</form>');
+    $form = __('<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="ssearch" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">Sort By:</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">Order By:</label><select name="order" id="orderselect">%s</select>%s</form>');
 
-    printf($form, filter_input(INPUT_GET,'s',FILTER_SANITIZE_STRING), $sortval, $orderval, $serverval);
+    printf($form, filter_input(INPUT_GET,'ssearch',FILTER_SANITIZE_STRING), $sortval, $orderval, $serverval);
 }
 
 function s4wp_search_results() {
-    $qry    = filter_input(INPUT_GET,'s',FILTER_SANITIZE_STRING);
+    $qry    = filter_input(INPUT_GET,'ssearch',FILTER_SANITIZE_STRING);
     $offset = filter_input(INPUT_GET,'offset',FILTER_SANITIZE_STRING);
     $count  = filter_input(INPUT_GET,'count',FILTER_SANITIZE_STRING);
     $fq     = filter_input(INPUT_GET,'fq',FILTER_SANITIZE_STRING);
@@ -832,13 +776,21 @@ function s4wp_search_results() {
     $output_facets       = $plugin_s4wp_settings['s4wp_output_facets'];
     $results_per_page    = $plugin_s4wp_settings['s4wp_num_results'];
     $categoy_as_taxonomy = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
-    
-    $out = array();
 
-    if (!$qry) {
+    $out = array();
+    $out['hits'] = "0";
+
+    $qry = html_entity_decode($qry);
+    $qry = trim($qry,'"');
+    $qry = trim($qry,"'");
+     if (!$qry) {
         $qry = '';
     }
-    //if server value has been set lets set it up here 
+    global $wpdb;
+    //Sql Injection Prevention
+    $qry = $wpdb->_real_escape( trim($qry) );
+    //print_r($qry);
+    //if server value has been set lets set it up here
     // and add it to all the search urls henceforth
     $serverval = isset($server)?('&server=' . $server):'';
 
@@ -872,7 +824,7 @@ function s4wp_search_results() {
     $selectedfacets = array();
 
     foreach ($fqitms as $fqitem) {
-        if ($fqitem) {
+        if ($fqitem && $fqitem !=='any') {
             $splititm = explode(':', $fqitem);
             $selectedfacet = array();
             $selectedfacet['name'] = sprintf(__("%s:%s"), ucwords(preg_replace('/_str$/i', '', $splititm[0])), str_replace("^^", "/", $splititm[1]));
@@ -885,9 +837,9 @@ function s4wp_search_results() {
             }
 
             if ($removelink) {
-                $selectedfacet['removelink'] = htmlspecialchars(sprintf(__("?s=%s&fq=%s"), urlencode($qry), $removelink));
+                $selectedfacet['removelink'] = htmlspecialchars(sprintf(__("?ssearch=%s&fq=%s"), urlencode($qry), $removelink));
             } else {
-                $selectedfacet['removelink'] = htmlspecialchars(sprintf(__("?s=%s"), urlencode($qry)));
+                $selectedfacet['removelink'] = htmlspecialchars(sprintf(__("?ssearch=%s"), urlencode($qry)));
             }
             //if server is set add it on the end of the url
             $selectedfacet['removelink'] .=$serverval;
@@ -898,7 +850,9 @@ function s4wp_search_results() {
         }
     }
 
+
     if ($qry) {
+
         $results = s4wp_query($qry, $offset, $count, $fqitms, $sortby, $order, $server);
 
         if ($results) {
@@ -930,13 +884,13 @@ function s4wp_search_results() {
                         $pageritm = array();
                         $pageritm['page'] = sprintf(__("%d"), $pagenum);
                         if (!isset($sortby) || $sortby == "") {
-                            $pagersortby = "score";
+                            $pagersortby = "date";
                             $pagerorder = "desc";
                         } else {
                             $pagersortby = $sortby;
                             $pagerorder = $order;
                         }
-                        $pagerlink = sprintf(__("?s=%s&offset=%d&count=%d&sort=%s&order=%s"), urlencode($qry), $offsetnum, $count, $pagersortby, $pagerorder);
+                        $pagerlink = sprintf(__("?ssearch=%s&offset=%d&count=%d&sort=%s&order=%s"), urlencode($qry), $offsetnum, $count, $pagersortby, $pagerorder);
                         if ($fqstr) {
                             $pagerlink .= '&fq=' . $fqstr;
                         }
@@ -982,7 +936,7 @@ function s4wp_search_results() {
                             foreach ($facet as $facetval => $facetcnt) {
                                 $facetitm = array();
                                 $facetitm['count'] = sprintf(__("%d"), $facetcnt);
-                                $facetitm['link'] = htmlspecialchars(sprintf(__('?s=%s&fq=%s:%s%s', 'solr4wp'), urlencode($qry), $facetfield, urlencode('"' . $facetval . '"'), $fqstr));
+                                $facetitm['link'] = htmlspecialchars(sprintf(__('?ssearch=%s&fq=%s:%s%s', 'solr4wp'), urlencode($qry), $facetfield, urlencode('"' . $facetval . '"'), $fqstr));
                                 //if server is set add it on the end of the url
                                 $facetitm['link'] .=$serverval;
                                 $facetitm['name'] = $facetval;
@@ -1008,8 +962,8 @@ function s4wp_search_results() {
                     $docid      = strval($doc['id']);
                     $resultinfo['permalink']   = $doc['permalink'];
                     $resultinfo['title']       = $doc['title'];
-                    $resultinfo['author']      = $doc['author'];
-                    $resultinfo['authorlink']  = htmlspecialchars($doc['author_s']);
+                    if(isset($doc['author'])) { $resultinfo['author'] = $doc['author']; }
+                    if(isset($doc['author_s'])) { $resultinfo['authorlink']  = htmlspecialchars($doc['author_s']); }
                     $resultinfo['numcomments'] = $doc['numcomments'];
                     $resultinfo['date']        = $doc['displaydate'];
 
@@ -1024,7 +978,7 @@ function s4wp_search_results() {
 
                     $docteaser = $teasers[$docid];
                     $docteaser = $docteaser->getFields();
-                    
+
                     if ($docteaser) {
                         $resultinfo['teaser'] = sprintf(__("...%s..."), implode("...", $docteaser['content']));
                     } else {
@@ -1050,14 +1004,14 @@ function s4wp_search_results() {
     $out['sortby']      = $sortby;
     $out['order']       = $order;
     $out['sorting']     = array(
-        'scoreasc'     => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=score&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'scoredesc'    => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=score&order=desc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'dateasc'      => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=date&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'datedesc'     => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=date&order=desc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'modifiedasc'  => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=modified&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'modifieddesc' => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=modified&order=desc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'commentsasc'  => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=numcomments&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
-        'commentsdesc' => htmlspecialchars(sprintf('?s=%s&fq=%s&sort=numcomments&order=desc%s', urlencode($qry), stripslashes($fq), $serverval))
+        'scoreasc'     => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=score&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'scoredesc'    => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=score&order=desc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'dateasc'      => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=date&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'datedesc'     => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=date&order=desc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'modifiedasc'  => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=modified&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'modifieddesc' => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=modified&order=desc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'commentsasc'  => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=numcomments&order=asc%s', urlencode($qry), stripslashes($fq), $serverval)),
+        'commentsdesc' => htmlspecialchars(sprintf('?ssearch=%s&fq=%s&sort=numcomments&order=desc%s', urlencode($qry), stripslashes($fq), $serverval))
     );
     return $out;
 }
@@ -1090,7 +1044,7 @@ function s4wp_get_output_taxo($facet, $taxo, $prefix, $fqstr, $field) {
             $facetvars = $facet->getValues();
             $facetitm = array();
             $facetitm['count'] = sprintf(__("%d"), $facetvars[$newprefix]);
-            $facetitm['link'] = htmlspecialchars(sprintf(__('?s=%s&fq=%s:%s%s', 'solr4wp'), $qry, $field, urlencode('"' . $newprefix . '"'), $fqstr));
+            $facetitm['link'] = htmlspecialchars(sprintf(__('?ssearch=%s&fq=%s:%s%s', 'solr4wp'), $qry, $field, urlencode('"' . $newprefix . '"'), $fqstr));
             $facetitm['name'] = $taxoname;
             $outitms = s4wp_get_output_taxo($facet, $taxoval, $newprefix, $fqstr, $field);
             if ($outitms) {
@@ -1133,7 +1087,9 @@ function s4wp_query($qry, $offset, $count, $fq, $sortby, $order, $server = 'mast
         $function = 's4wp_master_query';
     }
 
+
     return $function($solr, $qry, $offset, $count, $fq, $sortby, $order, $plugin_s4wp_settings);
+
 }
 
 function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings) {
@@ -1186,12 +1142,12 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
         if ($sortby != "") {
             $select['sort'] = array($sortby => $order);
         }
+        else
+        {
+          $select['sort'] = array('date' => 'desc');
+        }
 
         $query = $solr->createSelect($select);
-
-        $dismax = $query->getDisMax();
-        $dismax->setQueryFields('tagssrch^5 title^10 categoriessrch^5 content^3.5 comments^1.5');
-        $dismax->setPhraseFields('title^15 text^10');
 
         $facetSet = $query->getFacetSet();
         foreach ($facet_fields as $facet_field) {
@@ -1202,26 +1158,30 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
             $facetSet->setLimit($number_of_tags);
         }
 
-        foreach ($fq as $filter) {
-            if ($filter !== "") {
-                $query->createFilterQuery($filter)->setQuery($filter);
-            }
+      if(isset($fq)) {
+          foreach ($fq as $filter) {
+              if ($filter !== "") {
+                  $query->createFilterQuery($filter)->setQuery($filter);
+              }
+          }
         }
-
-        //$hl = $query->getHighlighting();
+		//$hl = $query->getHighlighting();
         $query->getHighlighting()->setFields('content');
         $query->getHighlighting()->setSimplePrefix('<b>');
         $query->getHighlighting()->setSimplePostfix('</b>');
-        $query->getHighlighting()->setSnippets('5');
-        $query->getHighlighting()->setFragsize('50');
+        $query->getHighlighting()->setHighlightMultiTerm(true);
 
+        if(isset($plugin_s4wp_settings['s4wp_default_operator']))
+		{
+		$query->setQueryDefaultOperator($plugin_s4wp_settings['s4wp_default_operator']);
+		}
         try {
             $response = $solr->select($query);
             if (!$response->getResponse()->getStatusCode() == 200) {
                 $response = NULL;
             }
         } catch (Exception $e) {
-            syslog(LOG_ERR, "failed to query solr for " . print_r($qry, true));
+            syslog(LOG_ERR, "failed to query solr. ".$e->getMessage());
             $response = NULL;
         }
     }
@@ -1230,21 +1190,21 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
 }
 
 function s4wp_options_init() {
-
+    error_reporting(E_ERROR);
+    ini_set('display_errors', false);
     $method = (isset($_POST['method'])?$_POST['method']:''); // Totally guessing as to the default
     if ($method === "load") {
         $type = $_POST['type'];
         $prev = $_POST['prev'];
-
-        if ($type === 'post') {
-            s4wp_load_all_posts($prev);
-            exit;
-        } else if ($type === 'page') {
-            s4wp_load_all_pages($prev);
+        if(isset($type)) {
+            s4wp_load_all_posts($prev, $_POST['type']);
             exit;
         } else {
             return;
         }
+    } else {
+      // $var = var_dump($_POST);
+      return;
     }
     register_setting('s4w-options-group', 'plugin_s4wp_settings', 's4wp_sanitise_options');
 }
@@ -1351,7 +1311,7 @@ function s4wp_options_page() {
 }
 
 function s4wp_admin_head() {
-    // include our default css 
+    // include our default css
     if (file_exists(dirname(__FILE__) . '/template/search.css')) {
         printf(__("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"screen\" />\n"), plugins_url('/template/search.css', __FILE__));
     }
@@ -1376,14 +1336,22 @@ function s4wp_admin_head() {
 
 
         function doLoad($type, $prev) {
-            if ($prev == null) {
-                $j.post("options-general.php?page=" . plugin_dir_path( __FILE__ ) . "solr-for-wordpress-on-pantheon.php", {method: "load", type: $type}, handleResults, "json");
-            } else {
-                $j.post("options-general.php?page=" . plugin_dir_path( __FILE__ ) . "solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: $prev}, handleResults, "json");
-            }
+            $j.post("options-general.php?page=solr-for-wordpress-on-pantheon/solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: $prev}, function(response) {
+                  var data = JSON.parse(response);
+                  $j('#percentspan').text(data.percent + "%");
+                  if (!data.end) {
+                      doLoad(data.type, data.last);
+                  } else {
+                      $j('#percentspan').remove();
+                      enableAll();
+                  }
+            		});
+
+               // handleResults, "json");
         }
 
         function handleResults(data) {
+
             $j('#percentspan').text(data.percent + "%");
             if (!data.end) {
                 doLoad(data.type, data.last);
@@ -1394,21 +1362,24 @@ function s4wp_admin_head() {
         }
 
         function disableAll() {
-            $j('[name=s4wp_postload]').attr('disabled', 'disabled');
+          <?php $postTypes = s4wp_get_post_types(); foreach($postTypes as $postType) { ?>
+            $j('[name=s4wp_postload_<?php echo $postType->post_type ?>]').attr('disabled', 'disabled');
+          <?php } ?>
             $j('[name=s4wp_deleteall]').attr('disabled', 'disabled');
             $j('[name=s4wp_init_blogs]').attr('disabled', 'disabled');
             $j('[name=s4wp_optimize]').attr('disabled', 'disabled');
-            $j('[name=s4wp_pageload]').attr('disabled', 'disabled');
             $j('[name=s4wp_ping]').attr('disabled', 'disabled');
             $j('#settingsbutton').attr('disabled', 'disabled');
         }
-
         function enableAll() {
+          <?php $postTypes = s4wp_get_post_types(); foreach($postTypes as $postType) { ?>
+            $j('[name=s4wp_postload_<?php echo $postType->post_type ?>]').removeAttr('disabled');
+          <?php } ?>
             $j('[name=s4wp_postload]').removeAttr('disabled');
             $j('[name=s4wp_deleteall]').removeAttr('disabled');
             $j('[name=s4wp_init_blogs]').removeAttr('disabled');
             $j('[name=s4wp_optimize]').removeAttr('disabled');
-            $j('[name=s4wp_pageload]').removeAttr('disabled');
+           // $j('[name=s4wp_pageload]').removeAttr('disabled');
             $j('[name=s4wp_ping]').removeAttr('disabled');
             $j('#settingsbutton').removeAttr('disabled');
         }
@@ -1416,27 +1387,28 @@ function s4wp_admin_head() {
         $percentspan = '<span style="font-size:1.2em;font-weight:bold;margin:20px;padding:20px" id="percentspan">0%</span>';
 
         $j(document).ready(function() {
-            switch1();
-            $j('[name=s4wp_postload]').click(function() {
+          switch1();
+        <?php $postTypes = s4wp_get_post_types(); foreach($postTypes as $postType) { ?>
+            $j('.s4wp_postload_<?php echo $postType->post_type ?>').click(function() {
                 $j(this).after($percentspan);
                 disableAll();
-                doLoad("post", null);
-                $j(this).preventDefault();
+                doLoad("<?php echo $postType->post_type ?>", 0);
             });
-
-            $j('[name=s4wp_pageload]').click(function() {
+            $j('.s4wp_pageload_<?php echo $postType->post_type ?>').click(function() {
                 $j(this).after($percentspan);
                 disableAll();
-                doLoad("page", null);
-                $j(this).preventDefault();
+                doLoad("<?php echo $postType->post_type ?>", 0);
             });
-        });
+        <?php
+        }
+        ?>
+      });
 
     </script> <?php
 }
 
 function s4wp_default_head() {
-    // include our default css 
+    // include our default css
     if (file_exists(dirname(__FILE__) . '/template/search.css')) {
         printf(__("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"screen\" />\n"), plugins_url('/template/search.css', __FILE__));
     }
@@ -1453,7 +1425,7 @@ function s4wp_autosuggest_head() {
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             $("#s").suggest("?method=autocomplete", {});
-            $("#qrybox").suggest("?method=autocomplete", {});
+            $("#search-value").suggest("?method=autocomplete", {});
         });
     </script>
     <?php
@@ -1464,7 +1436,7 @@ function s4wp_template_redirect() {
 
     // not a search page; don't do anything and return
     // thanks to the Better Search plugin for the idea:  http://wordpress.org/extend/plugins/better-search/
-    $search = stripos($_SERVER['REQUEST_URI'], '?s=');
+    $search = stripos($_SERVER['REQUEST_URI'], '?ssearch=');
     $autocomplete = stripos($_SERVER['REQUEST_URI'], '?method=autocomplete');
 
     if (($search || $autocomplete) == FALSE) {
@@ -1538,18 +1510,18 @@ class s4wp_MLTWidget extends WP_Widget {
         if ((!is_single() && !is_page()) || !$solr) {
             return;
         }
-        
+
         $query = $solr->createSelect();
         $query->setQuery('permalink:' . solr_escape(get_permalink()))->
                 getMoreLikeThis()->
                 setFields('title,content');
-        
+
         $response = $solr->select($query);
-        
+
         if (!$response->getResponse()->getStatusCode() == 200) {
             return;
         }
-        
+
         echo $before_widget;
         if ($title)
             echo $before_title . $title . $after_title;
@@ -1676,7 +1648,7 @@ function s4wp_initalize_options()
     $options['s4wp_output_pager']           = 1;
     $options['s4wp_output_facets']          = 1;
     $options['s4wp_exclude_pages']          = array();
-    $options['s4wp_exclude_pages']          = '';  
+    $options['s4wp_exclude_pages']          = '';
     $options['s4wp_num_results']            = 5;
     $options['s4wp_cat_as_taxo']            = 1;
     $options['s4wp_solr_initialized']       = 1;
@@ -1690,10 +1662,11 @@ function s4wp_initalize_options()
     $options['s4wp_connect_type']           = 'solr';
     $options['s4wp_index_custom_fields']    = array();
     $options['s4wp_facet_on_custom_fields'] = array();
-    $options['s4wp_index_custom_fields']    = '';  
-    $options['s4wp_facet_on_custom_fields'] = '';  
-    
-    return $options;    
+    $options['s4wp_index_custom_fields']    = '';
+    $options['s4wp_facet_on_custom_fields'] = '';
+    $options['s4wp_default_operator'] = 'OR';
+
+    return $options;
 }
 
 
@@ -1702,11 +1675,16 @@ function s4wp_plugin_settings_link( $links, $file ) {
         return $links;
     }
 
-    array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=' . plugin_dir_path( __FILE__ ) . 'solr-for-wordpress-on-pantheon.php">' . __( 'Settings', 's4wp' ) . '</a>' );
+    array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-for-wordpress-on-pantheon/solr-for-wordpress-on-pantheon.php">' . __( 'Settings', 's4wp' ) . '</a>' );
 
     return $links;
 }
 
+function s4wp_get_post_types() {
+  global $wpdb;
+  $postTypes = $wpdb->get_results("Select distinct post_type from {$wpdb->base_prefix}posts WHERE post_status = 'publish' AND post_type NOT IN ('nav_menu_item', 'revision');");
+  return $postTypes;
+}
 
 add_action('template_redirect', 's4wp_template_redirect', 1);
 add_action('publish_post', 's4wp_handle_modified');
@@ -1717,7 +1695,7 @@ add_action('admin_menu', 's4wp_add_pages');
 add_action('admin_init', 's4wp_options_init');
 add_action('widgets_init', 's4wp_mlt_widget');
 add_action('wp_head', 's4wp_autosuggest_head');
-add_action('admin_head', 's4wp_admin_head');
+add_action('admin_head', 's4wp_admin_head'); // In theory the AJAX functionality.
 add_filter( 'plugin_action_links', 's4wp_plugin_settings_link', 10, 2 );
 
 if (is_multisite()) {
