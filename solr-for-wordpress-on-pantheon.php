@@ -1290,7 +1290,7 @@ function s4wp_add_pages() {
     }
 
     if ($addpage) {
-        add_options_page('Solr Options', 'Solr Options', 'manage_options', 'pantheon-solr', 's4wp_options_page');
+        add_options_page('Solr Options', 'Solr Options', 'manage_options', __FILE__, 's4wp_options_page');
     }
 }
 
