@@ -1290,7 +1290,7 @@ function s4wp_add_pages() {
     }
 
     if ($addpage) {
-        add_options_page('Solr Options', 'Solr Options', 'manage_options', 'pantheon-solr', 's4wp_options_page');
+        add_options_page('Solr Options', 'Solr Options', 'manage_options', __FILE__, 's4wp_options_page');
     }
 }
 
@@ -1538,7 +1538,7 @@ function s4wp_apply_config_to_blog($blogid) {
 
 function s4wp_initalize_options()
 {
-    $options = [];
+    $options = array();
 
     $options['s4wp_index_pages']            = 1;
     $options['s4wp_index_posts']            = 1;
@@ -1577,7 +1577,7 @@ function s4wp_plugin_settings_link( $links, $file ) {
         return $links;
     }
 
-    array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-for-wordpress-on-pantheon/solr-for-wordpress-on-pantheon.php">' . __( 'Settings', 's4wp' ) . '</a>' );
+    array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-for-wordpress/solr-for-wordpress-on-pantheon.php">' . __( 'Settings', 's4wp' ) . '</a>' );
 
     return $links;
 }
