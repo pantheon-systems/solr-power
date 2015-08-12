@@ -27,10 +27,11 @@ Using this plugin currently requires that **you are a developer**. You will need
 
 To begin, install the plugin as per normal. If you are installing on Pantheon, you will need to [enable the Apache Solr add-on](https://pantheon.io/docs/articles/sites/apache-solr) before you can enable the plugin.
 
+Also, if you are running on Pantheon, you will need to use the plugin's administrative UI to post in your `schema.xml` file. The default which is included with the plugin is a good place to start, but you are free to experiment with your own modifications. You must post the schema in each environment to finish initializing the index. If you're not seeing content going in, it's likely because your schema hasn't yet been posted. You can ignore this if you are running your own Solr infrastructure.
+
 1. Index your existing content by going to the plugin options screen and clicking "index content".
-2. Replace the core search widget with the one from this plugin.
-3. Content will now be indexed automatically by cron.
-4. See the examples/templates directories for interface implementation starters.
+2. New content will now be indexed automatically by cron.
+3. See the examples/templates directories for interface implementation starters.
 
 This plugin is under active development, so please create issues [on GitHub](https://github.com/pantheon-systems/solr-for-wordpress) for any bugs you encounter.
 
