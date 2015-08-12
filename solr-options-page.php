@@ -36,11 +36,6 @@ if ($s4wp_settings['s4wp_solr_initialized'] != 1) {
 
   $options = s4wp_initalize_options();
   $options['s4wp_index_all_sites'] = 0;
-  //$options['s4wp_server']['info']['single'] = array('host'=>'localhost','port'=>8983, 'path'=>'/solr');
-  //$options['s4wp_server']['info']['master'] = array('host'=>'localhost','port'=>8983, 'path'=>'/solr');
-  //$options['s4wp_server']['type']['search'] = 'master';
-  //$options['s4wp_server']['type']['update'] = 'master';
-
 
   //update existing settings from multiple option record to a single array
   //if old options exist, update to new system
@@ -105,19 +100,7 @@ if (isset($_POST['action']) and $_POST['action'] == 'update') {
     $value = stripslashes_deep($value);
     $s4wp_settings[$option] = $value;
   }
-  // if we are in single server mode set the server types to master
-  // and configure the master server to the values of the single server
-  //if ($s4wp_settings['s4wp_connect_type'] =='solr_single'){
-  //  $s4wp_settings['s4wp_server']['info']['master']= $s4wp_settings['s4wp_server']['info']['single'];
-  //  $s4wp_settings['s4wp_server']['type']['search'] = 'master';
-  //  $s4wp_settings['s4wp_server']['type']['update'] = 'master';
-  //}
-  // if this is a multi server setup we steal the master settings
-  // and stuff them into the single server settings in case the user
-  // decides to change it later
-  //else {
-  //  $s4wp_settings['s4wp_server']['info']['single']= $s4wp_settings['s4wp_server']['info']['master'];
-  //}
+  
   //lets save our options array
   s4wp_update_option($s4wp_settings);
 
@@ -170,7 +153,7 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
     s4wp_delete_all();
     $output = s4wp_submit_schema();
 ?>
-    <div id="message" class="updated fade"><p><strong><?php _e('All Indexed Pages Deleted!<br />'.$output, 'solr4wp') ?></strong></p></div>
+    <div id="message" class="updated fade"><p><strong><?php _e('All Indexed Pages Deleted!<br />'.esc_html($output), 'solr4wp') ?></strong></p></div>
 <?php
 }  else if (isset($_POST['s4wp_optimize']) and $_POST['s4wp_optimize']) {
     s4wp_optimize();
@@ -180,16 +163,15 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
 } else if (isset($_POST['s4wp_init_blogs']) and $_POST['s4wp_init_blogs']) {
     s4wp_copy_config_to_all_blogs();
 } else if(isset($_POST['s4wp_query']) && $_POST['solrQuery']) {
-  // function s4wp_query($qry, $offset, $count, $fq, $sortby, $order, $server = 'master') {
+
   $qry      = filter_input(INPUT_POST,'solrQuery',FILTER_SANITIZE_STRING);
-  // print_r($qry);
   $offset   = null;
   $count    = null;
   $fq       = null;
   $sortby   = null;
   $order    = null;
   $results  = s4wp_query($qry, $offset, $count, $fq, $sortby, $order);
-  // print_r($results);
+
   if(isset($results)) {
     $plugin_s4wp_settings = s4wp_get_option();
     $output_info  = $plugin_s4wp_settings['s4wp_output_info'];
@@ -207,9 +189,9 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
     $data = $results;
   }
   ?>
-  <div id="message" class="updated fade"><p><strong>Solr Results for string "<?php echo $qry; ?>":</strong>
-    <br />Hits:<?php echo $out['hits']; ?>
-    <br />Query Time:<?php echo $out['qtime']; ?>
+  <div id="message" class="updated fade"><p><strong>Solr Results for string "<?php echo esc_html($qry); ?>":</strong>
+    <br />Hits:<?php echo esc_html($out['hits']); ?>
+    <br />Query Time:<?php echo esc_html($out['qtime']); ?>
     </p></div>
 <?php
 }
@@ -220,14 +202,14 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
 <div class="wrap">
 <h2><?php _e('Solr For WordPress', 'solr4wp') ?></h2>
 
-<form method="post" action="options-general.php?page=solr-for-wordpress-on-pantheon/solr-for-wordpress-on-pantheon.php">
+<form method="post" action="options-general.php?page=pantheon-solr">
 <h3><?php _e('Configure Solr', 'solr4wp') ?></h3>
 <?php // @todo add the rest of the discovered info here. ?>
 
 <pre>
-Solr Server IP address : <?php echo getenv('PANTHEON_INDEX_HOST'); ?><br />
-Solr Server Port       : <?php echo getenv('PANTHEON_INDEX_PORT'); ?><br />
-Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
+Solr Server IP address : <?php echo esc_html(getenv('PANTHEON_INDEX_HOST')); ?><br />
+Solr Server Port       : <?php echo esc_html(getenv('PANTHEON_INDEX_PORT')); ?><br />
+Solr Server Path       : <?php echo esc_html(s4wp_compute_path()); ?><br />
 </pre>
 <hr />
 <h3><?php _e('Indexing Options', 'solr4wp') ?></h3>
@@ -320,7 +302,7 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
 
     <tr valign="top">
         <th scope="row"><?php _e('Custom fields as Facet (comma separated ordered names list)') ?></th>
-        <td><input type="text" name="settings[s4wp_facet_on_custom_fields]" value="<?php print($s4wp_settings['s4wp_facet_on_custom_fields']); ?>" /></td>
+        <td><input type="text" name="settings[s4wp_facet_on_custom_fields]" value="<?php print(esc_attr($s4wp_settings['s4wp_facet_on_custom_fields'])); ?>" /></td>
     </tr>
 
     <tr valign="top">
@@ -344,7 +326,7 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
 
     <tr valign="top" style="display: none; ">
         <th scope="row"><?php _e('Max Number of Tags to Display', 'solr4wp') ?></th>
-        <td><input type="text" name="settings[s4wp_max_display_tags]" value="<?php _e($s4wp_settings['s4wp_max_display_tags'], 'solr4wp'); ?>" /></td>
+        <td><input type="text" name="settings[s4wp_max_display_tags]" value="<?php _e(esc_attr($s4wp_settings['s4wp_max_display_tags']), 'solr4wp'); ?>" /></td>
     </tr>
 </table>
 <hr />
@@ -359,7 +341,7 @@ Solr Server Path       : <?php echo s4wp_compute_path(); ?><br />
 </form>
 <hr />
 <?php
-$action = 'options-general.php?page=solr-for-wordpress-on-pantheon/solr-for-wordpress-on-pantheon.php';
+$action = 'options-general.php?page=pantheon-solr';
 ?>
 <form method="post" action="<?php echo $action; ?>" -->
 <h3><?php _e('Actions', 'solr4wp') ?></h3>
@@ -413,8 +395,8 @@ $action = 'options-general.php?page=solr-for-wordpress-on-pantheon/solr-for-word
   foreach($postTypes as $postType) {
 ?>
 <tr valign="top">
-    <th scope="row"><?php _e('Load All '.$postType->post_type.'(s)', 'solr4wp') ?></th>
-    <td><input type="button" class="button-primary s4wp_postload_<?php print($postType->post_type); ?>" name="s4wp_postload_<?php print($postType->post_type); ?>" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
+    <th scope="row"><?php _e('Load All '.esc_html($postType->post_type).'(s)', 'solr4wp') ?></th>
+    <td><input type="button" class="button-primary s4wp_postload_<?php print(esc_attr($postType->post_type)); ?>" name="s4wp_postload_<?php print(esc_attr($postType->post_type)); ?>" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
 </tr>
 <?php } ?>
 </table>

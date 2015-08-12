@@ -258,7 +258,6 @@ function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $
             return NULL;
         }
 
-        //$doc = new Apache_Solr_Document();
         $auth_info = get_userdata($post_info->post_author);
 
         # wpmu specific info
@@ -377,8 +376,7 @@ function s4wp_post($documents, $commit = TRUE, $optimize = FALSE) {
             } else {
               syslog(LOG_INFO, "posting failed documents for blog:" . get_bloginfo('wpurl'));
             }
-            // print_r($update);
-            // exit;
+
             if ($commit) {
                 syslog(LOG_INFO, "telling Solr to commit");
                 $update->addCommit();
@@ -436,7 +434,7 @@ function s4wp_delete_all() {
             $solr->update($update);
         }
     } catch (Exception $e) {
-      echo $e->getMessage();
+      echo esc_html($e->getMessage());
     }
 }
 
@@ -450,7 +448,7 @@ function s4wp_delete_blog($blogid) {
             $solr->update($update);
         }
     } catch (Exception $e) {
-        echo $e->getMessage();
+        echo esc_html($e->getMessage());
     }
 }
 
@@ -463,7 +461,8 @@ function s4wp_load_blog_all($blogid) {
     $bloginfo = get_blog_details($blogid, FALSE);
 
     if ($bloginfo->public && !$bloginfo->archived && !$bloginfo->spam && !$bloginfo->deleted) {
-        $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$blogid}_posts WHERE post_type = 'post' and post_status = 'publish';");
+		$query=$wpdb->prepare("SELECT ID FROM %s WHERE post_type = 'post' and post_status = 'publish';",$wpdb->base_prefix . $blogid . '_posts');
+        $postids = $wpdb->get_results($query);
 
         $solr = s4wp_get_solr();
         $update = $solr->createUpdate();
@@ -487,12 +486,9 @@ function s4wp_load_blog_all($blogid) {
 
 function s4wp_handle_modified($post_id) {
     global $current_blog;
-    // $valid_posts = array("article","authors","magazineissue","page");
+ 
     $post_info = get_post($post_id);
-    // print_r($post_info->post_type);
-    // exit;
-    // if(in_array($post_info->post_type,$valid_posts))
-    // {
+
          $plugin_s4wp_settings = s4wp_get_option();
          $index_pages = $plugin_s4wp_settings['s4wp_index_pages'];
          $index_posts = $plugin_s4wp_settings['s4wp_index_posts'];
@@ -513,13 +509,12 @@ function s4wp_handle_modified($post_id) {
              $solr = s4wp_get_solr();
              $update = $solr->createUpdate();
              $doc = s4wp_build_document($update->createDocument(), $post_info);
-             // print_r($doc);
-             // exit;
+
              if ($doc) {
                  $docs[] = $doc;
                  s4wp_post($docs);
              }
-    // }
+
     return;
 }
 
@@ -643,8 +638,9 @@ function s4wp_load_all_posts($prev, $post_type = 'post') {
             switch_to_blog($blog_id);
 
             // now we actually gather the blog posts
-            $postids = $wpdb->get_results("SELECT ID FROM {$wpdb->base_prefix}{$bloginfo}_posts WHERE post_status = 'publish' AND post_type = '".$post_type."' ORDER BY ID;");
-            $postcount = count($postids);
+			$query		 = $wpdb->prepare( "SELECT ID FROM %s WHERE post_status = 'publish' AND post_type = '%s' ORDER BY ID;", $wpdb->base_prefix . $bloginfo . '_posts', $post_type );
+			$postids	 = $wpdb->get_results( $query );
+			$postcount = count($postids);
             syslog(LOG_INFO, "building $postcount documents for " . substr(get_bloginfo('wpurl'), 7));
             for ($idx = 0; $idx < $postcount; $idx++) {
 
@@ -690,8 +686,8 @@ function s4wp_load_all_posts($prev, $post_type = 'post') {
         // done importing so lets switch back to the proper blog id
         restore_current_blog();
     } else {
-
-        $posts = $wpdb->get_results("SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = '".$post_type."' ORDER BY ID;");
+		$query=$wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = '%s' ORDER BY ID;",$post_type);
+        $posts = $wpdb->get_results($query);
         $postcount = count($posts);
         for ($idx = 0; $idx < $postcount; $idx++) {
             $postid = $posts[$idx]->ID;
@@ -789,7 +785,7 @@ function s4wp_search_results() {
     global $wpdb;
     //Sql Injection Prevention
     $qry = $wpdb->_real_escape( trim($qry) );
-    //print_r($qry);
+
     //if server value has been set lets set it up here
     // and add it to all the search urls henceforth
     $serverval = isset($server)?('&server=' . $server):'';
@@ -1132,7 +1128,6 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
 
     if ($solr) {
         $select = array(
-            //'handler' => 'spell',
             'query' => $qry,
             'fields' => '*,score',
             'start' => $offset,
@@ -1165,7 +1160,6 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
               }
           }
         }
-		//$hl = $query->getHighlighting();
         $query->getHighlighting()->setFields('content');
         $query->getHighlighting()->setSimplePrefix('<b>');
         $query->getHighlighting()->setSimplePostfix('</b>');
@@ -1188,24 +1182,28 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
 
     return $response;
 }
+/**
+ * AJAX Callback
+ *
+ */
+function s4wp_options_load() {
+	check_ajax_referer( 'solr_security', 'security' );
+	$method = filter_input( INPUT_POST, 'method', FILTER_SANITIZE_STRING );
+	if ( $method === "load" ) {
+		$type	 = filter_input( INPUT_POST, 'type', FILTER_SANITIZE_STRING );
+		$prev	 = filter_input( INPUT_POST, 'prev', FILTER_SANITIZE_STRING );
+		if ( isset( $type ) ) {
+			s4wp_load_all_posts( $prev, $type );
+			die();
+		}
+	}
+	die();
+}
 
 function s4wp_options_init() {
     error_reporting(E_ERROR);
     ini_set('display_errors', false);
-    $method = (isset($_POST['method'])?$_POST['method']:''); // Totally guessing as to the default
-    if ($method === "load") {
-        $type = $_POST['type'];
-        $prev = $_POST['prev'];
-        if(isset($type)) {
-            s4wp_load_all_posts($prev, $_POST['type']);
-            exit;
-        } else {
-            return;
-        }
-    } else {
-      // $var = var_dump($_POST);
-      return;
-    }
+    
     register_setting('s4w-options-group', 'plugin_s4wp_settings', 's4wp_sanitise_options');
 }
 
@@ -1215,12 +1213,6 @@ function s4wp_options_init() {
  * @return $options sanitised values
  */
 function s4wp_sanitise_options($options) {
-    //$options['s4wp_solr_host'] = wp_filter_nohtml_kses($options['s4wp_solr_host']);
-    //$options['s4wp_solr_port'] = absint($options['s4wp_solr_port']);
-    //$options['s4wp_solr_path'] = wp_filter_nohtml_kses($options['s4wp_solr_path']);
-    //$options['s4wp_solr_update_host'] = wp_filter_nohtml_kses($options['s4wp_solr_update_host']);
-    //$options['s4wp_solr_update_port'] = absint($options['s4wp_solr_update_port']);
-    //$options['s4wp_solr_update_path'] = wp_filter_nohtml_kses($options['s4wp_solr_update_path']);
     $options['s4wp_index_pages'] = absint($options['s4wp_index_pages']);
     $options['s4wp_index_posts'] = absint($options['s4wp_index_posts']);
     $options['s4wp_index_comments'] = absint($options['s4wp_index_comments']);
@@ -1298,7 +1290,7 @@ function s4wp_add_pages() {
     }
 
     if ($addpage) {
-        add_options_page('Solr Options', 'Solr Options', 'manage_options', __FILE__, 's4wp_options_page');
+        add_options_page('Solr Options', 'Solr Options', 'manage_options', 'pantheon-solr', 's4wp_options_page');
     }
 }
 
@@ -1312,106 +1304,23 @@ function s4wp_options_page() {
 
 function s4wp_admin_head() {
     // include our default css
-    if (file_exists(dirname(__FILE__) . '/template/search.css')) {
-        printf(__("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"screen\" />\n"), plugins_url('/template/search.css', __FILE__));
-    }
-    ?>
-    <script type="text/javascript">
-        var $j = jQuery.noConflict();
-
-        function switch1() {
-            if ($j('#solrconnect_single').is(':checked')) {
-                $j('#solr_admin_tab2').css('display', 'block');
-                $j('#solr_admin_tab2_btn').addClass('solr_admin_on');
-                $j('#solr_admin_tab3').css('display', 'none');
-                $j('#solr_admin_tab3_btn').removeClass('solr_admin_on');
-            }
-            if ($j('#solrconnect_separated').is(':checked')) {
-                $j('#solr_admin_tab2').css('display', 'none');
-                $j('#solr_admin_tab2_btn').removeClass('solr_admin_on');
-                $j('#solr_admin_tab3').css('display', 'block');
-                $j('#solr_admin_tab3_btn').addClass('solr_admin_on');
-            }
-        }
-
-
-        function doLoad($type, $prev) {
-            $j.post("options-general.php?page=solr-for-wordpress-on-pantheon/solr-for-wordpress-on-pantheon.php", {method: "load", type: $type, prev: $prev}, function(response) {
-                  var data = JSON.parse(response);
-                  $j('#percentspan').text(data.percent + "%");
-                  if (!data.end) {
-                      doLoad(data.type, data.last);
-                  } else {
-                      $j('#percentspan').remove();
-                      enableAll();
-                  }
-            		});
-
-               // handleResults, "json");
-        }
-
-        function handleResults(data) {
-
-            $j('#percentspan').text(data.percent + "%");
-            if (!data.end) {
-                doLoad(data.type, data.last);
-            } else {
-                $j('#percentspan').remove();
-                enableAll();
-            }
-        }
-
-        function disableAll() {
-          <?php $postTypes = s4wp_get_post_types(); foreach($postTypes as $postType) { ?>
-            $j('[name=s4wp_postload_<?php echo $postType->post_type ?>]').attr('disabled', 'disabled');
-          <?php } ?>
-            $j('[name=s4wp_deleteall]').attr('disabled', 'disabled');
-            $j('[name=s4wp_init_blogs]').attr('disabled', 'disabled');
-            $j('[name=s4wp_optimize]').attr('disabled', 'disabled');
-            $j('[name=s4wp_ping]').attr('disabled', 'disabled');
-            $j('#settingsbutton').attr('disabled', 'disabled');
-        }
-        function enableAll() {
-          <?php $postTypes = s4wp_get_post_types(); foreach($postTypes as $postType) { ?>
-            $j('[name=s4wp_postload_<?php echo $postType->post_type ?>]').removeAttr('disabled');
-          <?php } ?>
-            $j('[name=s4wp_postload]').removeAttr('disabled');
-            $j('[name=s4wp_deleteall]').removeAttr('disabled');
-            $j('[name=s4wp_init_blogs]').removeAttr('disabled');
-            $j('[name=s4wp_optimize]').removeAttr('disabled');
-           // $j('[name=s4wp_pageload]').removeAttr('disabled');
-            $j('[name=s4wp_ping]').removeAttr('disabled');
-            $j('#settingsbutton').removeAttr('disabled');
-        }
-
-        $percentspan = '<span style="font-size:1.2em;font-weight:bold;margin:20px;padding:20px" id="percentspan">0%</span>';
-
-        $j(document).ready(function() {
-          switch1();
-        <?php $postTypes = s4wp_get_post_types(); foreach($postTypes as $postType) { ?>
-            $j('.s4wp_postload_<?php echo $postType->post_type ?>').click(function() {
-                $j(this).after($percentspan);
-                disableAll();
-                doLoad("<?php echo $postType->post_type ?>", 0);
-            });
-            $j('.s4wp_pageload_<?php echo $postType->post_type ?>').click(function() {
-                $j(this).after($percentspan);
-                disableAll();
-                doLoad("<?php echo $postType->post_type ?>", 0);
-            });
-        <?php
-        }
-        ?>
-      });
-
-    </script> <?php
+   if (file_exists(dirname(__FILE__) . '/template/search.css')) {
+		wp_enqueue_style( 'solr-search', plugins_url('/template/search.css', __FILE__));
+   }
+	wp_enqueue_script( 'solr-js', plugins_url('/template/script.js', __FILE__), false );
+	$solr_js = array(
+		'ajax_url'		 => admin_url( 'admin-ajax.php' ),
+		'post_types' => s4wp_get_post_types(),
+		'security'	 => wp_create_nonce( "solr_security" )
+	);
+	wp_localize_script( 'solr-js', 'solr', $solr_js );
 }
 
 function s4wp_default_head() {
     // include our default css
     if (file_exists(dirname(__FILE__) . '/template/search.css')) {
-        printf(__("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"screen\" />\n"), plugins_url('/template/search.css', __FILE__));
-    }
+		wp_enqueue_style( 'solr-search', plugins_url('/template/search.css', __FILE__));
+	}
 }
 
 /*
@@ -1419,16 +1328,9 @@ function s4wp_default_head() {
  */
 function s4wp_autosuggest_head() {
     if (file_exists(dirname(__FILE__) . '/template/autocomplete.css')) {
-        printf(__("<link rel=\"stylesheet\" href=\"%s\" type=\"text/css\" media=\"screen\" />\n"), plugins_url('/template/autocomplete.css', __FILE__));
-    }
-    ?>
-    <script type="text/javascript">
-        jQuery(document).ready(function($) {
-            $("#s").suggest("?method=autocomplete", {});
-            $("#search-value").suggest("?method=autocomplete", {});
-        });
-    </script>
-    <?php
+        wp_enqueue_style( 'solr-autocomplete', plugins_url('/template/autocomplete.css', __FILE__));
+	}
+	wp_enqueue_script( 'solr-suggest', plugins_url('/template/autocomplete.js', __FILE__), false );
 }
 
 function s4wp_template_redirect() {
@@ -1534,7 +1436,7 @@ class s4wp_MLTWidget extends WP_Widget {
                 if ($showauthor) {
                     $author = " by {$doc->author}";
                 }
-                echo "<li><a href=\"{$doc->permalink}\" title=\"{$doc->title}\">{$doc->title}</a>{$author}</li>";
+                echo "<li><a href=\"" . esc_url($doc->permalink) . "\" title=\"" . esc_attr($doc->title) . "\">" .  esc_html($doc->title) . "</a>" . esc_html($author) . "</li>";
             }
             echo "</ul>";
         }
@@ -1560,16 +1462,16 @@ class s4wp_MLTWidget extends WP_Widget {
         $showauthor = $instance['showauthor'] ? 'checked="checked"' : '';
         ?>
         <p>
-            <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label>
-            <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
+            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php _e('Title:'); ?></label>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id('count'); ?>"><?php _e('Count:'); ?></label>
-            <input class="widefat" id="<?php echo $this->get_field_id('count'); ?>" name="<?php echo $this->get_field_name('count'); ?>" type="text" value="<?php echo esc_attr($count); ?>" />
+            <label for="<?php echo esc_attr($this->get_field_id('count')); ?>"><?php _e('Count:'); ?></label>
+            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('count')); ?>" name="<?php echo esc_attr($this->get_field_name('count')); ?>" type="text" value="<?php echo esc_attr($count); ?>" />
         </p>
         <p>
-            <label for="<?php echo $this->get_field_id('showauthor'); ?>"><?php _e('Show Author?:'); ?></label>
-            <input class="checkbox" type="checkbox" <?php echo $showauthor; ?> id="<?php echo $this->get_field_id('showauthor'); ?>" name="<?php echo $this->get_field_name('showauthor'); ?>" />
+            <label for="<?php echo esc_attr($this->get_field_id('showauthor')); ?>"><?php _e('Show Author?:'); ?></label>
+            <input class="checkbox" type="checkbox" <?php echo $showauthor; ?> id="<?php echo esc_attr($this->get_field_id('showauthor')); ?>" name="<?php echo esc_attr($this->get_field_name('showauthor')); ?>" />
         </p>
         <?php
     }
@@ -1694,9 +1596,10 @@ add_action('delete_post', 's4wp_handle_delete');
 add_action('admin_menu', 's4wp_add_pages');
 add_action('admin_init', 's4wp_options_init');
 add_action('widgets_init', 's4wp_mlt_widget');
-add_action('wp_head', 's4wp_autosuggest_head');
-add_action('admin_head', 's4wp_admin_head'); // In theory the AJAX functionality.
+add_action('wp_enqueue_scripts', 's4wp_autosuggest_head');
+add_action('admin_enqueue_scripts', 's4wp_admin_head'); 
 add_filter( 'plugin_action_links', 's4wp_plugin_settings_link', 10, 2 );
+add_action('wp_ajax_solr_options','s4wp_options_load');
 
 if (is_multisite()) {
     add_action('deactivate_blog', 's4wp_handle_deactivate_blog');
