@@ -1,11 +1,12 @@
 # Solr Search for WordPress #
-**Contributors:** getpantheon, Outlandish Josh, mattweber, palepurple
-**Tags:** search
-**Requires at least:** 4.2
-**Tested up to:** 4.2
-**Stable tag:** 4.3
-**License:** GPLv2 or later
-**License URI:** http://www.gnu.org/licenses/gpl-2.0.html
+
+**Contributors:** getpantheon, Outlandish Josh, mattweber, palepurple, allen23  
+**Tags:** search  
+**Requires at least:** 4.2  
+**Tested up to:** 4.2  
+**Stable tag:** trunk  
+**License:** GPLv2 or later  
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
 Improve your user experience with the Apache Solr search engine for your WordPress website.
 
@@ -22,29 +23,35 @@ Search is critical for your site, but the default search for WordPress leaves a 
 
 ## Installation ##
 
-First install the plugin as per normal. If you are installing on Pantheon, you will need to enable the Apache Solr add-on before you can enable the plugin.
+Using this plugin currently requires that **you are a developer**. You will need to do template work to implement the user-interface for your search. An example is included, but you should expect to spend some time crafting the experience. 
+
+To begin, install the plugin as per normal. If you are installing on Pantheon, you will need to [enable the Apache Solr add-on](https://pantheon.io/docs/articles/sites/apache-solr) before you can enable the plugin.
 
 1. Index your existing content by going to the plugin options screen and clicking "index content".
 2. Replace the core search widget with the one from this plugin.
-3. Search on!
-4. See the examples/templates directories for more rich implementation guidelines.
+3. Content will now be indexed automatically by cron.
+4. See the examples/templates directories for interface implementation starters.
+
+This plugin is under active development, so please create issues [on GitHub](https://github.com/pantheon-systems/solr-for-wordpress) for any bugs you encounter.
+
+## Roadmap ##
+
+We are working towards a more complete set of functionality. If you have interested in working on these features, get in touch:
+
+* Out-of-the-box search UI implementation: main search plus a widget.
+* Improved administrative UI that breaks up configuration from debugging, etc.
+* Reporting tools in the admin UI: current state of the index/etc.
+* Developer documentation on using Solr as an alternative backend for `WP_Query()` calls in general.
 
 ## Screenshots ##
 
-###1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from###
-[missing image]
-
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-###2. This is the second screen shot###
-[missing image]
-
+* None Yet
 
 ## Changelog ##
 
 ### 0.1 ###
-* Initial alpha release.
+
+* Initial developer release to GitHub.
 
 
 ### 0.0 ###
