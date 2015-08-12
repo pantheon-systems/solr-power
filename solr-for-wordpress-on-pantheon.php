@@ -1577,7 +1577,7 @@ function s4wp_plugin_settings_link( $links, $file ) {
         return $links;
     }
 
-    array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-for-wordpress-on-pantheon/solr-for-wordpress-on-pantheon.php">' . __( 'Settings', 's4wp' ) . '</a>' );
+    array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-for-wordpress/solr-for-wordpress-on-pantheon.php">' . __( 'Settings', 's4wp' ) . '</a>' );
 
     return $links;
 }
