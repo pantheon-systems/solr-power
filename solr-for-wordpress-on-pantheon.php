@@ -1538,7 +1538,7 @@ function s4wp_apply_config_to_blog($blogid) {
 
 function s4wp_initalize_options()
 {
-    $options = [];
+    $options = array();
 
     $options['s4wp_index_pages']            = 1;
     $options['s4wp_index_posts']            = 1;
