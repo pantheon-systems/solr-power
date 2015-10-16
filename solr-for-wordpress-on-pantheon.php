@@ -484,39 +484,7 @@ function s4wp_load_blog_all($blogid) {
     }
 }
 
-function s4wp_handle_modified($post_id) {
-    global $current_blog;
- 
-    $post_info = get_post($post_id);
 
-         $plugin_s4wp_settings = s4wp_get_option();
-         $index_pages = $plugin_s4wp_settings['s4wp_index_pages'];
-         $index_posts = $plugin_s4wp_settings['s4wp_index_posts'];
-         s4wp_handle_status_change($post_id, $post_info);
-         if($post_info->post_type == 'revision') {
-           return;
-         }
-         $index_posts = $plugin_s4wp_settings['s4wp_index_posts'];
-         s4wp_handle_status_change($post_id, $post_info);
-         if($post_info->post_type == 'revision') {
-           return;
-         }
-         # make sure this blog is not private or a spam if indexing on a multisite install
-             if (is_multisite() && ($current_blog->public != 1 || $current_blog->spam == 1 || $current_blog->archived == 1)) {
-                 return;
-             }
-             $docs = array();
-             $solr = s4wp_get_solr();
-             $update = $solr->createUpdate();
-             $doc = s4wp_build_document($update->createDocument(), $post_info);
-
-             if ($doc) {
-                 $docs[] = $doc;
-                 s4wp_post($docs);
-             }
-
-    return;
-}
 
 function s4wp_handle_status_change($post_id, $post_info = null) {
     global $current_blog;
@@ -548,21 +516,7 @@ function s4wp_handle_status_change($post_id, $post_info = null) {
 
 }
 
-function s4wp_handle_delete($post_id) {
-    global $current_blog;
-    $post_info = get_post($post_id);
-    $plugin_s4wp_settings = s4wp_get_option();
-    $delete_page = $plugin_s4wp_settings['s4wp_delete_page'];
-    $delete_post = $plugin_s4wp_settings['s4wp_delete_post'];
 
-
-        if (is_multisite()) {
-            s4wp_delete($current_blog->domain . $current_blog->path . $post_info->ID);
-        } else {
-            s4wp_delete($post_info->ID);
-        }
-
-}
 
 function s4wp_handle_deactivate_blog($blogid) {
     s4wp_delete_blog($blogid);
@@ -1200,12 +1154,7 @@ function s4wp_options_load() {
 	die();
 }
 
-function s4wp_options_init() {
-    error_reporting(E_ERROR);
-    ini_set('display_errors', false);
-    
-    register_setting('s4w-options-group', 'plugin_s4wp_settings', 's4wp_sanitise_options');
-}
+
 
 /**
  * Sanitises the options values
@@ -1276,31 +1225,9 @@ function s4wp_filter_list2str($input) {
     return $outval;
 }
 
-function s4wp_add_pages() {
-    $addpage = FALSE;
 
-    if (is_multisite() && is_site_admin()) {
-        $plugin_s4wp_settings = s4wp_get_option();
-        $indexall = $plugin_s4wp_settings['s4wp_index_all_sites'];
-        if (($indexall && is_main_blog()) || !$indexall) {
-            $addpage = TRUE;
-        }
-    } else if (!is_multisite() && is_admin()) {
-        $addpage = TRUE;
-    }
 
-    if ($addpage) {
-        add_options_page('Solr Options', 'Solr Options', 'manage_options', __FILE__, 's4wp_options_page');
-    }
-}
 
-function s4wp_options_page() {
-    if (file_exists(dirname(__FILE__) . '/solr-options-page.php')) {
-        include( dirname(__FILE__) . '/solr-options-page.php' );
-    } else {
-        _e("<p>Couldn't locate the options page.</p>", 'solr4wp');
-    }
-}
 
 function s4wp_admin_head() {
     // include our default css
@@ -1380,103 +1307,13 @@ function solr_escape($value)
 }
 
 
-function s4wp_mlt_widget() {
-    register_widget('s4wp_MLTWidget');
-}
+
 
 
 /*
  * This probably needs to be in a seperate file.
  */
-class s4wp_MLTWidget extends WP_Widget {
 
-    function s4wp_MLTWidget() {
-        $widget_ops = array('classname' => 'widget_s4wp_mlt', 'description' => __("Displays a list of pages similar to the page being viewed"));
-        $this->WP_Widget('mlt', __('Similar'), $widget_ops);
-    }
-
-    function widget($args, $instance) {
-
-        extract($args);
-        $title = apply_filters('widget_title', empty($instance['title']) ? __('Similar') : $instance['title']);
-        $count = empty($instance['count']) ? 5 : $instance['count'];
-        if (!is_numeric($count)) {
-            $count = 5;
-        }
-
-        $showauthor = $instance['showauthor'];
-
-        $solr = s4wp_get_solr();
-        $response = NULL;
-
-        if ((!is_single() && !is_page()) || !$solr) {
-            return;
-        }
-
-        $query = $solr->createSelect();
-        $query->setQuery('permalink:' . solr_escape(get_permalink()))->
-                getMoreLikeThis()->
-                setFields('title,content');
-
-        $response = $solr->select($query);
-
-        if (!$response->getResponse()->getStatusCode() == 200) {
-            return;
-        }
-
-        echo $before_widget;
-        if ($title)
-            echo $before_title . $title . $after_title;
-
-        $mltresults = $response->moreLikeThis;
-        foreach ($mltresults as $mltresult) {
-            $docs = $mltresult->docs;
-            echo "<ul>";
-            foreach ($docs as $doc) {
-                if ($showauthor) {
-                    $author = " by {$doc->author}";
-                }
-                echo "<li><a href=\"" . esc_url($doc->permalink) . "\" title=\"" . esc_attr($doc->title) . "\">" .  esc_html($doc->title) . "</a>" . esc_html($author) . "</li>";
-            }
-            echo "</ul>";
-        }
-
-        echo $after_widget;
-    }
-
-    function update($new_instance, $old_instance) {
-        $instance = $old_instance;
-        $new_instance = wp_parse_args((array) $new_instance, array('title' => '', 'count' => 5, 'showauthor' => 0));
-        $instance['title'] = strip_tags($new_instance['title']);
-        $cnt = strip_tags($new_instance['count']);
-        $instance['count'] = is_numeric($cnt) ? $cnt : 5;
-        $instance['showauthor'] = $new_instance['showauthor'] ? 1 : 0;
-
-        return $instance;
-    }
-
-    function form($instance) {
-        $instance = wp_parse_args((array) $instance, array('title' => '', 'count' => 5, 'showauthor' => 0));
-        $title = strip_tags($instance['title']);
-        $count = strip_tags($instance['count']);
-        $showauthor = $instance['showauthor'] ? 'checked="checked"' : '';
-        ?>
-        <p>
-            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php _e('Title:'); ?></label>
-            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
-        </p>
-        <p>
-            <label for="<?php echo esc_attr($this->get_field_id('count')); ?>"><?php _e('Count:'); ?></label>
-            <input class="widefat" id="<?php echo esc_attr($this->get_field_id('count')); ?>" name="<?php echo esc_attr($this->get_field_name('count')); ?>" type="text" value="<?php echo esc_attr($count); ?>" />
-        </p>
-        <p>
-            <label for="<?php echo esc_attr($this->get_field_id('showauthor')); ?>"><?php _e('Show Author?:'); ?></label>
-            <input class="checkbox" type="checkbox" <?php echo $showauthor; ?> id="<?php echo esc_attr($this->get_field_id('showauthor')); ?>" name="<?php echo esc_attr($this->get_field_name('showauthor')); ?>" />
-        </p>
-        <?php
-    }
-
-}
 
 function s4wp_autocomplete($q, $limit) {
     $solr = s4wp_get_solr();
@@ -1588,26 +1425,4 @@ function s4wp_get_post_types() {
   return $postTypes;
 }
 
-add_action('template_redirect', 's4wp_template_redirect', 1);
-add_action('publish_post', 's4wp_handle_modified');
-add_action('publish_page', 's4wp_handle_modified');
-add_action('save_post', 's4wp_handle_modified');
-add_action('delete_post', 's4wp_handle_delete');
-add_action('admin_menu', 's4wp_add_pages');
-add_action('admin_init', 's4wp_options_init');
-add_action('widgets_init', 's4wp_mlt_widget');
-add_action('wp_enqueue_scripts', 's4wp_autosuggest_head');
-add_action('admin_enqueue_scripts', 's4wp_admin_head'); 
-add_filter( 'plugin_action_links', 's4wp_plugin_settings_link', 10, 2 );
-add_action('wp_ajax_solr_options','s4wp_options_load');
 
-if (is_multisite()) {
-    add_action('deactivate_blog', 's4wp_handle_deactivate_blog');
-    add_action('activate_blog', 's4wp_handle_activate_blog');
-    add_action('archive_blog', 's4wp_handle_archive_blog');
-    add_action('unarchive_blog', 's4wp_handle_unarchive_blog');
-    add_action('make_spam_blog', 's4wp_handle_spam_blog');
-    add_action('unspam_blog', 's4wp_handle_unspam_blog');
-    add_action('delete_blog', 's4wp_handle_delete_blog');
-    add_action('wpmu_new_blog', 's4wp_handle_new_blog');
-}
