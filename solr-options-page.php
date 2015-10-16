@@ -202,7 +202,7 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
 <div class="wrap">
 <h2><?php _e('Solr For WordPress', 'solr4wp') ?></h2>
 
-<form method="post" action="options-general.php?page=solr-for-wordpress/solr-for-wordpress-on-pantheon.php">
+<form method="post" action="options-general.php?page=solr-for-wordpress-on-pantheon">
 <h3><?php _e('Configure Solr', 'solr4wp') ?></h3>
 <?php // @todo add the rest of the discovered info here. ?>
 
@@ -341,7 +341,7 @@ Solr Server Path       : <?php echo esc_html(s4wp_compute_path()); ?><br />
 </form>
 <hr />
 <?php
-$action = 'options-general.php?page=pantheon-solr';
+$action = 'options-general.php?page=solr-for-wordpress-on-pantheon';
 ?>
 <form method="post" action="<?php echo $action; ?>" -->
 <h3><?php _e('Actions', 'solr4wp') ?></h3>
