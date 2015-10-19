@@ -139,9 +139,9 @@ function s4wp_sanity_check()
     $wp_version  = get_bloginfo('version');
 
     if (getenv('PANTHEON_INDEX_HOST')===false && !defined( 'SOLR_ACTIVATED')) {
-        $returnValue = __( 'Before you can activate this plugin, you must first activate Solr in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' );
+        $returnValue = __( 'Before you can activate this plugin, you must first activate Solr in your Pantheon Dashboard.', 'solr-power' );
     } else if (version_compare($wp_version, '3.0', '<')) {
-        $returnValue = __( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' );
+        $returnValue = __( 'This plugin requires WordPress 3.0 or greater.', 'solr-power' );
     }
 
     return $returnValue;
@@ -1290,7 +1290,7 @@ function s4wp_add_pages() {
     }
 
     if ($addpage) {
-        add_options_page('Solr Options', 'Solr Options', 'manage_options', 'solr-for-wordpress-on-pantheon', 's4wp_options_page');
+        add_options_page('Solr Options', 'Solr Options', 'manage_options', 'solr-power', 's4wp_options_page');
     }
 }
 
@@ -1577,7 +1577,7 @@ function s4wp_plugin_settings_link( $links, $file ) {
         return $links;
     }
 
-    array_unshift( $links, '<a href="' . admin_url( 'options-general.php' ) . '?page=solr-for-wordpress-on-pantheon">' . __( 'Settings', 's4wp' ) . '</a>' );
+    array_unshift( $links, '<a href="' . admin_url( 'options-general.php' ) . '?page=solr-power">' . __( 'Settings', 's4wp' ) . '</a>' );
 
     return $links;
 }
