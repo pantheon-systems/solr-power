@@ -247,9 +247,11 @@ function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $
     $exclude_ids          = explode(',', $plugin_s4wp_settings['s4wp_exclude_pages']);
     $categoy_as_taxonomy  = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
     $index_comments       = $plugin_s4wp_settings['s4wp_index_comments'];
-    $index_custom_fields  = explode(',',$plugin_s4wp_settings['s4wp_index_custom_fields']);
+	if ( stristr( $plugin_s4wp_settings[ 's4wp_index_custom_fields' ], ',' ) ) {
+		$index_custom_fields = explode( ',', $plugin_s4wp_settings[ 's4wp_index_custom_fields' ] );
+	}
 
-    if ($post_info) {
+	if ($post_info) {
 
         # check if we need to exclude this document
         if (is_multisite() && in_array(substr(site_url(), 7) . $post_info->ID, (array) $exclude_ids)) {
@@ -1201,9 +1203,6 @@ function s4wp_options_load() {
 }
 
 function s4wp_options_init() {
-    error_reporting(E_ERROR);
-    ini_set('display_errors', false);
-    
     register_setting('s4w-options-group', 'plugin_s4wp_settings', 's4wp_sanitise_options');
 }
 
@@ -1253,14 +1252,16 @@ function s4wp_filter_str2list_numeric($input) {
 }
 
 function s4wp_filter_str2list($input) {
+
     $final = array();
-    if ($input != "") {
+    if ($input != "" && !is_array($input)) {
         foreach (explode(',', $input) as $val) {
             $final[] = trim($val);
         }
+		  
     }
-
-    return $final;
+	return $final;
+  
 }
 
 function s4wp_filter_list2str($input) {
@@ -1550,7 +1551,6 @@ function s4wp_initalize_options()
     $options['s4wp_output_pager']           = 1;
     $options['s4wp_output_facets']          = 1;
     $options['s4wp_exclude_pages']          = array();
-    $options['s4wp_exclude_pages']          = '';
     $options['s4wp_num_results']            = 5;
     $options['s4wp_cat_as_taxo']            = 1;
     $options['s4wp_solr_initialized']       = 1;
@@ -1564,8 +1564,6 @@ function s4wp_initalize_options()
     $options['s4wp_connect_type']           = 'solr';
     $options['s4wp_index_custom_fields']    = array();
     $options['s4wp_facet_on_custom_fields'] = array();
-    $options['s4wp_index_custom_fields']    = '';
-    $options['s4wp_facet_on_custom_fields'] = '';
     $options['s4wp_default_operator'] = 'OR';
 
     return $options;
