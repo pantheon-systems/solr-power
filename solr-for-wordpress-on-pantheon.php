@@ -138,10 +138,10 @@ function s4wp_sanity_check()
     $returnValue = '';
     $wp_version  = get_bloginfo('version');
 
-    if (getenv('PANTHEON_INDEX_HOST')===false) {
-        $returnValue = __( 'Before you can activate this plugin, you must first activate Solr in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' );
+    if (getenv('PANTHEON_INDEX_HOST')===false && !defined( 'SOLR_ACTIVATED')) {
+        $returnValue = __( 'Before you can activate this plugin, you must first activate Solr in your Pantheon Dashboard.', 'solr-power' );
     } else if (version_compare($wp_version, '3.0', '<')) {
-        $returnValue = __( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' );
+        $returnValue = __( 'This plugin requires WordPress 3.0 or greater.', 'solr-power' );
     }
 
     return $returnValue;
@@ -244,12 +244,18 @@ function s4wp_compute_path()
 
 function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $doc, $post_info, $domain = NULL, $path = NULL) {
     $plugin_s4wp_settings = s4wp_get_option();
-    $exclude_ids          = explode(',', $plugin_s4wp_settings['s4wp_exclude_pages']);
-    $categoy_as_taxonomy  = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
+	$exclude_ids = $plugin_s4wp_settings[ 's4wp_exclude_pages' ] ;
+	if ( !is_array( $plugin_s4wp_settings[ 's4wp_exclude_pages' ] ) ) {
+		$exclude_ids = explode( ',', $plugin_s4wp_settings[ 's4wp_exclude_pages' ] );
+	}
+	$categoy_as_taxonomy  = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
     $index_comments       = $plugin_s4wp_settings['s4wp_index_comments'];
-    $index_custom_fields  = explode(',',$plugin_s4wp_settings['s4wp_index_custom_fields']);
+	$index_custom_fields = $plugin_s4wp_settings[ 's4wp_index_custom_fields' ];
+	if ( !is_array( $plugin_s4wp_settings[ 's4wp_index_custom_fields' ] ) ) {
+		$index_custom_fields = explode( ',', $plugin_s4wp_settings[ 's4wp_index_custom_fields' ] );
+	}
 
-    if ($post_info) {
+	if ($post_info) {
 
         # check if we need to exclude this document
         if (is_multisite() && in_array(substr(site_url(), 7) . $post_info->ID, (array) $exclude_ids)) {
@@ -612,7 +618,7 @@ function s4wp_load_all_posts($prev, $post_type = 'post') {
     //multisite logic is decided s4wp_get_option
     $plugin_s4wp_settings = s4wp_get_option();
     if(isset($blog)) { $blog_id = $blog->blog_id; }
-    if (isset($plugin_s4wp_settings['s4wp_index_all_sites'])) {
+    if (  is_multisite()) {
 
         // there is potential for this to run for an extended period of time, depending on the # of blgos
         syslog(LOG_ERR, "starting batch import, setting max execution time to unlimited");
@@ -1201,9 +1207,6 @@ function s4wp_options_load() {
 }
 
 function s4wp_options_init() {
-    error_reporting(E_ERROR);
-    ini_set('display_errors', false);
-    
     register_setting('s4w-options-group', 'plugin_s4wp_settings', 's4wp_sanitise_options');
 }
 
@@ -1231,8 +1234,12 @@ function s4wp_sanitise_options($options) {
     $options['s4wp_facet_on_tags'] = absint($options['s4wp_facet_on_tags']);
     $options['s4wp_facet_on_author'] = absint($options['s4wp_facet_on_author']);
     $options['s4wp_facet_on_type'] = absint($options['s4wp_facet_on_type']);
-    $options['s4wp_index_all_sites'] = absint($options['s4wp_index_all_sites']);
-    $options['s4wp_connect_type'] = wp_filter_nohtml_kses($options['s4wp_connect_type']);
+	if ( is_multisite() ) {
+		$options[ 's4wp_index_all_sites' ] = absint( $options[ 's4wp_index_all_sites' ] );
+	} else {
+		unset( $options[ 's4wp_index_all_sites' ] );
+	}
+	$options['s4wp_connect_type'] = wp_filter_nohtml_kses($options['s4wp_connect_type']);
     $options['s4wp_index_custom_fields'] = s4wp_filter_str2list($options['s4wp_index_custom_fields']);
     $options['s4wp_facet_on_custom_fields'] = s4wp_filter_str2list($options['s4wp_facet_on_custom_fields']);
     return $options;
@@ -1253,14 +1260,16 @@ function s4wp_filter_str2list_numeric($input) {
 }
 
 function s4wp_filter_str2list($input) {
+
     $final = array();
-    if ($input != "") {
+    if ($input != "" && !is_array($input)) {
         foreach (explode(',', $input) as $val) {
             $final[] = trim($val);
         }
+		  
     }
-
-    return $final;
+	return $final;
+  
 }
 
 function s4wp_filter_list2str($input) {
@@ -1290,7 +1299,7 @@ function s4wp_add_pages() {
     }
 
     if ($addpage) {
-        add_options_page('Solr Options', 'Solr Options', 'manage_options', __FILE__, 's4wp_options_page');
+        add_options_page('Solr Options', 'Solr Options', 'manage_options', 'solr-power', 's4wp_options_page');
     }
 }
 
@@ -1550,7 +1559,6 @@ function s4wp_initalize_options()
     $options['s4wp_output_pager']           = 1;
     $options['s4wp_output_facets']          = 1;
     $options['s4wp_exclude_pages']          = array();
-    $options['s4wp_exclude_pages']          = '';
     $options['s4wp_num_results']            = 5;
     $options['s4wp_cat_as_taxo']            = 1;
     $options['s4wp_solr_initialized']       = 1;
@@ -1564,8 +1572,6 @@ function s4wp_initalize_options()
     $options['s4wp_connect_type']           = 'solr';
     $options['s4wp_index_custom_fields']    = array();
     $options['s4wp_facet_on_custom_fields'] = array();
-    $options['s4wp_index_custom_fields']    = '';
-    $options['s4wp_facet_on_custom_fields'] = '';
     $options['s4wp_default_operator'] = 'OR';
 
     return $options;
@@ -1577,7 +1583,7 @@ function s4wp_plugin_settings_link( $links, $file ) {
         return $links;
     }
 
-    array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-for-wordpress/solr-for-wordpress-on-pantheon.php">' . __( 'Settings', 's4wp' ) . '</a>' );
+    array_unshift( $links, '<a href="' . admin_url( 'options-general.php' ) . '?page=solr-power">' . __( 'Settings', 's4wp' ) . '</a>' );
 
     return $links;
 }
