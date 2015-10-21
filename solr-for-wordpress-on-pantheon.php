@@ -155,7 +155,9 @@ function s4wp_get_option() {
     if (is_multisite()) {
         $plugin_s4wp_settings = get_site_option($option);
         $indexall = $plugin_s4wp_settings['s4wp_index_all_sites'];
-    }
+    }else{
+		unset($plugin_s4wp_settings['s4wp_index_all_sites']);
+	}
 
     if ($indexall) {
         return get_site_option($option);
@@ -244,10 +246,12 @@ function s4wp_compute_path()
 
 function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $doc, $post_info, $domain = NULL, $path = NULL) {
     $plugin_s4wp_settings = s4wp_get_option();
-    $exclude_ids          = explode(',', $plugin_s4wp_settings['s4wp_exclude_pages']);
-    $categoy_as_taxonomy  = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
+	if ( !is_array( $plugin_s4wp_settings[ 's4wp_exclude_pages' ] ) ) {
+		$exclude_ids = explode( ',', $plugin_s4wp_settings[ 's4wp_exclude_pages' ] );
+	}
+	$categoy_as_taxonomy  = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
     $index_comments       = $plugin_s4wp_settings['s4wp_index_comments'];
-	if ( stristr( $plugin_s4wp_settings[ 's4wp_index_custom_fields' ], ',' ) ) {
+	if ( !is_array( $plugin_s4wp_settings[ 's4wp_index_custom_fields' ] ) ) {
 		$index_custom_fields = explode( ',', $plugin_s4wp_settings[ 's4wp_index_custom_fields' ] );
 	}
 
@@ -614,7 +618,7 @@ function s4wp_load_all_posts($prev, $post_type = 'post') {
     //multisite logic is decided s4wp_get_option
     $plugin_s4wp_settings = s4wp_get_option();
     if(isset($blog)) { $blog_id = $blog->blog_id; }
-    if (isset($plugin_s4wp_settings['s4wp_index_all_sites'])) {
+    if (  is_multisite()) {
 
         // there is potential for this to run for an extended period of time, depending on the # of blgos
         syslog(LOG_ERR, "starting batch import, setting max execution time to unlimited");
@@ -1230,8 +1234,12 @@ function s4wp_sanitise_options($options) {
     $options['s4wp_facet_on_tags'] = absint($options['s4wp_facet_on_tags']);
     $options['s4wp_facet_on_author'] = absint($options['s4wp_facet_on_author']);
     $options['s4wp_facet_on_type'] = absint($options['s4wp_facet_on_type']);
-    $options['s4wp_index_all_sites'] = absint($options['s4wp_index_all_sites']);
-    $options['s4wp_connect_type'] = wp_filter_nohtml_kses($options['s4wp_connect_type']);
+	if ( is_multisite() ) {
+		$options[ 's4wp_index_all_sites' ] = absint( $options[ 's4wp_index_all_sites' ] );
+	} else {
+		unset( $options[ 's4wp_index_all_sites' ] );
+	}
+	$options['s4wp_connect_type'] = wp_filter_nohtml_kses($options['s4wp_connect_type']);
     $options['s4wp_index_custom_fields'] = s4wp_filter_str2list($options['s4wp_index_custom_fields']);
     $options['s4wp_facet_on_custom_fields'] = s4wp_filter_str2list($options['s4wp_facet_on_custom_fields']);
     return $options;
