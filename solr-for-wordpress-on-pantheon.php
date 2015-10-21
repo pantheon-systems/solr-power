@@ -246,11 +246,13 @@ function s4wp_compute_path()
 
 function s4wp_build_document(Solarium\QueryType\Update\Query\Document\Document $doc, $post_info, $domain = NULL, $path = NULL) {
     $plugin_s4wp_settings = s4wp_get_option();
+	$exclude_ids = $plugin_s4wp_settings[ 's4wp_exclude_pages' ] ;
 	if ( !is_array( $plugin_s4wp_settings[ 's4wp_exclude_pages' ] ) ) {
 		$exclude_ids = explode( ',', $plugin_s4wp_settings[ 's4wp_exclude_pages' ] );
 	}
 	$categoy_as_taxonomy  = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
     $index_comments       = $plugin_s4wp_settings['s4wp_index_comments'];
+	$index_custom_fields = $plugin_s4wp_settings[ 's4wp_index_custom_fields' ];
 	if ( !is_array( $plugin_s4wp_settings[ 's4wp_index_custom_fields' ] ) ) {
 		$index_custom_fields = explode( ',', $plugin_s4wp_settings[ 's4wp_index_custom_fields' ] );
 	}
