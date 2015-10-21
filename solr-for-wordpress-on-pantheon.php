@@ -155,9 +155,7 @@ function s4wp_get_option() {
     if (is_multisite()) {
         $plugin_s4wp_settings = get_site_option($option);
         $indexall = $plugin_s4wp_settings['s4wp_index_all_sites'];
-    }else{
-		unset($plugin_s4wp_settings['s4wp_index_all_sites']);
-	}
+    }
 
     if ($indexall) {
         return get_site_option($option);
