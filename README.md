@@ -1,14 +1,14 @@
-# Solr Search for WordPress #
+# Solr Power: An ApacheSolr Plugin for WordPress #
 
-**Contributors:** getpantheon, Outlandish Josh, mattweber, palepurple, allen23  
-**Tags:** search  
-**Requires at least:** 4.2  
-**Tested up to:** 4.2  
-**Stable tag:** trunk  
-**License:** GPLv2 or later  
-**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
+**Contributors:** getpantheon, Outlandish Josh, mattweber, palepurple, allen23
+**Tags:** search
+**Requires at least:** 4.2
+**Tested up to:** 4.2
+**Stable tag:** trunk
+**License:** GPLv2 or later
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
-Improve your user experience with the Apache Solr search engine for your WordPress website.
+Improve your user experience with the Apache Solr search engine for your WordPress website. Requires PHP 5.5 or newer and a Solr search index (both provided out of the box on Pantheon).
 
 ## Description ##
 
@@ -23,7 +23,7 @@ Search is critical for your site, but the default search for WordPress leaves a 
 
 ## Installation ##
 
-Using this plugin currently requires that **you are a developer**. You will need to do template work to implement the user-interface for your search. An example is included, but you should expect to spend some time crafting the experience. 
+Using this plugin currently requires that **you are a developer**. You will need to do template work to implement the user-interface for your search. An example is included, but you should expect to spend some time crafting the experience.
 
 To begin, install the plugin as per normal. If you are installing on Pantheon, you will need to [enable the Apache Solr add-on](https://pantheon.io/docs/articles/sites/apache-solr) before you can enable the plugin.
 
