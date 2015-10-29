@@ -1,14 +1,23 @@
 # Solr Power: An ApacheSolr Plugin for WordPress #
 
-**Contributors:** getpantheon, Outlandish Josh, mattweber, palepurple, allen23
-**Tags:** search
-**Requires at least:** 4.2
-**Tested up to:** 4.2
-**Stable tag:** trunk
-**License:** GPLv2 or later
-**License URI:** http://www.gnu.org/licenses/gpl-2.0.html
+**Contributors:** getpantheon, Outlandish Josh, mattweber, palepurple, allen23  
+**Tags:** search  
+**Requires at least:** 4.2  
+**Tested up to:** 4.2  
+**Stable tag:** trunk  
+**License:** GPLv2 or later  
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
 Improve your user experience with the Apache Solr search engine for your WordPress website. Requires PHP 5.5 or newer and a Solr search index (both provided out of the box on Pantheon).
+
+## Roadmap ##
+
+This plugin is under active development, and isn't yet a "plug and play" option, though if you are comfortable with plugin development you can make use of it now. We are working towards a more complete set of functionality, and pull requests are welcome. The immediate reoadmap:
+
+* Out-of-the-box search UI implementation: main search plus a widget.
+* Improved administrative UI that breaks up configuration from debugging, etc.
+* Reporting tools in the admin UI: current state of the index/etc.
+* Developer documentation on using Solr as an alternative backend for `WP_Query()` calls in general.
 
 ## Description ##
 
@@ -17,8 +26,7 @@ Search is critical for your site, but the default search for WordPress leaves a 
 * Fast results, with better accuracy
 * Enable faceting on fields such as tags, categories, author, and page type.
 * Indexing and faceting on custom fields
-* Completely replaces default WordPress search, just install and configure.
-* Completely integrated into default WordPress theme and search widget.
+* Designed to replace default WordPress search.
 * Very developer-friendly: uses the modern [Solarium](http://www.solarium-project.org/] library)
 
 ## Installation ##
@@ -35,14 +43,6 @@ Also, if you are running on Pantheon, you will need to use the plugin's administ
 
 This plugin is under active development, so please create issues [on GitHub](https://github.com/pantheon-systems/solr-for-wordpress) for any bugs you encounter.
 
-## Roadmap ##
-
-We are working towards a more complete set of functionality. If you have interested in working on these features, get in touch:
-
-* Out-of-the-box search UI implementation: main search plus a widget.
-* Improved administrative UI that breaks up configuration from debugging, etc.
-* Reporting tools in the admin UI: current state of the index/etc.
-* Developer documentation on using Solr as an alternative backend for `WP_Query()` calls in general.
 
 ## Screenshots ##
 
