@@ -1,6 +1,6 @@
 <?php
 /*
-  Plugin Name: Solr for WordPress on Pantheon
+  Plugin Name: Solr Power
   Donate link: http://www.mattweber.org
   Description: Allows Pantheon sites to use Solr for searching.
   Version: 0.6.0
