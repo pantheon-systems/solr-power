@@ -1,6 +1,6 @@
 <?php
 
-class SolrPress_Widget extends WP_Widget {
+class SolrPower_Widget extends WP_Widget {
 
 	function __construct() {
 		$widget_ops = array( 'classname' => 'widget_s4wp_mlt', 'description' => __( "Displays a list of pages similar to the page being viewed" ) );

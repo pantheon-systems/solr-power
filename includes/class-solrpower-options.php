@@ -1,6 +1,6 @@
 <?php
 
-class SolrPress_Options {
+class SolrPower_Options {
 
 	/**
 	 * Singleton instance
@@ -22,6 +22,7 @@ class SolrPress_Options {
 	function __construct() {
 		add_action( 'admin_menu', array( $this, 'add_pages' ) );
 		add_action( 'admin_init', array( $this, 'options_init' ) );
+		add_action( 'wp_ajax_solr_options', array( $this, 'options_load' ) );
 	}
 
 	function add_pages() {
@@ -55,6 +56,24 @@ class SolrPress_Options {
 		ini_set( 'display_errors', false );
 
 		register_setting( 's4w-options-group', 'plugin_s4wp_settings', 's4wp_sanitise_options' );
+	}
+
+	/**
+	 * AJAX Callback
+	 *
+	 */
+	function options_load() {
+		check_ajax_referer( 'solr_security', 'security' );
+		$method = filter_input( INPUT_POST, 'method', FILTER_SANITIZE_STRING );
+		if ( $method === "load" ) {
+			$type	 = filter_input( INPUT_POST, 'type', FILTER_SANITIZE_STRING );
+			$prev	 = filter_input( INPUT_POST, 'prev', FILTER_SANITIZE_STRING );
+			if ( isset( $type ) ) {
+				s4wp_load_all_posts( $prev, $type );
+				die();
+			}
+		}
+		die();
 	}
 
 }

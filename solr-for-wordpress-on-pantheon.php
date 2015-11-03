@@ -438,53 +438,6 @@ function s4wp_delete_all() {
     }
 }
 
-function s4wp_delete_blog($blogid) {
-    try {
-        $solr = s4wp_get_solr();
-        if (!$solr == NULL) {
-            $update = $solr->createUpdate();
-            $update->addDeleteQuery("blogid:{$blogid}");
-            $update->addCommit();
-            $solr->update($update);
-        }
-    } catch (Exception $e) {
-        echo esc_html($e->getMessage());
-    }
-}
-
-function s4wp_load_blog_all($blogid) {
-    global $wpdb;
-    $documents = array();
-    $cnt = 0;
-    $batchsize = 10;
-
-    $bloginfo = get_blog_details($blogid, FALSE);
-
-    if ($bloginfo->public && !$bloginfo->archived && !$bloginfo->spam && !$bloginfo->deleted) {
-		$query=$wpdb->prepare("SELECT ID FROM %s WHERE post_type = 'post' and post_status = 'publish';",$wpdb->base_prefix . $blogid . '_posts');
-        $postids = $wpdb->get_results($query);
-
-        $solr = s4wp_get_solr();
-        $update = $solr->createUpdate();
-
-        for ($idx = 0; $idx < count($postids); $idx++) {
-            $postid = $ids[$idx];
-            $documents[] = s4wp_build_document($update->createDocument(), get_blog_post($blogid, $postid->ID), $bloginfo->domain, $bloginfo->path);
-            $cnt++;
-            if ($cnt == $batchsize) {
-                s4wp_post($documents);
-                $cnt = 0;
-                $documents = array();
-            }
-        }
-
-        if ($documents) {
-            s4wp_post($documents);
-        }
-    }
-}
-
-
 
 function s4wp_handle_status_change($post_id, $post_info = null) {
     global $current_blog;
@@ -516,43 +469,6 @@ function s4wp_handle_status_change($post_id, $post_info = null) {
 
 }
 
-
-
-function s4wp_handle_deactivate_blog($blogid) {
-    s4wp_delete_blog($blogid);
-}
-
-function s4wp_handle_activate_blog($blogid) {
-    s4wp_apply_config_to_blog($blogid);
-    s4wp_load_blog_all($blogid);
-}
-
-function s4wp_handle_archive_blog($blogid) {
-    s4wp_delete_blog($blogid);
-}
-
-function s4wp_handle_unarchive_blog($blogid) {
-    s4wp_apply_config_to_blog($blogid);
-    s4wp_load_blog_all($blogid);
-}
-
-function s4wp_handle_spam_blog($blogid) {
-    s4wp_delete_blog($blogid);
-}
-
-function s4wp_handle_unspam_blog($blogid) {
-    s4wp_apply_config_to_blog($blogid);
-    s4wp_load_blog_all($blogid);
-}
-
-function s4wp_handle_delete_blog($blogid) {
-    s4wp_delete_blog($blogid);
-}
-
-function s4wp_handle_new_blog($blogid) {
-    s4wp_apply_config_to_blog($blogid);
-    s4wp_load_blog_all($blogid);
-}
 
 function s4wp_load_all_posts($prev, $post_type = 'post') {
     global $wpdb, $current_blog, $current_site;
@@ -1136,23 +1052,7 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
 
     return $response;
 }
-/**
- * AJAX Callback
- *
- */
-function s4wp_options_load() {
-	check_ajax_referer( 'solr_security', 'security' );
-	$method = filter_input( INPUT_POST, 'method', FILTER_SANITIZE_STRING );
-	if ( $method === "load" ) {
-		$type	 = filter_input( INPUT_POST, 'type', FILTER_SANITIZE_STRING );
-		$prev	 = filter_input( INPUT_POST, 'prev', FILTER_SANITIZE_STRING );
-		if ( isset( $type ) ) {
-			s4wp_load_all_posts( $prev, $type );
-			die();
-		}
-	}
-	die();
-}
+
 
 
 
@@ -1229,19 +1129,7 @@ function s4wp_filter_list2str($input) {
 
 
 
-function s4wp_admin_head() {
-    // include our default css
-   if (file_exists(dirname(__FILE__) . '/template/search.css')) {
-		wp_enqueue_style( 'solr-search', plugins_url('/template/search.css', __FILE__));
-   }
-	wp_enqueue_script( 'solr-js', plugins_url('/template/script.js', __FILE__), false );
-	$solr_js = array(
-		'ajax_url'		 => admin_url( 'admin-ajax.php' ),
-		'post_types' => s4wp_get_post_types(),
-		'security'	 => wp_create_nonce( "solr_security" )
-	);
-	wp_localize_script( 'solr-js', 'solr', $solr_js );
-}
+
 
 function s4wp_default_head() {
     // include our default css
@@ -1250,52 +1138,9 @@ function s4wp_default_head() {
 	}
 }
 
-/*
- * @TODO change to echo statemnts and get rid of direct output.
- */
-function s4wp_autosuggest_head() {
-    if (file_exists(dirname(__FILE__) . '/template/autocomplete.css')) {
-        wp_enqueue_style( 'solr-autocomplete', plugins_url('/template/autocomplete.css', __FILE__));
-	}
-	wp_enqueue_script( 'solr-suggest', plugins_url('/template/autocomplete.js', __FILE__), false );
-}
 
-function s4wp_template_redirect() {
-    wp_enqueue_script('suggest');
 
-    // not a search page; don't do anything and return
-    // thanks to the Better Search plugin for the idea:  http://wordpress.org/extend/plugins/better-search/
-    $search = stripos($_SERVER['REQUEST_URI'], '?ssearch=');
-    $autocomplete = stripos($_SERVER['REQUEST_URI'], '?method=autocomplete');
 
-    if (($search || $autocomplete) == FALSE) {
-        return;
-    }
-
-    if ($autocomplete) {
-        $q     = filter_input(INPUT_GET,'q',FILTER_SANITIZE_STRING);
-        $limit = filter_input(INPUT_GET,'limit',FILTER_SANITIZE_STRING);
-
-        s4wp_autocomplete($q, $limit);
-        exit;
-    }
-
-    // If there is a template file then we use it
-    if (file_exists(TEMPLATEPATH . '/s4wp_search.php')) {
-        // use theme file
-        include_once(TEMPLATEPATH . '/s4wp_search.php');
-    } else if (file_exists(dirname(__FILE__) . '/template/s4wp_search.php')) {
-        // use plugin supplied file
-        add_action('wp_head', 's4wp_default_head');
-        include_once(dirname(__FILE__) . '/template/s4wp_search.php');
-    } else {
-        // no template files found, just continue on like normal
-        // this should get to the normal WordPress search results
-        return;
-    }
-
-    exit;
-}
 
 function solr_escape($value)
 {
@@ -1359,19 +1204,7 @@ function s4wp_copy_config_to_all_blogs() {
     restore_current_blog();
 }
 
-function s4wp_apply_config_to_blog($blogid) {
-    syslog(LOG_ERR, "applying config to blog with id $blogid");
-    if (!is_multisite())
-        return;
 
-    wp_cache_flush();
-    $plugin_s4wp_settings = s4wp_get_option();
-    switch_to_blog($blogid);
-    wp_cache_flush();
-    s4wp_update_option($plugin_s4wp_settings);
-    restore_current_blog();
-    wp_cache_flush();
-}
 
 function s4wp_initalize_options()
 {
@@ -1407,22 +1240,3 @@ function s4wp_initalize_options()
 
     return $options;
 }
-
-
-function s4wp_plugin_settings_link( $links, $file ) {
-    if ( $file != plugin_basename( __FILE__ ) ) {
-        return $links;
-    }
-
-    array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-for-wordpress/solr-for-wordpress-on-pantheon.php">' . __( 'Settings', 's4wp' ) . '</a>' );
-
-    return $links;
-}
-
-function s4wp_get_post_types() {
-  global $wpdb;
-  $postTypes = $wpdb->get_results("Select distinct post_type from {$wpdb->base_prefix}posts WHERE post_status = 'publish' AND post_type NOT IN ('nav_menu_item', 'revision');");
-  return $postTypes;
-}
-
-
