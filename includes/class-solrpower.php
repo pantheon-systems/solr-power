@@ -25,6 +25,38 @@ class SolrPower {
 		add_action( 'wp_enqueue_scripts', array( $this, 'autosuggest_head' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_head' ) );
 		add_filter( 'plugin_action_links', array( $this, 'plugin_settings_link' ), 10, 2 );
+		register_activation_hook( __FILE__, array( $this, 'activate' ) );
+	}
+
+	function activate() {
+
+		// Check to see if we have  environment variables. If not, bail. If so, create the initial options.
+
+		if ( $errMessage = $this->sanity_check() ) {
+			wp_die( $errMessage );
+		}
+
+		$schemaSubmit = SolrPower_Api::get_instance()->submit_schema();
+
+		if ( strpos( $schemaSubmit, 'Error' ) ) {
+			wp_die( 'Submitting the schema failed with the message ' . $errorMessage );
+		}
+		$options = SolrPower_Options::get_instance()->initalize_options();
+		SolrPower_Options::get_instance()->update_option( $options );
+		return;
+	}
+
+	function sanity_check() {
+		$returnValue = '';
+		$wp_version	 = get_bloginfo( 'version' );
+
+		if ( getenv( 'PANTHEON_INDEX_HOST' ) === false ) {
+			$returnValue = __( 'Before you can activate this plugin, you must first activate Solr in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' );
+		} else if ( version_compare( $wp_version, '3.0', '<' ) ) {
+			$returnValue = __( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' );
+		}
+
+		return $returnValue;
 	}
 
 	function widget() {
@@ -82,7 +114,7 @@ class SolrPower {
 			$q		 = filter_input( INPUT_GET, 'q', FILTER_SANITIZE_STRING );
 			$limit	 = filter_input( INPUT_GET, 'limit', FILTER_SANITIZE_STRING );
 
-			s4wp_autocomplete( $q, $limit );
+			$this->autocomplete( $q, $limit );
 			exit;
 		}
 
@@ -102,5 +134,37 @@ class SolrPower {
 
 		exit;
 	}
+
+	function autocomplete( $q, $limit ) {
+		$solr		 = get_solr();
+		$response	 = NULL;
+
+		if ( !$solr ) {
+			return;
+		}
+
+		$query = $solr->createTerms();
+		$query->setFields( 'spell' );
+		$query->setPrefix( $q );
+		$query->setLowerbound( $q );
+		$query->setLowerboundInclude( false );
+		$query->setLimit( $limit );
+
+		$response = $solr->terms( $query );
+		if ( !$response->getResponse()->getStatusCode() == 200 ) {
+			return;
+		}
+		$terms = $response->getResults();
+		foreach ( $terms[ 'spell' ] as $term => $count ) {
+			printf( "%s\n", $term );
+		}
+	}
+	
+	function default_head() {
+    // include our default css
+    if (file_exists(dirname(__FILE__) . '/template/search.css')) {
+		wp_enqueue_style( 'solr-search', plugins_url('/template/search.css', __FILE__));
+	}
+}
 
 }

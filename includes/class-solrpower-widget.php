@@ -7,6 +7,14 @@ class SolrPower_Widget extends WP_Widget {
 		$this->WP_Widget( 'mlt', __( 'Similar' ), $widget_ops );
 	}
 
+	function escape( $value ) {
+		//list taken from http://lucene.apache.org/java/docs/queryparsersyntax.html#Escaping%20Special%20Characters
+		$pattern = '/(\+|-|&&|\|\||!|\(|\)|\{|}|\[|]|\^|"|~|\*|\?|:|\\\)/';
+		$replace = '\\\$1';
+
+		return preg_replace( $pattern, $replace, $value );
+	}
+
 	function widget( $args, $instance ) {
 
 		extract( $args );
@@ -18,7 +26,7 @@ class SolrPower_Widget extends WP_Widget {
 
 		$showauthor = $instance[ 'showauthor' ];
 
-		$solr		 = s4wp_get_solr();
+		$solr		 = get_solr();
 		$response	 = NULL;
 
 		if ( (!is_single() && !is_page()) || !$solr ) {
@@ -26,7 +34,7 @@ class SolrPower_Widget extends WP_Widget {
 		}
 
 		$query = $solr->createSelect();
-		$query->setQuery( 'permalink:' . solr_escape( get_permalink() ) )->
+		$query->setQuery( 'permalink:' . $this->escape( get_permalink() ) )->
 		getMoreLikeThis()->
 		setFields( 'title,content' );
 
