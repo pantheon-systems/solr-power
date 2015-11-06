@@ -4,13 +4,13 @@ class SolrPower_Options {
 
 	/**
 	 * Singleton instance
-	 * @var SolrPress_Options|Bool
+	 * @var SolrPower_Options|Bool
 	 */
 	private static $instance = false;
 
 	/**
 	 * Grab instance of object.
-	 * @return SolrPress_Options
+	 * @return SolrPower_Options
 	 */
 	public static function get_instance() {
 		if ( !self::$instance ) {

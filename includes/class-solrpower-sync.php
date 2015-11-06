@@ -4,13 +4,13 @@ class SolrPower_Sync {
 
 	/**
 	 * Singleton instance
-	 * @var SolrPress_Sync|Bool
+	 * @var SolrPower_Sync|Bool
 	 */
 	private static $instance = false;
 
 	/**
 	 * Grab instance of object.
-	 * @return SolrPress_Sync
+	 * @return SolrPower_Sync
 	 */
 	public static function get_instance() {
 		if ( !self::$instance ) {
