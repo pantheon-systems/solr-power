@@ -21,18 +21,17 @@ class SolrPower {
 
 	function __construct() {
 		add_action( 'template_redirect', array( $this, 'template_redirect' ), 1 );
-		add_action( 'widgets_init', array( $this, 'widget' ) );
+		//	add_action( 'widgets_init', array( $this, 'widget' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'autosuggest_head' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_head' ) );
 		add_filter( 'plugin_action_links', array( $this, 'plugin_settings_link' ), 10, 2 );
-		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 	}
 
-	function activate() {
+	static function activate() {
 
 		// Check to see if we have  environment variables. If not, bail. If so, create the initial options.
 
-		if ( $errMessage = $this->sanity_check() ) {
+		if ( $errMessage = SolrPower::get_instance()->sanity_check() ) {
 			wp_die( $errMessage );
 		}
 
@@ -65,10 +64,10 @@ class SolrPower {
 
 	function admin_head() {
 		// include our default css
-		if ( file_exists( dirname( __FILE__ ) . '/template/search.css' ) ) {
-			wp_enqueue_style( 'solr-search', plugins_url( '/template/search.css', __FILE__ ) );
+		if ( file_exists( SOLR_POWER_PATH . '/template/search.css' ) ) {
+			wp_enqueue_style( 'solr-search', SOLR_POWER_URL . 'template/search.css' );
 		}
-		wp_enqueue_script( 'solr-js', plugins_url( '/template/script.js', __FILE__ ), false );
+		wp_enqueue_script( 'solr-js', SOLR_POWER_URL . 'template/script.js', false );
 		$solr_js = array(
 			'ajax_url'	 => admin_url( 'admin-ajax.php' ),
 			'post_types' => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
@@ -78,7 +77,7 @@ class SolrPower {
 	}
 
 	function plugin_settings_link( $links, $file ) {
-		if ( $file != plugin_basename( __FILE__ ) ) {
+		if ( $file != plugin_basename( SOLR_POWER_PATH . 'solr-power.php' ) ) {
 			return $links;
 		}
 
@@ -92,10 +91,10 @@ class SolrPower {
 	 */
 
 	function autosuggest_head() {
-		if ( file_exists( dirname( __FILE__ ) . '/template/autocomplete.css' ) ) {
-			wp_enqueue_style( 'solr-autocomplete', plugins_url( '/template/autocomplete.css', __FILE__ ) );
+		if ( file_exists( SOLR_POWER_PATH . '/template/autocomplete.css' ) ) {
+			wp_enqueue_style( 'solr-autocomplete', SOLR_POWER_URL . 'template/autocomplete.css' );
 		}
-		wp_enqueue_script( 'solr-suggest', plugins_url( '/template/autocomplete.js', __FILE__ ), false );
+		wp_enqueue_script( 'solr-suggest', SOLR_POWER_URL . 'template/autocomplete.js', false );
 	}
 
 	function template_redirect() {
@@ -159,12 +158,14 @@ class SolrPower {
 			printf( "%s\n", $term );
 		}
 	}
-	
+
 	function default_head() {
-    // include our default css
-    if (file_exists(dirname(__FILE__) . '/template/search.css')) {
-		wp_enqueue_style( 'solr-search', plugins_url('/template/search.css', __FILE__));
+		// include our default css
+		if ( file_exists( dirname( __FILE__ ) . '/template/search.css' ) ) {
+			wp_enqueue_style( 'solr-search', plugins_url( '/template/search.css', __FILE__ ) );
+		}
 	}
-}
 
 }
+
+SolrPower::get_instance();

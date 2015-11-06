@@ -97,6 +97,9 @@ class SolrPower_Api {
 	 * @return string
 	 */
 	function compute_path() {
+		if ( defined( 'SOLR_PATH' ) ) {
+			return SOLR_PATH;
+		}
 		return '/sites/self/environments/' . getenv( 'PANTHEON_ENVIRONMENT' ) . '/index';
 	}
 
@@ -134,7 +137,7 @@ class SolrPower_Api {
 			)
 		);
 
-		apply_filters( 's4wp_connection_options', $solarium_config );
+		$solarium_config = apply_filters( 's4wp_connection_options', $solarium_config );
 
 
 		# double check everything has been set
@@ -165,7 +168,116 @@ class SolrPower_Api {
 		}
 	}
 
+	/**
+	 * Query the required server
+	 * passes all parameters to the appropriate function based on the server name
+	 * This allows for extensible server/core based query functions.
+	 * TODO allow for similar theme/output function
+	 */
+	function query( $qry, $offset, $count, $fq, $sortby, $order, $server = 'master' ) {
+		//NOTICE: does this needs to be cached to stop the db being hit to grab the options everytime search is being done.
+		$plugin_s4wp_settings = solr_options();
+
+		$solr = get_solr();
+
+		return $this->master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, $plugin_s4wp_settings );
+	}
+
+	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings ) {
+		$response		 = NULL;
+		$facet_fields	 = array();
+		$number_of_tags	 = $plugin_s4wp_settings[ 's4wp_max_display_tags' ];
+
+		if ( $plugin_s4wp_settings[ 's4wp_facet_on_categories' ] ) {
+			$facet_fields[] = 'categories';
+		}
+
+		$facet_on_tags = $plugin_s4wp_settings[ 's4wp_facet_on_tags' ];
+		if ( $facet_on_tags ) {
+			$facet_fields[] = 'tags';
+		}
+
+		if ( $plugin_s4wp_settings[ 's4wp_facet_on_author' ] ) {
+			$facet_fields[] = 'author';
+		}
+
+		if ( $plugin_s4wp_settings[ 's4wp_facet_on_type' ] ) {
+			$facet_fields[] = 'type';
+		}
+
+
+		$facet_on_custom_taxonomy = $plugin_s4wp_settings[ 's4wp_facet_on_taxonomy' ];
+		if ( count( $facet_on_custom_taxonomy ) ) {
+			$taxonomies = (array) get_taxonomies( array( '_builtin' => FALSE ), 'names' );
+			foreach ( $taxonomies as $parent ) {
+				$facet_fields[] = $parent . "_taxonomy";
+			}
+		}
+
+		$facet_on_custom_fields = $plugin_s4wp_settings[ 's4wp_facet_on_custom_fields' ];
+		if ( is_array( $facet_on_custom_fields ) and count( $facet_on_custom_fields ) ) {
+			foreach ( $facet_on_custom_fields as $field_name ) {
+				$facet_fields[] = $field_name . '_str';
+			}
+		}
+
+		if ( $solr ) {
+			$select = array(
+				'query'		 => $qry,
+				'fields'	 => '*,score',
+				'start'		 => $offset,
+				'rows'		 => $count,
+				'omitheader' => false
+			);
+			if ( $sortby != "" ) {
+				$select[ 'sort' ] = array( $sortby => $order );
+			} else {
+				$select[ 'sort' ] = array( 'date' => 'desc' );
+			}
+
+			$query = $solr->createSelect( $select );
+
+			$facetSet = $query->getFacetSet();
+			foreach ( $facet_fields as $facet_field ) {
+				$facetSet->createFacetField( $facet_field )->setField( $facet_field );
+			}
+			$facetSet->setMinCount( 1 );
+			if ( $facet_on_tags ) {
+				$facetSet->setLimit( $number_of_tags );
+			}
+
+			if ( isset( $fq ) ) {
+				foreach ( $fq as $filter ) {
+					if ( $filter !== "" ) {
+						$query->createFilterQuery( $filter )->setQuery( $filter );
+					}
+				}
+			}
+			$query->getHighlighting()->setFields( 'content' );
+			$query->getHighlighting()->setSimplePrefix( '<b>' );
+			$query->getHighlighting()->setSimplePostfix( '</b>' );
+			$query->getHighlighting()->setHighlightMultiTerm( true );
+
+			if ( isset( $plugin_s4wp_settings[ 's4wp_default_operator' ] ) ) {
+				$query->setQueryDefaultOperator( $plugin_s4wp_settings[ 's4wp_default_operator' ] );
+			}
+			try {
+				$response = $solr->select( $query );
+				if ( !$response->getResponse()->getStatusCode() == 200 ) {
+					$response = NULL;
+				}
+			} catch ( Exception $e ) {
+				syslog( LOG_ERR, "failed to query solr. " . $e->getMessage() );
+				$response = NULL;
+			}
+		}
+
+		return $response;
+	}
+
 }
+
+SolrPower_Api::get_instance();
 
 /**
  * Helper function to return Solr object.

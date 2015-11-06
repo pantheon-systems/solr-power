@@ -39,13 +39,13 @@ class SolrPower_Options {
 		}
 
 		if ( $addpage ) {
-			add_options_page( 'Solr Options', 'Solr Options', 'manage_options', 'solrpress', array( $this, 'options_page' ) );
+			add_options_page( 'Solr Options', 'Solr Options', 'manage_options', 'solr-power', array( $this, 'options_page' ) );
 		}
 	}
 
 	function options_page() {
-		if ( file_exists( dirname( __FILE__ ) . '/solr-options-page.php' ) ) {
-			include( dirname( __FILE__ ) . '/solr-options-page.php' );
+		if ( file_exists( SOLR_POWER_PATH . '/solr-options-page.php' ) ) {
+			include( SOLR_POWER_PATH  . '/solr-options-page.php' );
 		} else {
 			_e( "<p>Couldn't locate the options page.</p>", 'solr4wp' );
 		}
@@ -211,6 +211,7 @@ class SolrPower_Options {
 	}
 
 }
+SolrPower_Options::get_instance();
 
 function solr_options() {
 	return SolrPower_Options::get_instance()->get_option();

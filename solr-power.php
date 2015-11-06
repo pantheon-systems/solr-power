@@ -1,6 +1,6 @@
 <?php
 /*
-  Plugin Name: Solr for WordPress on Pantheon
+  Plugin Name: Solr Power
   Donate link: http://www.mattweber.org
   Description: Allows Pantheon sites to use Solr for searching.
   Version: 0.6.0
@@ -43,7 +43,16 @@
  *
  */
 
-require_once(dirname(__FILE__) . '/vendor/autoload.php');
+define( 'SOLR_POWER_PATH', plugin_dir_path( __FILE__ ) . '/' );
+define( 'SOLR_POWER_URL', plugin_dir_url( __FILE__ ) );
+
+require_once(SOLR_POWER_PATH . '/vendor/autoload.php');
+require_once(SOLR_POWER_PATH . '/includes/class-solrpower.php');
+require_once(SOLR_POWER_PATH . '/includes/class-solrpower-options.php');
+require_once(SOLR_POWER_PATH . '/includes/class-solrpower-sync.php');
+require_once(SOLR_POWER_PATH . '/includes/class-solrpower-api.php');
+require_once(SOLR_POWER_PATH . '/includes/class-solrpower-widget.php');
+register_activation_hook( __FILE__, array( 'SolrPower', 'activate' ) );
 
 function s4wp_search_form() {
     $sort   = filter_input(INPUT_GET,'sort',FILTER_SANITIZE_STRING);
@@ -384,121 +393,6 @@ function s4wp_gen_taxo_array($in, $vals) {
 
 }
 
-/**
- * Query the required server
- * passes all parameters to the appropriate function based on the server name
- * This allows for extensible server/core based query functions.
- * TODO allow for similar theme/output function
- */
-function s4wp_query($qry, $offset, $count, $fq, $sortby, $order, $server = 'master') {
-    //NOTICE: does this needs to be cached to stop the db being hit to grab the options everytime search is being done.
-    $plugin_s4wp_settings = s4wp_get_option();
-
-    $solr = s4wp_get_solr();
-// refactor this becase server id is no longer a thing. - Cal
-    if (!function_exists($function = 's4wp_' . $server . '_query')) {
-        $function = 's4wp_master_query';
-    }
-
-
-    return $function($solr, $qry, $offset, $count, $fq, $sortby, $order, $plugin_s4wp_settings);
-
-}
-
-function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings) {
-    $response = NULL;
-    $facet_fields = array();
-    $number_of_tags = $plugin_s4wp_settings['s4wp_max_display_tags'];
-
-    if ($plugin_s4wp_settings['s4wp_facet_on_categories']) {
-        $facet_fields[] = 'categories';
-    }
-
-    $facet_on_tags = $plugin_s4wp_settings['s4wp_facet_on_tags'];
-    if ($facet_on_tags) {
-        $facet_fields[] = 'tags';
-    }
-
-    if ($plugin_s4wp_settings['s4wp_facet_on_author']) {
-        $facet_fields[] = 'author';
-    }
-
-    if ($plugin_s4wp_settings['s4wp_facet_on_type']) {
-        $facet_fields[] = 'type';
-    }
-
-
-    $facet_on_custom_taxonomy = $plugin_s4wp_settings['s4wp_facet_on_taxonomy'];
-    if (count($facet_on_custom_taxonomy)) {
-        $taxonomies = (array) get_taxonomies(array('_builtin' => FALSE), 'names');
-        foreach ($taxonomies as $parent) {
-            $facet_fields[] = $parent . "_taxonomy";
-        }
-    }
-
-    $facet_on_custom_fields = $plugin_s4wp_settings['s4wp_facet_on_custom_fields'];
-    if (is_array($facet_on_custom_fields) and count($facet_on_custom_fields)) {
-        foreach ($facet_on_custom_fields as $field_name) {
-            $facet_fields[] = $field_name . '_str';
-        }
-    }
-
-    if ($solr) {
-        $select = array(
-            'query' => $qry,
-            'fields' => '*,score',
-            'start' => $offset,
-            'rows' => $count,
-            'omitheader' => false
-        );
-        if ($sortby != "") {
-            $select['sort'] = array($sortby => $order);
-        }
-        else
-        {
-          $select['sort'] = array('date' => 'desc');
-        }
-
-        $query = $solr->createSelect($select);
-
-        $facetSet = $query->getFacetSet();
-        foreach ($facet_fields as $facet_field) {
-            $facetSet->createFacetField($facet_field)->setField($facet_field);
-        }
-        $facetSet->setMinCount(1);
-        if ($facet_on_tags) {
-            $facetSet->setLimit($number_of_tags);
-        }
-
-      if(isset($fq)) {
-          foreach ($fq as $filter) {
-              if ($filter !== "") {
-                  $query->createFilterQuery($filter)->setQuery($filter);
-              }
-          }
-        }
-        $query->getHighlighting()->setFields('content');
-        $query->getHighlighting()->setSimplePrefix('<b>');
-        $query->getHighlighting()->setSimplePostfix('</b>');
-        $query->getHighlighting()->setHighlightMultiTerm(true);
-
-        if(isset($plugin_s4wp_settings['s4wp_default_operator']))
-		{
-		$query->setQueryDefaultOperator($plugin_s4wp_settings['s4wp_default_operator']);
-		}
-        try {
-            $response = $solr->select($query);
-            if (!$response->getResponse()->getStatusCode() == 200) {
-                $response = NULL;
-            }
-        } catch (Exception $e) {
-            syslog(LOG_ERR, "failed to query solr. ".$e->getMessage());
-            $response = NULL;
-        }
-    }
-
-    return $response;
-}
 
 
 
@@ -523,24 +417,6 @@ function s4wp_master_query($solr, $qry, $offset, $count, $fq, $sortby, $order, &
 
 
 
-// copies config settings from the main blog
-// to all of the other blogs
-function s4wp_copy_config_to_all_blogs() {
-    global $wpdb;
-
-    $blogs = $wpdb->get_results("SELECT blog_id FROM $wpdb->blogs WHERE spam = 0 AND deleted = 0");
-
-    $plugin_s4wp_settings = s4wp_get_option();
-    foreach ($blogs as $blog) {
-        switch_to_blog($blog->blog_id);
-        wp_cache_flush();
-        syslog(LOG_INFO, "pushing config to {$blog->blog_id}");
-        s4wp_update_option($plugin_s4wp_settings);
-    }
-
-    wp_cache_flush();
-    restore_current_blog();
-}
 
 
 

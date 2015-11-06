@@ -453,6 +453,11 @@ class SolrPower_Sync {
 			$query		 = $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = '%s' ORDER BY ID;", $post_type );
 			$posts		 = $wpdb->get_results( $query );
 			$postcount	 = count( $posts );
+			if ( 0 == $postcount ) {
+				$end = true;
+				printf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
+				die();
+			}
 			for ( $idx = 0; $idx < $postcount; $idx++ ) {
 				$postid	 = $posts[ $idx ]->ID;
 				$last	 = $postid;
@@ -498,4 +503,25 @@ class SolrPower_Sync {
 		return preg_replace( $datere, $replstr, $thedate );
 	}
 
+	// copies config settings from the main blog
+// to all of the other blogs
+	function copy_config_to_all_blogs() {
+		global $wpdb;
+
+		$blogs = $wpdb->get_results( "SELECT blog_id FROM $wpdb->blogs WHERE spam = 0 AND deleted = 0" );
+
+		$plugin_s4wp_settings = solr_options();
+		foreach ( $blogs as $blog ) {
+			switch_to_blog( $blog->blog_id );
+			wp_cache_flush();
+			syslog( LOG_INFO, "pushing config to {$blog->blog_id}" );
+			SolrPower_Options::get_instance()->update_option( $plugin_s4wp_settings );
+		}
+
+		wp_cache_flush();
+		restore_current_blog();
+	}
+
 }
+
+SolrPower_Sync::get_instance();
