@@ -45,12 +45,12 @@ class SolrPower_Sync {
 		$index_pages			 = $plugin_s4wp_settings[ 's4wp_index_pages' ];
 		$index_posts			 = $plugin_s4wp_settings[ 's4wp_index_posts' ];
 		$this->handle_status_change( $post_id, $post_info );
-		if ( $post_info->post_type == 'revision' ) {
+		if ( $post_info->post_type == 'revision' || $post_info->post_status != 'publish' ) {
 			return;
 		}
 		$index_posts = $plugin_s4wp_settings[ 's4wp_index_posts' ];
 		$this->handle_status_change( $post_id, $post_info );
-		if ( $post_info->post_type == 'revision' ) {
+		if ( $post_info->post_type == 'revision' || $post_info->post_status != 'publish') {
 			return;
 		}
 		# make sure this blog is not private or a spam if indexing on a multisite install
@@ -157,35 +157,22 @@ class SolrPower_Sync {
 			$post_info = get_post( $post_id );
 		}
 
-		$plugin_s4wp_settings	 = solr_options();
-		$private_page			 = $plugin_s4wp_settings[ 's4wp_private_page' ];
-		$private_post			 = $plugin_s4wp_settings[ 's4wp_private_post' ];
-
-
-		/**
-		 * We need to check if the status of the post has changed.
-		 * Inline edits won't have the prev_status of original_post_status,
-		 * instead we check of the _inline_edit variable is present in the $_POST variable
-		 */
-		if ( ((isset( $_POST[ 'prev_status' ] ) && $_POST[ 'prev_status' ] == 'publish') || (isset( $_POST[ 'original_post_status' ] ) and $_POST[ 'original_post_status' ] == 'publish') ||
-		( isset( $_POST[ '_inline_edit' ] ) && !empty( $_POST[ '_inline_edit' ] ) ) ) &&
-		($post_info->post_status == 'draft' || $post_info->post_status == 'private') ) {
 
 			if ( is_multisite() ) {
 				$this->delete( $current_blog->domain . $current_blog->path . $post_info->ID );
 			} else {
 				$this->delete( $post_info->ID );
 			}
-		}
+		
 	}
 
 	function build_document( Solarium\QueryType\Update\Query\Document\Document $doc, $post_info, $domain = NULL,
 						  $path = NULL ) {
 		$plugin_s4wp_settings	 = solr_options();
-		$exclude_ids			 = explode( ',', $plugin_s4wp_settings[ 's4wp_exclude_pages' ] );
+		$exclude_ids			 = (is_array( $plugin_s4wp_settings[ 's4wp_exclude_pages' ] )) ? $plugin_s4wp_settings[ 's4wp_exclude_pages' ] : explode( ',', $plugin_s4wp_settings[ 's4wp_exclude_pages' ] );
 		$categoy_as_taxonomy	 = $plugin_s4wp_settings[ 's4wp_cat_as_taxo' ];
 		$index_comments			 = $plugin_s4wp_settings[ 's4wp_index_comments' ];
-		$index_custom_fields	 = explode( ',', $plugin_s4wp_settings[ 's4wp_index_custom_fields' ] );
+		$index_custom_fields	 = (is_array( $plugin_s4wp_settings[ 's4wp_index_custom_fields' ] )) ? $plugin_s4wp_settings[ 's4wp_index_custom_fields' ] : explode( ',', $plugin_s4wp_settings[ 's4wp_index_custom_fields' ] );
 
 		if ( $post_info ) {
 
@@ -376,7 +363,7 @@ class SolrPower_Sync {
 		if ( isset( $blog ) ) {
 			$blog_id = $blog->blog_id;
 		}
-		if ( isset( $plugin_s4wp_settings[ 's4wp_index_all_sites' ] ) ) {
+		if ( is_multisite() ) {
 
 			// there is potential for this to run for an extended period of time, depending on the # of blgos
 			syslog( LOG_ERR, "starting batch import, setting max execution time to unlimited" );

@@ -272,7 +272,8 @@ class SolrPower_Api {
 			}
 		}
 
-		return $response;
+		$return = $response->getData();
+		return $return[ 'response' ];
 	}
 
 }
