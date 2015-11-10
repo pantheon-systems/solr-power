@@ -12,7 +12,7 @@ class SolrPower_WP_Query {
 	 * Array of found Solr returned posts based on query hash.
 	 * @var array
 	 */
-	private $found_posts	 = array();
+	private $found_posts = array();
 
 	/**
 	 * Grab instance of object.
@@ -52,9 +52,12 @@ class SolrPower_WP_Query {
 		$sortby					 = '';
 		$order					 = '';
 		$search					 = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order );
+		$search					 = $search->getData();
+		$search					 = $search[ 'response' ];
 		$query->found_posts		 = $search[ 'numFound' ];
 		$query->max_num_pages	 = ceil( $search[ 'numFound' ] / $query->get( 'posts_per_page' ) );
 		$posts					 = array();
+
 		foreach ( $search[ 'docs' ] as $post_array ) {
 			$post		 = new stdClass();
 			$post_args	 = array(
@@ -63,7 +66,8 @@ class SolrPower_WP_Query {
 				'title'				 => 'post_title',
 				'content'			 => 'post_content',
 				'displaydate'		 => 'post_date',
-				'displaymodified'	 => 'post_modified'
+				'displaymodified'	 => 'post_modified',
+				'permalink'			 => 'permalink'
 			);
 			foreach ( $post_args as $solr => $arg ) {
 				$post->$arg = $post_array[ $solr ];
@@ -93,6 +97,7 @@ class SolrPower_WP_Query {
 
 		return $new_posts;
 	}
+
 
 }
 
