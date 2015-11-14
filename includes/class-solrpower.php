@@ -21,24 +21,25 @@ class SolrPower {
 
 	function __construct() {
 		add_action( 'template_redirect', array( $this, 'template_redirect' ), 1 );
-		//	add_action( 'widgets_init', array( $this, 'widget' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'autosuggest_head' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_head' ) );
 		add_filter( 'plugin_action_links', array( $this, 'plugin_settings_link' ), 10, 2 );
 	}
 
-	static function activate() {
+	function activate() {
 
 		// Check to see if we have  environment variables. If not, bail. If so, create the initial options.
 
 		if ( $errMessage = SolrPower::get_instance()->sanity_check() ) {
 			wp_die( $errMessage );
 		}
-
-		$schemaSubmit = SolrPower_Api::get_instance()->submit_schema();
-
-		if ( strpos( $schemaSubmit, 'Error' ) ) {
-			wp_die( 'Submitting the schema failed with the message ' . $errorMessage );
+		
+		// Don't try to send a schema if we're not on Pantheon servers.
+		if ( !defined( 'SOLR_PATH' ) ) {
+			$schemaSubmit = SolrPower_Api::get_instance()->submit_schema();
+			if ( strpos( $schemaSubmit, 'Error' ) ) {
+				wp_die( 'Submitting the schema failed with the message ' . $errorMessage );
+			}
 		}
 		$options = SolrPower_Options::get_instance()->initalize_options();
 		SolrPower_Options::get_instance()->update_option( $options );

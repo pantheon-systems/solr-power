@@ -50,7 +50,7 @@ class SolrPower_Sync {
 		}
 		$index_posts = $plugin_s4wp_settings[ 's4wp_index_posts' ];
 		$this->handle_status_change( $post_id, $post_info );
-		if ( $post_info->post_type == 'revision' || $post_info->post_status != 'publish') {
+		if ( $post_info->post_type == 'revision' || $post_info->post_status != 'publish' ) {
 			return;
 		}
 		# make sure this blog is not private or a spam if indexing on a multisite install
@@ -158,12 +158,11 @@ class SolrPower_Sync {
 		}
 
 
-			if ( is_multisite() ) {
-				$this->delete( $current_blog->domain . $current_blog->path . $post_info->ID );
-			} else {
-				$this->delete( $post_info->ID );
-			}
-		
+		if ( is_multisite() ) {
+			$this->delete( $current_blog->domain . $current_blog->path . $post_info->ID );
+		} else {
+			$this->delete( $post_info->ID );
+		}
 	}
 
 	function build_document( Solarium\QueryType\Update\Query\Document\Document $doc, $post_info, $domain = NULL,
@@ -198,14 +197,14 @@ class SolrPower_Sync {
 
 
 				$blogid = get_blog_id_from_url( $domain, $path );
-				$doc->setField( 'id', $domain . $path . $post_info->ID );
+				$doc->setField( 'ID', $domain . $path . $post_info->ID );
 				$doc->setField( 'permalink', get_blog_permalink( $blogid, $post_info->ID ) );
 				$doc->setField( 'blogid', $blogid );
 				$doc->setField( 'blogdomain', $domain );
 				$doc->setField( 'blogpath', $path );
 				$doc->setField( 'wp', 'multisite' );
 			} else {
-				$doc->setField( 'id', $post_info->ID );
+				$doc->setField( 'ID', $post_info->ID );
 				$doc->setField( 'permalink', get_permalink( $post_info->ID ) );
 				$doc->setField( 'wp', 'wp' );
 			}
@@ -218,21 +217,29 @@ class SolrPower_Sync {
 					$numcomments += 1;
 				}
 			}
-
-			$doc->setField( 'title', $post_info->post_title );
-			$doc->setField( 'content', strip_tags( $post_info->post_content ) );
-			$doc->setField( 'numcomments', $numcomments );
+			$doc->setField( 'post_name', $post_info->post_name );
+			$doc->setField( 'post_title', $post_info->post_title );
+			$doc->setField( 'post_content', strip_tags( $post_info->post_content ) );
+			$doc->setField( 'comment_count', $numcomments );
 			if ( isset( $auth_info->display_name ) ) {
-				$doc->setField( 'author', $auth_info->display_name );
+				$doc->setField( 'post_author', $auth_info->display_name );
 			}
 			if ( isset( $auth_info->user_nicename ) ) {
 				$doc->setField( 'author_s', get_author_posts_url( $auth_info->ID, $auth_info->user_nicename ) );
 			}
-			$doc->setField( 'type', $post_info->post_type );
-			$doc->setField( 'date', $this->format_date( $post_info->post_date_gmt ) );
-			$doc->setField( 'modified', $this->format_date( $post_info->post_modified_gmt ) );
+			$doc->setField( 'post_type', $post_info->post_type );
+			$doc->setField( 'post_date_gmt', $this->format_date( $post_info->post_date_gmt ) );
+			$doc->setField( 'post_modified_gmt', $this->format_date( $post_info->post_modified_gmt ) );
+			$doc->setField( 'post_date', $this->format_date( $post_info->post_date ) );
+			$doc->setField( 'post_modified', $this->format_date( $post_info->post_modified ) );
 			$doc->setField( 'displaydate', $post_info->post_date );
 			$doc->setField( 'displaymodified', $post_info->post_modified );
+
+
+			$doc->setField( 'post_status', $post_info->post_status );
+			$doc->setField( 'post_parent', $post_info->post_parent );
+			$doc->setField( 'post_excerpt', $post_info->post_excerpt );
+			$doc->setField( 'post_status', $post_info->post_status );
 
 			$categories = get_the_category( $post_info->ID );
 			if ( !$categories == NULL ) {
@@ -316,7 +323,7 @@ class SolrPower_Sync {
 				syslog( LOG_ERR, "failed to get a solr instance created" );
 			}
 		} catch ( Exception $e ) {
-			syslog( LOG_INFO, "ERROR: " . $e->getMessage() );
+			error_log( "ERROR: " . $e->getMessage() );
 		}
 	}
 

@@ -55,7 +55,7 @@ require_once(SOLR_POWER_PATH . '/includes/class-solrpower-api.php');
 require_once(SOLR_POWER_PATH . '/includes/class-solrpower-wp-query.php');
 require_once(SOLR_POWER_PATH . '/includes/class-solrpower-widget.php');
 
-register_activation_hook( __FILE__, array( 'SolrPower', 'activate' ) );
+register_activation_hook( __FILE__, array( SolrPower::get_instance(), 'activate' ) );
 
 function s4wp_search_form() {
 	$sort	 = filter_input( INPUT_GET, 'sort', FILTER_SANITIZE_STRING );

@@ -23,10 +23,6 @@ class SolrPower_Api {
 		
 	}
 
-	function call() {
-		
-	}
-
 	function submit_schema() {
 		// Solarium does not currently support submitting schemas to the server.
 		// So we'll do it ourselves
@@ -39,7 +35,7 @@ class SolrPower_Api {
 		if ( is_file( realpath( ABSPATH ) . '/' . $_ENV[ 'FILEMOUNT' ] . '/solr-for-wordpress-on-pantheon/schema.xml' ) ) {
 			$schema = realpath( ABSPATH ) . '/' . $_ENV[ 'FILEMOUNT' ] . '/solr-for-wordpress-on-pantheon/schema.xml';
 		} else {
-			$schema = dirname( __FILE__ ) . '/schema.xml';
+			$schema = SOLR_POWER_PATH . '/schema.xml';
 		}
 
 		$path		 = $this->compute_path();
@@ -47,7 +43,7 @@ class SolrPower_Api {
 		$client_cert = realpath( ABSPATH . '../certs/binding.pem' );
 
 		/*
-		 * A couple of quick checks to make sure eveyrthing seems sane
+		 * A couple of quick checks to make sure everything seems sane
 		 */
 		if ( $errorMessage = SolrPower::get_instance()->sanity_check() ) {
 			return $errorMessage;
@@ -198,11 +194,11 @@ class SolrPower_Api {
 		}
 
 		if ( $plugin_s4wp_settings[ 's4wp_facet_on_author' ] ) {
-			$facet_fields[] = 'author';
+			$facet_fields[] = 'post_author';
 		}
 
 		if ( $plugin_s4wp_settings[ 's4wp_facet_on_type' ] ) {
-			$facet_fields[] = 'type';
+			$facet_fields[] = 'post_type';
 		}
 
 
@@ -232,7 +228,7 @@ class SolrPower_Api {
 			if ( $sortby != "" ) {
 				$select[ 'sort' ] = array( $sortby => $order );
 			} else {
-				$select[ 'sort' ] = array( 'date' => 'desc' );
+				$select[ 'sort' ] = array( 'post_date' => 'desc' );
 			}
 
 			$query = $solr->createSelect( $select );
@@ -253,7 +249,7 @@ class SolrPower_Api {
 					}
 				}
 			}
-			$query->getHighlighting()->setFields( 'content' );
+			$query->getHighlighting()->setFields( 'post_content' );
 			$query->getHighlighting()->setSimplePrefix( '<b>' );
 			$query->getHighlighting()->setSimplePostfix( '</b>' );
 			$query->getHighlighting()->setHighlightMultiTerm( true );
@@ -272,7 +268,7 @@ class SolrPower_Api {
 			}
 		}
 
-		
+
 		return $response;
 	}
 

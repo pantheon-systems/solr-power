@@ -38,20 +38,25 @@ class SolrPower_WP_Query {
 		add_filter( 'found_posts_query', array( $this, 'found_posts_query' ), 5, 2 );
 
 		add_filter( 'the_posts', array( $this, 'the_posts' ), 10, 2 );
-
-
-		add_action( 'wp', array( $this, 'search' ) );
 	}
 
 	function posts_request( $request, $query ) {
+		if ( !$query->is_search() ) {
+			return $request;
+		}
 
-		$qry					 = $query->get( 's' );
-		$offset					 = $query->get( 'offset' );
-		$count					 = $query->get( 'posts_per_page' );
-		$fq						 = array();
-		$sortby					 = '';
-		$order					 = '';
-		$search					 = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order );
+		$the_page = (!$query->get( 'paged' ) ) ? 1 : $query->get( 'paged' );
+
+		$qry	 = $query->get( 's' );
+		$offset	 = $query->get( 'posts_per_page' ) * ($the_page - 1);
+		$count	 = $query->get( 'posts_per_page' );
+		$fq		 = array();
+		$sortby	 = '';
+		$order	 = '';
+		$search	 = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order );
+		if ( is_null( $search ) ) {
+			return false;
+		}
 		$search					 = $search->getData();
 		$search					 = $search[ 'response' ];
 		$query->found_posts		 = $search[ 'numFound' ];
@@ -59,21 +64,26 @@ class SolrPower_WP_Query {
 		$posts					 = array();
 
 		foreach ( $search[ 'docs' ] as $post_array ) {
-			$post		 = new stdClass();
-			$post_args	 = array(
-				'id'				 => 'ID',
-				'type'				 => 'post_type',
-				'title'				 => 'post_title',
-				'content'			 => 'post_content',
-				'displaydate'		 => 'post_date',
-				'displaymodified'	 => 'post_modified',
-				'permalink'			 => 'permalink'
-			);
-			foreach ( $post_args as $solr => $arg ) {
-				$post->$arg = $post_array[ $solr ];
+			$post = new stdClass();
+
+			foreach ( $post_array as $key => $value ) {
+				if ( 'displaydate' == $key ) {
+					$post->post_date = $value;
+					continue;
+				}
+				if ( 'displaymodified' == $key ) {
+					$post->post_modified = $value;
+					continue;
+				}
+				if ( 'post_date' == $key || 'post_modified' == $key ) {
+					continue;
+				}
+
+				$post->$key = $value;
 			}
 			$posts[] = $post;
 		}
+
 		$this->found_posts[ spl_object_hash( $query ) ] = $posts;
 
 		global $wpdb;
@@ -86,18 +96,15 @@ class SolrPower_WP_Query {
 		return '';
 	}
 
-	function search() {
-		
-	}
-
 	function the_posts( $posts, &$query ) {
-
+		if ( !isset( $this->found_posts[ spl_object_hash( $query ) ] ) ) {
+			return $posts;
+		}
 
 		$new_posts = $this->found_posts[ spl_object_hash( $query ) ];
 
 		return $new_posts;
 	}
-
 
 }
 
