@@ -29,12 +29,12 @@
  *
  */
 //get the plugin settings
-$s4wp_settings = s4wp_get_option('plugin_s4wp_settings');
+$s4wp_settings = solr_options();
 
 #set defaults if not initialized
 if ($s4wp_settings['s4wp_solr_initialized'] != 1) {
 
-  $options = s4wp_initalize_options();
+  $options = SolrPower_Options::get_instance()->initalize_options();
   $options['s4wp_index_all_sites'] = 0;
 
   //update existing settings from multiple option record to a single array
@@ -102,12 +102,12 @@ if (isset($_POST['action']) && $_POST['action'] == 'update') {
   }
 
   //lets save our options array
-  s4wp_update_option($s4wp_settings);
+  SolrPower_Options::get_instance()->update_option($s4wp_settings);
 
   //we need to make call for the options again
   //as we need them to come out in an a sanitised format
   //otherwise fields that need to run s4wp_filter_list2str will come up with nothin
-  $s4wp_settings = s4wp_get_option('plugin_s4wp_settings');
+  $s4wp_settings = solr_options();
 
   ?>
   <div id="message" class="updated fade"><p><strong><?php _e('Success!', 'solr4wp') ?></strong></p></div>
@@ -134,7 +134,7 @@ function s4wp_checkConnectOption($optionType, $connectType) {
  *
  */
 if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
-    if (s4wp_ping_server()) {
+    if (  SolrPower_Api::get_instance()->ping_server()) {
 ?>
 <div id="message" class="updated fade"><p><strong><?php _e('Ping Success!', 'solr4wp') ?></strong></p></div>
 <?php
@@ -144,23 +144,23 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
 <?php
     }
 } else if (isset($_POST['s4wp_deleteall']) and $_POST['s4wp_deleteall']) {
-    s4wp_delete_all();
+    SolrPower_Sync::get_instance()->delete_all();
 ?>
     <div id="message" class="updated fade"><p><strong><?php _e('All Indexed Pages Deleted!', 'solr4wp') ?></strong></p></div>
 <?php
 }  else if (isset($_POST['s4wp_repost_schema']) and $_POST['s4wp_repost_schema']) {
-    s4wp_delete_all();
-    $output = s4wp_submit_schema();
+    SolrPower_Sync::get_instance()->delete_all();
+    $output = SolrPower_Api::get_instance()->submit_schema();
 ?>
     <div id="message" class="updated fade"><p><strong><?php _e('All Indexed Pages Deleted!<br />'.esc_html($output), 'solr4wp') ?></strong></p></div>
 <?php
 }  else if (isset($_POST['s4wp_optimize']) and $_POST['s4wp_optimize']) {
-    s4wp_optimize();
+    SolrPower_Api::get_instance()->optimize();
 ?>
     <div id="message" class="updated fade"><p><strong><?php _e('Index Optimized!', 'solr4wp') ?></strong></p></div>
 <?php
 } else if (isset($_POST['s4wp_init_blogs']) and $_POST['s4wp_init_blogs']) {
-    s4wp_copy_config_to_all_blogs();
+    SolrPower_Sync::get_instance()->copy_config_to_all_blogs();
 } else if(isset($_POST['s4wp_query']) && $_POST['solrQuery']) {
 
   $qry      = filter_input(INPUT_POST,'solrQuery',FILTER_SANITIZE_STRING);
@@ -169,10 +169,10 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
   $fq       = null;
   $sortby   = null;
   $order    = null;
-  $results  = s4wp_query($qry, $offset, $count, $fq, $sortby, $order);
+  $results  = SolrPower_Api::get_instance()->query($qry, $offset, $count, $fq, $sortby, $order);
 
   if(isset($results)) {
-    $plugin_s4wp_settings = s4wp_get_option();
+    $plugin_s4wp_settings = solr_options();
     $output_info  = $plugin_s4wp_settings['s4wp_output_info'];
     $data         = $results->getData();
     $response     = $data['response'];
@@ -189,12 +189,12 @@ if (isset($_POST['s4wp_ping']) and $_POST['s4wp_ping']) {
   }
   ?>
   <div id="message" class="updated fade"><p><strong>Solr Results for string "<?php echo esc_html($qry); ?>":</strong>
-    <br />Hits:<?php echo esc_html($out['hits']); ?>
-    <br />Query Time:<?php echo esc_html($out['qtime']); ?>
+    <br />Hits: <?php echo esc_html($out['hits']); ?>
+    <br />Query Time: <?php echo esc_html($out['qtime']); ?>
     </p></div>
 <?php
 }
-$s4wp_settings = s4wp_get_option('plugin_s4wp_settings');
+$s4wp_settings = solr_options();
 
 ?>
 
@@ -220,7 +220,7 @@ $s4wp_settings = s4wp_get_option('plugin_s4wp_settings');
 	<pre>
 Solr Server IP address : <?php echo esc_html( getenv( 'PANTHEON_INDEX_HOST' ) ); ?><br />
 Solr Server Port       : <?php echo esc_html( getenv( 'PANTHEON_INDEX_PORT' ) ); ?><br />
-Solr Server Path       : <?php echo esc_html( s4wp_compute_path() ); ?><br />
+Solr Server Path       : <?php echo esc_html( SolrPower_Api::get_instance()->compute_path() ); ?><br />
 	</pre>
 </div>
 <?php 

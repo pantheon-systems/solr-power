@@ -69,17 +69,17 @@ var $j = jQuery.noConflict();
 
         $j(document).ready(function() {
           switch1();
-          
+
             $j.each(solr.post_types,function(index,value){
-                $j('.s4wp_postload_' + value.post_type).click(function() {
+                $j('.s4wp_postload_' + value).click(function() {
                 $j(this).after($percentspan);
                 disableAll();
-                doLoad(value.post_type, 0);
+                doLoad(value, 0);
             });
-            $j('.s4wp_pageload_' + value.post_type).click(function() {
+            $j('.s4wp_pageload_' + value).click(function() {
                 $j(this).after($percentspan);
                 disableAll();
-                doLoad(value.post_type, 0);
+                doLoad(value, 0);
             });
             });
             

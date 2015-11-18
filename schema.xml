@@ -20,10 +20,10 @@
             </analyzer>
         </fieldType>
 
-		<fieldType name="text_lws" class="solr.TextField" positionIncrementGap="100">
+        <fieldType name="text_lws" class="solr.TextField" positionIncrementGap="100">
             <analyzer>
                 <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-				<filter class="solr.LowerCaseFilterFactory"/>
+                <filter class="solr.LowerCaseFilterFactory"/>
             </analyzer>
         </fieldType>
 
@@ -33,7 +33,7 @@
                 <filter class="solr.WordDelimiterFilterFactory" generateWordParts="1" generateNumberParts="1" catenateWords="1" catenateNumbers="1" catenateAll="0" splitOnCaseChange="1"/>
                 <filter class="solr.LowerCaseFilterFactory"/>
                 <!-- filter class="solr.EnglishPorterFilterFactory" protected="protwords.txt"/ -->
-		<filter class="solr.SnowballPorterFilterFactory" protected="protwords.txt" language="English"/>
+                <filter class="solr.SnowballPorterFilterFactory" protected="protwords.txt" language="English"/>
                 <filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
             </analyzer>
             <analyzer type="query">
@@ -82,40 +82,53 @@
 
 
     <fields>
-	<!-- http://stackoverflow.com/questions/15527380/solr-4-2-what-is-version-field -->
-	<field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>	
-        <field name="id" type="string" indexed="true" stored="true" required="true" /> 
-
-		<field name="blogid" type="string" indexed="true" stored="true"/>
-		<field name="blogdomain" type="string" indexed="true" stored="true"/>
-		<field name="blogpath" type="string" indexed="true" stored="true"/>
-		<field name="wp" type="string" indexed="true" stored="true"/>
+        <!-- http://stackoverflow.com/questions/15527380/solr-4-2-what-is-version-field -->
+        <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>	
+        <field name="ID" type="string" indexed="true" stored="true" required="true" /> 
+        <field name="post_author" type="string" indexed="true" stored="true"/>
+        <field name="post_name" type="string" indexed="true" stored="true"/>  
+        <field name="post_type" type="string" indexed="true" stored="true"/>
+        <field name="post_title" type="text_lws" indexed="true" stored="true"/>
+        <field name="post_date" type="date" indexed="true" stored="false"/>
+        <field name="post_date_gmt" type="date" indexed="true" stored="false"/>
+        <field name="post_content" type="text" indexed="true" stored="true"/>
+        <field name="post_excerpt" type="text" indexed="true" stored="true"/>
+        <field name="post_status" type="string" indexed="true" stored="true"/>
+        <field name="comment_status" type="string" indexed="true" stored="true"/>
+        <field name="ping_status" type="string" indexed="true" stored="true"/>
+        <field name="post_parent" type="string" indexed="true" stored="true"/>
+        <field name="post_modified" type="date" indexed="true" stored="false"/>
+        <field name="post_modified_gmt" type="date" indexed="true" stored="false"/>
+        <field name="comment_count" type="string" indexed="true" stored="true"/>
+        <field name="menu_order" type="string" indexed="true" stored="true"/>
+        
+        <field name="blogid" type="string" indexed="true" stored="true"/>
+        <field name="blogdomain" type="string" indexed="true" stored="true"/>
+        <field name="blogpath" type="string" indexed="true" stored="true"/>
+        <field name="wp" type="string" indexed="true" stored="true"/>
 		
-		<field name="permalink" type="string" indexed="true" stored="true"/> 
-        <field name="title" type="text_lws" indexed="true" stored="true"/>
-		<field name="content" type="text" indexed="true" stored="true"/>
-		<field name="numcomments" type="integer" indexed="true" stored="true"/>
-		<field name="comments" type="text" indexed="true" stored="true" multiValued="true"/>
+        <field name="permalink" type="string" indexed="true" stored="true"/> 
+        
+        
+        <field name="numcomments" type="integer" indexed="true" stored="true"/>
+        <field name="comments" type="text" indexed="true" stored="true" multiValued="true"/>
 
         <field name="categories" type="string" indexed="true" stored="true" multiValued="true"/>
-		<field name="categoriessrch" type="text_lws" indexed="true" stored="false" multiValued="true"/>
+        <field name="categoriessrch" type="text_lws" indexed="true" stored="false" multiValued="true"/>
 		
         <field name="tags" type="string" indexed="true" stored="true" multiValued="true"/>
-		<field name="tagssrch" type="text_lws" indexed="true" stored="false" multiValued="true"/>
+        <field name="tagssrch" type="text_lws" indexed="true" stored="false" multiValued="true"/>
 		
-        <field name="author" type="string" indexed="true" stored="true"/>
-		<field name="type" type="string" indexed="true" stored="true"/>
+        
+        
 
-		<!-- Date fields used for sorting and searching -->
-		<field name="date" type="date" indexed="true" stored="false"/>
-		<field name="modified" type="date" indexed="true" stored="false"/>
 		
-		<!-- Fields used to display the date -->
-		<field name="displaydate" type="string" indexed="false" stored="true"/>
-		<field name="displaymodified" type="string" indexed="false" stored="true"/>
+        <!-- Fields used to display the date -->
+        <field name="displaydate" type="string" indexed="true" stored="true"/>
+        <field name="displaymodified" type="string" indexed="true" stored="true"/>
 		
-		<!-- For spell checking, did you mean? -->
-		<field name="spell" type="textSpell" indexed="true" stored="true" multiValued="true"/>
+        <!-- For spell checking, did you mean? -->
+        <field name="spell" type="textSpell" indexed="true" stored="true" multiValued="true"/>
 		
         <!-- composite field -->
         <field name="text" type="text" indexed="true" stored="false" multiValued="true"/>
@@ -134,18 +147,18 @@
         <dynamicField name="*_d"  type="sdouble" indexed="true"  stored="true"/>
         <dynamicField name="*_dt" type="date"    indexed="true"  stored="true"/>
         <dynamicField name="random*" type="random" />
-     </fields>
+    </fields>
 
-     <uniqueKey>id</uniqueKey>
-     <defaultSearchField>text</defaultSearchField>
-     <solrQueryParser defaultOperator="OR"/>
-     <copyField source="title" dest="text"/>
-     <copyField source="tags" dest="text"/>
-     <copyField source="categories" dest="text"/>
-     <copyField source="content" dest="text"/>
-     <copyField source="tags" dest="tagssrch"/>
-     <copyField source="categories" dest="categoriessrch"/>
-     <copyField source="title" dest="spell"/>
-	 <copyField source="content" dest="spell"/>
-	 <copyField source="author" dest="spell"/>
+    <uniqueKey>ID</uniqueKey>
+    <defaultSearchField>text</defaultSearchField>
+    <solrQueryParser defaultOperator="OR"/>
+    <copyField source="post_title" dest="text"/>
+    <copyField source="tags" dest="text"/>
+    <copyField source="categories" dest="text"/>
+    <copyField source="post_content" dest="text"/>
+    <copyField source="tags" dest="tagssrch"/>
+    <copyField source="categories" dest="categoriessrch"/>
+    <copyField source="post_title" dest="spell"/>
+    <copyField source="post_content" dest="spell"/>
+    <copyField source="post_author" dest="spell"/>
 </schema>
