@@ -47,12 +47,13 @@
   Solr index.
 -->
 <?php
-  $postTypes = s4wp_get_post_types();
+  $postTypes = get_post_types(array( 'exclude_from_search' => false ));
+
   foreach($postTypes as $postType) {
 ?>
 <tr valign="top">
-    <th scope="row"><?php _e('Load All '.esc_html($postType->post_type).'(s)', 'solr4wp') ?></th>
-    <td><input type="button" class="button-primary s4wp_postload_<?php print(esc_attr($postType->post_type)); ?>" name="s4wp_postload_<?php print(esc_attr($postType->post_type)); ?>" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
+    <th scope="row"><?php _e('Load All '.esc_html($postType).'(s)', 'solr4wp') ?></th>
+    <td><input type="button" class="button-primary s4wp_postload_<?php print(esc_attr($postType)); ?>" name="s4wp_postload_<?php print(esc_attr($postType)); ?>" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
 </tr>
 <?php } ?>
 </table>
