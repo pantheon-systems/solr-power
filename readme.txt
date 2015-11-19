@@ -1,8 +1,8 @@
 === Solr Search for WordPress ===
-Contributors: getpantheon, Outlandish Josh, mattweber, palepurple
+Contributors: getpantheon, Outlandish Josh, collinsinternet
 Tags: search
 Requires at least: 4.2
-Tested up to: 4.2
+Tested up to: 4.3
 Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -25,19 +25,22 @@ Search is critical for your site, but the default search for WordPress leaves a 
 First install the plugin as per normal. If you are installing on Pantheon, you will need to enable the Apache Solr add-on before you can enable the plugin. 
 
 1. Index your existing content by going to the plugin options screen and clicking "index content".
-2. Replace the core search widget with the one from this plugin.
-3. Search on!
-4. See the examples/templates directories for more rich implementation guidelines. 
+2. Search on!
+3. See the examples/templates directories for more rich implementation guidelines. 
 
-== Screenshots ==
+== Development ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets 
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png` 
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+This plugin is under active development on GitHub:
+
+[https://github.com/pantheon-systems/solr-power](https://github.com/pantheon-systems/solr-power)
+
+Please feel free to file issues there. Pull requests are also welcome!
 
 == Changelog ==
+
+= 0.2 =
+* Works "out of the box" by overriding WP_Query()
+* Much improved internal factoring
 
 = 0.1 =
 * Initial alpha release.
