@@ -51,8 +51,8 @@ class SolrPower_WP_Query {
 		$offset	 = $query->get( 'posts_per_page' ) * ($the_page - 1);
 		$count	 = $query->get( 'posts_per_page' );
 		$fq		 = array();
-		$sortby	 = '';
-		$order	 = '';
+		$sortby	 = 'score';
+		$order	 = 'desc';
 		$search	 = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order );
 		if ( is_null( $search ) ) {
 			return false;
