@@ -14,19 +14,19 @@ Improve your user experience with the Apache Solr search engine for your WordPre
 Search is critical for your site, but the default search for WordPress leaves a lot to be desired. Improve your user experience with the Apache Solr search engine for your WordPress website.
 
 * Fast results, with better accuracy
-* Enable faceting on fields such as tags, categories, author, and page type.
+* Enables faceting on fields such as tags, categories, author, and page type.
 * Indexing and faceting on custom fields
 * Completely replaces default WordPress search, just install and configure.
 * Completely integrated into default WordPress theme and search widget.
-* Very developer-friendly: uses the modern [Solarium](http://www.solarium-project.org/] library)
+* Very developer-friendly: uses the modern [Solarium](http://www.solarium-project.org/) library
 
 ## Installation ##
 
-First install the plugin as per normal. If you are installing on Pantheon, you will need to enable the Apache Solr add-on before you can enable the plugin. 
+First install the plugin as per normal. If you are installing on Pantheon, you will need to enable the Apache Solr add-on before you can enable the plugin.
 
 1. Index your existing content by going to the plugin options screen and clicking "index content".
 2. Search on!
-3. See the examples/templates directories for more rich implementation guidelines. 
+3. See the examples/templates directories for more rich implementation guidelines.
 
 ## Development ##
 
@@ -43,7 +43,7 @@ Please feel free to file issues there. Pull requests are also welcome!
 * Much improved internal factoring
 
 ### 0.1 ###
-* Initial alpha release.
+* Initial alpha release (GitHub only)
 
 
 ### 0.0 ###

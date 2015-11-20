@@ -2,10 +2,9 @@
 
 /*
   Plugin Name: Solr Power
-  Donate link: http://www.mattweber.org
-  Description: Allows Pantheon sites to use Solr for searching.
-  Version: 0.6.0
-  Author: Pantheon, Matt Weber
+  Description: Allows WordPress sites to index and search content with ApacheSolr.
+  Version: 0.2.0
+  Author: Pantheon
   Author URI: http://pantheon.io
  */
 /*
