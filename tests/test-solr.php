@@ -16,9 +16,9 @@ class SolrTest extends WP_UnitTestCase {
 	function test_solr_active() {
 		$this->assertTrue( SolrPower_Api::get_instance()->ping_server() );
 	}
-	
-	function test_cwd(){
-		print_r(getcwd());
+
+	function test_solr_cores() {
+		print_r( file_get_contents( 'http://localhost:8983/solr/admin/cores' ) );
 	}
 
 }
