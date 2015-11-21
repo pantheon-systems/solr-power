@@ -59,10 +59,6 @@ class SolrPower {
 		return $returnValue;
 	}
 
-	function widget() {
-		register_widget( 's4wp_MLTWidget' );
-	}
-
 	function admin_head() {
 		// include our default css
 		if ( file_exists( SOLR_POWER_PATH . '/template/search.css' ) ) {

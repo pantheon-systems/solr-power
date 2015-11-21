@@ -48,27 +48,13 @@ download_and_run() {
            
     download $url
 
-    # copies custom configurations
-    for file in $SOLR_CONFS
-    do
-        if [ -f $file ]
-        then
-            cp $file $dir_name/example/solr/$dir_conf
-            echo "Copied $file into solr conf directory."
-        fi
-    done
-
+    # copy schema.xml
+    cp schema.xml $dir_name/example/solr/$dir_conf
+ 
     # Run solr
     run $dir_name $SOLR_PORT
 
-    # Post documents
-    if [ -z "$SOLR_DOCS" ]
-    then
-        echo "$SOLR_DOCS not defined, skipping initial indexing"
-    else
-        echo "Indexing $SOLR_DOCS"
-        post_some_documents $dir_name $SOLR_DOCS
-    fi
+
 }
 
 download_and_run $SOLR_VERSION
