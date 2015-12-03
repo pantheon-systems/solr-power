@@ -17,3 +17,5 @@ before_script:
   - bash bin/install-solr.sh
 
 script: phpunit
+
+# Comment: fake build
