@@ -52,7 +52,6 @@ require_once(SOLR_POWER_PATH . '/includes/class-solrpower-options.php');
 require_once(SOLR_POWER_PATH . '/includes/class-solrpower-sync.php');
 require_once(SOLR_POWER_PATH . '/includes/class-solrpower-api.php');
 require_once(SOLR_POWER_PATH . '/includes/class-solrpower-wp-query.php');
-require_once(SOLR_POWER_PATH . '/includes/class-solrpower-widget.php');
 
 register_activation_hook( __FILE__, array( SolrPower::get_instance(), 'activate' ) );
 

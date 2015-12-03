@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<schema name="wpdata" version="1.1">
+<schema name="wpdata" version="1.2">
     <types>
         <fieldType name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
         <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>
@@ -84,6 +84,7 @@
     <fields>
         <!-- http://stackoverflow.com/questions/15527380/solr-4-2-what-is-version-field -->
         <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>	
+        <field name="solr_id" type="string" indexed="true" stored="true" required="true" /> 
         <field name="ID" type="string" indexed="true" stored="true" required="true" /> 
         <field name="post_author" type="string" indexed="true" stored="true"/>
         <field name="post_name" type="string" indexed="true" stored="true"/>  
@@ -149,7 +150,7 @@
         <dynamicField name="random*" type="random" />
     </fields>
 
-    <uniqueKey>ID</uniqueKey>
+    <uniqueKey>solr_id</uniqueKey>
     <defaultSearchField>text</defaultSearchField>
     <solrQueryParser defaultOperator="OR"/>
     <copyField source="post_title" dest="text"/>

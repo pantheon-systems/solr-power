@@ -21,31 +21,24 @@ class SolrPower_Options {
 
 	function __construct() {
 		add_action( 'admin_menu', array( $this, 'add_pages' ) );
+		add_action( 'network_admin_menu', array( $this, 'add_network_pages' ) );
 		add_action( 'admin_init', array( $this, 'options_init' ) );
 		add_action( 'wp_ajax_solr_options', array( $this, 'options_load' ) );
 	}
 
 	function add_pages() {
-		$addpage = FALSE;
-
-		if ( is_multisite() && is_site_admin() ) {
-			$plugin_s4wp_settings	 = solr_options();
-			$indexall				 = $plugin_s4wp_settings[ 's4wp_index_all_sites' ];
-			if ( ($indexall && is_main_blog()) || !$indexall ) {
-				$addpage = TRUE;
-			}
-		} else if ( !is_multisite() && is_admin() ) {
-			$addpage = TRUE;
-		}
-
-		if ( $addpage ) {
+		if ( !is_multisite() ) {
 			add_options_page( 'Solr Options', 'Solr Options', 'manage_options', 'solr-power', array( $this, 'options_page' ) );
 		}
 	}
 
+	function add_network_pages() {
+		add_submenu_page( 'settings.php', 'Solr Options', 'Solr Options', 'manage_options', 'solr-power', array( $this, 'options_page' ) );
+	}
+
 	function options_page() {
 		if ( file_exists( SOLR_POWER_PATH . '/solr-options-page.php' ) ) {
-			include( SOLR_POWER_PATH  . '/solr-options-page.php' );
+			include( SOLR_POWER_PATH . '/solr-options-page.php' );
 		} else {
 			_e( "<p>Couldn't locate the options page.</p>", 'solr4wp' );
 		}
@@ -211,6 +204,7 @@ class SolrPower_Options {
 	}
 
 }
+
 SolrPower_Options::get_instance();
 
 function solr_options() {

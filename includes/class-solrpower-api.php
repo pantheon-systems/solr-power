@@ -126,7 +126,7 @@ class SolrPower_Api {
 				'localhost' => array(
 					'host'	 => getenv( 'PANTHEON_INDEX_HOST' ),
 					'port'	 => getenv( 'PANTHEON_INDEX_PORT' ),
-					'scheme' => 'https',
+					'scheme' => apply_filters( 'solr_scheme', 'https' ),
 					'path'	 => $this->compute_path(),
 					'ssl'	 => array( 'local_cert' => realpath( ABSPATH . '../certs/binding.pem' ) )
 				)

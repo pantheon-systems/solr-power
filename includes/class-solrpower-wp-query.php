@@ -79,9 +79,15 @@ class SolrPower_WP_Query {
 					continue;
 				}
 
+				if ( 'post_id' == $key ) {
+					$post->ID = $value;
+					continue;
+				}
+
 				$post->$key = $value;
 			}
-			$posts[] = $post;
+			$post->solr	 = true;
+			$posts[]	 = $post;
 		}
 
 		$this->found_posts[ spl_object_hash( $query ) ] = $posts;

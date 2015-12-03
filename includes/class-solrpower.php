@@ -50,17 +50,13 @@ class SolrPower {
 		$returnValue = '';
 		$wp_version	 = get_bloginfo( 'version' );
 
-		if ( getenv( 'PANTHEON_INDEX_HOST' ) === false ) {
-			$returnValue = __( 'Before you can activate this plugin, you must first activate Solr in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' );
+		if ( getenv( 'PANTHEON_ENVIRONMENT' ) !== false && getenv( 'PANTHEON_INDEX_HOST' ) === false ) {
+			$returnValue = __( 'Before you can activate this plugin, you must first <a href="https://pantheon.io/docs/articles/sites/apache-solr/">activate Solr</a> in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' );
 		} else if ( version_compare( $wp_version, '3.0', '<' ) ) {
 			$returnValue = __( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' );
 		}
 
 		return $returnValue;
-	}
-
-	function widget() {
-		register_widget( 's4wp_MLTWidget' );
 	}
 
 	function admin_head() {

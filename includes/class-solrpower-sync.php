@@ -79,7 +79,7 @@ class SolrPower_Sync {
 
 
 		if ( is_multisite() ) {
-			$this->delete( $current_blog->domain . $current_blog->path . $post_info->ID );
+			$this->delete( get_current_blog_id() . '_' . $post_info->ID );
 		} else {
 			$this->delete( $post_info->ID );
 		}
@@ -159,7 +159,7 @@ class SolrPower_Sync {
 
 
 		if ( is_multisite() ) {
-			$this->delete( $current_blog->domain . $current_blog->path . $post_info->ID );
+			$this->delete( get_current_blog_id() . '_' . $post_info->ID );
 		} else {
 			$this->delete( $post_info->ID );
 		}
@@ -188,26 +188,21 @@ class SolrPower_Sync {
 			if ( is_multisite() ) {
 				// if we get here we expect that we've "switched" what blog we're running
 				// as
+				global $current_blog;
 
-				if ( $domain == NULL )
-					$domain = $current_blog->domain;
-
-				if ( $path == NULL )
-					$path = $current_blog->path;
-
-
-				$blogid = get_blog_id_from_url( $domain, $path );
-				$doc->setField( 'ID', $domain . $path . $post_info->ID );
-				$doc->setField( 'permalink', get_blog_permalink( $blogid, $post_info->ID ) );
+				$blogid = get_current_blog_id();
+				$doc->setField( 'solr_id', $blogid . '_' . $post_info->ID );
 				$doc->setField( 'blogid', $blogid );
 				$doc->setField( 'blogdomain', $domain );
 				$doc->setField( 'blogpath', $path );
 				$doc->setField( 'wp', 'multisite' );
 			} else {
-				$doc->setField( 'ID', $post_info->ID );
-				$doc->setField( 'permalink', get_permalink( $post_info->ID ) );
-				$doc->setField( 'wp', 'wp' );
+				$doc->setField( 'solr_id', $post_info->ID );
 			}
+			$doc->setField( 'ID', $post_info->ID );
+			$doc->setField( 'permalink', get_permalink( $post_info->ID ) );
+			$doc->setField( 'wp', 'wp' );
+
 
 			$numcomments = 0;
 			if ( $index_comments ) {
@@ -396,13 +391,19 @@ class SolrPower_Sync {
 				switch_to_blog( $blog_id );
 
 				// now we actually gather the blog posts
-				$query		 = $wpdb->prepare( "SELECT ID FROM %s WHERE post_status = 'publish' AND post_type = '%s' ORDER BY ID;", $wpdb->base_prefix . $bloginfo . '_posts', $post_type );
-				$postids	 = $wpdb->get_results( $query );
-				$postcount	 = count( $postids );
+				$args	 = array(
+					'post_type'		 => $post_type,
+					'post_status'	 => 'publish',
+					'fields'		 => 'ids'
+				);
+				$query	 = new WP_Query( $args );
+				$postids = $query->posts;
+
+				$postcount = count( $postids );
 				syslog( LOG_INFO, "building $postcount documents for " . substr( get_bloginfo( 'wpurl' ), 7 ) );
 				for ( $idx = 0; $idx < $postcount; $idx++ ) {
 
-					$postid	 = $postids[ $idx ]->ID;
+					$postid	 = $postids[ $idx ];
 					$last	 = $postid;
 					$percent = (floatval( $idx ) / floatval( $postcount )) * 100;
 					if ( $prev && !$found ) {
@@ -444,8 +445,13 @@ class SolrPower_Sync {
 			// done importing so lets switch back to the proper blog id
 			restore_current_blog();
 		} else {
-			$query		 = $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_status = 'publish' AND post_type = '%s' ORDER BY ID;", $post_type );
-			$posts		 = $wpdb->get_results( $query );
+			$args		 = array(
+				'post_type'		 => $post_type,
+				'post_status'	 => 'publish',
+				'fields'		 => 'ids'
+			);
+			$query		 = new WP_Query( $args );
+			$posts		 = $query->posts;
 			$postcount	 = count( $posts );
 			if ( 0 == $postcount ) {
 				$end = true;
@@ -453,7 +459,7 @@ class SolrPower_Sync {
 				die();
 			}
 			for ( $idx = 0; $idx < $postcount; $idx++ ) {
-				$postid	 = $posts[ $idx ]->ID;
+				$postid	 = $posts[ $idx ];
 				$last	 = $postid;
 				$percent = (floatval( $idx ) / floatval( $postcount )) * 100;
 				if ( $prev && !$found ) {
