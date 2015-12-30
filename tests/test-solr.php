@@ -17,7 +17,11 @@ class SolrTest extends WP_UnitTestCase {
 		parent::setUp();
 		// Delete the entire index.
 		SolrPower_Sync::get_instance()->delete_all();
-		// Delete all pages and posts prior to each test:
+	}
+	
+	function tearDown(){
+		parent::tearDown();
+		// Delete all pages and posts after each test:
 		global $wpdb;
 		$wpdb->delete( $wpdb->prefix . 'posts', array( 'post_type' => 'page' ) );
 		$wpdb->delete( $wpdb->prefix . 'posts', array( 'post_type' => 'post' ) );
