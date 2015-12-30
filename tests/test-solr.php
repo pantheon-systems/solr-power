@@ -15,8 +15,7 @@ class SolrTest extends WP_UnitTestCase {
 	 */
 	function setUp() {
 		parent::setUp();
-		// Delete the entire index.
-		SolrPower_Sync::get_instance()->delete_all();
+		
 	}
 	
 	function tearDown(){
@@ -25,6 +24,8 @@ class SolrTest extends WP_UnitTestCase {
 		global $wpdb;
 		$wpdb->delete( $wpdb->prefix . 'posts', array( 'post_type' => 'page' ) );
 		$wpdb->delete( $wpdb->prefix . 'posts', array( 'post_type' => 'post' ) );
+		// Delete the entire index.
+		SolrPower_Sync::get_instance()->delete_all();
 	}
 
 	/**
