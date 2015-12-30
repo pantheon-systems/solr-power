@@ -9,7 +9,7 @@ class SolrTest extends WP_UnitTestCase {
 			return 'http';
 		} );
 	}
-	
+
 	/**
 	 * Setup for every test.
 	 */
@@ -17,6 +17,10 @@ class SolrTest extends WP_UnitTestCase {
 		parent::setUp();
 		// Delete the entire index.
 		SolrPower_Sync::get_instance()->delete_all();
+		// Delete all pages and posts prior to each test:
+		global $wpdb;
+		$wpdb->delete( $wpdb->prefix . 'posts', array( 'post_type' => 'page' ) );
+		$wpdb->delete( $wpdb->prefix . 'posts', array( 'post_type' => 'post' ) );
 	}
 
 	/**
