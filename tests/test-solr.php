@@ -15,17 +15,9 @@ class SolrTest extends WP_UnitTestCase {
 	 */
 	function setUp() {
 		parent::setUp();
-		
-	}
-	
-	function tearDown(){
-		parent::tearDown();
-		// Delete all pages and posts after each test:
-		global $wpdb;
-		$wpdb->delete( $wpdb->prefix . 'posts', array( 'post_type' => 'page' ) );
-		$wpdb->delete( $wpdb->prefix . 'posts', array( 'post_type' => 'post' ) );
 		// Delete the entire index.
 		SolrPower_Sync::get_instance()->delete_all();
+		delete_transient( 'solr_ready' );
 	}
 
 	/**
