@@ -21,11 +21,16 @@ class SolrPower_WP_Query {
 	public static function get_instance() {
 		if ( !self::$instance ) {
 			self::$instance = new self();
+			self::$instance->setup();
 		}
 		return self::$instance;
 	}
 
 	function __construct() {
+		
+	}
+
+	function setup() {
 		// We don't want to do a Solr query if we're doing AJAX or in the admin area.
 		if ( ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || (is_admin()) ) {
 			return;
@@ -44,7 +49,13 @@ class SolrPower_WP_Query {
 		if ( !$query->is_search() ) {
 			return $request;
 		}
-
+		$ready = get_transient( 'solr_ready' );
+		if ( false === $ready ) {
+			SolrPower_Api::get_instance()->check_solr();
+		}
+		if ( false === SolrPower_Api::get_instance()->solr_ready || 'no' == get_transient( 'solr_ready' ) ) {
+			return $request;
+		}
 		$the_page = (!$query->get( 'paged' ) ) ? 1 : $query->get( 'paged' );
 
 		$qry	 = $query->get( 's' );

@@ -45,6 +45,7 @@
 
 define( 'SOLR_POWER_PATH', plugin_dir_path( __FILE__ ) . '/' );
 define( 'SOLR_POWER_URL', plugin_dir_url( __FILE__ ) );
+define( 'SOLR_SCHEMA_VERSION', '1.2' );
 
 require_once(SOLR_POWER_PATH . '/vendor/autoload.php');
 require_once(SOLR_POWER_PATH . '/includes/class-solrpower.php');

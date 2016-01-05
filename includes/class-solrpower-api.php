@@ -9,12 +9,19 @@ class SolrPower_Api {
 	private static $instance = false;
 
 	/**
+	 * Is Solr ready to override search?
+	 * @var boolean 
+	 */
+	var $solr_ready = true;
+
+	/**
 	 * Grab instance of object.
 	 * @return SolrPower_Api
 	 */
 	public static function get_instance() {
 		if ( !self::$instance ) {
 			self::$instance = new self();
+			self::$instance->setup();
 		}
 		return self::$instance;
 	}
@@ -23,7 +30,34 @@ class SolrPower_Api {
 		
 	}
 
+	function setup() {
+		add_action( 'init', array( $this, 'check_solr' ) );
+	}
+
+	/**
+	 * Check to see if Solr server is accessible via a ping every 10 seconds.
+	 * If it isn't, we can revert back to normal WP_Query search.
+	 */
+	function check_solr() {
+		$ready = get_transient( 'solr_ready' );
+		if ( false === $ready ) {
+			$ping = $this->ping_server();
+			if ( $ping ) {
+				set_transient( 'solr_ready', 'yes', 10 );
+				$this->solr_ready = true;
+			} else {
+;
+				set_transient( 'solr_ready', 'no', 10 );
+				$this->solr_ready = false;
+			}
+		}
+		if ( false === $this->solr_ready || 'no' === $ready ) {
+			SolrPower::get_instance()->notices[] = 'Cannot connect to Apache Solr! (Normal WP search is active.)';
+		}
+	}
+
 	function submit_schema() {
+		$custom = false; // Is this a custom schema.xml or stock? (false for stock schema)
 		// Solarium does not currently support submitting schemas to the server.
 		// So we'll do it ourselves
 
@@ -33,7 +67,8 @@ class SolrPower_Api {
 		// Let's check for a custom Schema.xml. It MUST be located in
 		// wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml
 		if ( is_file( realpath( ABSPATH ) . '/' . $_ENV[ 'FILEMOUNT' ] . '/solr-for-wordpress-on-pantheon/schema.xml' ) ) {
-			$schema = realpath( ABSPATH ) . '/' . $_ENV[ 'FILEMOUNT' ] . '/solr-for-wordpress-on-pantheon/schema.xml';
+			$schema	 = realpath( ABSPATH ) . '/' . $_ENV[ 'FILEMOUNT' ] . '/solr-for-wordpress-on-pantheon/schema.xml';
+			$custom	 = true;
 		} else {
 			$schema = SOLR_POWER_PATH . '/schema.xml';
 		}
@@ -81,6 +116,11 @@ class SolrPower_Api {
 		fclose( $file );
 		$returnValue = (int) $curl_opts[ 'http_code' ];
 		if ( (int) $curl_opts[ 'http_code' ] == 200 ) {
+			update_option( 'solr_schema', SOLR_SCHEMA_VERSION );
+			update_option( 'solr_path', $path ); // Save computed path as option.
+			if ( $custom ) {
+				update_option( 'solr_custom', true );
+			}
 			$returnValue = 'Schema Upload Success: ' . $curl_opts[ 'http_code' ];
 		} else {
 			$returnValue = 'Schema Upload Error: ' . $curl_opts[ 'http_code' ];
@@ -104,11 +144,12 @@ class SolrPower_Api {
 	 * @return boolean
 	 */
 	function ping_server() {
+		delete_transient( 'solr_ready' );
 		$solr = get_solr();
 		try {
 			$solr->ping( $solr->createPing() );
 			return true;
-		} catch ( Solarium\Exception $e ) {
+		} catch ( Solarium\Exception\HttpException $e ) {
 			return false;
 		}
 	}
@@ -270,6 +311,20 @@ class SolrPower_Api {
 
 
 		return $response;
+	}
+
+	/**
+	 * Runs query on Solr and returns total indexed documents.
+	 * @return boolean|int
+	 */
+	function fetch_stats() {
+		$query = $this->query( '*:*', 0, 1, '', '', '' );
+		if ( is_null( $query ) ) {
+			SolrPower::get_instance()->solr_ready = false;
+			return false;
+		}
+		$query = $query->getData();
+		return $query[ 'response' ][ 'numFound' ];
 	}
 
 }

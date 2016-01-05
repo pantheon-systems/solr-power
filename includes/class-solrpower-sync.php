@@ -15,11 +15,16 @@ class SolrPower_Sync {
 	public static function get_instance() {
 		if ( !self::$instance ) {
 			self::$instance = new self();
+			self::$instance->setup();
 		}
 		return self::$instance;
 	}
 
 	function __construct() {
+		
+	}
+
+	function setup() {
 		add_action( 'publish_post', array( $this, 'handle_modified' ) );
 		add_action( 'publish_page', array( $this, 'handle_modified' ) );
 		add_action( 'save_post', array( $this, 'handle_modified' ) );
@@ -345,6 +350,7 @@ class SolrPower_Sync {
 				$update->addDeleteQuery( '*:*' );
 				$update->addCommit();
 				$solr->update( $update );
+				delete_transient( 'solr_stats' );
 			}
 		} catch ( Exception $e ) {
 			echo esc_html( $e->getMessage() );
@@ -445,10 +451,13 @@ class SolrPower_Sync {
 			// done importing so lets switch back to the proper blog id
 			restore_current_blog();
 		} else {
+
 			$args		 = array(
 				'post_type'		 => $post_type,
 				'post_status'	 => 'publish',
-				'fields'		 => 'ids'
+				'fields'		 => 'ids',
+				'posts_per_page' => 5,
+				'offset'		 => absint( $prev )
 			);
 			$query		 = new WP_Query( $args );
 			$posts		 = $query->posts;
@@ -458,20 +467,11 @@ class SolrPower_Sync {
 				printf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
 				die();
 			}
+			$last	 = absint( $prev ) + 5;
+			$percent = absint( (floatval( $last ) / floatval( $query->found_posts )) * 100 );
 			for ( $idx = 0; $idx < $postcount; $idx++ ) {
-				$postid	 = $posts[ $idx ];
-				$last	 = $postid;
-				$percent = (floatval( $idx ) / floatval( $postcount )) * 100;
-				if ( $prev && !$found ) {
-					if ( $postid === $prev ) {
-						$found = TRUE;
-					}
-					continue;
-				}
+				$postid = $posts[ $idx ];
 
-				if ( $idx === $postcount - 1 ) {
-					$end = TRUE;
-				}
 				$solr		 = get_solr();
 				$update		 = $solr->createUpdate();
 				$documents[] = $this->build_document( $update->createDocument(), get_post( $postid ) );
@@ -490,7 +490,8 @@ class SolrPower_Sync {
 			$this->post( $documents, true, FALSE );
 		}
 
-		if ( $end ) {
+		if ( 100 <= $percent ) {
+			delete_transient( 'solr_stats' );
 			printf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
 		} else {
 			printf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent );

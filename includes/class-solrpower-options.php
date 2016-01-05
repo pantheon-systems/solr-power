@@ -15,11 +15,16 @@ class SolrPower_Options {
 	public static function get_instance() {
 		if ( !self::$instance ) {
 			self::$instance = new self();
+			self::$instance->setup();
 		}
 		return self::$instance;
 	}
 
 	function __construct() {
+		
+	}
+
+	function setup() {
 		add_action( 'admin_menu', array( $this, 'add_pages' ) );
 		add_action( 'network_admin_menu', array( $this, 'add_network_pages' ) );
 		add_action( 'admin_init', array( $this, 'options_init' ) );

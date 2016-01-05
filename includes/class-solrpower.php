@@ -9,21 +9,36 @@ class SolrPower {
 	private static $instance = false;
 
 	/**
+	 * Array of admin notices.
+	 * @var array 
+	 */
+	var $notices = array();
+
+	/**
 	 * Grab instance of object.
 	 * @return SolrPower
 	 */
 	public static function get_instance() {
 		if ( !self::$instance ) {
 			self::$instance = new self();
+			self::$instance->setup();
 		}
 		return self::$instance;
 	}
 
 	function __construct() {
+		
+	}
+
+	function setup() {
 		add_action( 'template_redirect', array( $this, 'template_redirect' ), 1 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'autosuggest_head' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_head' ) );
 		add_filter( 'plugin_action_links', array( $this, 'plugin_settings_link' ), 10, 2 );
+		if ( getenv( 'PANTHEON_ENVIRONMENT' ) !== false ) {
+			add_action( 'init', array( $this, 'schema_notice' ) );
+		}
+		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 	}
 
 	function activate() {
@@ -33,7 +48,7 @@ class SolrPower {
 		if ( $errMessage = SolrPower::get_instance()->sanity_check() ) {
 			wp_die( $errMessage );
 		}
-		
+
 		// Don't try to send a schema if we're not on Pantheon servers.
 		if ( !defined( 'SOLR_PATH' ) ) {
 			$schemaSubmit = SolrPower_Api::get_instance()->submit_schema();
@@ -46,12 +61,52 @@ class SolrPower {
 		return;
 	}
 
+	function admin_notices() {
+		if ( empty( $this->notices ) ) {
+			return;
+		}
+		echo '<div class="error"><h2>Solr Power</h2><p><ul>';
+		
+		foreach ( $this->notices as $msg ) {
+			echo '<li>' . esc_html( $msg ) . '</li>';
+		}
+		echo '</ul><br> <a href="' . admin_url( 'admin.php' ) . '?page=solr-power" class="button-primary">View Solr Options</a></p></div>';
+	}
+
+	/**
+	 * Inform user is schema.xml needs to be submitted to Apache Solr.
+	 * 
+	 */
+	function schema_notice() {
+
+		$schema_submitted	 = get_option( 'solr_schema' );
+		$saved_path			 = get_option( 'solr_path' );
+		$is_custom			 = get_option( 'solr_custom' );
+		// If the saved environment path is different than what it is now, 
+		// the schema may not have been submitted.
+		if ( $saved_path !== SolrPower_Api::get_instance()->compute_path() ) {
+			$schema_submitted = false;
+		}
+		$msg = 'Schema.xml was not submitted to Apache Solr!';
+		if ( false !== $schema_submitted ) {
+			if ( ( $schema_submitted >= SOLR_SCHEMA_VERSION ) || $is_custom ) {
+				return;
+			} else {
+				$msg			 = 'A newer version of schema.xml needs to be submitted to Apache Solr.';
+				$this->notices[] = $msg;
+			}
+		} else {
+			$this->solr_ready	 = false;
+			$this->notices[]	 = $msg;
+		}
+	}
+
 	function sanity_check() {
 		$returnValue = '';
 		$wp_version	 = get_bloginfo( 'version' );
 
 		if ( getenv( 'PANTHEON_ENVIRONMENT' ) !== false && getenv( 'PANTHEON_INDEX_HOST' ) === false ) {
-			$returnValue = __( 'Before you can activate this plugin, you must first <a href="https://pantheon.io/docs/articles/sites/apache-solr/">activate Solr</a> in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' );
+			$returnValue = __( 'Before you can activate this plugin, you must first <a href="https://pantheon.io/docs/articles/sites/apache-solr/">activate Solr</a> in your Pantheon Dashboard.<br><br><a href="' . admin_url( 'plugins.php' ) . '" class="button">Go Back</a>', 'solr-for-wordpress-on-pantheon' );
 		} else if ( version_compare( $wp_version, '3.0', '<' ) ) {
 			$returnValue = __( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' );
 		}
