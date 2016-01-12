@@ -351,7 +351,7 @@ class SolrPower_Sync {
 		}
 	}
 
-	function load_all_posts( $prev, $post_type = 'post' ) {
+	function load_all_posts( $prev, $post_type = 'post', $limit = 5, $echo = true ) {
 		global $wpdb, $current_blog, $current_site;
 		$documents				 = array();
 		$cnt					 = 0;
@@ -394,7 +394,9 @@ class SolrPower_Sync {
 				$args	 = array(
 					'post_type'		 => $post_type,
 					'post_status'	 => 'publish',
-					'fields'		 => 'ids'
+					'fields'		 => 'ids',
+					'posts_per_page' => absint( $limit ),
+					'offset'		 => absint( $prev )
 				);
 				$query	 = new WP_Query( $args );
 				$postids = $query->posts;
@@ -448,30 +450,26 @@ class SolrPower_Sync {
 			$args		 = array(
 				'post_type'		 => $post_type,
 				'post_status'	 => 'publish',
-				'fields'		 => 'ids'
+				'fields'		 => 'ids',
+				'posts_per_page' => absint( $limit ),
+				'offset'		 => absint( $prev )
 			);
 			$query		 = new WP_Query( $args );
 			$posts		 = $query->posts;
 			$postcount	 = count( $posts );
 			if ( 0 == $postcount ) {
 				$end = true;
-				printf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
+				$results=sprintf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
+				if ($echo){
+					echo $results;
+				}
 				die();
 			}
+			$last	 = absint( $prev ) + 5;
+			$percent = absint( (floatval( $last ) / floatval( $query->found_posts )) * 100 );
 			for ( $idx = 0; $idx < $postcount; $idx++ ) {
-				$postid	 = $posts[ $idx ];
-				$last	 = $postid;
-				$percent = (floatval( $idx ) / floatval( $postcount )) * 100;
-				if ( $prev && !$found ) {
-					if ( $postid === $prev ) {
-						$found = TRUE;
-					}
-					continue;
-				}
+				$postid = $posts[ $idx ];
 
-				if ( $idx === $postcount - 1 ) {
-					$end = TRUE;
-				}
 				$solr		 = get_solr();
 				$update		 = $solr->createUpdate();
 				$documents[] = $this->build_document( $update->createDocument(), get_post( $postid ) );
@@ -490,11 +488,16 @@ class SolrPower_Sync {
 			$this->post( $documents, true, FALSE );
 		}
 
-		if ( $end ) {
-			printf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
+		if ( 100 <= $percent ) {
+			$results = sprintf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
 		} else {
-			printf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent );
+			$results = sprintf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent );
 		}
+		if ( $echo ) {
+			echo $results;
+			return;
+		}
+		return $results;
 	}
 
 	function format_date( $thedate ) {
