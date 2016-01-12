@@ -1,8 +1,11 @@
 <?php
 
 putenv( 'PANTHEON_INDEX_HOST=localhost' );
-putenv( 'PANTHEON_INDEX_PORT=8080' );
-
+if ( getenv( 'TRAVIS' ) ) {
+	putenv( 'PANTHEON_INDEX_PORT=8983' );
+} else {
+	putenv( 'PANTHEON_INDEX_PORT=8080' );
+}
 define( 'SOLR_PATH', '/solr/' );
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
