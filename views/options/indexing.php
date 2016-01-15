@@ -117,6 +117,15 @@
         <th scope="row"><?php _e('Max Number of Tags to Display', 'solr4wp') ?></th>
         <td><input type="text" name="settings[s4wp_max_display_tags]" value="<?php _e(esc_attr($s4wp_settings['s4wp_max_display_tags']), 'solr4wp'); ?>" /></td>
     </tr>
+	<tr valign="top" >
+        <th scope="row"><?php esc_html_e( 'Default Sort', 'solr4wp' ) ?></th>
+        <td>
+			<select name="settings[s4wp_default_sort]">
+				<option value="score" <?php selected( 'score', $s4wp_settings[ 's4wp_default_sort' ], true ); ?>>Score</option>
+				<option value="displaydate" <?php selected( 'displaydate', $s4wp_settings[ 's4wp_default_sort' ], true ); ?>>Date</option>
+			</select>
+		</td>
+    </tr>
 </table>
 <hr />
 
