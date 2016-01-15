@@ -128,6 +128,7 @@ class SolrPower_Options {
 		$options[ 's4wp_connect_type' ]				 = wp_filter_nohtml_kses( $options[ 's4wp_connect_type' ] );
 		$options[ 's4wp_index_custom_fields' ]		 = $this->filter_str2list( $options[ 's4wp_index_custom_fields' ] );
 		$options[ 's4wp_facet_on_custom_fields' ]	 = $this->filter_str2list( $options[ 's4wp_facet_on_custom_fields' ] );
+		$options[ 's4wp_default_sort' ]				 = esc_attr( $options[ 's4wp_default_sort' ] );
 		return $options;
 	}
 
@@ -199,7 +200,7 @@ class SolrPower_Options {
 		$options[ 's4wp_index_custom_fields' ]		 = '';
 		$options[ 's4wp_facet_on_custom_fields' ]	 = '';
 		$options[ 's4wp_default_operator' ]			 = 'OR';
-
+		$options[ 's4wp_default_sort' ]				 = 'score';
 		return $options;
 	}
 

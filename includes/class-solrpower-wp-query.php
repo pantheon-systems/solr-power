@@ -44,6 +44,7 @@ class SolrPower_WP_Query {
 		if ( !$query->is_search() ) {
 			return $request;
 		}
+		$solr_options = SolrPower_Options::get_instance()->get_option();
 
 		$the_page = (!$query->get( 'paged' ) ) ? 1 : $query->get( 'paged' );
 
@@ -51,7 +52,8 @@ class SolrPower_WP_Query {
 		$offset	 = $query->get( 'posts_per_page' ) * ($the_page - 1);
 		$count	 = $query->get( 'posts_per_page' );
 		$fq		 = array();
-		$sortby	 = 'score';
+		$sortby	 = (isset( $solr_options[ 's4wp_default_sort' ] ) && !empty( $solr_options[ 's4wp_default_sort' ] )) ? $solr_options[ 's4wp_default_sort' ] : 'score';
+		
 		$order	 = 'desc';
 		$search	 = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order );
 		if ( is_null( $search ) ) {
