@@ -9,7 +9,7 @@ class SolrTest extends WP_UnitTestCase {
 			return 'http';
 		} );
 	}
-	
+
 	/**
 	 * Setup for every test.
 	 */
@@ -34,8 +34,13 @@ class SolrTest extends WP_UnitTestCase {
 		return wp_insert_post( $args );
 	}
 
-	function __run_test_query() {
-		$qry	 = 'solr';
+	function __create_multiple( $number = 1 ) {
+		for ( $i = 0; $i < $number; $i++ ) {
+			$this->__create_test_post();
+		}
+	}
+
+	function __run_test_query( $qry = 'solr' ) {
 		$offset	 = 0;
 		$count	 = 10;
 		$fq		 = array();
@@ -128,6 +133,30 @@ class SolrTest extends WP_UnitTestCase {
 		}
 
 		wp_reset_postdata();
+	}
+
+	/**
+	 * Tests to see if Solr indexes all posts.
+	 * @group 43
+	 * @link https://github.com/pantheon-systems/solr-power/issues/43
+	 */
+	function test_index_all_posts() {
+		// Create 20 posts:
+		$this->__create_multiple( 20 );
+		// Delete index.
+		SolrPower_Sync::get_instance()->delete_all();
+		// Index all posts:
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+
+		$search = $this->__run_test_query( 'post' );
+		if ( is_null( $search ) ) {
+			$this->assertTrue( false );
+		}
+		$search	 = $search->getData();
+		$search	 = $search[ 'response' ];
+
+		// We should have 20 results.
+		$this->assertEquals( absint( $search[ 'numFound' ] ), 20 );
 	}
 
 }
