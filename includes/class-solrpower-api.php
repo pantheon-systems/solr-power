@@ -9,6 +9,12 @@ class SolrPower_Api {
 	private static $instance = false;
 
 	/**
+	 * Logging for debugging.
+	 * @var array 
+	 */
+	var $log = array();
+
+	/**
 	 * Grab instance of object.
 	 * @return SolrPower_Api
 	 */
@@ -180,6 +186,16 @@ class SolrPower_Api {
 	}
 
 	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings ) {
+		$this->add_log( array(
+			'Search Query'	 => $qry,
+			'Offset'		 => $offset,
+			'Count'			 => $count,
+			'fq'			 => $fq,
+			'Sort By'		 => $sortby,
+			'Order'			 => $order
+		) );
+
+
 		$response		 = NULL;
 		$facet_fields	 = array();
 		$number_of_tags	 = $plugin_s4wp_settings[ 's4wp_max_display_tags' ];
@@ -270,6 +286,14 @@ class SolrPower_Api {
 
 
 		return $response;
+	}
+
+	/**
+	 * Add items to debug log.
+	 * @param array $item Array of items.
+	 */
+	function add_log( $item ) {
+		$this->log = array_merge( $this->log, $item );
 	}
 
 }
