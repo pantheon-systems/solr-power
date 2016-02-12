@@ -331,9 +331,12 @@ class SolrPower_Sync {
 				$update->addCommit();
 				$solr->update( $update );
 			}
+			return true;
 		} catch ( Exception $e ) {
 			syslog( LOG_ERR, $e->getMessage() );
+			return false;
 		}
+		
 	}
 
 	function delete_all() {
@@ -346,8 +349,10 @@ class SolrPower_Sync {
 				$update->addCommit();
 				$solr->update( $update );
 			}
+			return true;
 		} catch ( Exception $e ) {
-			echo esc_html( $e->getMessage() );
+			//echo esc_html( $e->getMessage() );
+			return false;
 		}
 	}
 
