@@ -27,7 +27,13 @@ class SolrPower_WP_Query {
 
 	function __construct() {
 		// We don't want to do a Solr query if we're doing AJAX or in the admin area.
-		if ( ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || (is_admin()) ) {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			if ( false === apply_filters( 'solr_allow_ajax', false ) ) {
+				return;
+			}
+		}
+
+		if ( is_admin() && false === apply_filters( 'solr_allow_admin', false ) ) {
 			return;
 		}
 
@@ -53,7 +59,7 @@ class SolrPower_WP_Query {
 		$count	 = $query->get( 'posts_per_page' );
 		$fq		 = array();
 		$sortby	 = (isset( $solr_options[ 's4wp_default_sort' ] ) && !empty( $solr_options[ 's4wp_default_sort' ] )) ? $solr_options[ 's4wp_default_sort' ] : 'score';
-		
+
 		$order	 = 'desc';
 		$search	 = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order );
 		if ( is_null( $search ) ) {
