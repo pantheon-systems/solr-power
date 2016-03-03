@@ -32,29 +32,9 @@
 </tr>
 </form -->
 
-    <!-- tr valign="top">
-        <th scope="row"><?php _e('Load All Pages', 'solr4wp') ?></th>
-        <td><input type="submit" class="button-primary" name="s4wp_pageload" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
-    </tr>
-
-    <tr valign="top">
-        <th scope="row"><?php _e('Load All Posts', 'solr4wp') ?></th>
-        <td><input type="submit" class="button-primary" name="s4wp_postload['posts']" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
-    </tr -->
-
-<!--
-  Let's loop through each Post type, and give an option to add them into the
-  Solr index.
--->
-<?php
-  $postTypes = get_post_types(array( 'exclude_from_search' => false ));
-
-  foreach($postTypes as $postType) {
-?>
-<tr valign="top">
-    <th scope="row"><?php _e('Load All '.esc_html($postType).'(s)', 'solr4wp') ?></th>
-    <td><input type="button" class="button-primary s4wp_postload_<?php print(esc_attr($postType)); ?>" name="s4wp_postload_<?php print(esc_attr($postType)); ?>" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
+   <tr valign="top">
+    <th scope="row"><?php esc_html_e('Index Searchable Post Types', 'solr4wp') ?></th>
+    <td><input type="button" class="button-primary s4wp_postload_post" name="s4wp_postload_post" value="<?php _e('Execute', 'solr4wp') ?>" /></td>
 </tr>
-<?php } ?>
 </table>
 </div>
