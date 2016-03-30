@@ -22,11 +22,14 @@ Search is critical for your site, but the default search for WordPress leaves a 
 
 ## Installation ##
 
-First install the plugin as per normal. If you are installing on Pantheon, you will need to enable the Apache Solr add-on before you can enable the plugin.
+First install the plugin as per normal. If you are installing on Pantheon, you will need to enable the Apache Solr add-on within the Pantheon Site Dashboard before you can enable the plugin.
 
-1. Index your existing content by going to the plugin options screen and clicking "index content".
-2. Search on!
-3. See the examples/templates directories for more rich implementation guidelines.
+1. Index your existing content by going to the plugin options screen and selecting the applicable **Actions**:
+ - **Load All post(s)**
+ - **Load All page(s)**
+ - **Load All attachment(s)**
+2. Search on! Use the **Query** tab to validate indexing options.
+3. See the examples/template directories for more rich implementation guidelines.
 
 ## Development ##
 
