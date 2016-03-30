@@ -392,7 +392,7 @@ class SolrPower_Sync {
 
 				// now we actually gather the blog posts
 				$args	 = array(
-					'post_type'		 => $post_type,
+					'post_type'		 => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
 					'post_status'	 => 'publish',
 					'fields'		 => 'ids',
 					'posts_per_page' => absint( $limit ),
@@ -448,7 +448,7 @@ class SolrPower_Sync {
 			restore_current_blog();
 		} else {
 			$args		 = array(
-				'post_type'		 => $post_type,
+				'post_type'		 => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
 				'post_status'	 => 'publish',
 				'fields'		 => 'ids',
 				'posts_per_page' => absint( $limit ),
@@ -458,9 +458,9 @@ class SolrPower_Sync {
 			$posts		 = $query->posts;
 			$postcount	 = count( $posts );
 			if ( 0 == $postcount ) {
-				$end = true;
-				$results=sprintf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
-				if ($echo){
+				$end	 = true;
+				$results = sprintf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
+				if ( $echo ) {
 					echo $results;
 				}
 				die();
