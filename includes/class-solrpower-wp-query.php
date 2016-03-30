@@ -21,13 +21,26 @@ class SolrPower_WP_Query {
 	public static function get_instance() {
 		if ( !self::$instance ) {
 			self::$instance = new self();
+			add_action( 'init', array( self::$instance, 'setup' ) );
 		}
 		return self::$instance;
 	}
 
 	function __construct() {
+		
+	}
+
+	function setup() {
 		// We don't want to do a Solr query if we're doing AJAX or in the admin area.
-		if ( ( defined( 'DOING_AJAX' ) && DOING_AJAX ) || (is_admin()) ) {
+
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			if ( false === apply_filters( 'solr_allow_ajax', false ) ) {
+				return;
+			}
+		}
+
+
+		if ( is_admin() && false === apply_filters( 'solr_allow_admin', false ) ) {
 			return;
 		}
 
