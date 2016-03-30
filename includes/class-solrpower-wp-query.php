@@ -53,17 +53,25 @@ class SolrPower_WP_Query {
 		$count	 = $query->get( 'posts_per_page' );
 		$fq		 = array();
 		$sortby	 = (isset( $solr_options[ 's4wp_default_sort' ] ) && !empty( $solr_options[ 's4wp_default_sort' ] )) ? $solr_options[ 's4wp_default_sort' ] : 'score';
-		
+
 		$order	 = 'desc';
 		$search	 = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order );
 		if ( is_null( $search ) ) {
 			return false;
 		}
-		$search					 = $search->getData();
+		$search = $search->getData();
+
+		$search_header			 = $search[ 'responseHeader' ];
 		$search					 = $search[ 'response' ];
 		$query->found_posts		 = $search[ 'numFound' ];
 		$query->max_num_pages	 = ceil( $search[ 'numFound' ] / $query->get( 'posts_per_page' ) );
-		$posts					 = array();
+
+		SolrPower_Api::get_instance()->add_log( array(
+			'Results Found'	 => $search[ 'numFound' ],
+			'Query Time'	 => $search_header[ 'QTime' ] . 'ms'
+		) );
+
+		$posts = array();
 
 		foreach ( $search[ 'docs' ] as $post_array ) {
 			$post = new stdClass();

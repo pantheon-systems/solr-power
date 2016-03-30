@@ -24,6 +24,7 @@ class SolrPower {
 		add_action( 'wp_enqueue_scripts', array( $this, 'autosuggest_head' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_head' ) );
 		add_filter( 'plugin_action_links', array( $this, 'plugin_settings_link' ), 10, 2 );
+		add_filter( 'debug_bar_panels', array( $this, 'add_panel' ) );
 	}
 
 	function activate() {
@@ -33,7 +34,7 @@ class SolrPower {
 		if ( $errMessage = SolrPower::get_instance()->sanity_check() ) {
 			wp_die( $errMessage );
 		}
-		
+
 		// Don't try to send a schema if we're not on Pantheon servers.
 		if ( !defined( 'SOLR_PATH' ) ) {
 			$schemaSubmit = SolrPower_Api::get_instance()->submit_schema();
@@ -161,6 +162,12 @@ class SolrPower {
 		if ( file_exists( dirname( __FILE__ ) . '/template/search.css' ) ) {
 			wp_enqueue_style( 'solr-search', plugins_url( '/template/search.css', __FILE__ ) );
 		}
+	}
+
+	function add_panel( $panels ) {
+		require_once(SOLR_POWER_PATH . '/includes/class-solrpower-debug.php');
+		array_push( $panels, new SolrPower_Debug() );
+		return $panels;
 	}
 
 }
