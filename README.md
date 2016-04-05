@@ -1,5 +1,5 @@
 # Solr Search for WordPress #
-**Contributors:** getpantheon, Outlandish Josh, collinsinternet  
+**Contributors:** getpantheon, Outlandish Josh, 10up, collinsinternet  
 **Tags:** search  
 **Requires at least:** 4.2  
 **Tested up to:** 4.3  
