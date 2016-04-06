@@ -9,6 +9,11 @@ class SolrPower_Sync {
 	private static $instance = false;
 
 	/**
+	 * Last error message.
+	 * @var string
+	 */
+	var $error_msg;
+	/**
 	 * Grab instance of object.
 	 * @return SolrPower_Sync
 	 */
@@ -316,9 +321,12 @@ class SolrPower_Sync {
 				}
 			} else {
 				syslog( LOG_ERR, "failed to get a solr instance created" );
+				$this->error_msg=esc_html( 'failed to get a solr instance created' );
+				return false;
 			}
 		} catch ( Exception $e ) {
-			error_log( "ERROR: " . $e->getMessage() );
+			$this->error_msg=esc_html( $e->getMessage() );
+			return false;
 		}
 	}
 
@@ -331,9 +339,12 @@ class SolrPower_Sync {
 				$update->addCommit();
 				$solr->update( $update );
 			}
+			return true;
 		} catch ( Exception $e ) {
-			syslog( LOG_ERR, $e->getMessage() );
+			$this->error_msg=esc_html( $e->getMessage() );
+			return false;
 		}
+		
 	}
 
 	function delete_all() {
@@ -346,8 +357,10 @@ class SolrPower_Sync {
 				$update->addCommit();
 				$solr->update( $update );
 			}
+			return true;
 		} catch ( Exception $e ) {
-			echo esc_html( $e->getMessage() );
+			$this->error_msg=esc_html( $e->getMessage() );
+			return false;
 		}
 	}
 
