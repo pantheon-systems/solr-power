@@ -37,26 +37,27 @@ class SolrPower_CLI extends WP_CLI_Command {
 		$solr	 = get_solr();
 		$update	 = $solr->createUpdate();
 		while ( $current_page <= $total ) {
-			$documents = array();
 			$query->set( 'paged', $current_page );
 			$query->get_posts();
 			foreach ( $query->posts as $id ) {
+				$documents	 = array();
 				$documents[] = SolrPower_Sync::get_instance()->build_document( $update->createDocument(), get_post( $id ) );
-				$done++;
+				$post_it	 = SolrPower_Sync::get_instance()->post( $documents, true, FALSE );
+
+				if ( false === $post_it ) {
+					$failed++;
+				} else {
+					$done++;
+				}
 				$notify->tick();
 			}
-			try {
-				$update->addDocuments( $documents );
-			} catch ( Exception $e ) {
-				$failed++;
-			}
-
 			$current_page++;
 		}
 		$notify->finish();
 		WP_CLI::success( sprintf( '%d of %d items indexed.', $done, $total_posts ) );
 		if ( 0 < $failed ) {
 			WP_CLI::error( 'Failed to index ' . $failed . ' item(s).' );
+			WP_CLI::error( SolrPower_Sync::get_instance()->error_msg );
 		}
 	}
 
@@ -80,16 +81,16 @@ class SolrPower_CLI extends WP_CLI_Command {
 		if ( $post_id ) {
 			$status = SolrPower_Sync::get_instance()->delete( absint( $post_id ) );
 
-			$msg = ($status) ? 'Post #' . absint( $post_id ) . ' successfully removed from index.' : 'Error removing post.';
+			$msg = ($status) ? 'Post #' . absint( $post_id ) . ' successfully removed from index.' : SolrPower_Sync::get_instance()->error_msg;
 		} else {
 			$status	 = SolrPower_Sync::get_instance()->delete_all();
-			$msg	 = ($status) ? 'All posts successfully removed from index.' : 'Error removing posts.';
+			$msg	 = ($status) ? 'All posts successfully removed from index.' : SolrPower_Sync::get_instance()->error_msg;
 		}
 		if ( $status ) {
 			WP_CLI::success( $msg );
 			return;
 		}
-		WP_CLI:error( $msg );
+		WP_CLI::error( $msg );
 	}
 
 }
