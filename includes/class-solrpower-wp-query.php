@@ -121,7 +121,9 @@ class SolrPower_WP_Query {
 	}
 
 	function found_posts_query( $sql, $query ) {
-
+		if ( !$query->is_search() ) {
+			return $sql;
+		}
 		return '';
 	}
 
