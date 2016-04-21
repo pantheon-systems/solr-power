@@ -23,12 +23,12 @@ class SolrTest extends WP_UnitTestCase {
 	 * Creates a new post.
 	 * @return int|WP_Error
 	 */
-	function __create_test_post() {
+	function __create_test_post( $post_type = 'post' ) {
 		$args = array(
-			'post_type'		 => 'post',
-			'post_status'	 => 'publish',
-			'post_title'	 => 'Test Post ' . time(),
-			'post_content'	 => 'This is a solr test.',
+			'post_type'    => $post_type,
+			'post_status'  => 'publish',
+			'post_title'   => 'Test Post ' . time(),
+			'post_content' => 'This is a solr test.',
 		);
 
 		return wp_insert_post( $args );
@@ -157,6 +157,56 @@ class SolrTest extends WP_UnitTestCase {
 
 		// We should have 20 results.
 		$this->assertEquals( absint( $search[ 'numFound' ] ), 20 );
+	}
+
+	/**
+	 * Tests to see if indexing stats work.
+	 * @group 40
+	 * @link https://github.com/pantheon-systems/solr-power/issues/40
+	 */
+	function test_index_stats() {
+		$this->__create_test_post( 'page' );
+		$this->__create_test_post( 'page' );
+		$this->__create_multiple( 5 );
+		$stats = SolrPower_Api::get_instance()->index_stats();
+		$this->assertEquals( 2, $stats['page'] );
+		$this->assertEquals( 5, $stats['post'] );
+	}
+
+	/**
+	 * Tests to see if indexing stats work upon delete all.
+	 * @group 40
+	 * @link https://github.com/pantheon-systems/solr-power/issues/40
+	 */
+	function test_index_stats_on_delete_all(){
+		$this->__create_test_post( 'page' );
+		$this->__create_test_post( 'page' );
+		$this->__create_multiple( 5 );
+
+		// Delete all of these newly indexed items:
+		SolrPower_Sync::get_instance()->delete_all();
+
+		$stats = SolrPower_Api::get_instance()->index_stats();
+		$this->assertEquals( 0, $stats['page'] );
+		$this->assertEquals( 0, $stats['post'] );
+	}
+
+	/**
+	 * Tests to see if indexing stats work upon delete.
+	 * @group 40
+	 * @link https://github.com/pantheon-systems/solr-power/issues/40
+	 */
+	function test_index_stats_on_delete() {
+		$delete_id = $this->__create_test_post( 'page' );
+		$this->__create_test_post( 'page' );
+		$this->__create_multiple( 5 );
+
+		// Delete all of these newly indexed items:
+		SolrPower_Sync::get_instance()->delete( $delete_id );
+
+		$stats = SolrPower_Api::get_instance()->index_stats();
+		$this->assertEquals( 1, $stats['page'] );
+		$this->assertEquals( 5, $stats['post'] );
 	}
 
 }
