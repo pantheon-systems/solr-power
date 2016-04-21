@@ -201,6 +201,10 @@ class SolrTest extends WP_UnitTestCase {
 		$this->__create_test_post( 'page' );
 		$this->__create_multiple( 5 );
 
+		if ( is_multisite() ) {
+			$blogid    = get_current_blog_id();
+			$delete_id = $blogid . '_' . $delete_id;
+		}
 		// Delete all of these newly indexed items:
 		SolrPower_Sync::get_instance()->delete( $delete_id );
 
