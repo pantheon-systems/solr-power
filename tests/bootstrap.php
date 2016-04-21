@@ -4,7 +4,7 @@ putenv( 'PANTHEON_INDEX_HOST=localhost' );
 if ( getenv( 'TRAVIS' ) ) {
 	putenv( 'PANTHEON_INDEX_PORT=8983' );
 } else {
-	putenv( 'PANTHEON_INDEX_PORT=8080' );
+	putenv( 'PANTHEON_INDEX_PORT=8983' );
 }
 define( 'SOLR_PATH', '/solr/' );
 

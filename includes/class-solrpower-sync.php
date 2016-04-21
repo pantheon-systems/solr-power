@@ -319,6 +319,7 @@ class SolrPower_Sync {
 					$solr->update( $update );
 					syslog( LOG_INFO, "Optimizing: " . get_bloginfo( 'wpurl' ) );
 				}
+				wp_cache_delete( 'solr_index_stats', 'solr' );
 			} else {
 				syslog( LOG_ERR, "failed to get a solr instance created" );
 				$this->error_msg=esc_html( 'failed to get a solr instance created' );
@@ -357,6 +358,7 @@ class SolrPower_Sync {
 				$update->addCommit();
 				$solr->update( $update );
 			}
+			wp_cache_delete( 'solr_index_stats', 'solr' );
 			return true;
 		} catch ( Exception $e ) {
 			$this->error_msg=esc_html( $e->getMessage() );

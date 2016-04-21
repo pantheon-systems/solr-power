@@ -214,14 +214,60 @@ $s4wp_settings = solr_options();
 	</h2>
 
 <div id="solr_info" class="solrtab active">
-	<h3><?php _e( 'Configure Solr', 'solr4wp' ) ?></h3>
-	<?php // @todo add the rest of the discovered info here. ?>
+<?php
+$server_ping=SolrPower_Api::get_instance()->ping_server();
+?>
+<div style="width:50%;float:left;">
+<table class="widefat">
+	<thead>
+	<tr>
+		<th colspan="2"><strong>Solr Configuration</strong></th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td>Ping Status:</td>
+		<td><?php echo ($server_ping)? '<span style="color:green">Successful</span>' : '<span style="color:red">Failed</span>';?></td>
+	</tr>
+	<tr>
+		<td>Solr Server IP address:</td>
+		<td><?php echo esc_html( getenv( 'PANTHEON_INDEX_HOST' ) ); ?></td>
+	</tr>
+	<tr>
+		<td>Solr Server Port:</td>
+		<td><?php echo esc_html( getenv( 'PANTHEON_INDEX_PORT' ) ); ?></td>
+	</tr>
+	<tr>
+		<td>Solr Server Path:</td>
+		<td><?php echo esc_html( SolrPower_Api::get_instance()->compute_path() ); ?></td>
+	</tr>
+	</tbody>
 
-	<pre>
-Solr Server IP address : <?php echo esc_html( getenv( 'PANTHEON_INDEX_HOST' ) ); ?><br />
-Solr Server Port       : <?php echo esc_html( getenv( 'PANTHEON_INDEX_PORT' ) ); ?><br />
-Solr Server Path       : <?php echo esc_html( SolrPower_Api::get_instance()->compute_path() ); ?><br />
-	</pre>
+</table>
+	</div>
+	<?php if ($server_ping){ ?>
+	<div style="width:50%;float:left;">
+		<table class="widefat">
+			<thead>
+			<tr>
+				<th colspan="2"><strong>Indexing Stats by Post Type</strong></th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php
+			foreach (SolrPower_Api::get_instance()->index_stats() as $type=>$stat){
+			?>
+			<tr>
+				<td><?php echo esc_html($type); ?>:</td>
+				<td><?php echo absint($stat); ?></td>
+			</tr>
+			<?php } ?>
+			</tbody>
+
+		</table>
+	</div>
+	<?php } ?>
+<br style="clear:both;">
 </div>
 <?php 
 $action='options-general.php?page=solr-power';
