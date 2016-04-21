@@ -114,11 +114,11 @@ class SolrPower_Api {
 		try {
 			$solr->ping( $solr->createPing() );
 			return true;
-		} catch ( Solarium\Exception $e ) {
+		} catch ( Solarium\Exception\HttpException $e ) {
+		  	// TODO: log this and or otherwise react.
 			return false;
 		}
 	}
-
 	/**
 	 * Connect to the solr service
 	 * @return solr service object
