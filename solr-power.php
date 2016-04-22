@@ -3,7 +3,7 @@
 /*
   Plugin Name: Solr Power
   Description: Allows WordPress sites to index and search content with ApacheSolr.
-  Version: 0.2.0
+  Version: 0.3.0
   Author: Pantheon
   Author URI: http://pantheon.io
  */
