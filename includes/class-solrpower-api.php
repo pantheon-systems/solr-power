@@ -10,23 +10,28 @@ class SolrPower_Api {
 
 	/**
 	 * Logging for debugging.
-	 * @var array 
+	 * @var array
 	 */
 	var $log = array();
+
+	var $solr = null;
+
+	var $last_result;
 
 	/**
 	 * Grab instance of object.
 	 * @return SolrPower_Api
 	 */
 	public static function get_instance() {
-		if ( !self::$instance ) {
+		if ( ! self::$instance ) {
 			self::$instance = new self();
 		}
+
 		return self::$instance;
 	}
 
 	function __construct() {
-		
+
 	}
 
 	function submit_schema() {
@@ -34,18 +39,18 @@ class SolrPower_Api {
 		// So we'll do it ourselves
 
 		$returnValue = '';
-		$upload_dir	 = wp_upload_dir();
+		$upload_dir  = wp_upload_dir();
 
 		// Let's check for a custom Schema.xml. It MUST be located in
 		// wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml
-		if ( is_file( realpath( ABSPATH ) . '/' . $_ENV[ 'FILEMOUNT' ] . '/solr-for-wordpress-on-pantheon/schema.xml' ) ) {
-			$schema = realpath( ABSPATH ) . '/' . $_ENV[ 'FILEMOUNT' ] . '/solr-for-wordpress-on-pantheon/schema.xml';
+		if ( is_file( realpath( ABSPATH ) . '/' . $_ENV['FILEMOUNT'] . '/solr-for-wordpress-on-pantheon/schema.xml' ) ) {
+			$schema = realpath( ABSPATH ) . '/' . $_ENV['FILEMOUNT'] . '/solr-for-wordpress-on-pantheon/schema.xml';
 		} else {
 			$schema = SOLR_POWER_PATH . '/schema.xml';
 		}
 
-		$path		 = $this->compute_path();
-		$url		 = 'https://' . getenv( 'PANTHEON_INDEX_HOST' ) . ':' . getenv( 'PANTHEON_INDEX_PORT' ) . '/' . $path;
+		$path        = $this->compute_path();
+		$url         = 'https://' . getenv( 'PANTHEON_INDEX_HOST' ) . ':' . getenv( 'PANTHEON_INDEX_PORT' ) . '/' . $path;
 		$client_cert = realpath( ABSPATH . '../certs/binding.pem' );
 
 		/*
@@ -55,42 +60,43 @@ class SolrPower_Api {
 			return $errorMessage;
 		}
 
-		if ( !file_exists( $schema ) ) {
+		if ( ! file_exists( $schema ) ) {
 			return $schema . ' does not exist.';
 		}
 
-		if ( !file_exists( $client_cert ) ) {
+		if ( ! file_exists( $client_cert ) ) {
 			return $client_cert . ' does not exist.';
 		}
 
 
-		$file	 = fopen( $schema, 'r' );
+		$file = fopen( $schema, 'r' );
 		// set URL and other appropriate options
-		$opts	 = array(
-			CURLOPT_URL				 => $url,
-			CURLOPT_PORT			 => 449,
-			CURLOPT_RETURNTRANSFER	 => 1,
-			CURLOPT_SSLCERT			 => $client_cert,
-			CURLOPT_SSL_VERIFYPEER	 => false,
-			CURLOPT_HTTPHEADER		 => array( 'Content-type:text/xml; charset=utf-8' ),
-			CURLOPT_PUT				 => TRUE,
-			CURLOPT_BINARYTRANSFER	 => 1,
-			CURLOPT_INFILE			 => $file,
-			CURLOPT_INFILESIZE		 => filesize( $schema ),
+		$opts = array(
+			CURLOPT_URL            => $url,
+			CURLOPT_PORT           => 449,
+			CURLOPT_RETURNTRANSFER => 1,
+			CURLOPT_SSLCERT        => $client_cert,
+			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_HTTPHEADER     => array( 'Content-type:text/xml; charset=utf-8' ),
+			CURLOPT_PUT            => true,
+			CURLOPT_BINARYTRANSFER => 1,
+			CURLOPT_INFILE         => $file,
+			CURLOPT_INFILESIZE     => filesize( $schema ),
 		);
 
 		$ch = curl_init();
 		curl_setopt_array( $ch, $opts );
 
-		$response	 = curl_exec( $ch );
-		$curl_opts	 = curl_getinfo( $ch );
+		$response  = curl_exec( $ch );
+		$curl_opts = curl_getinfo( $ch );
 		fclose( $file );
-		$returnValue = (int) $curl_opts[ 'http_code' ];
-		if ( (int) $curl_opts[ 'http_code' ] == 200 ) {
-			$returnValue = 'Schema Upload Success: ' . $curl_opts[ 'http_code' ];
+		$returnValue = (int) $curl_opts['http_code'];
+		if ( (int) $curl_opts['http_code'] == 200 ) {
+			$returnValue = 'Schema Upload Success: ' . $curl_opts['http_code'];
 		} else {
-			$returnValue = 'Schema Upload Error: ' . $curl_opts[ 'http_code' ];
+			$returnValue = 'Schema Upload Error: ' . $curl_opts['http_code'];
 		}
+
 		return $returnValue;
 	}
 
@@ -102,6 +108,7 @@ class SolrPower_Api {
 		if ( defined( 'SOLR_PATH' ) ) {
 			return SOLR_PATH;
 		}
+
 		return '/sites/self/environments/' . getenv( 'PANTHEON_ENVIRONMENT' ) . '/index';
 	}
 
@@ -112,9 +119,13 @@ class SolrPower_Api {
 	function ping_server() {
 		$solr = get_solr();
 		try {
-			$solr->ping( $solr->createPing() );
+			$ping              = $solr->ping( $solr->createPing() );
+			$this->last_result = $ping->getData();
+
 			return true;
 		} catch ( Solarium\Exception\HttpException $e ) {
+			$this->last_result = $e->getMessage();
+
 			return false;
 		}
 	}
@@ -124,17 +135,20 @@ class SolrPower_Api {
 	 * @return solr service object
 	 */
 	function get_solr() {
+		if ( null !== $this->solr ) {
+			return $this->solr;
+		}
 		# get the connection options
 		$plugin_s4wp_settings = solr_options();
 
 		$solarium_config = array(
 			'endpoint' => array(
 				'localhost' => array(
-					'host'	 => getenv( 'PANTHEON_INDEX_HOST' ),
-					'port'	 => getenv( 'PANTHEON_INDEX_PORT' ),
+					'host'   => getenv( 'PANTHEON_INDEX_HOST' ),
+					'port'   => getenv( 'PANTHEON_INDEX_PORT' ),
 					'scheme' => apply_filters( 'solr_scheme', 'https' ),
-					'path'	 => $this->compute_path(),
-					'ssl'	 => array( 'local_cert' => realpath( ABSPATH . '../certs/binding.pem' ) )
+					'path'   => $this->compute_path(),
+					'ssl'    => array( 'local_cert' => realpath( ABSPATH . '../certs/binding.pem' ) )
 				)
 			)
 		);
@@ -143,24 +157,28 @@ class SolrPower_Api {
 
 
 		# double check everything has been set
-		if ( !($solarium_config[ 'endpoint' ][ 'localhost' ][ 'host' ] and
-		$solarium_config[ 'endpoint' ][ 'localhost' ][ 'port' ] and
-		$solarium_config[ 'endpoint' ][ 'localhost' ][ 'path' ]) ) {
+		if ( ! ( $solarium_config['endpoint']['localhost']['host'] and
+		         $solarium_config['endpoint']['localhost']['port'] and
+		         $solarium_config['endpoint']['localhost']['path'] )
+		) {
 			syslog( LOG_ERR, "host, port or path are empty, host:$host, port:$port, path:$path" );
-			return NULL;
+
+			return null;
 		}
 
 
 		$solr = new Solarium\Client( $solarium_config );
 
-		apply_filters( 's4wp_solr', $solr ); // better name?
+		$solr       = apply_filters( 's4wp_solr', $solr ); // better name?
+		$this->solr = $solr;
+
 		return $solr;
 	}
 
 	function optimize() {
 		try {
 			$solr = get_solr();
-			if ( !$solr == NULL ) {
+			if ( ! $solr == null ) {
 				$update = $solr->createUpdate();
 				$update->addOptimize();
 				$solr->update( $update );
@@ -187,46 +205,46 @@ class SolrPower_Api {
 
 	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings ) {
 		$this->add_log( array(
-			'Search Query'	 => $qry,
-			'Offset'		 => $offset,
-			'Count'			 => $count,
-			'fq'			 => $fq,
-			'Sort By'		 => $sortby,
-			'Order'			 => $order
+			'Search Query' => $qry,
+			'Offset'       => $offset,
+			'Count'        => $count,
+			'fq'           => $fq,
+			'Sort By'      => $sortby,
+			'Order'        => $order
 		) );
 
 
-		$response		 = NULL;
-		$facet_fields	 = array();
-		$number_of_tags	 = $plugin_s4wp_settings[ 's4wp_max_display_tags' ];
+		$response       = null;
+		$facet_fields   = array();
+		$number_of_tags = $plugin_s4wp_settings['s4wp_max_display_tags'];
 
-		if ( $plugin_s4wp_settings[ 's4wp_facet_on_categories' ] ) {
+		if ( $plugin_s4wp_settings['s4wp_facet_on_categories'] ) {
 			$facet_fields[] = 'categories';
 		}
 
-		$facet_on_tags = $plugin_s4wp_settings[ 's4wp_facet_on_tags' ];
+		$facet_on_tags = $plugin_s4wp_settings['s4wp_facet_on_tags'];
 		if ( $facet_on_tags ) {
 			$facet_fields[] = 'tags';
 		}
 
-		if ( $plugin_s4wp_settings[ 's4wp_facet_on_author' ] ) {
+		if ( $plugin_s4wp_settings['s4wp_facet_on_author'] ) {
 			$facet_fields[] = 'post_author';
 		}
 
-		if ( $plugin_s4wp_settings[ 's4wp_facet_on_type' ] ) {
+		if ( $plugin_s4wp_settings['s4wp_facet_on_type'] ) {
 			$facet_fields[] = 'post_type';
 		}
 
 
-		$facet_on_custom_taxonomy = $plugin_s4wp_settings[ 's4wp_facet_on_taxonomy' ];
+		$facet_on_custom_taxonomy = $plugin_s4wp_settings['s4wp_facet_on_taxonomy'];
 		if ( count( $facet_on_custom_taxonomy ) ) {
-			$taxonomies = (array) get_taxonomies( array( '_builtin' => FALSE ), 'names' );
+			$taxonomies = (array) get_taxonomies( array( '_builtin' => false ), 'names' );
 			foreach ( $taxonomies as $parent ) {
 				$facet_fields[] = $parent . "_taxonomy";
 			}
 		}
 
-		$facet_on_custom_fields = $plugin_s4wp_settings[ 's4wp_facet_on_custom_fields' ];
+		$facet_on_custom_fields = $plugin_s4wp_settings['s4wp_facet_on_custom_fields'];
 		if ( is_array( $facet_on_custom_fields ) and count( $facet_on_custom_fields ) ) {
 			foreach ( $facet_on_custom_fields as $field_name ) {
 				$facet_fields[] = $field_name . '_str';
@@ -235,16 +253,16 @@ class SolrPower_Api {
 
 		if ( $solr ) {
 			$select = array(
-				'query'		 => $qry,
-				'fields'	 => '*,score',
-				'start'		 => $offset,
-				'rows'		 => $count,
+				'query'      => $qry,
+				'fields'     => '*,score',
+				'start'      => $offset,
+				'rows'       => $count,
 				'omitheader' => false
 			);
 			if ( $sortby != "" ) {
-				$select[ 'sort' ] = array( $sortby => $order );
+				$select['sort'] = array( $sortby => $order );
 			} else {
-				$select[ 'sort' ] = array( 'post_date' => 'desc' );
+				$select['sort'] = array( 'post_date' => 'desc' );
 			}
 
 			$query = $solr->createSelect( $select );
@@ -270,17 +288,17 @@ class SolrPower_Api {
 			$query->getHighlighting()->setSimplePostfix( '</b>' );
 			$query->getHighlighting()->setHighlightMultiTerm( true );
 
-			if ( isset( $plugin_s4wp_settings[ 's4wp_default_operator' ] ) ) {
-				$query->setQueryDefaultOperator( $plugin_s4wp_settings[ 's4wp_default_operator' ] );
+			if ( isset( $plugin_s4wp_settings['s4wp_default_operator'] ) ) {
+				$query->setQueryDefaultOperator( $plugin_s4wp_settings['s4wp_default_operator'] );
 			}
 			try {
 				$response = $solr->select( $query );
-				if ( !$response->getResponse()->getStatusCode() == 200 ) {
-					$response = NULL;
+				if ( ! $response->getResponse()->getStatusCode() == 200 ) {
+					$response = null;
 				}
 			} catch ( Exception $e ) {
 				syslog( LOG_ERR, "failed to query solr. " . $e->getMessage() );
-				$response = NULL;
+				$response = null;
 			}
 		}
 
@@ -290,6 +308,7 @@ class SolrPower_Api {
 
 	/**
 	 * Add items to debug log.
+	 *
 	 * @param array $item Array of items.
 	 */
 	function add_log( $item ) {
@@ -341,6 +360,23 @@ class SolrPower_Api {
 		$search = $search['response'];
 
 		return $search['numFound'];
+	}
+
+	/**
+	 * Parses Solarium HTTP Exception to check to see if the response is 404 (Connection refused) or otherwise (No Schema).
+	 *
+	 * @return bool False if schema is missing.
+	 */
+	function check_for_schema() {
+		$this->ping_server();
+		if ( ( stripos( $this->last_result, 'Solr HTTP error' ) !== false )
+		     && ( stripos( $this->last_result, 'Connection refused' ) === false )
+		) {
+			return false;
+		}
+
+		return true;
+
 	}
 }
 
