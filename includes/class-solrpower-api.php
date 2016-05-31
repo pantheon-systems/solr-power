@@ -16,7 +16,15 @@ class SolrPower_Api {
 
 	var $solr = null;
 
-	var $last_result;
+	/**
+	 * @var string Last response code/exception code.
+	 */
+	var $last_code;
+
+	/**
+	 * @var string Last exception returned.
+	 */
+	var $last_error;
 
 	/**
 	 * Grab instance of object.
@@ -31,7 +39,7 @@ class SolrPower_Api {
 	}
 
 	function __construct() {
-
+		add_action( 'admin_notices', array( $this, 'check_for_schema' ) );
 	}
 
 	function submit_schema() {
@@ -119,12 +127,14 @@ class SolrPower_Api {
 	function ping_server() {
 		$solr = get_solr();
 		try {
-			$ping              = $solr->ping( $solr->createPing() );
-			$this->last_result = $ping->getData();
+			$ping            = $solr->ping( $solr->createPing() );
+			$this->last_code = 200;
 
 			return true;
 		} catch ( Solarium\Exception\HttpException $e ) {
-			$this->last_result = $e->getMessage();
+
+			$this->last_code  = $e->getCode();
+			$this->last_error = $e;
 
 			return false;
 		}
@@ -363,20 +373,33 @@ class SolrPower_Api {
 	}
 
 	/**
-	 * Parses Solarium HTTP Exception to check to see if the response is 404 (Connection refused) or otherwise (No Schema).
-	 *
-	 * @return bool False if schema is missing.
+	 * Admin Notice Hook
+	 * Checks HTTP status response code to determine schema submission.
+	 * Pings Solr, checks exception code, and then submits schema.
+	 * Displays error if schema submission fails.
 	 */
 	function check_for_schema() {
-		$this->ping_server();
-		if ( ( stripos( $this->last_result, 'Solr HTTP error' ) !== false )
-		     && ( stripos( $this->last_result, 'Connection refused' ) === false )
-		) {
-			return false;
+		$last_check = get_transient( 'schema_check' );
+		if ( false === $last_check ) {
+
+			if ( getenv( 'PANTHEON_ENVIRONMENT' ) !== false ) {
+				// Ping Solr.
+				$this->ping_server();
+
+				if ( 404 === $this->last_code ) { // Schema is missing on Pantheon.
+					$schemaSubmit = $this->submit_schema();
+					if ( strpos( $schemaSubmit, 'Error' ) ) {
+						echo '<div class="notice notice-error"><p>';
+						echo '<h2>Solr Power Error:</h2>';
+						echo 'Error submitting schema to ApacheSolr.';
+						echo '</p></div>';
+					}
+				}
+				// Set a transient so we are not checking on every page load.
+				set_transient( 'schema_check', '1', 60 );
+			}
+
 		}
-
-		return true;
-
 	}
 }
 
