@@ -43,20 +43,50 @@
  *
  */
 
+/**
+ * Echo the admin notice HTML that PHP is less than 5.4
+ * and the Solr Power plugin has been deactivated or
+ * cannot be activated.
+ */
+function solr_power_PHP_admin_notice() {
+	?>
+	<div class="error">
+		<p>
+			<?php
+			if ( isset( $_GET['activate'] ) ) {
+				unset( $_GET['activate'] );
+
+				_e(
+					'The Solr Power plugin requires PHP 5.4 to function properly and <strong>has not</strong> been activated.<br />' .
+					'Please upgrade PHP and re-activate the Solr Power plugin. ' .
+					'<a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
+					'solr-for-wordpress-on-pantheon'
+				);
+			} else {
+				_e(
+					'The Solr Power plugin requires PHP 5.4 to function properly and had been <strong>deactivated</strong>.<br />' .
+					'Please upgrade PHP and re-activate the Solr Power plugin. ' .
+					'<a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
+					'solr-for-wordpress-on-pantheon'
+				);
+			}
+			?>
+		</p>
+	</div>
+	<?php
+}
+
+
+/**
+ * Deactivate the Solr Power plugin
+ */
+function solr_power__deactivate() {
+	deactivate_plugins( plugin_basename( __FILE__ ) );
+}
+
 if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
-	add_action(
-		'admin_notices',
-		create_function(
-			'',
-			"echo '<div class=\"error\"><p>" .
-			__(
-				'Solr Power requires PHP 5.4 to function properly. ' .
-				'Please upgrade PHP or deactivate Solr Power.',
-				'solr-for-wordpress-on-pantheon'
-			) .
-			"</p></div>';"
-		)
-	);
+	add_action( 'admin_notices', 'solr_power_PHP_admin_notice' );
+	add_action( 'admin_init', 'solr_power__deactivate' );
 } else {
 	define( 'SOLR_POWER_PATH', plugin_dir_path( __FILE__ ) . '/' );
 	define( 'SOLR_POWER_URL', plugin_dir_url( __FILE__ ) );
