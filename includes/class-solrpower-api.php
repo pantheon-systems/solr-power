@@ -145,9 +145,7 @@ class SolrPower_Api {
 	 * @return solr service object
 	 */
 	function get_solr() {
-		if ( null !== $this->solr ) {
-			return $this->solr;
-		}
+
 		# get the connection options
 		$plugin_s4wp_settings = solr_options();
 
@@ -396,7 +394,7 @@ class SolrPower_Api {
 					}
 				}
 				// Set a transient so we are not checking on every page load.
-				set_transient( 'schema_check', '1', 60 );
+				set_transient( 'schema_check', '1', 300 );
 			}
 
 		}
