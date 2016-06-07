@@ -111,6 +111,9 @@ class SolrPower_Api {
 	 */
 	function ping_server() {
 		$solr = get_solr();
+		if (!$solr) {
+			return false;
+		}
 		try {
 			$solr->ping( $solr->createPing() );
 			return true;
