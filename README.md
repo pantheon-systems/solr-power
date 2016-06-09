@@ -7,7 +7,7 @@
 
 **Tested up to:** 4.5
 
-**Stable tag:** 0.3
+**Stable tag:** 0.4
 
 **License:** GPLv2 or later
 
@@ -44,6 +44,11 @@ This plugin is under active development on GitHub:
 Please feel free to file issues there. Pull requests are also welcome!
 
 ## Changelog ##
+
+### 0.4 ###
+* Auto submission of schema.xml
+* Moved legacy functions to a separate file
+* PHP version check - warn in the WordPress dashboard and disable Solr Power plugin if the PHP version is less than 5.4
 
 ### 0.3 ###
 * Bug fixes
