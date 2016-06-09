@@ -389,7 +389,7 @@ class SolrPower_Api {
 					if ( strpos( $schemaSubmit, 'Error' ) ) {
 						echo '<div class="notice notice-error"><p>';
 						echo '<h2>Solr Power Error:</h2>';
-						echo 'Error posting schema.xml to ApacheSolr backend, which will prevent content from being indexed. You can try navigating to the admin section to try posting the schema directly. If this problem persists, contact your Solr platform provider.';
+						echo 'Error posting schema.xml to ApacheSolr backend, which will prevent content from being indexed. You can try navigating to the Solr Power admin section in the WordPress dashboard to try posting the schema directly. If this problem persists, open a support ticket from you Pantheon site dashboard.';
 						echo '</p></div>';
 					}
 				}
