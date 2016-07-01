@@ -25,6 +25,9 @@ class SolrPower {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_head' ) );
 		add_filter( 'plugin_action_links', array( $this, 'plugin_settings_link' ), 10, 2 );
 		add_filter( 'debug_bar_panels', array( $this, 'add_panel' ) );
+		add_action( 'widgets_init', function(){
+			register_widget( 'SolrPower_Facet_Widget' );
+		});
 	}
 
 	function activate() {
