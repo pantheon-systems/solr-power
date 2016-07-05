@@ -126,6 +126,9 @@ class SolrPower_Api {
 	 */
 	function ping_server() {
 		$solr = get_solr();
+		if (!$solr) {
+			return false;
+		}
 		try {
 			$ping            = $solr->ping( $solr->createPing() );
 			$this->last_code = 200;
