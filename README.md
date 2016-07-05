@@ -1,16 +1,10 @@
 # Solr Search for WordPress #
-**Contributors:** getpantheon, Outlandish Josh, 10up, collinsinternet
-
-**Tags:** search
-
-**Requires at least:** 4.2
-
-**Tested up to:** 4.5
-
-**Stable tag:** 0.4
-
-**License:** GPLv2 or later
-
+**Contributors:** getpantheon, Outlandish Josh, 10up, collinsinternet  
+**Tags:** search  
+**Requires at least:** 4.2  
+**Tested up to:** 4.5.3  
+**Stable tag:** 0.4  
+**License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
 Improve your user experience with the Apache Solr search engine for your WordPress website.
