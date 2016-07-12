@@ -92,14 +92,14 @@ function solr_power_env_variables_admin_notice() {
 				unset( $_GET['activate'] );
 
 				_e(
-					'The Solr Power plugin requires environment varaibles for <pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to function properly.<br />' .
+					'The Solr Power plugin requires environment variables for <pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to function properly.<br />' .
 					'The Solr Power plugin <strong>has not</strong> been activated.<br />' .
 					'Please configure the environment variables and re-activate the Solr Power plugin. ',
 					'solr-for-wordpress-on-pantheon'
 				);
 			} else {
 				_e(
-					'The Solr Power plugin requires environment varaibles for <pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to function properly.<br />' .
+					'The Solr Power plugin requires environment variables for <pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to function properly.<br />' .
 					'The Solr Power plugin <strong>has been deactivated</strong>.<br />' .
 					'Please configure the environment variables and re-activate the Solr Power plugin. ',
 					'solr-for-wordpress-on-pantheon'
