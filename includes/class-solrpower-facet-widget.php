@@ -1,6 +1,11 @@
 <?php
 
 class SolrPower_Facet_Widget extends WP_Widget {
+	/**
+	 * @var array Facets sent to WP_Query
+	 */
+	var $facets = array();
+
 	public function __construct() {
 		$widget_ops = array(
 			'classname'   => 'solrpower_facet_widget',
@@ -16,10 +21,12 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	 * @param array $instance
 	 */
 	public function widget( $args, $instance ) {
+		$this->dummy_query();
 		echo $args['before_widget'];
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . $instance['title'] . $args['after_title'];
 		}
+		$this->facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
 		echo '<form action="' . home_url( '/' ) . '" method="get">';
 		$this->render_searchbox();
 		$this->fetch_facets();
@@ -96,17 +103,39 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			foreach ( $values as $name => $count ):
 
 				$nice_name = str_replace( '^^', '', $name );
-
+				$checked   = '';
+				if ( isset( $this->facets[ $facet_name ] ) ) {
+					$checked = checked( esc_attr( $name ), $this->facets[ $facet_name ], false );
+				}
 				echo '<li>';
-				echo '<input type="checkbox" name="facet[' . esc_attr( $facet_name ) . ']" value="' . esc_attr( $name ) . '"> ';
+				echo '<input type="checkbox" name="facet[' . esc_attr( $facet_name ) . ']" value="' . esc_attr( $name ) . '" ' . $checked . '> ';
 				echo esc_html( $nice_name );
 				echo ' (' . esc_html( $count ) . ')';
 				echo '</li>';
 			endforeach;
 
 			echo '</ul>';
+
+
+			echo '<a href="' . $this->reset_url( $facet_name ) . '">Reset</a>';
+
 		}
 
+	}
+
+	/**
+	 * Reset link below facet list.
+	 *
+	 * @param string $facet_name
+	 */
+	function reset_url( $facet_name ) {
+		$facets = $this->facets;
+		if ( ! isset( $facets[ $facet_name ] ) ) {
+			return;
+		}
+		unset( $facets[ $facet_name ] );
+
+		return add_query_arg( array( 'facet' => $facets ) );
 	}
 
 	/**
@@ -156,4 +185,27 @@ class SolrPower_Facet_Widget extends WP_Widget {
 
 		return false;
 	}
+
+	function dummy_query() {
+		global $wp_query;
+		$query = new WP_Query();
+		if ( ! $wp_query->get( 's' ) ) {
+			$query->set( 's', '*:*' );
+			$query->get_posts();
+		}
+
+	}
+}
+
+/**
+ * Display the search box outside of a widget.
+ */
+function solr_facet_search() {
+	$facet = new SolrPower_Facet_Widget();
+	$facet->dummy_query();
+	$facet->facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
+	echo '<form action="' . home_url( '/' ) . '" method="get">';
+	$facet->render_searchbox();
+	$facet->fetch_facets();
+	echo '</form>';
 }
