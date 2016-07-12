@@ -38,6 +38,9 @@ Please feel free to file issues there. Pull requests are also welcome!
 
 == Changelog ==
 
+= 0.4.1 =
+* Do not allow plugin activation if the `PANTHEON_INDEX_HOST` or `PANTHEON_INDEX_PORT` environment variables are not set. Instead, show an admin notice to the user advising them to configure the environment variables.
+
 = 0.4 =
 * Auto submission of schema.xml
 * Moved legacy functions to a separate file
