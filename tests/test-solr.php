@@ -309,4 +309,33 @@ class SolrTest extends WP_UnitTestCase {
 
 	}
 
+	/**
+	 * Test of filter that adds a custom field to index and facet.
+	 * @group 37
+	 */
+	function test_cf_facet_filter() {
+
+		add_filter( 'solr_index_custom_fields', function ( $fields = array() ) {
+			$fields[] = 'my_field';
+
+			return $fields;
+		} );
+
+		add_filter( 'solr_facet_custom_fields', function ( $fields = array() ) {
+			$fields[] = 'my_field';
+
+			return $fields;
+		} );
+		$this->__setup_custom_fields();
+
+
+		$query = $this->__facet_query( array(
+			'facet' => array(
+				'my_field_str' => 'my_value'
+			)
+		) );
+
+		$this->assertEquals( $query->post_count, 2 );
+		$this->assertEquals( $query->found_posts, 2 );
+	}
 }

@@ -252,7 +252,7 @@ class SolrPower_Api {
 			}
 		}
 
-		$facet_on_custom_fields = $plugin_s4wp_settings['s4wp_facet_on_custom_fields'];
+		$facet_on_custom_fields = apply_filters( 'solr_facet_custom_fields', $plugin_s4wp_settings['s4wp_facet_on_custom_fields'] );
 		if ( is_array( $facet_on_custom_fields ) and count( $facet_on_custom_fields ) ) {
 			foreach ( $facet_on_custom_fields as $field_name ) {
 				$facet_fields[] = $field_name . '_str';
