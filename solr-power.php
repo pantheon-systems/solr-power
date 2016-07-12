@@ -122,7 +122,7 @@ function solr_power__deactivate() {
 if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 	add_action( 'admin_notices', 'solr_power_PHP_admin_notice' );
 	add_action( 'admin_init', 'solr_power__deactivate' );
-} else if ( false === getenv( 'PANTHEON_INDEX_HOST' ) || false === getenv( 'PANTHEON_INDEX_PORT' ) ) {
+} elseif ( false === getenv( 'PANTHEON_INDEX_HOST' ) || false === getenv( 'PANTHEON_INDEX_PORT' ) ) {
 	add_action( 'admin_notices', 'solr_power_env_variables_admin_notice' );
 	add_action( 'admin_init', 'solr_power__deactivate' );
 } else {
