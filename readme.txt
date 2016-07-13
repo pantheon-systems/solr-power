@@ -3,7 +3,7 @@ Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet
 Tags: search
 Requires at least: 4.2
 Tested up to: 4.5.3
-Stable tag: 0.4
+Stable tag: 0.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,6 +37,9 @@ This plugin is under active development on GitHub:
 Please feel free to file issues there. Pull requests are also welcome!
 
 == Changelog ==
+
+= 0.4.1 =
+* Do not allow plugin activation if the `PANTHEON_INDEX_HOST` or `PANTHEON_INDEX_PORT` environment variables are not set. Instead, show an admin notice to the user advising them to configure the environment variables.
 
 = 0.4 =
 * Auto submission of schema.xml
