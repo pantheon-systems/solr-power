@@ -1,4 +1,15 @@
 {
+    "name": "pantheon-systems/solr-power",
+    "description": "An open source plugin to connect to Pantheon's Apache Solr search infrastructure, or your own!",
+    "type": "wordpress-plugin",
+    "license": "GPLv2 or later",
+    "authors": [
+        {
+            "name": "Pantheon",
+            "email": "noreply@pantheon.io"
+        }
+    ],
+    "minimum-stability": "dev",
     "require": {
         "solarium/solarium": "3.2.0"
     }
