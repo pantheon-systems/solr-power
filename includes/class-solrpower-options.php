@@ -54,7 +54,7 @@ class SolrPower_Options {
 		if ( file_exists( SOLR_POWER_PATH . '/solr-options-page.php' ) ) {
 			include( SOLR_POWER_PATH . '/solr-options-page.php' );
 		} else {
-			_e( "<p>Couldn't locate the options page.</p>", 'solr4wp' );
+			esc_html_e( "Couldn't locate the options page.", 'solr4wp' );
 		}
 	}
 
@@ -110,7 +110,7 @@ class SolrPower_Options {
 		if ( $indexall ) {
 			update_site_option( $option, $optval );
 		} else {
-			var_dump( update_option( $option, $optval ) );
+			update_option( $option, $optval );
 		}
 	}
 
@@ -236,7 +236,7 @@ class SolrPower_Options {
 
 		if ( $s4wp_settings['s4wp_solr_initialized'] != 1 ) {
 			$options = SolrPower_Options::get_instance()->initalize_options();
-			
+
 			$options['s4wp_index_all_sites'] = 0;
 
 			//update existing settings from multiple option record to a single array
