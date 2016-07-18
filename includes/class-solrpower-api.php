@@ -98,8 +98,7 @@ class SolrPower_Api {
 		$response  = curl_exec( $ch );
 		$curl_opts = curl_getinfo( $ch );
 		fclose( $file );
-		$returnValue = (int) $curl_opts['http_code'];
-		if ( (int) $curl_opts['http_code'] == 200 ) {
+		if ( 200 === (int) $curl_opts['http_code'] ) {
 			$returnValue = 'Schema Upload Success: ' . $curl_opts['http_code'];
 		} else {
 			$returnValue = 'Schema Upload Error: ' . $curl_opts['http_code'];
