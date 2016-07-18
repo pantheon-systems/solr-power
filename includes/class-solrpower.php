@@ -79,7 +79,14 @@ class SolrPower {
 			return $links;
 		}
 
-		array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-power">' . __( 'Settings', 's4wp' ) . '</a>' );
+		if ( is_multisite() ) {
+			$settings_link = network_admin_url( 'settings.php' );
+		} else {
+			$settings_link = admin_url( 'settings.php' );
+		}
+		$settings_link = add_query_arg( 'page', 'solr-power', $settings_link );
+
+		array_unshift( $links, '<a href="' . esc_url( $settings_link ) . '">' . __( 'Settings', 's4wp' ) . '</a>' );
 
 		return $links;
 	}
