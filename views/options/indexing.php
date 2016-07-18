@@ -1,5 +1,5 @@
 <div id="solr_indexing" class="solrtab">
-	<form method="post" action="<?php echo $action; ?>#top#solr_indexing">
+	<form method="post" action="<?php echo esc_url( $action ); ?>#top#solr_indexing">
 		<?php wp_nonce_field( 'solr_action', 'solr_update' ); ?>
 		<h3><?php esc_html_e( 'Indexing Options', 'solr-for-wordpress-on-pantheon' ) ?></h3>
 		<table class="form-table">
@@ -156,14 +156,14 @@
 					<?php
 					$and = "";
 					$or  = "";
-					if ( isset( $s4wp_settings['s4wp_default_operator'] ) && $s4wp_settings['s4wp_default_operator'] == "And" ) {
-						$and = 'checked';
-					} else {
-						$or = 'checked';
+					if ( ! isset( $s4wp_settings['s4wp_default_operator'] ) ) {
+						$s4wp_settings['s4wp_default_operator'] = 'Or';
 					}
 					?>
-					Or <input type="radio" name="settings[s4wp_default_operator]" value="Or" <?php echo $or; ?>> And
-					<input type="radio" name="settings[s4wp_default_operator]" value="And" <?php echo $and; ?>>
+					Or <input type="radio" name="settings[s4wp_default_operator]"
+					          value="Or" <?php checked( $s4wp_settings['s4wp_default_operator'], 'Or' ); ?>> And
+					<input type="radio" name="settings[s4wp_default_operator]"
+					       value="And" <?php checked( $s4wp_settings['s4wp_default_operator'], 'And' ); ?>>
 				</td>
 			</tr>
 

@@ -1,7 +1,7 @@
 <div id="solr_action" class="solrtab">
 
 	<h3><?php esc_html_e( 'Actions', 'solr-for-wordpress-on-pantheon' ) ?></h3>
-	<form method="post" action="<?php echo $action; ?>#top#solr_action">
+	<form method="post" action="<?php echo esc_url($action); ?>#top#solr_action">
 		<?php wp_nonce_field( 'solr_action', 'solr_ping' ); ?>
 		<input type="hidden" name="action" value="ping"/>
 		<table class="form-table">
@@ -13,7 +13,7 @@
 		</table>
 	</form>
 	<?php if ( is_multisite() ) { ?>
-		<form method="post" action="<?php echo $action; ?>#top#solr_action">
+		<form method="post" action="<?php echo esc_url($action); ?>#top#solr_action">
 			<?php wp_nonce_field( 'solr_action', 'solr_init_blogs' ); ?>
 			<input type="hidden" name="action" value="init_blogs"/>
 			<table class="form-table">
@@ -25,7 +25,7 @@
 			</table>
 		</form>
 	<?php } ?>
-	<form method="post" action="<?php echo $action; ?>#top#solr_action">
+	<form method="post" action="<?php echo esc_url($action); ?>#top#solr_action">
 		<?php wp_nonce_field( 'solr_action', 'solr_optimize' ); ?>
 		<input type="hidden" name="action" value="optimize"/>
 		<table class="form-table">
@@ -36,7 +36,7 @@
 			</tr>
 		</table>
 	</form>
-	<form method="post" action="<?php echo $action; ?>#top#solr_action">
+	<form method="post" action="<?php echo esc_url($action); ?>#top#solr_action">
 		<?php wp_nonce_field( 'solr_action', 'solr_delete_all' ); ?>
 		<input type="hidden" name="action" value="delete_all"/>
 		<table class="form-table">
@@ -47,7 +47,7 @@
 			</tr>
 		</table>
 	</form>
-	<form method="post" action="<?php echo $action; ?>#top#solr_action">
+	<form method="post" action="<?php echo esc_url($action); ?>#top#solr_action">
 		<?php wp_nonce_field( 'solr_action', 'solr_repost_schema' ); ?>
 		<input type="hidden" name="action" value="repost_schema"/>
 		<table class="form-table">
@@ -64,7 +64,7 @@
 		</table>
 	</form>
 
-	<form method="post" action="<?php echo $action; ?>#top#solr_action">
+	<form method="post" action="<?php echo esc_url($action); ?>#top#solr_action">
 		<input type="hidden" name="action" value="index_all"/>
 		<table class="form-table">
 

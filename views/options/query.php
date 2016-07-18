@@ -1,5 +1,5 @@
 <div id="solr_query" class="solrtab">
-	<form method="post" action="<?php echo $action; ?>#top#solr_query">
+	<form method="post" action="<?php echo esc_url($action); ?>#top#solr_query">
 		<?php wp_nonce_field( 'solr_action', 'solr_run_query' ); ?>
 		<h3><?php esc_html_e( 'Solr Query', 'solr-for-wordpress-on-pantheon' ) ?></h3>
 		<table class="form-table">

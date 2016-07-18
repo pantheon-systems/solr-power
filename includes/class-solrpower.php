@@ -32,14 +32,14 @@ class SolrPower {
 		// Check to see if we have  environment variables. If not, bail. If so, create the initial options.
 
 		if ( $errMessage = SolrPower::get_instance()->sanity_check() ) {
-			wp_die( $errMessage );
+			wp_die( wp_kses_post($errMessage) );
 		}
 
 		// Don't try to send a schema if we're not on Pantheon servers.
 		if ( !defined( 'SOLR_PATH' ) ) {
 			$schemaSubmit = SolrPower_Api::get_instance()->submit_schema();
 			if ( strpos( $schemaSubmit, 'Error' ) ) {
-				wp_die( 'Submitting the schema failed with the message ' . $errorMessage );
+				wp_die( 'Submitting the schema failed with the message ' . esc_html($errorMessage) );
 			}
 		}
 		$options = SolrPower_Options::get_instance()->initalize_options();

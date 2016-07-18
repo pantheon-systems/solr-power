@@ -56,19 +56,19 @@ function solr_power_PHP_admin_notice() {
 			if ( isset( $_GET['activate'] ) ) {
 				unset( $_GET['activate'] );
 
-				_e(
+				echo wp_kses_post( __(
 					'The Solr Power plugin requires PHP 5.4 to function properly and <strong>has not</strong> been activated.<br />' .
 					'Please upgrade PHP and re-activate the Solr Power plugin. ' .
 					'<a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
 					'solr-for-wordpress-on-pantheon'
-				);
+				) );
 			} else {
-				_e(
+				echo wp_kses_post( __(
 					'The Solr Power plugin requires PHP 5.4 to function properly and had been <strong>deactivated</strong>.<br />' .
 					'Please upgrade PHP and re-activate the Solr Power plugin. ' .
 					'<a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
 					'solr-for-wordpress-on-pantheon'
-				);
+				) );
 			}
 			?>
 		</p>
@@ -91,19 +91,19 @@ function solr_power_env_variables_admin_notice() {
 			if ( isset( $_GET['activate'] ) ) {
 				unset( $_GET['activate'] );
 
-				_e(
+				echo wp_kses_post(__(
 					'The Solr Power plugin requires environment variables for <pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to function properly.<br />' .
 					'The Solr Power plugin <strong>has not</strong> been activated.<br />' .
 					'Please configure the environment variables and re-activate the Solr Power plugin. ',
 					'solr-for-wordpress-on-pantheon'
-				);
+				));
 			} else {
-				_e(
+				echo wp_kses_post(__(
 					'The Solr Power plugin requires environment variables for <pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to function properly.<br />' .
 					'The Solr Power plugin <strong>has been deactivated</strong>.<br />' .
 					'Please configure the environment variables and re-activate the Solr Power plugin. ',
 					'solr-for-wordpress-on-pantheon'
-				);
+				));
 			}
 			?>
 		</p>
