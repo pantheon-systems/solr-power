@@ -9,6 +9,9 @@
             "email": "noreply@pantheon.io"
         }
     ],
+    "support": {
+      "issues": "https://github.com/pantheon-systems/solr-power/issues"
+    },
     "minimum-stability": "dev",
     "require": {
         "solarium/solarium": "3.2.0"
