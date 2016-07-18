@@ -12,19 +12,19 @@ class SolrPower_Api {
 	 * Logging for debugging.
 	 * @var array
 	 */
-	var $log = array();
+	public $log = array();
 
-	var $solr = null;
+	public $solr = null;
 
 	/**
 	 * @var string Last response code/exception code.
 	 */
-	var $last_code;
+	public $last_code;
 
 	/**
 	 * @var string Last exception returned.
 	 */
-	var $last_error;
+	public $last_error;
 
 	/**
 	 * Grab instance of object.
