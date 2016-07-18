@@ -3,7 +3,7 @@
 /*
   Plugin Name: Solr Power
   Description: Allows WordPress sites to index and search content with ApacheSolr.
-  Version: 0.4.0
+  Version: 0.4.1
   Author: Pantheon
   Author URI: http://pantheon.io
  */
@@ -76,6 +76,41 @@ function solr_power_PHP_admin_notice() {
 	<?php
 }
 
+/**
+ * Echo the admin notice HTML that either the
+ * PANTHEON_INDEX_HOST or PANTHEON_INDEX_PORT
+ * environment variables do not exist and the
+ * Solr Power plugin has been deactivated or
+ * cannot be activated.
+ */
+function solr_power_env_variables_admin_notice() {
+	?>
+	<div class="error">
+		<p>
+			<?php
+			if ( isset( $_GET['activate'] ) ) {
+				unset( $_GET['activate'] );
+
+				_e(
+					'The Solr Power plugin requires environment variables for <pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to function properly.<br />' .
+					'The Solr Power plugin <strong>has not</strong> been activated.<br />' .
+					'Please configure the environment variables and re-activate the Solr Power plugin. ',
+					'solr-for-wordpress-on-pantheon'
+				);
+			} else {
+				_e(
+					'The Solr Power plugin requires environment variables for <pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to function properly.<br />' .
+					'The Solr Power plugin <strong>has been deactivated</strong>.<br />' .
+					'Please configure the environment variables and re-activate the Solr Power plugin. ',
+					'solr-for-wordpress-on-pantheon'
+				);
+			}
+			?>
+		</p>
+	</div>
+	<?php
+}
+
 
 /**
  * Deactivate the Solr Power plugin
@@ -86,6 +121,9 @@ function solr_power__deactivate() {
 
 if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 	add_action( 'admin_notices', 'solr_power_PHP_admin_notice' );
+	add_action( 'admin_init', 'solr_power__deactivate' );
+} elseif ( false === getenv( 'PANTHEON_INDEX_HOST' ) || false === getenv( 'PANTHEON_INDEX_PORT' ) ) {
+	add_action( 'admin_notices', 'solr_power_env_variables_admin_notice' );
 	add_action( 'admin_init', 'solr_power__deactivate' );
 } else {
 	define( 'SOLR_POWER_PATH', plugin_dir_path( __FILE__ ) . '/' );

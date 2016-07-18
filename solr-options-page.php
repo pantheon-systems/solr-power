@@ -269,8 +269,12 @@ $server_ping=SolrPower_Api::get_instance()->ping_server();
 	<?php } ?>
 <br style="clear:both;">
 </div>
-<?php 
-$action='options-general.php?page=solr-power';
+<?php
+if ( is_multisite() ) {
+  $action='settings.php?page=solr-power';
+} else {
+  $action='options-general.php?page=solr-power';
+}
 include 'views/options/indexing.php';
 include 'views/options/action.php';
 include 'views/options/query.php';

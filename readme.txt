@@ -2,14 +2,16 @@
 Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet
 Tags: search
 Requires at least: 4.2
-Tested up to: 4.5
-Stable tag: 0.4
+Tested up to: 4.5.3
+Stable tag: 0.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Improve your user experience with the Apache Solr search engine for your WordPress website.
 
 == Description ==
+
+[![Build Status](https://travis-ci.org/pantheon-systems/solr-power.svg?branch=master)](https://travis-ci.org/pantheon-systems/solr-power)
 
 Search is critical for your site, but the default search for WordPress leaves a lot to be desired. Improve your user experience with the Apache Solr search engine for your WordPress website.
 
@@ -37,6 +39,9 @@ This plugin is under active development on GitHub:
 Please feel free to file issues there. Pull requests are also welcome!
 
 == Changelog ==
+
+= 0.4.1 =
+* Do not allow plugin activation if the `PANTHEON_INDEX_HOST` or `PANTHEON_INDEX_PORT` environment variables are not set. Instead, show an admin notice to the user advising them to configure the environment variables.
 
 = 0.4 =
 * Auto submission of schema.xml

@@ -12,19 +12,19 @@ class SolrPower_Api {
 	 * Logging for debugging.
 	 * @var array
 	 */
-	var $log = array();
+	public $log = array();
 
-	var $solr = null;
+	public $solr = null;
 
 	/**
 	 * @var string Last response code/exception code.
 	 */
-	var $last_code;
+	public $last_code;
 
 	/**
 	 * @var string Last exception returned.
 	 */
-	var $last_error;
+	public $last_error;
 
 	/**
 	 * Grab instance of object.
@@ -98,8 +98,7 @@ class SolrPower_Api {
 		$response  = curl_exec( $ch );
 		$curl_opts = curl_getinfo( $ch );
 		fclose( $file );
-		$returnValue = (int) $curl_opts['http_code'];
-		if ( (int) $curl_opts['http_code'] == 200 ) {
+		if ( 200 === (int) $curl_opts['http_code'] ) {
 			$returnValue = 'Schema Upload Success: ' . $curl_opts['http_code'];
 		} else {
 			$returnValue = 'Schema Upload Error: ' . $curl_opts['http_code'];
@@ -126,6 +125,11 @@ class SolrPower_Api {
 	 */
 	function ping_server() {
 		$solr = get_solr();
+
+		if ( ! $solr ) {
+			return false;
+		}
+
 		try {
 			$ping            = $solr->ping( $solr->createPing() );
 			$this->last_code = 200;
