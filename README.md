@@ -32,10 +32,22 @@ If you're using the Solr Power plugin on Pantheon, setting up Apache Solr is as 
 2. Search on!
 3. See the examples/templates directories for more rich implementation guidelines.
 
-If you're using the Solr Power plugin elsewhere, you'll need to install and configure Apache Solr. On a Linux environment, this involves two steps:
+If you're using the Solr Power plugin elsewhere, you'll need to install and configure Apache Solr. On a Linux environment, this involves three steps:
 
 1. Install the Java Runtime Environment.
 2. Run `./bin/install-solr.sh` to install and run Apache Solr on port 8983.
+3. Configuring Solr Power to use this particular Solr instance by setting the `PANTHEON_INDEX_HOST` and `PANTHEON_INDEX_PORT` environment variables.
+
+In a local development environment, you can point Solr Power to a custom Solr instance by creating a MU plugin with:
+
+```
+<?php
+
+putenv( 'PANTHEON_INDEX_HOST=192.168.50.4' ); // Replace with the appropriate IP address
+putenv( 'PANTHEON_INDEX_PORT=8983' );
+
+add_filter( 'solr_scheme', function(){ return 'http'; });
+```
 
 ## Development ##
 
