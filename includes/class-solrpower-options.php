@@ -11,7 +11,7 @@ class SolrPower_Options {
 	/**
 	 * @var null|string Admin message.
 	 */
-	var $msg = null;
+	public $msg = null;
 
 	/**
 	 * Grab instance of object.
