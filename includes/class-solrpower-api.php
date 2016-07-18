@@ -153,12 +153,18 @@ class SolrPower_Api {
 		# get the connection options
 		$plugin_s4wp_settings = solr_options();
 
+		/*
+		 * Check for the SOLR_POWER_SCHEME constant.
+		 * If it exists and is "http" or "https", use it as the default scheme value.
+		 */
+		$default_scheme = ( defined( 'SOLR_POWER_SCHEME' ) && 1 === preg_match( '/^http[s]?$/', SOLR_POWER_SCHEME ) ) ? SOLR_POWER_SCHEME : 'https';
+
 		$solarium_config = array(
 			'endpoint' => array(
 				'localhost' => array(
 					'host'   => getenv( 'PANTHEON_INDEX_HOST' ),
 					'port'   => getenv( 'PANTHEON_INDEX_PORT' ),
-					'scheme' => apply_filters( 'solr_scheme', 'https' ),
+					'scheme' => apply_filters( 'solr_scheme', $default_scheme ),
 					'path'   => $this->compute_path(),
 					'ssl'    => array( 'local_cert' => realpath( ABSPATH . '../certs/binding.pem' ) )
 				)
