@@ -22,11 +22,18 @@ Search is critical for your site, but the default search for WordPress leaves a 
 
 == Installation ==
 
-First install the plugin as per normal. If you are installing on Pantheon, you will need to enable the Apache Solr add-on before you can enable the plugin.
+The Solr Power plugin can be installed just like you'd install any other WordPress plugin. Because Solr Power is intended to be a bridge between WordPress and the Apache Solr search engine, you'll need access to a functioning Solr instance for the plugin to work as expected.
+
+If you're using the Solr Power plugin on Pantheon, setting up Apache Solr is as easy as enabling the Apache Solr add-on in your Pantheon dashboard. Once you've done so:
 
 1. Index your existing content by going to the plugin options screen and clicking "Execute" on "Index Searchable Post Types".
 2. Search on!
 3. See the examples/templates directories for more rich implementation guidelines.
+
+If you're using the Solr Power plugin elsewhere, you'll need to install and configure Apache Solr. On a Linux environment, this involves two steps:
+
+1. Install the Java Runtime Environment.
+2. Run `./bin/install-solr.sh` to install and run Apache Solr on port 8983.
 
 == Development ==
 
