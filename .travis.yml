@@ -17,3 +17,9 @@ before_script:
   - bash bin/install-solr.sh
 
 script: phpunit
+
+branches:
+  only:
+    - master
+    - /^[[:digit:]]+\.[[:digit:]]+.*$/
+    
