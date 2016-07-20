@@ -22,4 +22,5 @@ branches:
   only:
     - master
     - /^[[:digit:]]+\.[[:digit:]]+.*$/
+    - /^ataylorme.*$/
     
