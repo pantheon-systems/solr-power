@@ -1,9 +1,9 @@
 {
-  "name": "wp-redis",
+  "name": "solr-power",
   "version": "0.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pantheon-systems/wp-redis.git"
+    "url": "https://github.com/pantheon-systems/solr-power.git"
   },
   "main": "Gruntfile.js",
   "author": "Pantheon <noreply@pantheon.io>",
