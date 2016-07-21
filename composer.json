@@ -1,5 +1,26 @@
 {
+    "name": "pantheon-systems/solr-power",
+    "description": "An open source plugin to connect to Pantheon's Apache Solr search infrastructure, or your own!",
+    "type": "wordpress-plugin",
+    "license": "GPLv2 or later",
+    "authors": [
+        {
+            "name": "Pantheon",
+            "email": "noreply@pantheon.io"
+        }
+    ],
+    "support": {
+      "issues": "https://github.com/pantheon-systems/solr-power/issues"
+    },
+    "minimum-stability": "dev",
     "require": {
         "solarium/solarium": "3.2.0"
+    },
+    "require-dev": {
+        "behat/mink-selenium2-driver": "~1.1",
+        "behat/mink-extension": "~2.0",
+        "symfony/dependency-injection": "2.7.11",
+        "behat/behat": "^3.1",
+        "behat/mink-goutte-driver": "^1.2"
     }
 }

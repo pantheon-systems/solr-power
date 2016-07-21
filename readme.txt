@@ -11,6 +11,8 @@ Improve your user experience with the Apache Solr search engine for your WordPre
 
 == Description ==
 
+[![Build Status](https://travis-ci.org/pantheon-systems/solr-power.svg?branch=master)](https://travis-ci.org/pantheon-systems/solr-power)
+
 Search is critical for your site, but the default search for WordPress leaves a lot to be desired. Improve your user experience with the Apache Solr search engine for your WordPress website.
 
 * Fast results, with better accuracy
