@@ -191,6 +191,47 @@ class SolrPower_CLI extends WP_CLI_Command {
 		WP_CLI::success( 'Index optimized.' );
 	}
 
+	/**
+	 * Report stats about indexed content.
+	 *
+	 * Displays number of indexed posts for each enabled post type.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--field=<field>]
+	 * : Display a specific field.
+	 *
+	 * [--format=<format>]
+	 * : Render output in a particular format.
+	 * ---
+	 * default: table
+	 * options:
+	 *   - table
+	 *   - json
+	 *   - yaml
+	 *   - csv
+	 * ---
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     $ wp solr stats
+	 *     +------------+-------+
+	 *     | Field      | Value |
+	 *     +------------+-------+
+	 *     | post       | 2     |
+	 *     | page       | 1     |
+	 *     | attachment | 0     |
+	 *     +------------+-------+
+	 *
+	 *     $ wp solr stats --field=page
+	 *     1
+	 */
+	public function stats( $args, $assoc_args ) {
+		$stats = SolrPower_Api::get_instance()->index_stats();
+		$formatter = new \WP_CLI\Formatter( $assoc_args, array_keys( $stats ) );
+		$formatter->display_item( $stats );
+	}
+
 }
 
 WP_CLI::add_command( 'solr', 'SolrPower_CLI' );
