@@ -147,6 +147,21 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 *   - yaml
 	 *   - csv
 	 * ---
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     $ wp solr info
+	 *     +-------------+------------+
+	 *     | Field       | Value      |
+	 *     +-------------+------------+
+	 *     | ping_status | successful |
+	 *     | ip_address  | localhost  |
+	 *     | port        | 8983       |
+	 *     | path        | /solr      |
+	 *     +-------------+------------+
+	 *
+	 *     $ wp solr info --field=ip_address
+	 *     localhost
 	 */
 	public function info( $args, $assoc_args ) {
 
