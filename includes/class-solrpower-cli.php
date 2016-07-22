@@ -128,6 +128,41 @@ class SolrPower_CLI extends WP_CLI_Command {
 	}
 
 	/**
+	 * Report information about Solr Power configuration.
+	 *
+	 * Displays ping status, alongside Solr server IP address, port, and path.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [--field=<field>]
+	 * : Display a specific field.
+	 *
+	 * [--format=<format>]
+	 * : Render output in a particular format.
+	 * ---
+	 * default: table
+	 * options:
+	 *   - table
+	 *   - json
+	 *   - yaml
+	 *   - csv
+	 * ---
+	 */
+	public function info( $args, $assoc_args ) {
+
+		$ping = SolrPower_Api::get_instance()->ping_server();
+		$server = array(
+			'ping_status' => $ping ? 'successful' : 'failed',
+			'ip_address'  => getenv( 'PANTHEON_INDEX_HOST' ),
+			'port'        => getenv( 'PANTHEON_INDEX_PORT' ),
+			'path'        => SolrPower_Api::get_instance()->compute_path(),
+		);
+
+		$formatter = new \WP_CLI\Formatter( $assoc_args, array( 'ping_status', 'ip_address', 'port', 'path' ) );
+		$formatter->display_item( $server );
+	}
+
+	/**
 	 * Optimize the Solr index.
 	 *
 	 * Calls Solarium's addOptimize() to 'defragment' your index. The space
