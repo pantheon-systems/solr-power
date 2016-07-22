@@ -1,6 +1,72 @@
 <?php
 
+/**
+ * Perform a variety of actions against your Solr instance.
+ */
 class SolrPower_CLI extends WP_CLI_Command {
+
+	/**
+	 * Check server settings.
+	 *
+	 * Pings the Solr server to see if the connection is functional.
+	 *
+	 * @subcommand check-server-settings
+	 */
+	public function check_server_settings() {
+		$retval = SolrPower_Api::get_instance()->ping_server();
+		if ( $retval ) {
+			WP_CLI::success( 'Server ping successful.' );
+		} else {
+			$last_error = SolrPower_Api::get_instance()->last_error;
+			WP_CLI::error( "Server ping failed: {$last_error->getMessage()}" );
+		}
+	}
+
+	/**
+	 * Remove one or more posts from the index.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [<id>...]
+	 * : One or more post ids to remove from the index.
+	 *
+	 * [--all]
+	 * : Remove all posts from the index.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     $ wp solr delete 342
+	 *     Removed post 342 from the index.
+	 *     Success: Specified posts removed from the index.
+	 *
+	 *     $ wp solr delete --all
+	 *     Success: All posts successfully removed from the index.
+	 *
+	 */
+	public function delete( $args, $assoc_args ) {
+
+		if ( WP_CLI\Utils\get_flag_value( $assoc_args, 'all' ) ) {
+			if ( SolrPower_Sync::get_instance()->delete_all() ) {
+				WP_CLI::success( 'All posts successfully removed from the index.' );
+			} else {
+				$last_error = SolrPower_Api::get_instance()->last_error;
+				WP_CLI::error( "Couldn't remove all posts from the index: {$last_error->getMessage()}" );
+			}
+		} else if ( count( $args ) ) {
+			foreach( $args as $post_id ) {
+				if ( SolrPower_Sync::get_instance()->delete( absint( $post_id ) ) ) {
+					WP_CLI::log( "Removed post {$post_id} from the index." );
+				} else {
+					$last_error = SolrPower_Api::get_instance()->last_error;
+					WP_CLI::warning( "Couldn't removed post {$post_id} from the index: {$last_error->getMessage()}" );
+				}
+			}
+			WP_CLI::success( 'Specified posts removed from the index.' );
+		} else {
+			WP_CLI::error( 'Please specify one or more post ids, or use the --all flag.' );
+		}
+
+	}
 
 	/**
 	 * Index all posts for a site.
@@ -62,35 +128,17 @@ class SolrPower_CLI extends WP_CLI_Command {
 	}
 
 	/**
-	 * Remove one or all posts from a Solr index.
-	 * 
-	 * ## EXAMPLES
+	 * Optimize the Solr index.
 	 *
-	 * wp solr delete
-	 * wp solr delete 123
+	 * Calls Solarium's addOptimize() to 'defragment' your index. The space
+	 * taken by deleted document data is reclaimed and can merge the index into
+	 * fewer segments. This can improve search performance a lot.
 	 *
-	 *
-	 * @param array $args
-	 * 
+	 * @subcommand optimize-index
 	 */
-	function delete( $args ) {
-		$post_id = false;
-		if ( isset( $args[ 0 ] ) ) {
-			$post_id = $args[ 0 ];
-		}
-		if ( $post_id ) {
-			$status = SolrPower_Sync::get_instance()->delete( absint( $post_id ) );
-
-			$msg = ($status) ? 'Post #' . absint( $post_id ) . ' successfully removed from index.' : SolrPower_Sync::get_instance()->error_msg;
-		} else {
-			$status	 = SolrPower_Sync::get_instance()->delete_all();
-			$msg	 = ($status) ? 'All posts successfully removed from index.' : SolrPower_Sync::get_instance()->error_msg;
-		}
-		if ( $status ) {
-			WP_CLI::success( $msg );
-			return;
-		}
-		WP_CLI::error( $msg );
+	public function optimize_index() {
+		SolrPower_Api::get_instance()->optimize();
+		WP_CLI::success( 'Index optimized.' );
 	}
 
 }
