@@ -199,6 +199,11 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 * @subcommand repost-schema
 	 */
 	public function repost_schema() {
+
+		if ( ! getenv( 'PANTHEON_ENVIRONMENT' ) || ! getenv( 'FILEMOUNT' ) ) {
+			WP_CLI::error( 'Schema repositing only works in a Pantheon environment.' );
+		}
+
 		SolrPower_Sync::get_instance()->delete_all();
 		$output = SolrPower_Api::get_instance()->submit_schema();
 		WP_CLI::success( "Schema reposted: {$output}" );
