@@ -192,6 +192,19 @@ class SolrPower_CLI extends WP_CLI_Command {
 	}
 
 	/**
+	 * Repost schema.xml to Solr.
+	 *
+	 * Deletes the current index, then reposts the schema.xml to Solr.
+	 *
+	 * @subcommand repost-schema
+	 */
+	public function repost_schema() {
+		SolrPower_Sync::get_instance()->delete_all();
+		$output = SolrPower_Api::get_instance()->submit_schema();
+		WP_CLI::success( "Schema reposted: {$output}" );
+	}
+
+	/**
 	 * Report stats about indexed content.
 	 *
 	 * Displays number of indexed posts for each enabled post type.
