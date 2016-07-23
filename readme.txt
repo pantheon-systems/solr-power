@@ -38,6 +38,17 @@ This plugin is under active development on GitHub:
 
 Please feel free to file issues there. Pull requests are also welcome!
 
+You may notice there are two sets of tests running, on two different services:
+
+* Travis CI runs the [PHPUnit](https://phpunit.de/) test suite against a Solr instance.
+* Circle CI runs the [Behat](http://behat.org/) test suite against a Pantheon site, to ensure the plugin's compatibility with the Pantheon platform.
+
+Both of these test suites can be run locally, with a varying amount of setup.
+
+PHPUnit requires the [WordPress PHPUnit test suite](https://make.wordpress.org/core/handbook/testing/automated-testing/phpunit/), and access to a database with name `wordpress_test`. If you haven't already configured the test suite locally, you can run `bash bin/install-wp-tests.sh wordpress_test root '' localhost`. You'll also need access to a running Solr instance, in order to run the unit tests against Solr.
+
+Behat requires a Pantheon site with Solr enabled. Once you've created the site, you'll need [install Terminus](https://github.com/pantheon-systems/terminus#installation), and set the `TERMINUS_TOKEN`, `TERMINUS_SITE`, and `TERMINUS_ENV` environment variables. Then, you can run `./bin/behat-prepare.sh` to prepare the site for the test suite.
+
 == Changelog ==
 
 = 0.4.1 =
