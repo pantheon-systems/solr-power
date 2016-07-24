@@ -190,6 +190,9 @@ class SolrPower_Api {
 		$solr       = apply_filters( 's4wp_solr', $solr ); // better name?
 		$this->solr = $solr;
 
+		// Use the PantheonCurl adapter to get https.
+		$this->solr->setAdapter('\PantheonCurl');
+
 		return $solr;
 	}
 
