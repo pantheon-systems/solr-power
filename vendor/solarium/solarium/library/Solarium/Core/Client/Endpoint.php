@@ -30,23 +30,25 @@
  *
  * @copyright Copyright 2011 Bas de Nooijer <solarium@raspberry.nl>
  * @license http://github.com/basdenooijer/solarium/raw/master/COPYING
+ *
  * @link http://www.solarium-project.org/
  */
 
 /**
  * @namespace
  */
+
 namespace Solarium\Core\Client;
 
 use Solarium\Core\Configurable;
 
 /**
- * Class for describing an endpoint
+ * Class for describing an endpoint.
  */
 class Endpoint extends Configurable
 {
     /**
-     * Default options
+     * Default options.
      *
      * The defaults match a standard Solr example instance as distributed by
      * the Apache Lucene Solr project.
@@ -54,6 +56,7 @@ class Endpoint extends Configurable
      * @var array
      */
     protected $options = array(
+        'scheme'  => 'http',
         'host'    => '127.0.0.1',
         'port'    => 8983,
         'path'    => '/solr',
@@ -62,24 +65,7 @@ class Endpoint extends Configurable
     );
 
     /**
-     * Initialization hook
-     *
-     * In this case the path needs to be cleaned of trailing slashes.
-     * @see setPath()
-     */
-    protected function init()
-    {
-        foreach ($this->options as $name => $value) {
-            switch ($name) {
-                case 'path':
-                    $this->setPath($value);
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Get key value
+     * Get key value.
      *
      * @return string
      */
@@ -89,10 +75,11 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Set key value
+     * Set key value.
      *
-     * @param  string $value
-     * @return self   Provides fluent interface
+     * @param string $value
+     *
+     * @return self Provides fluent interface
      */
     public function setKey($value)
     {
@@ -100,10 +87,11 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Set host option
+     * Set host option.
      *
-     * @param  string $host This can be a hostname or an IP address
-     * @return self   Provides fluent interface
+     * @param string $host This can be a hostname or an IP address
+     *
+     * @return self Provides fluent interface
      */
     public function setHost($host)
     {
@@ -111,7 +99,7 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Get host option
+     * Get host option.
      *
      * @return string
      */
@@ -121,9 +109,10 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Set port option
+     * Set port option.
      *
-     * @param  int  $port Common values are 80, 8080 and 8983
+     * @param int $port Common values are 80, 8080 and 8983
+     *
      * @return self Provides fluent interface
      */
     public function setPort($port)
@@ -132,7 +121,7 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Get port option
+     * Get port option.
      *
      * @return int
      */
@@ -142,12 +131,13 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Set path option
+     * Set path option.
      *
      * If the path has a trailing slash it will be removed.
      *
-     * @param  string $path
-     * @return self   Provides fluent interface
+     * @param string $path
+     *
+     * @return self Provides fluent interface
      */
     public function setPath($path)
     {
@@ -159,7 +149,7 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Get path option
+     * Get path option.
      *
      * @return string
      */
@@ -169,10 +159,11 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Set core option
+     * Set core option.
      *
-     * @param  string $core
-     * @return self   Provides fluent interface
+     * @param string $core
+     *
+     * @return self Provides fluent interface
      */
     public function setCore($core)
     {
@@ -180,7 +171,7 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Get core option
+     * Get core option.
      *
      * @return string
      */
@@ -190,9 +181,10 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Set timeout option
+     * Set timeout option.
      *
-     * @param  int  $timeout
+     * @param int $timeout
+     *
      * @return self Provides fluent interface
      */
     public function setTimeout($timeout)
@@ -201,7 +193,7 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Get timeout option
+     * Get timeout option.
      *
      * @return string
      */
@@ -211,7 +203,29 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Get the base url for all requests
+     * Set scheme option.
+     *
+     * @param string $scheme
+     *
+     * @return self Provides fluent interface
+     */
+    public function setScheme($scheme)
+    {
+        return $this->setOption('scheme', $scheme);
+    }
+
+    /**
+     * Get scheme option.
+     *
+     * @return string
+     */
+    public function getScheme()
+    {
+        return $this->getOption('scheme');
+    }
+
+    /**
+     * Get the base url for all requests.
      *
      * Based on host, path, port and core options.
      *
@@ -219,7 +233,7 @@ class Endpoint extends Configurable
      */
     public function getBaseUri()
     {
-        $uri = $this->options['scheme'] . '://' . $this->getHost() . $this->getPath() . '/';
+        $uri = $this->getScheme().'://'.$this->getHost().':'.$this->getPort().$this->getPath().'/';
 
         $core = $this->getCore();
         if (!empty($core)) {
@@ -230,13 +244,14 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Set HTTP basic auth settings
+     * Set HTTP basic auth settings.
      *
      * If one or both values are NULL authentication will be disabled
      *
-     * @param  string $username
-     * @param  string $password
-     * @return self   Provides fluent interface
+     * @param string $username
+     * @param string $password
+     *
+     * @return self Provides fluent interface
      */
     public function setAuthentication($username, $password)
     {
@@ -247,7 +262,7 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Get HTTP basic auth settings
+     * Get HTTP basic auth settings.
      *
      * @return array
      */
@@ -260,7 +275,7 @@ class Endpoint extends Configurable
     }
 
     /**
-     * Magic method enables a object to be transformed to a string
+     * Magic method enables a object to be transformed to a string.
      *
      * Get a summary showing significant variables in the object
      * note: uri resource is decoded for readability
@@ -269,15 +284,26 @@ class Endpoint extends Configurable
      */
     public function __toString()
     {
-        $output = __CLASS__ . '::__toString' . "\n"
-                . 'base uri: ' . $this->getBaseUri() . "\n"
-                . 'host: ' . $this->getHost() . "\n"
-                . 'port: ' . $this->getPort() ."\n"
-                . 'path: ' . $this->getPath() ."\n"
-                . 'core: ' . $this->getCore() . "\n"
-                . 'timeout: ' . $this->getTimeout() . "\n"
-                . 'authentication: ' . print_r($this->getAuthentication(), 1);
+        $output = __CLASS__.'::__toString'."\n".'base uri: '.$this->getBaseUri()."\n".'host: '.$this->getHost()."\n".'port: '.$this->getPort()."\n".'path: '.$this->getPath()."\n".'core: '.$this->getCore()."\n".'timeout: '.$this->getTimeout()."\n".'authentication: '.print_r($this->getAuthentication(), 1);
 
         return $output;
+    }
+
+    /**
+     * Initialization hook.
+     *
+     * In this case the path needs to be cleaned of trailing slashes.
+     *
+     * @see setPath()
+     */
+    protected function init()
+    {
+        foreach ($this->options as $name => $value) {
+            switch ($name) {
+                case 'path':
+                    $this->setPath($value);
+                    break;
+            }
+        }
     }
 }

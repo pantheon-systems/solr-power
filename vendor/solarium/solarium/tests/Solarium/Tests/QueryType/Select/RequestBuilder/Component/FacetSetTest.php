@@ -39,6 +39,7 @@ use Solarium\QueryType\Select\Query\Component\Facet\Query as FacetQuery;
 use Solarium\QueryType\Select\Query\Component\Facet\MultiQuery as FacetMultiQuery;
 use Solarium\QueryType\Select\Query\Component\Facet\Range as FacetRange;
 use Solarium\QueryType\Select\Query\Component\Facet\Pivot as FacetPivot;
+use Solarium\QueryType\Select\Query\Component\Facet\Interval as FacetInterval;
 
 class FacetSetTest extends \PHPUnit_Framework_TestCase
 {
@@ -98,19 +99,18 @@ class FacetSetTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildWithRangeFacet()
     {
-        $this->component->addFacet(
-            new FacetRange(
-                array(
-                    'key' => 'f1',
-                    'field' => 'price',
-                    'start' => '1',
-                    'end' => 100,
-                    'gap' => 10,
-                    'other' => 'all',
-                    'include' => 'outer',
-                )
+        $this->component->addFacet(new FacetRange(
+            array(
+                'key' => 'f1',
+                'field' => 'price',
+                'start' => '1',
+                'end' => 100,
+                'gap' => 10,
+                'other' => 'all',
+                'include' => 'outer',
+                'mincount' => 123
             )
-        );
+        ));
 
         $request = $this->builder->buildComponent($this->component, $this->request);
 
@@ -120,8 +120,7 @@ class FacetSetTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(
-            '?facet=true&facet.range={!key=f1}price&f.price.facet.range.start=1&f.price.facet.range.end=100'.
-            '&f.price.facet.range.gap=10&f.price.facet.range.other=all&f.price.facet.range.include=outer',
+            '?facet=true&facet.range={!key=f1}price&f.price.facet.range.start=1&f.price.facet.range.end=100&f.price.facet.range.gap=10&f.price.facet.mincount=123&f.price.facet.range.other=all&f.price.facet.range.include=outer',
             urldecode($request->getUri())
         );
     }
@@ -188,15 +187,15 @@ class FacetSetTest extends \PHPUnit_Framework_TestCase
 
     public function testBuildWithPivotFacet()
     {
-        $this->component->addFacet(
-            new FacetPivot(
-                array(
-                    'key' => 'f1',
-                    'fields' => 'cat,inStock',
-                    'mincount' => 123,
-                )
+        $facet = new FacetPivot(
+            array(
+                'key' => 'f1',
+                'fields' => 'cat,inStock',
+                'mincount' => 123
             )
         );
+        $facet->addExclude('owner');
+        $this->component->addFacet($facet);
 
         $request = $this->builder->buildComponent($this->component, $this->request);
 
@@ -206,7 +205,83 @@ class FacetSetTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals(
-            '?facet=true&facet.pivot=cat,inStock&facet.pivot.mincount=123',
+            '?facet=true&facet.pivot={!key=f1 ex=owner}cat,inStock&facet.pivot.mincount=123',
+            urldecode($request->getUri())
+        );
+    }
+
+    public function testBuildWithPivotStatFacet()
+    {
+        $facet = new FacetPivot(
+            array(
+                'key' => 'f1',
+                'fields' => 'cat,inStock',
+                'stats' => 'piv1'
+            )
+        );
+        $this->component->addFacet($facet);
+
+        $request = $this->builder->buildComponent($this->component, $this->request);
+
+        $this->assertEquals(
+            null,
+            $request->getRawData()
+        );
+
+        $this->assertEquals(
+            '?facet=true&facet.pivot={!stats=piv1}cat,inStock',
+            urldecode($request->getUri())
+        );
+    }
+
+    public function testBuildWithContainsSettings()
+    {
+        $facet = new FacetField(
+            array(
+                'key' => 'f1',
+                'field' => 'owner',
+                'contains' => 'foo',
+                'containsignorecase' => true,
+            )
+        );
+        $this->component->addFacet($facet);
+        $this->component->setContains('bar');
+        $this->component->setContainsIgnoreCase(false);
+
+        $request = $this->builder->buildComponent($this->component, $this->request);
+
+        $this->assertEquals(
+            null,
+            $request->getRawData()
+        );
+
+        $this->assertEquals(
+            '?facet=true&facet.contains=bar&facet.contains.ignoreCase=false&facet.field={!key=f1}owner&f.owner.facet.contains=foo&f.owner.facet.contains.ignoreCase=true',
+            urldecode($request->getUri())
+        );
+    }
+
+    public function testBuildeWithIntervalFacet()
+    {
+        $facet = new FacetInterval(
+            array(
+                'key' => 'f1',
+                'fields' => 'cat,inStock',
+                'set' => array(0 => 'int1', 'one' => 'int2'),
+            )
+        );
+
+        $this->component->addFacet($facet);
+
+        $request = $this->builder->buildComponent($this->component, $this->request);
+
+        $this->assertEquals(
+            null,
+            $request->getRawData()
+        );
+
+        $this->assertEquals(
+            '?facet=true&f..facet.interval.set=int1&f..facet.interval.set={!key="one"}int2',
             urldecode($request->getUri())
         );
     }

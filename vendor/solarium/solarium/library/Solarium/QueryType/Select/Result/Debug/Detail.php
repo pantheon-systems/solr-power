@@ -30,42 +30,49 @@
  *
  * @copyright Copyright 2011 Bas de Nooijer <solarium@raspberry.nl>
  * @license http://github.com/basdenooijer/solarium/raw/master/COPYING
+ *
  * @link http://www.solarium-project.org/
  */
 
 /**
  * @namespace
  */
+
 namespace Solarium\QueryType\Select\Result\Debug;
 
 /**
- * Select component debug detail result
+ * Select component debug detail result.
  */
 class Detail
 {
     /**
-     * Value
+     * Value.
      *
      * @var float
      */
     protected $value;
 
     /**
-     * Match
+     * Match.
      *
      * @var boolean
      */
     protected $match;
 
     /**
-     * Description
+     * Description.
      *
      * @var string
      */
     protected $description;
 
     /**
-     * Constructor
+     * @var array
+     */
+    protected $subDetails;
+
+    /**
+     * Constructor.
      *
      * @param boolean $match
      * @param float   $value
@@ -79,7 +86,7 @@ class Detail
     }
 
     /**
-     * Get match status
+     * Get match status.
      *
      * @return bool
      */
@@ -89,7 +96,7 @@ class Detail
     }
 
     /**
-     * Get match value (score)
+     * Get match value (score).
      *
      * @return float
      */
@@ -99,12 +106,28 @@ class Detail
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @param array $subDetails
+     */
+    public function setSubDetails($subDetails)
+    {
+        $this->subDetails = $subDetails;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubDetails()
+    {
+        return $this->subDetails;
     }
 }

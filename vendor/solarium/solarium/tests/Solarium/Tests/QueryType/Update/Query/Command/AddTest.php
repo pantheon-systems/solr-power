@@ -64,6 +64,12 @@ class AddTest extends \PHPUnit_Framework_TestCase
 
     public function testAddDocumentWithInvalidDocument()
     {
+        // Starting from PHP7 typehints are checked by PHP and handled using a TypeException. For versions 5.x Solarium
+        // needs to do this, so only test for those versions.
+        if (version_compare(PHP_VERSION, '6.0.0') >= 0) {
+            $this->markTestSkipped('Typehint handling check not needed, built into current PHP version');
+        }
+
         try {
             $doc = new \StdClass();
             $this->command->addDocument($doc);
@@ -74,7 +80,7 @@ class AddTest extends \PHPUnit_Framework_TestCase
         } catch (\PHPUnit_Framework_Error $e) {
             $this->assertContains(
                 'Argument 1 passed to '.get_class($this->command).'::addDocument() must implement interface '.
-                'Solarium\QueryType\Update\Query\Document\DocumentInterface, instance of stdClass given',
+                'Solarium\QueryType\Update\Query\Document\DocumentInterface',
                 $e->getMessage()
             );
         }

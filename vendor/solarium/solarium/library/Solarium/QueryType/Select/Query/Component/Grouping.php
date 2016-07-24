@@ -30,12 +30,14 @@
  *
  * @copyright Copyright 2011 Bas de Nooijer <solarium@raspberry.nl>
  * @license http://github.com/basdenooijer/solarium/raw/master/COPYING
+ *
  * @link http://www.solarium-project.org/
  */
 
 /**
  * @namespace
  */
+
 namespace Solarium\QueryType\Select\Query\Component;
 
 use Solarium\QueryType\Select\Query\Query as SelectQuery;
@@ -43,7 +45,7 @@ use Solarium\QueryType\Select\RequestBuilder\Component\Grouping as RequestBuilde
 use Solarium\QueryType\Select\ResponseParser\Component\Grouping as ResponseParser;
 
 /**
- * Grouping component
+ * Grouping component.
  *
  * Also known as Result Grouping or Field Collapsing.
  * See the Solr wiki for more info about this functionality
@@ -51,41 +53,51 @@ use Solarium\QueryType\Select\ResponseParser\Component\Grouping as ResponseParse
  * @link  http://wiki.apache.org/solr/FieldCollapsing
  * @since 2.1.0
  */
-class Grouping extends Component
+class Grouping extends AbstractComponent
 {
     /**
-     * Value for format grouped
+     * Value for format grouped.
      */
     const FORMAT_GROUPED = 'grouped';
 
     /**
-     * Value for format simple
+     * Value for format simple.
      */
     const FORMAT_SIMPLE = 'simple';
 
     /**
-     * Component type
+     * Component type.
      *
      * @var string
      */
     protected $type = SelectQuery::COMPONENT_GROUPING;
 
     /**
-     * Fields for grouping
+     * Default options.
+     *
+     * @var array
+     */
+    protected $options = array(
+        'resultquerygroupclass' => 'Solarium\QueryType\Select\Result\Grouping\QueryGroup',
+        'resultvaluegroupclass' => 'Solarium\QueryType\Select\Result\Grouping\ValueGroup',
+    );
+
+    /**
+     * Fields for grouping.
      *
      * @var array
      */
     protected $fields = array();
 
     /**
-     * Queries for grouping
+     * Queries for grouping.
      *
      * @var array
      */
     protected $queries = array();
 
     /**
-     * Get component type
+     * Get component type.
      *
      * @return string
      */
@@ -95,54 +107,33 @@ class Grouping extends Component
     }
 
     /**
-     * Get a requestbuilder for this query
+     * Get a requestbuilder for this query.
      *
      * @return RequestBuilder
      */
     public function getRequestBuilder()
     {
-        return new RequestBuilder;
+        return new RequestBuilder();
     }
 
     /**
-     * Get a response parser for this query
+     * Get a response parser for this query.
      *
      * @return ResponseParser
      */
     public function getResponseParser()
     {
-        return new ResponseParser;
+        return new ResponseParser();
     }
 
     /**
-     * Initialize options
-     *
-     * Several options need some extra checks or setup work, for these options
-     * the setters are called.
-     *
-     * @return void
-     */
-    protected function init()
-    {
-        foreach ($this->options as $name => $value) {
-            switch ($name) {
-                case 'queries':
-                    $this->setQueries($value);
-                    break;
-                case 'fields':
-                    $this->setFields($value);
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Add a grouping field
+     * Add a grouping field.
      *
      * Group based on the unique values of a field
      *
-     * @param  string $field
-     * @return self   fluent interface
+     * @param string $field
+     *
+     * @return self fluent interface
      */
     public function addField($field)
     {
@@ -152,12 +143,13 @@ class Grouping extends Component
     }
 
     /**
-     * Add multiple grouping fields
+     * Add multiple grouping fields.
      *
      * You can use an array or a comma separated string as input
      *
-     * @param  array|string $fields
-     * @return self         Provides fluent interface
+     * @param array|string $fields
+     *
+     * @return self Provides fluent interface
      */
     public function addFields($fields)
     {
@@ -172,7 +164,7 @@ class Grouping extends Component
     }
 
     /**
-     * Get all fields
+     * Get all fields.
      *
      * @return array
      */
@@ -182,7 +174,7 @@ class Grouping extends Component
     }
 
     /**
-     * Remove all fields
+     * Remove all fields.
      *
      * @return self fluent interface
      */
@@ -194,7 +186,7 @@ class Grouping extends Component
     }
 
     /**
-     * Set multiple fields
+     * Set multiple fields.
      *
      * This overwrites any existing fields
      *
@@ -207,12 +199,13 @@ class Grouping extends Component
     }
 
     /**
-     * Add a grouping query
+     * Add a grouping query.
      *
      * Group documents that match the given query
      *
-     * @param  string $query
-     * @return self   fluent interface
+     * @param string $query
+     *
+     * @return self fluent interface
      */
     public function addQuery($query)
     {
@@ -222,10 +215,11 @@ class Grouping extends Component
     }
 
     /**
-     * Add multiple grouping queries
+     * Add multiple grouping queries.
      *
-     * @param  array|string $queries
-     * @return self         Provides fluent interface
+     * @param array|string $queries
+     *
+     * @return self Provides fluent interface
      */
     public function addQueries($queries)
     {
@@ -239,7 +233,7 @@ class Grouping extends Component
     }
 
     /**
-     * Get all queries
+     * Get all queries.
      *
      * @return array
      */
@@ -249,7 +243,7 @@ class Grouping extends Component
     }
 
     /**
-     * Remove all queries
+     * Remove all queries.
      *
      * @return self fluent interface
      */
@@ -261,7 +255,7 @@ class Grouping extends Component
     }
 
     /**
-     * Set multiple queries
+     * Set multiple queries.
      *
      * This overwrites any existing queries
      *
@@ -274,11 +268,12 @@ class Grouping extends Component
     }
 
     /**
-     * Set limit option
+     * Set limit option.
      *
      * The number of results (documents) to return for each group
      *
-     * @param  int  $limit
+     * @param int $limit
+     *
      * @return self Provides fluent interface
      */
     public function setLimit($limit)
@@ -287,7 +282,7 @@ class Grouping extends Component
     }
 
     /**
-     * Get limit option
+     * Get limit option.
      *
      * @return string|null
      */
@@ -297,11 +292,12 @@ class Grouping extends Component
     }
 
     /**
-     * Set offset option
+     * Set offset option.
      *
      * The offset into the document list of each group.
      *
-     * @param  int  $offset
+     * @param int $offset
+     *
      * @return self Provides fluent interface
      */
     public function setOffset($offset)
@@ -310,7 +306,7 @@ class Grouping extends Component
     }
 
     /**
-     * Get offset option
+     * Get offset option.
      *
      * @return string|null
      */
@@ -320,12 +316,13 @@ class Grouping extends Component
     }
 
     /**
-     * Set sort option
+     * Set sort option.
      *
      * How to sort documents within a single group
      *
-     * @param  string $sort
-     * @return self   Provides fluent interface
+     * @param string $sort
+     *
+     * @return self Provides fluent interface
      */
     public function setSort($sort)
     {
@@ -333,7 +330,7 @@ class Grouping extends Component
     }
 
     /**
-     * Get sort option
+     * Get sort option.
      *
      * @return string|null
      */
@@ -343,13 +340,14 @@ class Grouping extends Component
     }
 
     /**
-     * Set mainresult option
+     * Set mainresult option.
      *
      * If true, the result of the first field grouping command is used as the main
      * result list in the response, using group format 'simple'
      *
-     * @param  boolean $value
-     * @return self    Provides fluent interface
+     * @param boolean $value
+     *
+     * @return self Provides fluent interface
      */
     public function setMainResult($value)
     {
@@ -357,7 +355,7 @@ class Grouping extends Component
     }
 
     /**
-     * Get mainresult option
+     * Get mainresult option.
      *
      * @return boolean|null
      */
@@ -367,12 +365,13 @@ class Grouping extends Component
     }
 
     /**
-     * Set numberofgroups option
+     * Set numberofgroups option.
      *
      * If true, includes the number of groups that have matched the query.
      *
-     * @param  boolean $value
-     * @return self    Provides fluent interface
+     * @param boolean $value
+     *
+     * @return self Provides fluent interface
      */
     public function setNumberOfGroups($value)
     {
@@ -380,7 +379,7 @@ class Grouping extends Component
     }
 
     /**
-     * Get numberofgroups option
+     * Get numberofgroups option.
      *
      * @return boolean|null
      */
@@ -390,7 +389,7 @@ class Grouping extends Component
     }
 
     /**
-     * Set cachepercentage option
+     * Set cachepercentage option.
      *
      * If > 0 enables grouping cache. Grouping is executed actual two searches.
      * This option caches the second search. A value of 0 disables grouping caching.
@@ -399,8 +398,9 @@ class Grouping extends Component
      * wildcard queries and fuzzy queries. For simple queries like a term query or
      * a match all query this cache has a negative impact on performance
      *
-     * @param  integer $value
-     * @return self    Provides fluent interface
+     * @param integer $value
+     *
+     * @return self Provides fluent interface
      */
     public function setCachePercentage($value)
     {
@@ -408,7 +408,7 @@ class Grouping extends Component
     }
 
     /**
-     * Get cachepercentage option
+     * Get cachepercentage option.
      *
      * @return integer|null
      */
@@ -418,13 +418,14 @@ class Grouping extends Component
     }
 
     /**
-     * Set truncate option
+     * Set truncate option.
      *
      * If true, facet counts are based on the most relevant document of each group matching the query.
      * Same applies for StatsComponent. Default is false. Only available from Solr 3.4
      *
-     * @param  boolean $value
-     * @return self    Provides fluent interface
+     * @param boolean $value
+     *
+     * @return self Provides fluent interface
      */
     public function setTruncate($value)
     {
@@ -432,7 +433,7 @@ class Grouping extends Component
     }
 
     /**
-     * Get truncate option
+     * Get truncate option.
      *
      * @return boolean|null
      */
@@ -442,12 +443,13 @@ class Grouping extends Component
     }
 
     /**
-     * Set function option
+     * Set function option.
      *
      * Group based on the unique values of a function query. Only available in Solr 4.0+
      *
-     * @param  string $value
-     * @return self   Provides fluent interface
+     * @param string $value
+     *
+     * @return self Provides fluent interface
      */
     public function setFunction($value)
     {
@@ -455,7 +457,7 @@ class Grouping extends Component
     }
 
     /**
-     * Get truncate option
+     * Get truncate option.
      *
      * @return string|null
      */
@@ -465,13 +467,15 @@ class Grouping extends Component
     }
 
     /**
-     * Set facet option
+     * Set facet option.
      *
-     * Group based on the unique values of a function query.
+     * Whether to compute grouped facets.
+     * Grouped facets are computed based on the first specified group.
      * This parameter only is supported on Solr 4.0+
      *
-     * @param  string $value
-     * @return self   Provides fluent interface
+     * @param boolean $value
+     *
+     * @return self Provides fluent interface
      */
     public function setFacet($value)
     {
@@ -479,9 +483,9 @@ class Grouping extends Component
     }
 
     /**
-     * Get facet option
+     * Get facet option.
      *
-     * @return string|null
+     * @return boolean|null
      */
     public function getFacet()
     {
@@ -489,13 +493,14 @@ class Grouping extends Component
     }
 
     /**
-     * Set format option
+     * Set format option.
      *
      * If simple, the grouped documents are presented in a single flat list.
      * The start and rows parameters refer to numbers of documents instead of numbers of groups.
      *
-     * @param  string $value
-     * @return self   Provides fluent interface
+     * @param string $value
+     *
+     * @return self Provides fluent interface
      */
     public function setFormat($value)
     {
@@ -503,12 +508,80 @@ class Grouping extends Component
     }
 
     /**
-     * Get format option
+     * Get format option.
      *
      * @return string|null
      */
     public function getFormat()
     {
         return $this->getOption('format');
+    }
+
+    /**
+     * Set the query group result class.
+     *
+     * @param string $value classname
+     *
+     * @return self Provides fluent interface
+     */
+    public function setResultQueryGroupClass($value)
+    {
+        return $this->setOption('resultquerygroupclass', $value);
+    }
+
+    /**
+     * Get the current resultquerygroupclass option.
+     *
+     * The value is a classname, not an instance
+     *
+     * @return string
+     */
+    public function getResultQueryGroupClass()
+    {
+        return $this->getOption('resultquerygroupclass');
+    }
+
+    /**
+     * Set the value group result class.
+     *
+     * @param string $value classname
+     *
+     * @return self Provides fluent interface
+     */
+    public function setResultValueGroupClass($value)
+    {
+        return $this->setOption('resultvaluegroupclass', $value);
+    }
+
+    /**
+     * Get the current resultvaluegroupclass option.
+     *
+     * The value is a classname, not an instance
+     *
+     * @return string
+     */
+    public function getResultValueGroupClass()
+    {
+        return $this->getOption('resultvaluegroupclass');
+    }
+
+    /**
+     * Initialize options.
+     *
+     * Several options need some extra checks or setup work, for these options
+     * the setters are called.
+     */
+    protected function init()
+    {
+        foreach ($this->options as $name => $value) {
+            switch ($name) {
+                case 'queries':
+                    $this->setQueries($value);
+                    break;
+                case 'fields':
+                    $this->setFields($value);
+                    break;
+            }
+        }
     }
 }

@@ -30,20 +30,21 @@
  *
  * @copyright Copyright 2011 Bas de Nooijer <solarium@raspberry.nl>
  * @license http://github.com/basdenooijer/solarium/raw/master/COPYING
+ *
  * @link http://www.solarium-project.org/
  */
 
 /**
  * @namespace
  */
+
 namespace Solarium\QueryType\Select\Result;
 
 use Solarium\QueryType\Select\Query\Query as SelectQuery;
 use Solarium\Core\Query\Result\QueryType as BaseResult;
-use Solarium\QueryType\Select\Result\DocumentInterface;
 
 /**
- * Select query result
+ * Select query result.
  *
  * This is the standard resulttype for a select query. Example usage:
  * <code>
@@ -65,7 +66,7 @@ use Solarium\QueryType\Select\Result\DocumentInterface;
 class Result extends BaseResult implements \IteratorAggregate, \Countable
 {
     /**
-     * Solr numFound
+     * Solr numFound.
      *
      * This is NOT the number of document fetched from Solr!
      *
@@ -74,26 +75,35 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     protected $numfound;
 
     /**
-     * Document instances array
+     * Solr maxscore.
+     *
+     * Will only be available if 'score' was one of the requested fields in your query
+     *
+     * @var float
+     */
+    protected $maxscore;
+
+    /**
+     * Document instances array.
      *
      * @var array
      */
     protected $documents;
 
     /**
-     * Component results
+     * Component results.
      */
     protected $components;
 
     /**
-     * Status code returned by Solr
+     * Status code returned by Solr.
      *
      * @var int
      */
     protected $status;
 
     /**
-     * Solr index queryTime
+     * Solr index queryTime.
      *
      * This doesn't include things like the HTTP responsetime. Purely the Solr
      * query execution time.
@@ -103,7 +113,7 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     protected $queryTime;
 
     /**
-     * Get Solr status code
+     * Get Solr status code.
      *
      * This is not the HTTP status code! The normal value for success is 0.
      *
@@ -117,7 +127,7 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get Solr query time
+     * Get Solr query time.
      *
      * This doesn't include things like the HTTP responsetime. Purely the Solr
      * query execution time.
@@ -132,7 +142,7 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * get Solr numFound
+     * get Solr numFound.
      *
      * Returns the total number of documents found by Solr (this is NOT the
      * number of document fetched from Solr!)
@@ -147,7 +157,22 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get all documents
+     * get Solr maxscore.
+     *
+     * Returns the highest score of the documents in the total result for your current query (ignoring paging)
+     * Will only be available if 'score' was one of the requested fields in your query
+     *
+     * @return float
+     */
+    public function getMaxScore()
+    {
+        $this->parseResponse();
+
+        return $this->maxscore;
+    }
+
+    /**
+     * Get all documents.
      *
      * @return DocumentInterface[]
      */
@@ -159,7 +184,7 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * IteratorAggregate implementation
+     * IteratorAggregate implementation.
      *
      * @return \ArrayIterator
      */
@@ -171,7 +196,7 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Countable implementation
+     * Countable implementation.
      *
      * @return int
      */
@@ -183,7 +208,7 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get all component results
+     * Get all component results.
      *
      * @return array
      */
@@ -195,9 +220,10 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get a component result by key
+     * Get a component result by key.
      *
-     * @param  string $key
+     * @param string $key
+     *
      * @return mixed
      */
     public function getComponent($key)
@@ -207,12 +233,12 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
         if (isset($this->components[$key])) {
             return $this->components[$key];
         } else {
-            return null;
+            return;
         }
     }
 
     /**
-     * Get morelikethis component result
+     * Get morelikethis component result.
      *
      * This is a convenience method that maps presets to getComponent
      *
@@ -224,7 +250,7 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get highlighting component result
+     * Get highlighting component result.
      *
      * This is a convenience method that maps presets to getComponent
      *
@@ -236,7 +262,7 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get grouping component result
+     * Get grouping component result.
      *
      * This is a convenience method that maps presets to getComponent
      *
@@ -248,7 +274,7 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get facetset component result
+     * Get facetset component result.
      *
      * This is a convenience method that maps presets to getComponent
      *
@@ -260,7 +286,7 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get spellcheck component result
+     * Get spellcheck component result.
      *
      * This is a convenience method that maps presets to getComponent
      *
@@ -272,7 +298,7 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get stats component result
+     * Get stats component result.
      *
      * This is a convenience method that maps presets to getComponent
      *
@@ -284,7 +310,7 @@ class Result extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get debug component result
+     * Get debug component result.
      *
      * This is a convenience method that maps presets to getComponent
      *

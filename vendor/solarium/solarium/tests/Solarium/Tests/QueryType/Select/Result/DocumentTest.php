@@ -33,102 +33,10 @@ namespace Solarium\Tests\QueryType\Select\Result;
 
 use Solarium\QueryType\Select\Result\Document;
 
-class DocumentTest extends \PHPUnit_Framework_TestCase
+class DocumentTest extends AbstractDocumentTest
 {
-    protected $doc;
-
-    protected $fields = array(
-        'id' => 123,
-        'name' => 'Test document',
-        'categories' => array(1, 2, 3)
-    );
-
     protected function setUp()
     {
         $this->doc = new Document($this->fields);
-    }
-
-    public function testGetFields()
-    {
-        $this->assertEquals($this->fields, $this->doc->getFields());
-    }
-
-    public function testGetFieldAsProperty()
-    {
-        $this->assertEquals(
-            $this->fields['categories'],
-            $this->doc->categories
-        );
-    }
-
-    public function testGetInvalidFieldAsProperty()
-    {
-        $this->assertEquals(
-            null,
-            $this->doc->invalidfieldname
-        );
-    }
-
-    public function testSetField()
-    {
-        $this->setExpectedException('Solarium\Exception\RuntimeException');
-        $this->doc->newField = 'new value';
-    }
-
-    public function testIterator()
-    {
-        $fields = array();
-        foreach ($this->doc as $key => $field) {
-            $fields[$key] = $field;
-        }
-
-        $this->assertEquals($this->fields, $fields);
-    }
-
-    public function testArrayGet()
-    {
-        $this->assertEquals(
-            $this->fields['categories'],
-            $this->doc['categories']
-        );
-    }
-
-    public function testArrayGetInvalidField()
-    {
-        $this->assertEquals(
-            null,
-            $this->doc['invalidfield']
-        );
-    }
-
-    public function testArrayIsset()
-    {
-        $this->assertTrue(
-            isset($this->doc['categories'])
-        );
-    }
-
-    public function testArrayIssetInvalidField()
-    {
-        $this->assertFalse(
-            isset($this->doc['invalidfield'])
-        );
-    }
-
-    public function testArraySet()
-    {
-        $this->setExpectedException('Solarium\Exception\RuntimeException');
-        $this->doc['newField'] = 'new value';
-    }
-
-    public function testArrayUnset()
-    {
-        $this->setExpectedException('Solarium\Exception\RuntimeException');
-        unset($this->doc['newField']);
-    }
-
-    public function testCount()
-    {
-        $this->assertEquals(count($this->fields), count($this->doc));
     }
 }

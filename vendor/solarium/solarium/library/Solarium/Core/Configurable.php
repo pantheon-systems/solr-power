@@ -30,18 +30,20 @@
  *
  * @copyright Copyright 2011 Bas de Nooijer <solarium@raspberry.nl>
  * @license http://github.com/basdenooijer/solarium/raw/master/COPYING
+ *
  * @link http://www.solarium-project.org/
  */
 
 /**
  * @namespace
  */
+
 namespace Solarium\Core;
 
 use Solarium\Exception\InvalidArgumentException;
 
 /**
- * Base class for configurable classes
+ * Base class for configurable classes.
  *
  * All classes extending this class are  configurable using the constructor or
  * setOption calls. This is the base for many Solarium classes, providing a
@@ -50,15 +52,14 @@ use Solarium\Exception\InvalidArgumentException;
 class Configurable implements ConfigurableInterface
 {
     /**
-     * Default options
+     * Default options.
      *
      * @var array
      */
-    protected $options = array(
-    );
+    protected $options = array();
 
     /**
-     * Constructor
+     * Constructor.
      *
      * If options are passed they will be merged with {@link $options} using
      * the {@link setOptions()} method.
@@ -66,7 +67,8 @@ class Configurable implements ConfigurableInterface
      * After handling the options the {@link _init()} method is called.
      *
      * @throws InvalidArgumentException
-     * @param  array|\Zend_Config       $options
+     *
+     * @param array|\Zend_Config $options
      */
     public function __construct($options = null)
     {
@@ -78,18 +80,19 @@ class Configurable implements ConfigurableInterface
     }
 
     /**
-     * Set options
+     * Set options.
      *
      * If $options is an object, it will be converted into an array by calling
      * its toArray method. This is compatible with the Zend_Config classes in
      * Zend Framework, but can also easily be implemented in any other object.
+     * If $options does not have the toArray method, the internal method will
+     * be used instead.
      *
      * @throws InvalidArgumentException
-     * @param  array|\Zend_Config       $options
-     * @param  boolean                  $overwrite True for overwriting existing options, false
-     *  for merging (new values overwrite old ones if needed)
      *
-     * @return void
+     * @param array|\Zend_Config $options
+     * @param boolean            $overwrite True for overwriting existing options, false
+     *                                      for merging (new values overwrite old ones if needed)
      */
     public function setOptions($options, $overwrite = false)
     {
@@ -97,7 +100,7 @@ class Configurable implements ConfigurableInterface
             // first convert to array if needed
             if (!is_array($options)) {
                 if (is_object($options)) {
-                    $options = $options->toArray();
+                    $options = (! method_exists($options, 'toArray') ? $this->toArray($options) : $options->toArray());
                 } else {
                     throw new InvalidArgumentException(
                         'Options value given to the setOptions() method must be an array or a Zend_Config object'
@@ -105,7 +108,7 @@ class Configurable implements ConfigurableInterface
                 }
             }
 
-            if (true == $overwrite) {
+            if (true === $overwrite) {
                 $this->options = $options;
             } else {
                 $this->options = array_merge($this->options, $options);
@@ -117,7 +120,35 @@ class Configurable implements ConfigurableInterface
     }
 
     /**
-     * Initialization hook
+     * Get an option value by name.
+     *
+     * If the option is empty or not set a NULL value will be returned.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getOption($name)
+    {
+        if (isset($this->options[$name])) {
+            return $this->options[$name];
+        } else {
+            return;
+        }
+    }
+
+    /**
+     * Get all options.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * Initialization hook.
      *
      * Can be used by classes for special behaviour. For instance some options
      * have extra setup work in their 'set' method that also need to be called
@@ -126,23 +157,21 @@ class Configurable implements ConfigurableInterface
      * This hook is called by the constructor after saving the constructor
      * arguments in {@link $options}
      *
-     * @internal This empty implementation can optionally be implemented in
-     *  descending classes. It's not an abstract method on purpose, there are
-     *  many cases where no initialization is needed.
-     *
-     * @return void
+     * This empty implementation can optionally be implemented in
+     * descending classes. It's not an abstract method on purpose, there are
+     * many cases where no initialization is needed.
      */
     protected function init()
     {
-
     }
 
     /**
-     * Set an option
+     * Set an option.
      *
-     * @param  string $name
-     * @param  mixed  $value
-     * @return self   Provides fluent interface
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return self Provides fluent interface
      */
     protected function setOption($name, $value)
     {
@@ -152,29 +181,29 @@ class Configurable implements ConfigurableInterface
     }
 
     /**
-     * Get an option value by name
+     * Turns an object array into an associative multidimensional array.
      *
-     * If the option is empty or not set a NULL value will be returned.
+     * @param $object
      *
-     * @param  string $name
-     * @return mixed
+     * @return array|object
      */
-    public function getOption($name)
+    protected function toArray($object)
     {
-        if (isset($this->options[$name])) {
-            return $this->options[$name];
-        } else {
-            return null;
+        if (is_object($object)) {
+            // get_object_vars() does not handle recursive objects well,
+            // so use set-type without scope operator instead
+            settype($object, 'array');
         }
-    }
 
-    /**
-     * Get all options
-     *
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
+        /*
+        * Return array converted to object
+        * Using __METHOD__ (Magic constant)
+        * for recursive call
+        */
+        if (is_array($object)) {
+            return array_map(__METHOD__, $object);
+        }
+
+        return $object;
     }
 }

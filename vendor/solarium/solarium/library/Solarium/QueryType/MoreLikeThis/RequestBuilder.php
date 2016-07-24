@@ -33,12 +33,14 @@
  * @copyright Copyright 2011 Bas de Nooijer <solarium@raspberry.nl>
  * @copyright Copyright 2011 Gasol Wu <gasol.wu@gmail.com>
  * @license http://github.com/basdenooijer/solarium/raw/master/COPYING
+ *
  * @link http://www.solarium-project.org/
  */
 
 /**
  * @namespace
  */
+
 namespace Solarium\QueryType\MoreLikeThis;
 
 use Solarium\Core\Client\Request;
@@ -46,14 +48,15 @@ use Solarium\QueryType\Select\RequestBuilder\RequestBuilder as SelectRequestBuil
 use Solarium\Core\Query\QueryInterface;
 
 /**
- * Build a MoreLikeThis request
+ * Build a MoreLikeThis request.
  */
 class RequestBuilder extends SelectRequestBuilder
 {
     /**
-     * Build request for a MoreLikeThis query
+     * Build request for a MoreLikeThis query.
      *
-     * @param  QueryInterface|Query $query
+     * @param QueryInterface|Query $query
+     *
      * @return Request
      */
     public function build(QueryInterface $query)
@@ -63,7 +66,7 @@ class RequestBuilder extends SelectRequestBuilder
         // add mlt params to request
         $request->addParam('mlt.interestingTerms', $query->getInterestingTerms());
         $request->addParam('mlt.match.include', $query->getMatchInclude());
-        $request->addParam('mlt.match.offset', $query->getStart());
+        $request->addParam('mlt.match.offset', $query->getMatchOffset());
         $request->addParam('mlt.fl', implode(',', $query->getMltFields()));
         $request->addParam('mlt.mintf', $query->getMinimumTermFrequency());
         $request->addParam('mlt.mindf', $query->getMinimumDocumentFrequency());
@@ -72,7 +75,7 @@ class RequestBuilder extends SelectRequestBuilder
         $request->addParam('mlt.maxqt', $query->getMaximumQueryTerms());
         $request->addParam('mlt.maxntp', $query->getMaximumNumberOfTokens());
         $request->addParam('mlt.boost', $query->getBoost());
-        $request->addParam('mlt.qf', implode(',', $query->getQueryFields()));
+        $request->addParam('mlt.qf', $query->getQueryFields());
 
         // convert query to stream if necessary
         if (true === $query->getQueryStream()) {

@@ -30,30 +30,30 @@
  *
  * @copyright Copyright 2011 Bas de Nooijer <solarium@raspberry.nl>
  * @license http://github.com/basdenooijer/solarium/raw/master/COPYING
+ *
  * @link http://www.solarium-project.org/
  */
 
 /**
  * @namespace
  */
+
 namespace Solarium\QueryType\Select\Result\Highlighting;
 
-use Solarium\QueryType\Select\Result\Highlighting\Result;
-
 /**
- * Select component highlighting result
+ * Select component highlighting result.
  */
 class Highlighting implements \IteratorAggregate, \Countable
 {
     /**
-     * Result array
+     * Result array.
      *
      * @var array
      */
     protected $results;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param array $results
      */
@@ -63,9 +63,10 @@ class Highlighting implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get a result by key
+     * Get a result by key.
      *
-     * @param  mixed       $key
+     * @param mixed $key
+     *
      * @return Result|null
      */
     public function getResult($key)
@@ -73,12 +74,12 @@ class Highlighting implements \IteratorAggregate, \Countable
         if (isset($this->results[$key])) {
             return $this->results[$key];
         } else {
-            return null;
+            return;
         }
     }
 
     /**
-     * Get all results
+     * Get all results.
      *
      * @return Result[]
      */
@@ -88,7 +89,7 @@ class Highlighting implements \IteratorAggregate, \Countable
     }
 
     /**
-     * IteratorAggregate implementation
+     * IteratorAggregate implementation.
      *
      * @return \ArrayIterator
      */
@@ -98,7 +99,7 @@ class Highlighting implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Countable implementation
+     * Countable implementation.
      *
      * @return int
      */

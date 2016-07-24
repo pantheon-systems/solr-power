@@ -78,8 +78,20 @@ class RequestBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $request = $this->builder->build($this->query);
         $this->assertEquals(
-            'update/extract?omitHeader=true&param1=value1&wt=json&json.nl=flat&fmap.from-field=to-field'.
+            'update/extract?omitHeader=true&param1=value1&wt=json&json.nl=flat&extractOnly=false&fmap.from-field=to-field'.
             '&resource.name=RequestBuilderTest.php',
+            $request->getUri()
+        );
+    }
+
+    public function testGetUriWithStreamUrl()
+    {
+        $query = $this->query;
+        $query->setFile('http://solarium-project.org/');
+        $request = $this->builder->build($query);
+        $this->assertEquals(
+            'update/extract?omitHeader=true&param1=value1&wt=json&json.nl=flat&extractOnly=false&fmap.from-field=to-field'.
+            '&stream.url=http%3A%2F%2Fsolarium-project.org%2F',
             $request->getUri()
         );
     }
@@ -100,6 +112,7 @@ class RequestBuilderTest extends \PHPUnit_Framework_TestCase
                 'literal.field1' => 'value1',
                 'literal.field2' => 'value2',
                 'omitHeader' => 'true',
+                'extractOnly' => 'false',
                 'param1' => 'value1',
                 'resource.name' => 'RequestBuilderTest.php',
                 'wt' => 'json',
@@ -117,5 +130,15 @@ class RequestBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->setExpectedException('Solarium\Exception\RuntimeException');
         $this->builder->build($this->query);
+    }
+
+    public function testContentTypeHeader()
+    {
+        $headers = array(
+            'Content-Type: multipart/form-data'
+        );
+        $request = $this->builder->build($this->query);
+        $this->assertEquals($headers,
+                            $request->getHeaders());
     }
 }

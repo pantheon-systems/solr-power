@@ -30,38 +30,39 @@
  *
  * @copyright Copyright 2011 Bas de Nooijer <solarium@raspberry.nl>
  * @license http://github.com/basdenooijer/solarium/raw/master/COPYING
+ *
  * @link http://www.solarium-project.org/
  */
 
 /**
  * @namespace
  */
+
 namespace Solarium\QueryType\Analysis\Result;
 
 use Solarium\Core\Query\Result\QueryType as BaseResult;
-use Solarium\QueryType\Analysis\Result\ResultList;
 
 /**
- * Analysis document query result
+ * Analysis document query result.
  */
 class Document extends BaseResult implements \IteratorAggregate, \Countable
 {
     /**
-     * Document instances array
+     * Document instances array.
      *
      * @var ResultList[]
      */
     protected $items;
 
     /**
-     * Status code returned by Solr
+     * Status code returned by Solr.
      *
      * @var int
      */
     protected $status;
 
     /**
-     * Solr index queryTime
+     * Solr index queryTime.
      *
      * This doesn't include things like the HTTP responsetime. Purely the Solr
      * query execution time.
@@ -71,7 +72,7 @@ class Document extends BaseResult implements \IteratorAggregate, \Countable
     protected $queryTime;
 
     /**
-     * Get Solr status code
+     * Get Solr status code.
      *
      * This is not the HTTP status code! The normal value for success is 0.
      *
@@ -85,7 +86,7 @@ class Document extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get Solr query time
+     * Get Solr query time.
      *
      * This doesn't include things like the HTTP responsetime. Purely the Solr
      * query execution time.
@@ -100,7 +101,7 @@ class Document extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get all documents
+     * Get all documents.
      *
      * @return ResultList[]
      */
@@ -112,7 +113,7 @@ class Document extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * IteratorAggregate implementation
+     * IteratorAggregate implementation.
      *
      * @return \ArrayIterator
      */
@@ -124,7 +125,7 @@ class Document extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Countable implementation
+     * Countable implementation.
      *
      * @return int
      */
@@ -136,9 +137,10 @@ class Document extends BaseResult implements \IteratorAggregate, \Countable
     }
 
     /**
-     * Get a document by uniquekey value
+     * Get a document by uniquekey value.
      *
-     * @param  string          $key
+     * @param string $key
+     *
      * @return ResultList|null
      */
     public function getDocument($key)
@@ -148,7 +150,7 @@ class Document extends BaseResult implements \IteratorAggregate, \Countable
         if (isset($this->items[$key])) {
             return $this->items[$key];
         } else {
-            return null;
+            return;
         }
     }
 }

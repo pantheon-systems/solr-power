@@ -32,38 +32,34 @@
  * @copyright Copyright 2011 Bas de Nooijer <solarium@raspberry.nl>
  * @copyright Copyright 2012 Alexander Brausewetter <alex@helpdeskhq.com>
  * @license http://github.com/basdenooijer/solarium/raw/master/COPYING
- * @link http://www.solarium-project.org/
  *
- * @package Solarium
- * @subpackage Query
+ * @link http://www.solarium-project.org/
  */
 
 /**
  * @namespace
  */
+
 namespace Solarium\QueryType\Extract;
 
-use Solarium\Core\Query\Query as BaseQuery;
+use Solarium\Core\Query\AbstractQuery as BaseQuery;
 use Solarium\Core\Client\Client;
 use Solarium\QueryType\Update\ResponseParser as UpdateResponseParser;
 use Solarium\QueryType\Update\Query\Document\DocumentInterface;
 
 /**
- * Extract query
+ * Extract query.
  *
  * Sends a document extract request to Solr, i.e. upload rich document content
  * such as PDF, Word or HTML, parse the file contents and add it to the index.
  *
  * The Solr server must have the {@link http://wiki.apache.org/solr/ExtractingRequestHandler
  * ExtractingRequestHandler} enabled.
- *
- * @package Solarium
- * @subpackage Query
  */
 class Query extends BaseQuery
 {
     /**
-     * Default options
+     * Default options.
      *
      * @var array
      */
@@ -72,17 +68,18 @@ class Query extends BaseQuery
         'resultclass' => 'Solarium\QueryType\Extract\Result',
         'documentclass' => 'Solarium\QueryType\Update\Query\Document\Document',
         'omitheader'  => true,
+        'extractonly' => false,
     );
 
     /**
-     * Field name mappings
+     * Field name mappings.
      *
      * @var array
      */
     protected $fieldMappings = array();
 
     /**
-     * Get type for this query
+     * Get type for this query.
      *
      * @return string
      */
@@ -92,47 +89,33 @@ class Query extends BaseQuery
     }
 
     /**
-     * Get a requestbuilder for this query
+     * Get a requestbuilder for this query.
      *
      * @return RequestBuilder
      */
     public function getRequestBuilder()
     {
-        return new RequestBuilder;
+        return new RequestBuilder();
     }
 
     /**
-     * Get a response parser for this query
+     * Get a response parser for this query.
      *
      * @return UpdateResponseParser
      */
     public function getResponseParser()
     {
-        return new UpdateResponseParser;
+        return new UpdateResponseParser();
     }
 
     /**
-     * Initialize options
-     *
-     * Several options need some extra checks or setup work, for these options
-     * the setters are called.
-     *
-     * @return void
-     */
-    protected function init()
-    {
-        if (isset($this->options['fmap'])) {
-            $this->setFieldMappings($this->options['fmap']);
-        }
-    }
-
-    /**
-     * Set the document with literal fields and boost settings
+     * Set the document with literal fields and boost settings.
      *
      * The fields in the document are indexed together with the generated
      * fields that Solr extracts from the file.
      *
-     * @param  DocumentInterface $document
+     * @param DocumentInterface $document
+     *
      * @return self
      */
     public function setDocument(DocumentInterface $document)
@@ -141,7 +124,7 @@ class Query extends BaseQuery
     }
 
     /**
-     * Get the document with literal fields and boost settings
+     * Get the document with literal fields and boost settings.
      *
      * @return DocumentInterface|null
      */
@@ -151,9 +134,10 @@ class Query extends BaseQuery
     }
 
     /**
-     * Set the file to upload and index
+     * Set the file to upload and index.
      *
-     * @param  string $filename
+     * @param string $filename
+     *
      * @return self
      */
     public function setFile($filename)
@@ -162,7 +146,7 @@ class Query extends BaseQuery
     }
 
     /**
-     * Get the file to upload and index
+     * Get the file to upload and index.
      *
      * @return string|null
      */
@@ -172,9 +156,10 @@ class Query extends BaseQuery
     }
 
     /**
-     * Set the prefix for fields that are not defined in the schema
+     * Set the prefix for fields that are not defined in the schema.
      *
-     * @param  string $uprefix
+     * @param string $uprefix
+     *
      * @return self
      */
     public function setUprefix($uprefix)
@@ -183,7 +168,7 @@ class Query extends BaseQuery
     }
 
     /**
-     * Get the prefix for fields that are not defined in the schema
+     * Get the prefix for fields that are not defined in the schema.
      *
      * @return string|null
      */
@@ -194,9 +179,10 @@ class Query extends BaseQuery
 
     /**
      * Set the field to use if uprefix is not specified and a field cannot be
-     * determined
+     * determined.
      *
-     * @param  string $defaultField
+     * @param string $defaultField
+     *
      * @return self
      */
     public function setDefaultField($defaultField)
@@ -206,7 +192,7 @@ class Query extends BaseQuery
 
     /**
      * Get the field to use if uprefix is not specified and a field cannot be
-     * determined
+     * determined.
      *
      * @return string|null
      */
@@ -219,7 +205,8 @@ class Query extends BaseQuery
      * Set if all field names should be mapped to lowercase with underscores.
      * For example, Content-Type would be mapped to content_type.
      *
-     * @param  bool $lowerNames
+     * @param bool $lowerNames
+     *
      * @return self
      */
     public function setLowernames($lowerNames)
@@ -228,7 +215,7 @@ class Query extends BaseQuery
     }
 
     /**
-     * Get if all field names should be mapped to lowercase with underscores
+     * Get if all field names should be mapped to lowercase with underscores.
      *
      * @return bool
      */
@@ -238,9 +225,10 @@ class Query extends BaseQuery
     }
 
     /**
-     * Set if the extract should be committed immediately
+     * Set if the extract should be committed immediately.
      *
-     * @param  bool $commit
+     * @param bool $commit
+     *
      * @return self Provides fluent interface
      */
     public function setCommit($commit)
@@ -249,7 +237,7 @@ class Query extends BaseQuery
     }
 
     /**
-     * Get if the extract should be committed immediately
+     * Get if the extract should be committed immediately.
      *
      * @return bool
      */
@@ -259,9 +247,10 @@ class Query extends BaseQuery
     }
 
     /**
-     * Set milliseconds until extract update is committed. Since Solr 3.4
+     * Set milliseconds until extract update is committed. Since Solr 3.4.
      *
-     * @param  int  $commitWithin
+     * @param int $commitWithin
+     *
      * @return self Provides fluent interface
      */
     public function setCommitWithin($commitWithin)
@@ -270,7 +259,7 @@ class Query extends BaseQuery
     }
 
     /**
-     * Get milliseconds until extract update is committed. Since Solr 3.4
+     * Get milliseconds until extract update is committed. Since Solr 3.4.
      *
      * @return int
      */
@@ -280,14 +269,15 @@ class Query extends BaseQuery
     }
 
     /**
-     * Add a name mapping from one field to another
+     * Add a name mapping from one field to another.
      *
      * Example: fmap.content=text will cause the content field normally
      * generated by Tika to be moved to the "text" field.
      *
-     * @param  string      $fromField Original field name
-     * @param  mixed|array $toField   New field name
-     * @return self        Provides fluent interface
+     * @param string      $fromField Original field name
+     * @param mixed|array $toField   New field name
+     *
+     * @return self Provides fluent interface
      */
     public function addFieldMapping($fromField, $toField)
     {
@@ -297,10 +287,11 @@ class Query extends BaseQuery
     }
 
     /**
-     * Add multiple field name mappings
+     * Add multiple field name mappings.
      *
-     * @param  array $mappings Name mapping in the form [$fromField => $toField, ...]
-     * @return self  Provides fluent interface
+     * @param array $mappings Name mapping in the form [$fromField => $toField, ...]
+     *
+     * @return self Provides fluent interface
      */
     public function addFieldMappings($mappings)
     {
@@ -312,10 +303,11 @@ class Query extends BaseQuery
     }
 
     /**
-     * Remove a field name mapping
+     * Remove a field name mapping.
      *
-     * @param  string $fromField
-     * @return self   Provides fluent interface
+     * @param string $fromField
+     *
+     * @return self Provides fluent interface
      */
     public function removeFieldMapping($fromField)
     {
@@ -327,7 +319,7 @@ class Query extends BaseQuery
     }
 
     /**
-     * Remove all field name mappings
+     * Remove all field name mappings.
      *
      * @return self Provides fluent interface
      */
@@ -339,7 +331,7 @@ class Query extends BaseQuery
     }
 
     /**
-     * Get all field name mappings
+     * Get all field name mappings.
      *
      * @return array
      */
@@ -351,8 +343,9 @@ class Query extends BaseQuery
     /**
      * Set many field name mappings. This overwrites any existing fields.
      *
-     * @param  array $mappings Name mapping in the form [$fromField => $toField, ...]
-     * @return self  Provides fluent interface
+     * @param array $mappings Name mapping in the form [$fromField => $toField, ...]
+     *
+     * @return self Provides fluent interface
      */
     public function setFieldMappings($mappings)
     {
@@ -363,20 +356,21 @@ class Query extends BaseQuery
     }
 
     /**
-    * Set a custom document class for use in the createDocument method
-    *
-    * This class should implement the document interface
-    *
-    * @param string $value classname
-    * @return self Provides fluent interface
-    */
+     * Set a custom document class for use in the createDocument method.
+     *
+     * This class should implement the document interface
+     *
+     * @param string $value classname
+     *
+     * @return self Provides fluent interface
+     */
     public function setDocumentClass($value)
     {
         return $this->setOption('documentclass', $value);
     }
 
     /**
-     * Get the current documentclass option
+     * Get the current documentclass option.
      *
      * The value is a classname, not an instance
      *
@@ -388,13 +382,36 @@ class Query extends BaseQuery
     }
 
     /**
-     * Create a document object instance
+     * Set the ExtractOnly parameter of SOLR Extraction Handler.
+     *
+     * @param bool $value
+     *
+     * @return self Provides fluent interface
+     */
+    public function setExtractOnly($value)
+    {
+        return $this->setOption('extractonly', (bool) $value);
+    }
+
+    /**
+     * Get the ExtractOnly parameter of SOLR Extraction Handler.
+     *
+     * @return boolean
+     */
+    public function getExtractOnly()
+    {
+        return $this->getOption('extractonly');
+    }
+
+    /**
+     * Create a document object instance.
      *
      * You can optionally directly supply the fields and boosts
      * to get a ready-made document instance for direct use in an add command
      *
-     * @param  array    $fields
-     * @param  array    $boosts
+     * @param array $fields
+     * @param array $boosts
+     *
      * @return DocumentInterface
      */
     public function createDocument($fields = array(), $boosts = array())
@@ -402,5 +419,18 @@ class Query extends BaseQuery
         $class = $this->getDocumentClass();
 
         return new $class($fields, $boosts);
+    }
+
+    /**
+     * Initialize options.
+     *
+     * Several options need some extra checks or setup work, for these options
+     * the setters are called.
+     */
+    protected function init()
+    {
+        if (isset($this->options['fmap'])) {
+            $this->setFieldMappings($this->options['fmap']);
+        }
     }
 }

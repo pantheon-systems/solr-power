@@ -30,40 +30,41 @@
  *
  * @copyright Copyright 2011 Bas de Nooijer <solarium@raspberry.nl>
  * @license http://github.com/basdenooijer/solarium/raw/master/COPYING
+ *
  * @link http://www.solarium-project.org/
  */
 
 /**
  * @namespace
  */
+
 namespace Solarium\Core\Query;
 
-use Solarium\Core\Query\Query;
 use Solarium\Exception\InvalidArgumentException;
 
 /**
- * Query helper
+ * Query helper.
  *
  * Generates small snippets for use in queries, filterqueries and sorting
  */
 class Helper
 {
     /**
-     * Placeholder pattern for use in the assemble method
+     * Placeholder pattern for use in the assemble method.
      *
      * @var string
      */
     protected $placeHolderPattern = '/%(L|P|T|)([0-9]+)%/i';
 
     /**
-     * Array of parts to use for assembling a query string
+     * Array of parts to use for assembling a query string.
      *
      * @var array
      */
     protected $assembleParts;
 
     /**
-     * Counter to keep dereferenced params unique (within a single query instance)
+     * Counter to keep dereferenced params unique (within a single query instance).
      *
      * @var int
      */
@@ -73,14 +74,14 @@ class Helper
      * Solarium Query instance, optional.
      * Used for dereferenced params.
      *
-     * @var Query
+     * @var AbstractQuery
      */
     protected $query;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param Query $query
+     * @param AbstractQuery $query
      */
     public function __construct($query = null)
     {
@@ -88,7 +89,7 @@ class Helper
     }
 
     /**
-     * Escape a term
+     * Escape a term.
      *
      * A term is a single word.
      * All characters that have a special meaning in a Solr query are escaped.
@@ -98,7 +99,8 @@ class Helper
      *
      * @link http://lucene.apache.org/java/docs/queryparsersyntax.html#Escaping%20Special%20Characters
      *
-     * @param  string $input
+     * @param string $input
+     *
      * @return string
      */
     public function escapeTerm($input)
@@ -109,7 +111,7 @@ class Helper
     }
 
     /**
-     * Escape a phrase
+     * Escape a phrase.
      *
      * A phrase is a group of words.
      * Special characters will be escaped and the phrase will be surrounded by
@@ -120,24 +122,26 @@ class Helper
      * this method, the whole query will be escaped. You need to escape only the
      * 'content' of your query.
      *
-     * @param  string $input
+     * @param string $input
+     *
      * @return string
      */
     public function escapePhrase($input)
     {
-        return '"' . preg_replace('/("|\\\)/', '\\\$1', $input) . '"';
+        return '"'.preg_replace('/("|\\\)/', '\\\$1', $input).'"';
     }
 
     /**
-     * Format a date to the expected formatting used in SOLR
+     * Format a date to the expected formatting used in SOLR.
      *
      * This format was derived to be standards compliant (ISO 8601)
      * A date field shall be of the form 1995-12-31T23:59:59Z The trailing "Z" designates UTC time and is mandatory
      *
      * @see http://lucene.apache.org/solr/api/org/apache/solr/schema/DateField.html
      *
-     * @param  int|string|\DateTime $input accepted formats: timestamp, date string or DateTime
-     * @return string|boolean       false is returned in case of invalid input
+     * @param int|string|\DateTime $input accepted formats: timestamp, date string or DateTime
+     *
+     * @return string|boolean false is returned in case of invalid input
      */
     public function formatDate($input)
     {
@@ -158,7 +162,7 @@ class Helper
 
                 // now try converting the timestamp to a datetime instance, on failure return false
                 try {
-                    $input = new \DateTime('@' . $input);
+                    $input = new \DateTime('@'.$input);
                 } catch (\Exception $e) {
                     $input = false;
                 }
@@ -189,38 +193,52 @@ class Helper
     }
 
     /**
-     * Render a range query
+     * Render a range query.
      *
      * From and to can be any type of data. For instance int, string or point.
+     * If they are null, then '*' will be used.
      *
      * Example: rangeQuery('store', '45,-94', '46,-93')
      * Returns: store:[45,-94 TO 46,-93]
      *
-     * @param  string  $field
-     * @param  string  $from
-     * @param  string  $to
-     * @param  boolean $inclusive
+     * Example: rangeQuery('store', '5', '*', false)
+     * Returns: store:{5 TO *}
+     *
+     * @param string  $field
+     * @param string  $from
+     * @param string  $to
+     * @param boolean $inclusive
+     *
      * @return string
      */
     public function rangeQuery($field, $from, $to, $inclusive = true)
     {
+        if ($from === null) {
+            $from = '*';
+        }
+
+        if ($to === null) {
+            $to = '*';
+        }
+
         if ($inclusive) {
-            return $field . ':[' . $from . ' TO ' . $to . ']';
+            return $field.':['.$from.' TO '.$to.']';
         } else {
-            return $field . ':{' . $from . ' TO ' . $to . '}';
+            return $field.':{'.$from.' TO '.$to.'}';
         }
     }
 
     /**
-     * Render a geofilt (distance) filter
+     * Render a geofilt (distance) filter.
      *
      * Find all entries within the distance of a certain point.
      *
-     * @param  $field
-     * @param  $pointX
-     * @param  $pointY
-     * @param  $distance
-     * @param  boolean $dereferenced
+     * @param string  $field
+     * @param string  $pointX
+     * @param string  $pointY
+     * @param string  $distance
+     * @param boolean $dereferenced
+     *
      * @return string
      */
     public function geofilt($field, $pointX, $pointY, $distance, $dereferenced = false)
@@ -230,25 +248,26 @@ class Helper
             array(
                 'pt' => $pointX.','.$pointY,
                 'sfield' => $field,
-                'd' => $distance
+                'd' => $distance,
             ),
             $dereferenced
         );
     }
 
     /**
-     * Render a bbox (boundingbox) filter
+     * Render a bbox (boundingbox) filter.
      *
      * Exact distance calculations can be somewhat expensive and it can often
      * make sense to use a quick approximation instead. The bbox filter is
      * guaranteed to encompass all of the points of interest, but it may also
      * include other points that are slightly outside of the required distance.
      *
-     * @param  string  $field
-     * @param  string  $pointX
-     * @param  string  $pointY
-     * @param  string  $distance
-     * @param  boolean $dereferenced
+     * @param string  $field
+     * @param string  $pointX
+     * @param string  $pointY
+     * @param string  $distance
+     * @param boolean $dereferenced
+     *
      * @return string
      */
     public function bbox($field, $pointX, $pointY, $distance, $dereferenced = false)
@@ -258,14 +277,14 @@ class Helper
             array(
                 'pt' => $pointX.','.$pointY,
                 'sfield' => $field,
-                'd' => $distance
+                'd' => $distance,
             ),
             $dereferenced
         );
     }
 
     /**
-     * Render a geodist function call
+     * Render a geodist function call.
      *
      * geodist is a function query that yields the calculated distance.
      * This gives the flexibility to do a number of interesting things,
@@ -273,10 +292,11 @@ class Helper
      * or combining the distance with the relevancy score,
      * such as boosting by the inverse of the distance.
      *
-     * @param  $field
-     * @param  $pointX
-     * @param  $pointY
-     * @param  boolean $dereferenced
+     * @param string  $field
+     * @param string  $pointX
+     * @param string  $pointY
+     * @param boolean $dereferenced
+     *
      * @return string
      */
     public function geodist($field, $pointX, $pointY, $dereferenced = false)
@@ -289,30 +309,30 @@ class Helper
     }
 
     /**
-     * Render a qparser plugin call
+     * Render a qparser plugin call.
      *
      * @throws InvalidArgumentException
-     * @param  string                   $name
-     * @param  array                    $params
-     * @param  boolean                  $dereferenced
-     * @param  boolean                  $forceKeys
+     *
+     * @param string  $name
+     * @param array   $params
+     * @param boolean $dereferenced
+     * @param boolean $forceKeys
+     *
      * @return string
      */
     public function qparser($name, $params = array(), $dereferenced = false, $forceKeys = false)
     {
         if ($dereferenced) {
-
             if (!$this->query) {
                 throw new InvalidArgumentException(
-                    'Dereferenced params can only be used in a Solarium query helper instance retrieved from the query '
-                    . 'by using the getHelper() method, this instance was manually created'
+                    'Dereferenced params can only be used in a Solarium query helper instance retrieved from the query '.'by using the getHelper() method, this instance was manually created'
                 );
             }
 
             foreach ($params as $paramKey => $paramValue) {
                 if (is_int($paramKey) || $forceKeys) {
                     $this->derefencedParamsLastKey++;
-                    $derefKey = 'deref_' . $this->derefencedParamsLastKey;
+                    $derefKey = 'deref_'.$this->derefencedParamsLastKey;
                 } else {
                     $derefKey = $paramKey;
                 }
@@ -324,7 +344,7 @@ class Helper
         $output = '{!'.$name;
         foreach ($params as $key => $value) {
             if (!$dereferenced || $forceKeys || is_int($key)) {
-                $output .= ' ' . $key . '=' . $value;
+                $output .= ' '.$key.'='.$value;
             }
         }
         $output .= '}';
@@ -333,11 +353,12 @@ class Helper
     }
 
     /**
-     * Render a functionCall
+     * Render a functionCall.
      *
-     * @param  string  $name
-     * @param  array   $params
-     * @param  boolean $dereferenced
+     * @param string  $name
+     * @param array   $params
+     * @param boolean $dereferenced
+     *
      * @return string
      */
     public function functionCall($name, $params = array(), $dereferenced = false)
@@ -346,14 +367,15 @@ class Helper
             foreach ($params as $key => $value) {
                 $this->query->addParam($key, $value);
             }
-            return $name . '()';
+
+            return $name.'()';
         } else {
-            return $name . '(' . implode($params, ',') . ')';
+            return $name.'('.implode($params, ',').')';
         }
     }
 
     /**
-     * Assemble a querystring with placeholders
+     * Assemble a querystring with placeholders.
      *
      * These placeholder modes are supported:
      * %1% = no mode, will default to literal
@@ -371,8 +393,9 @@ class Helper
      *
      * @since 2.1.0
      *
-     * @param  string $query
-     * @param  array  $parts Array of strings
+     * @param string $query
+     * @param array  $parts Array of strings
+     *
      * @return string
      */
     public function assemble($query, $parts)
@@ -387,44 +410,15 @@ class Helper
     }
 
     /**
-     * Render placeholders in a querystring
-     *
-     * @throws InvalidArgumentException
-     * @param  array                    $matches
-     * @return string
-     */
-    protected function renderPlaceHolder($matches)
-    {
-        $partNumber = $matches[2];
-        $partMode = strtoupper($matches[1]);
-
-        if (isset($this->assembleParts[$partNumber-1])) {
-            $value = $this->assembleParts[$partNumber-1];
-        } else {
-            throw new InvalidArgumentException('No value supplied for part #' . $partNumber . ' in query assembler');
-        }
-
-        switch ($partMode) {
-            case 'P':
-                $value = $this->escapePhrase($value);
-                break;
-            case 'T':
-                $value = $this->escapeTerm($value);
-                break;
-        }
-
-        return $value;
-    }
-
-    /**
-     * Render join localparams syntax
+     * Render join localparams syntax.
      *
      * @see http://wiki.apache.org/solr/Join
      * @since 2.4.0
      *
-     * @param  string  $from
-     * @param  string  $to
-     * @param  boolean $dereferenced
+     * @param string  $from
+     * @param string  $to
+     * @param boolean $dereferenced
+     *
      * @return string
      */
     public function join($from, $to, $dereferenced = false)
@@ -433,7 +427,7 @@ class Helper
     }
 
     /**
-     * Render term query
+     * Render term query.
      *
      * Useful for avoiding query parser escaping madness when drilling into facets via fq parameters, example:
      * {!term f=weight}1.5
@@ -443,16 +437,17 @@ class Helper
      * @see http://wiki.apache.org/solr/SolrQuerySyntax#Other_built-in_useful_query_parsers
      *
      * @param string $field
-     * @param float $weight
+     * @param float  $weight
+     *
      * @return string
      */
     public function qparserTerm($field, $weight)
     {
-        return $this->qparser('term', array('f' => $field)) . $weight;
+        return $this->qparser('term', array('f' => $field)).$weight;
     }
 
     /**
-     * Render cache control param for use in filterquery
+     * Render cache control param for use in filterquery.
      *
      * This is a Solr 3.4+ feature.
      *
@@ -460,6 +455,7 @@ class Helper
      *
      * @param boolean    $useCache
      * @param float|null $cost
+     *
      * @return string
      */
     public function cacheControl($useCache, $cost = null)
@@ -484,11 +480,44 @@ class Helper
      *
      * Mainly useful to filter data before adding it to a document for the update query.
      *
-     * @param $data
+     * @param string $data
+     *
      * @return mixed
      */
     public function filterControlCharacters($data)
     {
         return preg_replace('@[\x00-\x08\x0B\x0C\x0E-\x1F]@', ' ', $data);
+    }
+
+    /**
+     * Render placeholders in a querystring.
+     *
+     * @throws InvalidArgumentException
+     *
+     * @param array $matches
+     *
+     * @return string
+     */
+    protected function renderPlaceHolder($matches)
+    {
+        $partNumber = $matches[2];
+        $partMode = strtoupper($matches[1]);
+
+        if (isset($this->assembleParts[$partNumber-1])) {
+            $value = $this->assembleParts[$partNumber-1];
+        } else {
+            throw new InvalidArgumentException('No value supplied for part #'.$partNumber.' in query assembler');
+        }
+
+        switch ($partMode) {
+            case 'P':
+                $value = $this->escapePhrase($value);
+                break;
+            case 'T':
+                $value = $this->escapeTerm($value);
+                break;
+        }
+
+        return $value;
     }
 }

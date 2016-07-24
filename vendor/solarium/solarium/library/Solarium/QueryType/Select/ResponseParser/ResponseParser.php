@@ -30,38 +30,42 @@
  *
  * @copyright Copyright 2011 Bas de Nooijer <solarium@raspberry.nl>
  * @license http://github.com/basdenooijer/solarium/raw/master/COPYING
+ *
  * @link http://www.solarium-project.org/
  */
 
 /**
  * @namespace
  */
+
 namespace Solarium\QueryType\Select\ResponseParser;
 
-use Solarium\Core\Query\ResponseParser as ResponseParserAbstract;
+use Solarium\Core\Query\AbstractResponseParser as ResponseParserAbstract;
 use Solarium\Core\Query\ResponseParserInterface as ResponseParserInterface;
 use Solarium\QueryType\Select\Result\Result;
 use Solarium\Exception\RuntimeException;
 use Solarium\QueryType\Select\Query\Query;
 
 /**
- * Parse select response data
+ * Parse select response data.
  */
 class ResponseParser extends ResponseParserAbstract implements ResponseParserInterface
 {
     /**
-     * Get result data for the response
+     * Get result data for the response.
      *
      * @throws RuntimeException
-     * @param  Result           $result
+     *
+     * @param Result $result
+     *
      * @return array
      */
     public function parse($result)
     {
         $data = $result->getData();
 
-        /**
-         * @var $query Query
+        /*
+         * @var Query
          */
         $query = $result->getQuery();
 
@@ -97,12 +101,19 @@ class ResponseParser extends ResponseParserAbstract implements ResponseParserInt
             $numFound = null;
         }
 
+        if (isset($data['response']['maxScore'])) {
+            $maxScore = $data['response']['maxScore'];
+        } else {
+            $maxScore = null;
+        }
+
         return $this->addHeaderInfo(
             $data,
             array(
                 'numfound' => $numFound,
+                'maxscore' => $maxScore,
                 'documents' => $documents,
-                'components' => $components
+                'components' => $components,
             )
         );
     }

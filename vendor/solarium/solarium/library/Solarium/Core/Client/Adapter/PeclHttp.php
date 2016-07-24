@@ -31,12 +31,14 @@
  *
  * @copyright Copyright 2011 Gasol Wu <gasol.wu@gmail.com>
  * @license http://github.com/basdenooijer/solarium/raw/master/COPYING
+ *
  * @link http://www.solarium-project.org/
  */
 
 /**
  * @namespace
  */
+
 namespace Solarium\Core\Client\Adapter;
 
 use Solarium\Core\Configurable;
@@ -48,36 +50,20 @@ use Solarium\Exception\HttpException;
 use Solarium\Exception\InvalidArgumentException;
 
 /**
- * Pecl HTTP adapter
+ * Pecl HTTP adapter.
  *
  * @author Gasol Wu <gasol.wu@gmail.com>
  */
 class PeclHttp extends Configurable implements AdapterInterface
 {
     /**
-     * Initialization hook
-     *
-     * Checks the availability of pecl_http
-     *
-     * @throws RuntimeException
-     */
-    protected function init()
-    {
-        // @codeCoverageIgnoreStart
-        if (!class_exists('HttpRequest', false)) {
-            throw new RuntimeException('Pecl_http is not available, install it to use the PeclHttp adapter');
-        }
-
-        parent::init();
-        // @codeCoverageIgnoreEnd
-    }
-
-    /**
-     * Execute a Solr request using the Pecl Http
+     * Execute a Solr request using the Pecl Http.
      *
      * @throws HttpException
-     * @param  Request       $request
-     * @param  Endpoint      $endpoint
+     *
+     * @param Request  $request
+     * @param Endpoint $endpoint
+     *
      * @return Response
      */
     public function execute($request, $endpoint)
@@ -97,50 +83,24 @@ class PeclHttp extends Configurable implements AdapterInterface
     }
 
     /**
-     * Convert key/value pair header to raw header.
-     *
-     * <code>
-     * //before
-     * $headers['Content-Type'] = 'text/plain';
-     *
-     * ...
-     *
-     * //after
-     * $headers[0] = 'Content-Type: text/plain';
-     * </code>
-     *
-     * @param $message \HttpMessage
-     * @return array
-     */
-    protected function toRawHeaders($message)
-    {
-        $headers[] = 'HTTP/' . $message->getHttpVersion()
-                   . ' ' . $message->getResponseCode()
-                   . ' ' . $message->getResponseStatus();
-
-        foreach ($message->getHeaders() as $header => $value) {
-            $headers[] = "$header: $value";
-        }
-
-        return $headers;
-    }
-
-    /**
-     *
-     * adapt Request to HttpRequest
+     * adapt Request to HttpRequest.
      *
      * {@link http://us.php.net/manual/en/http.constants.php
      *  HTTP Predefined Constant}
      *
+     * {@link http://us.php.net/manual/en/http.request.options.php
+     *  HttpRequest options}
+     *
      * @throws InvalidArgumentException
-     * @param  Request                  $request
-     * @param  Endpoint                 $endpoint
-     * @param  HttpRequest
+     *
+     * @param Request  $request
+     * @param Endpoint $endpoint
+     *
      * @return \HttpRequest
      */
     public function toHttpRequest($request, $endpoint)
     {
-        $url = $endpoint->getBaseUri() . $request->getUri();
+        $url = $endpoint->getBaseUri().$request->getUri();
         $httpRequest = new \HttpRequest($url);
 
         $headers = array();
@@ -158,7 +118,7 @@ class PeclHttp extends Configurable implements AdapterInterface
         }
 
         if (!empty($authData['username']) && !empty($authData['password'])) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($authData['username']. ':' . $authData['password']);
+            $headers['Authorization'] = 'Basic '.base64_encode($authData['username'].':'.$authData['password']);
         }
 
         switch ($request->getMethod()) {
@@ -185,14 +145,66 @@ class PeclHttp extends Configurable implements AdapterInterface
                 break;
             default:
                 throw new InvalidArgumentException(
-                    'Unsupported method: ' . $request->getMethod()
+                    'Unsupported method: '.$request->getMethod()
                 );
         }
 
         $httpRequest->setMethod($method);
-        $httpRequest->setOptions(array('timeout' => $endpoint->getTimeout()));
+        $httpRequest->setOptions(
+            array(
+                'timeout' => $endpoint->getTimeout(),
+                'connecttimeout' => $endpoint->getTimeout(),
+                'dns_cache_timeout' => $endpoint->getTimeout(),
+            )
+        );
         $httpRequest->setHeaders($headers);
 
         return $httpRequest;
+    }
+
+    /**
+     * Initialization hook.
+     *
+     * Checks the availability of pecl_http
+     *
+     * @throws RuntimeException
+     */
+    protected function init()
+    {
+        // @codeCoverageIgnoreStart
+        if (!class_exists('HttpRequest', false)) {
+            throw new RuntimeException('Pecl_http is not available, install it to use the PeclHttp adapter');
+        }
+
+        parent::init();
+        // @codeCoverageIgnoreEnd
+    }
+
+    /**
+     * Convert key/value pair header to raw header.
+     *
+     * <code>
+     * //before
+     * $headers['Content-Type'] = 'text/plain';
+     *
+     * ...
+     *
+     * //after
+     * $headers[0] = 'Content-Type: text/plain';
+     * </code>
+     *
+     * @param $message \HttpMessage
+     *
+     * @return array
+     */
+    protected function toRawHeaders($message)
+    {
+        $headers[] = 'HTTP/'.$message->getHttpVersion().' '.$message->getResponseCode().' '.$message->getResponseStatus();
+
+        foreach ($message->getHeaders() as $header => $value) {
+            $headers[] = "$header: $value";
+        }
+
+        return $headers;
     }
 }
