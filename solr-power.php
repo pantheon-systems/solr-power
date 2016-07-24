@@ -119,7 +119,9 @@ if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 	require_once( SOLR_POWER_PATH . '/includes/class-solrpower.php' );
 	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-options.php' );
 	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-sync.php' );
-	require_once( SOLR_POWER_PATH . '/includes/class-pantheon-curl.php' );
+	if ( ! class_exists( 'PantheonCurl' ) ){
+		require_once( SOLR_POWER_PATH . '/includes/class-pantheon-curl.php' );
+	}
 	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-api.php' );
 	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-wp-query.php' );
 	require_once( SOLR_POWER_PATH . '/includes/legacy-functions.php' );
