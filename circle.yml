@@ -21,10 +21,8 @@ dependencies:
 
 test:
   pre:
+    - composer install --prefer-source
     - ./bin/behat-prepare.sh
-    # Only run after the current directory has been deployed to Pantheon
-    # See https://github.com/pantheon-systems/solr-power/issues/72#issuecomment-234073642
-    - composer install
   override:
     - ./bin/behat-test.sh
   post:
