@@ -5,6 +5,11 @@ notifications:
     on_success: never
     on_failure: change
 
+branches:
+  only:
+    - master
+    - /^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$/
+
 php:
   - 5.5
 
