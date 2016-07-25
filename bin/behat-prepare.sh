@@ -46,7 +46,6 @@ rm -rf $PREPARE_DIR/wp-content/plugins/solr-power/.git
 ###
 cd $PREPARE_DIR
 git rm -rf --cached wp-content/plugins/solr-power/vendor
-find ./wp-content/plugins/solr-power/vendor -type d -name ".git" -exec rm -rf "{}" \;
 git add -A wp-content
 git config user.email "solr-power@getpantheon.com"
 git config user.name "Pantheon"
