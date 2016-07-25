@@ -16,6 +16,7 @@ dependencies:
     - echo "date.timezone = 'US/Central'"  >  /opt/circleci/php/5.6.22/etc/conf.d/xdebug.ini
   override:
     - composer global require pantheon-systems/terminus
+    - echo 'export PATH=~/.composer/vendor/bin:$PATH' >> ~/.bashrc
     - terminus auth login --machine-token=$TERMINUS_TOKEN
 
 test:
