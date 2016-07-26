@@ -1,8 +1,9 @@
 var Facet_Widget = {
     init: function () {
         var search_box = document.getElementById('solr_s');
-
-        search_box.addEventListener('change', this.uncheckall);
+        if (null !== search_box) {
+            search_box.addEventListener('change', this.uncheckall);
+        }
 
     },
     uncheckall: function () {
