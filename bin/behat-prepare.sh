@@ -17,6 +17,7 @@ fi
 # Create a new environment for this particular test run.
 ###
 terminus site create-env --to-env=$TERMINUS_ENV --from-env=dev
+yes | terminus site wipe
 
 ###
 # Get all necessary environment details.
