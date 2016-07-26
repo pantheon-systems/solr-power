@@ -1,6 +1,7 @@
 var Facet_Widget = {
     init: function () {
         var search_box = document.getElementById('solr_s');
+        // Let's not worry about the search box if it doesn't exist.
         if (null !== search_box) {
             search_box.addEventListener('change', this.uncheckall);
         }
