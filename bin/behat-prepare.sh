@@ -59,3 +59,18 @@ sleep 10
 ###
 terminus wp "user create pantheon solr-power@getpantheon.com --user_pass=pantheon --role=administrator"
 terminus wp "plugin activate solr-power"
+
+###
+# Download the Pantheon WordPress Upstream tests
+###
+cd $BASH_DIR/..
+rm -rf pantheon-wordpress-upstream-master tests/pantheon-wordpress-upstream
+wget https://github.com/pantheon-systems/pantheon-wordpress-upstream/archive/master.zip
+unzip master.zip
+mv pantheon-wordpress-upstream-master/features tests/pantheon-wordpress-upstream
+# Skip the installation scenario, because WordPress is already installed
+rm tests/pantheon-wordpress-upstream/0-install.feature
+# Skip the plugin scenario, because it doesn't expect another plugin to be installed
+rm tests/pantheon-wordpress-upstream/plugin.feature
+rm -rf pantheon-wordpress-upstream-master
+rm master.zip

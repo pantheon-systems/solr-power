@@ -1,4 +1,7 @@
+*.zip
 .DS_Store
 node_modules/
 phpredis
 .idea
+pantheon-wordpress-upstream-master
+tests/pantheon-wordpress-upstream
