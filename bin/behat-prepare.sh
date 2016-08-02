@@ -59,6 +59,6 @@ sleep 10
 # Set up WordPress, theme, and plugins for the test run
 ###
 {
-  terminus wp "core install --title=$TERMINUS_ENV-$TERMINUS_SITE --url=$PANTHEON_SITE_URL --admin_user=$WORDPRESS_ADMIN_USERNAME --admin_email=wp-native-php-sessions@getpantheon.com --admin_password=$WORDPRESS_ADMIN_PASSWORD"
+  terminus wp "core install --title=$TERMINUS_ENV-$TERMINUS_SITE --url=$PANTHEON_SITE_URL --admin_user=$WORDPRESS_ADMIN_USERNAME --admin_email=no-reply@getpantheon.com --admin_password=$WORDPRESS_ADMIN_PASSWORD"
 } &> /dev/null
 terminus wp "plugin activate solr-power"
