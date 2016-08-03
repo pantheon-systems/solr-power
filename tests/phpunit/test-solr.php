@@ -300,7 +300,7 @@ class SolrTest extends WP_UnitTestCase {
 
 		$query = $this->__facet_query( array(
 			'facet' => array(
-				'my_field_str' => 'my_value'
+				'my_field_str' => array('my_value')
 			)
 		) );
 
@@ -331,11 +331,46 @@ class SolrTest extends WP_UnitTestCase {
 
 		$query = $this->__facet_query( array(
 			'facet' => array(
-				'my_field_str' => 'my_value'
+				'my_field_str' => array('my_value')
 			)
 		) );
 
 		$this->assertEquals( $query->post_count, 2 );
 		$this->assertEquals( $query->found_posts, 2 );
+	}
+
+	/**
+	 * Test to see if a two facets can be selected.
+	 * @group 37
+	 */
+	function test_multi_facet() {
+
+		$this->__change_option( 's4wp_facet_on_custom_fields', array( 'my_field' ) );
+		$this->__change_option( 's4wp_index_custom_fields', array( 'my_field' ) );
+
+		$cat_id_one = wp_create_category( 'new_cat' );
+		$cat_id_two = wp_create_category( 'smelly_cat' );
+
+		$p_id = $this->__create_test_post();
+		update_post_meta( $p_id, 'my_field', 'my_value' );
+		wp_set_object_terms( $p_id, $cat_id_one, 'category', true );
+
+
+		$p_id_two = $this->__create_test_post();
+
+		wp_set_object_terms( $p_id_two, $cat_id_two, 'category', true );
+
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+
+		$query = $this->__facet_query( array(
+			'facet' => array(
+				'my_field_str' => array('my_value'),
+				'category'=>array('new_cat^^')
+			)
+		) );
+
+
+		$this->assertEquals( 2, $query->post_count );
+		$this->assertEquals( 2, $query->found_posts );
 	}
 }
