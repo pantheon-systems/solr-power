@@ -30,7 +30,7 @@ class SolrPower_Options {
 		add_action( 'network_admin_menu', array( $this, 'add_network_pages' ) );
 		add_action( 'admin_init', array( $this, 'options_init' ) );
 		add_action( 'wp_ajax_solr_options', array( $this, 'options_load' ) );
-		//add_action( 'init', array( $this, 'check_for_defaults' ) );
+		add_action( 'admin_init', array( $this, 'check_for_defaults' ) );
 		add_action( 'admin_init', array( $this, 'check_for_actions' ) );
 	}
 
@@ -70,12 +70,15 @@ class SolrPower_Options {
 	 *
 	 */
 	function options_load() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			die();
+		}
 		check_ajax_referer( 'solr_security', 'security' );
 		$method = filter_input( INPUT_POST, 'method', FILTER_SANITIZE_STRING );
-		if ( $method === "load" ) {
+		if ( 'load' === $method ) {
 			$type = filter_input( INPUT_POST, 'type', FILTER_SANITIZE_STRING );
 			$prev = filter_input( INPUT_POST, 'prev', FILTER_SANITIZE_STRING );
-			if ( isset( $type ) ) {
+			if ( $type ) {
 				SolrPower_Sync::get_instance()->load_all_posts( $prev, $type );
 				die();
 			}
@@ -122,33 +125,35 @@ class SolrPower_Options {
 	 * @return $options sanitised values
 	 */
 	function sanitise_options( $options ) {
-		$options['s4wp_index_pages']         = absint( $options['s4wp_index_pages'] );
-		$options['s4wp_index_posts']         = absint( $options['s4wp_index_posts'] );
-		$options['s4wp_index_comments']      = absint( $options['s4wp_index_comments'] );
-		$options['s4wp_delete_page']         = absint( $options['s4wp_delete_page'] );
-		$options['s4wp_delete_post']         = absint( $options['s4wp_delete_post'] );
-		$options['s4wp_private_page']        = absint( $options['s4wp_private_page'] );
-		$options['s4wp_private_post']        = absint( $options['s4wp_private_post'] );
-		$options['s4wp_output_info']         = absint( $options['s4wp_output_info'] );
-		$options['s4wp_output_pager']        = absint( $options['s4wp_output_pager'] );
-		$options['s4wp_output_facets']       = absint( $options['s4wp_output_facets'] );
-		$options['s4wp_exclude_pages']       = $this->filter_str2list_numeric( $options['s4wp_exclude_pages'] );
-		$options['s4wp_num_results']         = absint( $options['s4wp_num_results'] );
-		$options['s4wp_cat_as_taxo']         = absint( $options['s4wp_cat_as_taxo'] );
-		$options['s4wp_max_display_tags']    = absint( $options['s4wp_max_display_tags'] );
-		$options['s4wp_facet_on_categories'] = absint( $options['s4wp_facet_on_categories'] );
-		$options['s4wp_facet_on_tags']       = absint( $options['s4wp_facet_on_tags'] );
-		$options['s4wp_facet_on_author']     = absint( $options['s4wp_facet_on_author'] );
-		$options['s4wp_facet_on_type']       = absint( $options['s4wp_facet_on_type'] );
-		if ( is_multisite() ) {
-			$options['s4wp_index_all_sites'] = absint( $options['s4wp_index_all_sites'] );
-		}
-		$options['s4wp_connect_type']           = wp_filter_nohtml_kses( $options['s4wp_connect_type'] );
-		$options['s4wp_index_custom_fields']    = $this->filter_str2list( $options['s4wp_index_custom_fields'] );
-		$options['s4wp_facet_on_custom_fields'] = $this->filter_str2list( $options['s4wp_facet_on_custom_fields'] );
-		$options['s4wp_default_sort']           = esc_attr( $options['s4wp_default_sort'] );
+		$clean=array();
 
-		return $options;
+		$clean['s4wp_index_pages']         = absint( $options['s4wp_index_pages'] );
+		$clean['s4wp_index_posts']         = absint( $options['s4wp_index_posts'] );
+		$clean['s4wp_index_comments']      = absint( $options['s4wp_index_comments'] );
+		$clean['s4wp_delete_page']         = absint( $options['s4wp_delete_page'] );
+		$clean['s4wp_delete_post']         = absint( $options['s4wp_delete_post'] );
+		$clean['s4wp_private_page']        = absint( $options['s4wp_private_page'] );
+		$clean['s4wp_private_post']        = absint( $options['s4wp_private_post'] );
+		$clean['s4wp_output_info']         = absint( $options['s4wp_output_info'] );
+		$clean['s4wp_output_pager']        = absint( $options['s4wp_output_pager'] );
+		$clean['s4wp_output_facets']       = absint( $options['s4wp_output_facets'] );
+		$clean['s4wp_exclude_pages']       = $this->filter_str2list_numeric( $options['s4wp_exclude_pages'] );
+		$clean['s4wp_num_results']         = absint( $options['s4wp_num_results'] );
+		$clean['s4wp_cat_as_taxo']         = absint( $options['s4wp_cat_as_taxo'] );
+		$clean['s4wp_max_display_tags']    = absint( $options['s4wp_max_display_tags'] );
+		$clean['s4wp_facet_on_categories'] = absint( $options['s4wp_facet_on_categories'] );
+		$clean['s4wp_facet_on_tags']       = absint( $options['s4wp_facet_on_tags'] );
+		$clean['s4wp_facet_on_author']     = absint( $options['s4wp_facet_on_author'] );
+		$clean['s4wp_facet_on_type']       = absint( $options['s4wp_facet_on_type'] );
+		if ( is_multisite() ) {
+			$clean['s4wp_index_all_sites'] = absint( $options['s4wp_index_all_sites'] );
+		}
+		$clean['s4wp_connect_type']           = wp_filter_nohtml_kses( $options['s4wp_connect_type'] );
+		$clean['s4wp_index_custom_fields']    = $this->filter_str2list( $options['s4wp_index_custom_fields'] );
+		$clean['s4wp_facet_on_custom_fields'] = $this->filter_str2list( $options['s4wp_facet_on_custom_fields'] );
+		$clean['s4wp_default_sort']           = sanitize_text_field( $options['s4wp_default_sort'] );
+
+		return $clean;
 	}
 
 	function filter_str2list_numeric( $input ) {
@@ -234,36 +239,38 @@ class SolrPower_Options {
 
 		//set defaults if not initialized
 
-		if ( $s4wp_settings['s4wp_solr_initialized'] != 1 ) {
-			$options = SolrPower_Options::get_instance()->initalize_options();
-
-			$options['s4wp_index_all_sites'] = 0;
-
-			//update existing settings from multiple option record to a single array
-			//if old options exist, update to new system
-			// Pretty sure we don't need any of this. Seems left over from an older version. - Cal
-			$delete_option_function = 'delete_option';
-
-			if ( is_multisite() ) {
-				$indexall               = get_site_option( 's4wp_index_all_sites' );
-				$delete_option_function = 'delete_site_option';
-			}
-
-			//find each of the old options function
-			//update our new array and delete the record.
-			foreach ( $options as $key => $value ) {
-				if ( $existing = get_option( $key ) ) {
-					$options[ $key ] = $existing;
-					$indexall        = false;
-					//run the appropriate delete options function
-					$delete_option_function( $key );
-				}
-			}
-
-
-			//save our options array
-			$this->update_option( $options );
+		if ( 1 === $s4wp_settings['s4wp_solr_initialized'] ) {
+			return;
 		}
+		$options = SolrPower_Options::get_instance()->initalize_options();
+
+		$options['s4wp_index_all_sites'] = 0;
+
+		//update existing settings from multiple option record to a single array
+		//if old options exist, update to new system
+		// Pretty sure we don't need any of this. Seems left over from an older version. - Cal
+		$delete_option_function = 'delete_option';
+
+		if ( is_multisite() ) {
+			$indexall               = get_site_option( 's4wp_index_all_sites' );
+			$delete_option_function = 'delete_site_option';
+		}
+
+		//find each of the old options function
+		//update our new array and delete the record.
+		foreach ( $options as $key => $value ) {
+			if ( $existing = get_option( $key ) ) {
+				$options[ $key ] = $existing;
+				$indexall        = false;
+				//run the appropriate delete options function
+				$delete_option_function( $key );
+			}
+		}
+
+
+		//save our options array
+		$this->update_option( $options );
+
 
 	}
 
@@ -311,65 +318,68 @@ class SolrPower_Options {
 	}
 
 	function check_for_actions() {
-		if ( isset( $_POST['action'] ) ) {
-			$action = sanitize_text_field( $_POST['action'] );
-			switch ( $action ) {
-				case 'update':
-					if ( ! $this->check_nonce( 'solr_update' ) ) {
-						return;
-					}
-					$this->save_options();
-					break;
-				case 'ping':
-					if ( ! $this->check_nonce( 'solr_ping' ) ) {
-						return;
-					}
-					if ( SolrPower_Api::get_instance()->ping_server() ) {
-						$this->msg = __( 'Ping Success!', 'solr-for-wordpress-on-pantheon' );
-					} else {
-						$this->msg = __( 'Ping Failed!', 'solr-for-wordpress-on-pantheon' );
-					}
-					break;
-				case 'init_blogs':
-					if ( ! $this->check_nonce( 'solr_init_blogs' ) ) {
-						return;
-					}
-					SolrPower_Sync::get_instance()->copy_config_to_all_blogs();
-					$this->msg = __( 'Configuration has been copied to all blogs!', 'solr-for-wordpress-on-pantheon' );
-					break;
-				case 'optimize':
-					if ( ! $this->check_nonce( 'solr_optimize' ) ) {
-						return;
-					}
-					SolrPower_Api::get_instance()->optimize();
-					$this->msg = __( 'Index Optimized!', 'solr-for-wordpress-on-pantheon' );
-					break;
-				case 'delete_all':
-					if ( ! $this->check_nonce( 'solr_delete_all' ) ) {
-						return;
-					}
-					SolrPower_Sync::get_instance()->delete_all();
-					$this->msg = __( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' );
-					break;
-				case 'repost_schema':
-					if ( ! $this->check_nonce( 'solr_repost_schema' ) ) {
-						return;
-					}
-					SolrPower_Sync::get_instance()->delete_all();
-					$output    = SolrPower_Api::get_instance()->submit_schema();
-					$this->msg = __( 'All Indexed Pages Deleted!<br />' . esc_html( $output ), 'solr-for-wordpress-on-pantheon' );
-					break;
 
-				case 'run_query':
-					if ( ! $this->check_nonce( 'solr_run_query' ) ) {
-						return;
-					}
-					$this->run_query();
-					break;
-
-
-			}
+		if ( ! isset( $_POST['action'] ) || ! current_user_can( 'manage_options' ) ) {
+			return;
 		}
+		$action = sanitize_text_field( $_POST['action'] );
+		switch ( $action ) {
+			case 'update':
+				if ( ! $this->check_nonce( 'solr_update' ) ) {
+					return;
+				}
+				$this->save_options();
+				break;
+			case 'ping':
+				if ( ! $this->check_nonce( 'solr_ping' ) ) {
+					return;
+				}
+				if ( SolrPower_Api::get_instance()->ping_server() ) {
+					$this->msg = __( 'Ping Success!', 'solr-for-wordpress-on-pantheon' );
+				} else {
+					$this->msg = __( 'Ping Failed!', 'solr-for-wordpress-on-pantheon' );
+				}
+				break;
+			case 'init_blogs':
+				if ( ! $this->check_nonce( 'solr_init_blogs' ) ) {
+					return;
+				}
+				SolrPower_Sync::get_instance()->copy_config_to_all_blogs();
+				$this->msg = __( 'Configuration has been copied to all blogs!', 'solr-for-wordpress-on-pantheon' );
+				break;
+			case 'optimize':
+				if ( ! $this->check_nonce( 'solr_optimize' ) ) {
+					return;
+				}
+				SolrPower_Api::get_instance()->optimize();
+				$this->msg = __( 'Index Optimized!', 'solr-for-wordpress-on-pantheon' );
+				break;
+			case 'delete_all':
+				if ( ! $this->check_nonce( 'solr_delete_all' ) ) {
+					return;
+				}
+				SolrPower_Sync::get_instance()->delete_all();
+				$this->msg = __( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' );
+				break;
+			case 'repost_schema':
+				if ( ! $this->check_nonce( 'solr_repost_schema' ) ) {
+					return;
+				}
+				SolrPower_Sync::get_instance()->delete_all();
+				$output    = SolrPower_Api::get_instance()->submit_schema();
+				$this->msg = __( 'All Indexed Pages Deleted!<br />' . esc_html( $output ), 'solr-for-wordpress-on-pantheon' );
+				break;
+
+			case 'run_query':
+				if ( ! $this->check_nonce( 'solr_run_query' ) ) {
+					return;
+				}
+				$this->run_query();
+				break;
+
+
+		}
+
 	}
 
 	private function check_nonce( $field ) {

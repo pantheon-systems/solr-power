@@ -178,7 +178,7 @@
 			<tr valign="top" style="display: none; ">
 				<th scope="row"><?php esc_html_e( 'Max Number of Tags to Display', 'solr-for-wordpress-on-pantheon' ) ?></th>
 				<td><input type="text" name="settings[s4wp_max_display_tags]"
-				           value="<?php esc_attr_e( $s4wp_settings['s4wp_max_display_tags'], 'solr-for-wordpress-on-pantheon' ); ?>"/>
+				           value="<?php esc_attr( $s4wp_settings['s4wp_max_display_tags'] ); ?>"/>
 				</td>
 			</tr>
 			<tr valign="top">
