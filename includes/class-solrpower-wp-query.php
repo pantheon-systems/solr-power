@@ -164,9 +164,13 @@ class SolrPower_WP_Query {
 		$return = array();
 		foreach ( $facets as $facet_name => $facet_arr ) {
 			$fq = array();
-			foreach ( $facet_arr as $facet ):
-				$fq[] = '"' . $facet . '"';
-			endforeach;
+			if ( is_array( $facet_arr ) ) {
+				foreach ( $facet_arr as $facet ):
+					$fq[] = '"' . $facet . '"';
+				endforeach;
+			} else {
+				$fq[] = $facet_arr;
+			}
 			$return[] = $facet_name . ':' . implode( '|', $fq );
 		}
 
