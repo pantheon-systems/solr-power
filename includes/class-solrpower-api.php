@@ -226,7 +226,7 @@ class SolrPower_Api {
 			'Search Query' => $qry,
 			'Offset'       => $offset,
 			'Count'        => $count,
-			'fq'           => $fq,
+			'Filter Query' => $fq,
 			'Sort By'      => $sortby,
 			'Order'        => $order
 		) );
@@ -308,7 +308,10 @@ class SolrPower_Api {
 
 			if ( isset( $plugin_s4wp_settings['s4wp_default_operator'] ) ) {
 				$query->setQueryDefaultOperator( $plugin_s4wp_settings['s4wp_default_operator'] );
+			}else{
+				$query->setQueryDefaultOperator( 'OR');
 			}
+
 			try {
 				$response = $solr->select( $query );
 				if ( ! $response->getResponse()->getStatusCode() == 200 ) {
