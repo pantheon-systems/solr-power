@@ -21,7 +21,7 @@ dependencies:
 
 test:
   pre:
-    - composer install
+    - composer install --prefer-dist
     - ./bin/behat-prepare.sh
   override:
     - ./bin/behat-test.sh
