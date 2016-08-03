@@ -104,7 +104,7 @@
             $or = 'checked';
           }
           ?>
-          Or <input type="radio" name="settings[s4wp_default_operator]" value="Or" <?php echo $or; ?>> And <input type="radio" name="settings[s4wp_default_operator]" value="And" <?php echo $and; ?>>
+          Or <input type="radio" name="settings[s4wp_default_operator]" value="OR" <?php echo $or; ?>> And <input type="radio" name="settings[s4wp_default_operator]" value="AND" <?php echo $and; ?>>
           </td>
     </tr>
 

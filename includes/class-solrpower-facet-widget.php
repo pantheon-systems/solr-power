@@ -104,11 +104,13 @@ class SolrPower_Facet_Widget extends WP_Widget {
 
 				$nice_name = str_replace( '^^', '', $name );
 				$checked   = '';
-				if ( isset( $this->facets[ $facet_name ] ) ) {
-					$checked = checked( esc_attr( $name ), $this->facets[ $facet_name ], false );
+				if ( isset( $this->facets[ $facet_name ] )
+				     && in_array( $name, $this->facets[ $facet_name ] )
+				) {
+					$checked = checked( true, true, false );
 				}
 				echo '<li>';
-				echo '<input type="checkbox" name="facet[' . esc_attr( $facet_name ) . ']" value="' . esc_attr( $name ) . '" ' . $checked . '> ';
+				echo '<input type="checkbox" name="facet[' . esc_attr( $facet_name ) . '][]" value="' . esc_attr( $name ) . '" ' . $checked . '> ';
 				echo esc_html( $nice_name );
 				echo ' (' . esc_html( $count ) . ')';
 				echo '</li>';
