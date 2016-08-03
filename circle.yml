@@ -33,6 +33,6 @@ test:
     # See https://github.com/pantheon-systems/solr-power/issues/72#issuecomment-234073642
     - composer install
   override:
-    - ./bin/behat-test.sh
+    - ./vendor/pantheon-systems/pantheon-wordpress-upstream-tests/test.sh
   post:
-    - ./bin/behat-cleanup.sh
+    - ./vendor/pantheon-systems/pantheon-wordpress-upstream-tests/cleanup.sh
