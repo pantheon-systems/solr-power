@@ -22,7 +22,7 @@ wait_for_solr(){
 run() {
     echo "Starting solr on port ${SOLR_PORT}..."
 
-    cd $1/example
+    cd $1/server
     if [ $DEBUG ]
     then
         java -Djetty.port=$SOLR_PORT -jar start.jar &
@@ -41,19 +41,13 @@ post_some_documents() {
 
 download_and_run() {
    
-     
-    url="http://archive.apache.org/dist/lucene/solr/3.6.2/apache-solr-3.6.2.tgz"
-    dir_name="apache-solr-3.6.2"
-    dir_conf="conf/"
-           
-    download $url
+    url="http://archive.apache.org/dist/lucene/solr/5.5.2/solr-5.5.2.tgz"
+    dir_name="solr-5.5.2"
 
-    # copy schema.xml
-    cp schema.xml $dir_name/example/solr/$dir_conf
+    download $url
  
     # Run solr
-    run $dir_name $SOLR_PORT
-
+    run $dir_name
 
 }
 
