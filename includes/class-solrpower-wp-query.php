@@ -170,7 +170,7 @@ class SolrPower_WP_Query {
 			$return[] = $facet_name . ':' . implode( '|', $fq );
 		}
 
-		return $return;
+		return implode( ' OR ', $return );
 
 	}
 }

@@ -235,9 +235,10 @@ class SolrPower_Api {
 		) );
 
 
-		$response       = null;
-		$facet_fields   = array();
-		$number_of_tags = $plugin_s4wp_settings['s4wp_max_display_tags'];
+		$response         = null;
+		$facet_fields     = array();
+		$number_of_tags   = $plugin_s4wp_settings['s4wp_max_display_tags'];
+		$default_operator = ( isset( $plugin_s4wp_settings['s4wp_default_operator'] ) ) ? $plugin_s4wp_settings['s4wp_default_operator'] : 'OR';
 
 		if ( $plugin_s4wp_settings['s4wp_facet_on_categories'] ) {
 			$facet_fields[] = 'categories';
@@ -289,6 +290,7 @@ class SolrPower_Api {
 			$query = $solr->createSelect( $select );
 
 			$facetSet = $query->getFacetSet();
+
 			foreach ( $facet_fields as $facet_field ) {
 				$facetSet->createFacetField( $facet_field )->setField( $facet_field );
 			}
@@ -298,22 +300,21 @@ class SolrPower_Api {
 			}
 
 			if ( isset( $fq ) ) {
-				foreach ( $fq as $filter ) {
-					if ( $filter !== "" ) {
-						$query->createFilterQuery( $filter )->setQuery( $filter );
-					}
+				if ( is_array( $fq ) ) {
+					$fq = implode( ' ' . $default_operator . ' ', $fq );
 				}
+				if ( '' !== $fq ) {
+					$query->createFilterQuery( 'searchfq' )->setQuery( $fq );
+				}
+
 			}
 			$query->getHighlighting()->setFields( 'post_content' );
 			$query->getHighlighting()->setSimplePrefix( '<b>' );
 			$query->getHighlighting()->setSimplePostfix( '</b>' );
 			$query->getHighlighting()->setHighlightMultiTerm( true );
 
-			if ( isset( $plugin_s4wp_settings['s4wp_default_operator'] ) ) {
-				$query->setQueryDefaultOperator( $plugin_s4wp_settings['s4wp_default_operator'] );
-			}else{
-				$query->setQueryDefaultOperator( 'OR');
-			}
+			$query->setQueryDefaultOperator( $default_operator );
+
 
 			try {
 				$response = $solr->select( $query );

@@ -300,7 +300,7 @@ class SolrTest extends WP_UnitTestCase {
 
 		$query = $this->__facet_query( array(
 			'facet' => array(
-				'my_field_str' => array('my_value')
+				'my_field_str' => array( 'my_value' )
 			)
 		) );
 
@@ -331,7 +331,7 @@ class SolrTest extends WP_UnitTestCase {
 
 		$query = $this->__facet_query( array(
 			'facet' => array(
-				'my_field_str' => array('my_value')
+				'my_field_str' => array( 'my_value' )
 			)
 		) );
 
@@ -364,13 +364,15 @@ class SolrTest extends WP_UnitTestCase {
 
 		$query = $this->__facet_query( array(
 			'facet' => array(
-				'my_field_str' => array('my_value'),
-				'category'=>array('new_cat^^')
+				'my_field_str' => array( 'my_value' ),
+				'categories'   => array( 'smelly_cat^^' )
 			)
 		) );
 
-
 		$this->assertEquals( 2, $query->post_count );
 		$this->assertEquals( 2, $query->found_posts );
+
+		wp_delete_category( $cat_id_one );
+		wp_delete_category( $cat_id_two );
 	}
 }
