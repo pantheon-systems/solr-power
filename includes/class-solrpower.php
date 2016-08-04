@@ -39,11 +39,16 @@ class SolrPower {
 		if ( !defined( 'SOLR_PATH' ) ) {
 			$schemaSubmit = SolrPower_Api::get_instance()->submit_schema();
 			if ( strpos( $schemaSubmit, 'Error' ) ) {
-				wp_die( 'Submitting the schema failed with the message ' . esc_html($errorMessage) );
+				wp_die( 'Submitting the schema failed with the message ' . esc_html($schemaSubmit) );
 			}
 		}
-		$options = SolrPower_Options::get_instance()->initalize_options();
-		SolrPower_Options::get_instance()->update_option( $options );
+
+		// Set the default options if they don't already exist.
+		if ( false === get_option( 'plugin_s4wp_settings', false ) ) {
+			add_action( 'shutdown', function () {
+				SolrPower_Options::get_instance()->initalize_options();
+			} );
+		}
 		return;
 	}
 
