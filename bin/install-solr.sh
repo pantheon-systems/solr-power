@@ -22,7 +22,7 @@ wait_for_solr(){
 run() {
     echo "Starting solr on port ${SOLR_PORT}..."
 
-    cd $1/example
+    cd $1/server
     if [ $DEBUG ]
     then
         java -Djetty.port=$SOLR_PORT -jar start.jar &
@@ -47,7 +47,7 @@ download_and_run() {
     download $url
  
     # Run solr
-    run $dir_name/bin/solr -p $SOLR_PORT
+    run $dir_name
 
 }
 
