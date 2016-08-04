@@ -41,16 +41,13 @@ post_some_documents() {
 
 download_and_run() {
    
-     
     url="http://archive.apache.org/dist/lucene/solr/5.5.2/solr-5.5.2.tgz"
-    dir_name="solr-3.6.2"
-    dir_conf="conf/"
-           
+    dir_name="solr-5.5.2"
+
     download $url
  
     # Run solr
-    run $dir_name $SOLR_PORT
-
+    run $dir_name/bin/solr -p $SOLR_PORT
 
 }
 
