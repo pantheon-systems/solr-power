@@ -45,9 +45,7 @@ class SolrPower {
 
 		// Set the default options if they don't already exist.
 		if ( false === get_option( 'plugin_s4wp_settings', false ) ) {
-			add_action( 'shutdown', function () {
 				SolrPower_Options::get_instance()->initalize_options();
-			} );
 		}
 		return;
 	}
