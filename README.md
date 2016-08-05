@@ -28,7 +28,8 @@ The Solr Power plugin can be installed just like you'd install any other WordPre
 
 If you're using the Solr Power plugin on Pantheon, setting up Apache Solr is as easy as enabling the Apache Solr add-on in your Pantheon dashboard. Once you've done so:
 
-1. Index your existing content by going to the plugin options screen and clicking "Execute" on "Index Searchable Post Types".
+1. Index your existing content by going to the plugin options screen and selecting the applicable **Actions**:
+   - - **Index Searchable Post Types**
 2. Search on!
 3. See the examples/templates directories for more rich implementation guidelines.
 
@@ -71,6 +72,8 @@ Behat requires a Pantheon site with Solr enabled. Once you've created the site, 
 ## Changelog ##
 
 ### 0.4.2 ###
+* Update options page internals to utilize WordPress settings API
+* Add Behat tests to ensure the plugin's compatibility with the Pantheon platform.
 * Defork Solarium and update it to version 3.6.0
 
 ### 0.4.1 ###
