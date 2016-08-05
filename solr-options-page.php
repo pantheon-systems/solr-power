@@ -38,13 +38,14 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 
 
 	<h2 class="nav-tab-wrapper" id="solr-tabs">
-		<a class="nav-tab nav-tab-active" id="solr_info-tab"
-		   href="#top#solr_info">Info</a>
-		<a class="nav-tab" id="solr_indexing-tab"
-		   href="#top#solr_indexing">Indexing</a>
-		<a class="nav-tab" id="solr_action-tab"
-		   href="#top#solr_action">Actions</a>
-		<a class="nav-tab" id="solr_query-tab" href="#top#solr_query">Query</a>
+
+			<a class="nav-tab <?php echo  ( !isset( $_GET['settings-updated'] ) ) ? 'nav-tab-active' : ''; ?>" id="solr_info-tab"
+			   href="#top#solr_info">Info</a>
+			<a class="nav-tab <?php echo  ( isset( $_GET['settings-updated'] ) ) ? 'nav-tab-active' : ''; ?>" id="solr_indexing-tab"
+			   href="#top#solr_indexing">Indexing</a>
+			<a class="nav-tab" id="solr_action-tab"
+			   href="#top#solr_action">Actions</a>
+			<a class="nav-tab" id="solr_query-tab" href="#top#solr_query">Query</a>
 	</h2>
 
 	<div id="solr_info" class="solrtab active">
