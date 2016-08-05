@@ -430,4 +430,53 @@ class SolrTest extends WP_UnitTestCase {
 		wp_delete_category( $cat_id );
 
 	}
+
+	/**
+	 * Test to see if a two facets of the same type can be selected.
+	 * @group 37
+	 */
+	function test_multi_same_facet() {
+
+		$cat_id_one   = wp_create_category( 'new_cat' );
+		$cat_id_two   = wp_create_category( 'smelly_cat' );
+		$cat_id_three = wp_create_category( 'bad_cat' );
+
+		$p_id = $this->__create_test_post();
+		wp_set_object_terms( $p_id, $cat_id_one, 'category', true );
+
+
+		$p_id_two = $this->__create_test_post();
+		wp_set_object_terms( $p_id_two, $cat_id_two, 'category', true );
+
+		$p_id_three = $this->__create_test_post();
+		wp_set_object_terms( $p_id_three, $cat_id_three, 'category', true );
+
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+
+		$query = $this->__facet_query( array(
+			'facet' => array(
+				'my_field_str' => array( 'my_value' ),
+				'categories'   => array(
+					'smelly_cat^^',
+					'bad_cat^^',
+				)
+			)
+		) );
+
+
+		$this->assertEquals( 2, $query->post_count );
+		$this->assertEquals( 2, $query->found_posts );
+		$ids = array();
+		foreach ( $query->posts as $post ) {
+			$ids[] = $post->ID;
+		}
+		$this->assertContains( $p_id_two, $ids );
+		$this->assertContains( $p_id_three, $ids );
+		$this->assertNotContains( $p_id, $ids );
+
+		wp_delete_category( $cat_id_one );
+		wp_delete_category( $cat_id_two );
+	}
+
+
 }

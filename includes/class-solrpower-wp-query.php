@@ -167,7 +167,7 @@ class SolrPower_WP_Query {
 			foreach ( $facet_arr as $facet ):
 				$fq[] = '"' . htmlspecialchars($facet) . '"';
 			endforeach;
-			$return[] = $facet_name . ':' . implode( '|', $fq );
+			$return[] = $facet_name . ':(' . implode( ' OR ', $fq ) . ')';
 		}
 
 		return implode( ' OR ', $return );
