@@ -37,21 +37,18 @@ class SolrPower {
 		// Check to see if we have  environment variables. If not, bail. If so, create the initial options.
 
 		if ( $errMessage = SolrPower::get_instance()->sanity_check() ) {
-			wp_die( wp_kses_post($errMessage) );
+			wp_die( $errMessage );
 		}
 
 		// Don't try to send a schema if we're not on Pantheon servers.
 		if ( ! defined( 'SOLR_PATH' ) ) {
 			$schemaSubmit = SolrPower_Api::get_instance()->submit_schema();
 			if ( strpos( $schemaSubmit, 'Error' ) ) {
-				wp_die( 'Submitting the schema failed with the message ' . esc_html($schemaSubmit) );
+				wp_die( 'Submitting the schema failed with the message ' . $errorMessage );
 			}
 		}
+		SolrPower_Options::get_instance()->initalize_options();
 
-		// Set the default options if they don't already exist.
-		if ( false === get_option( 'plugin_s4wp_settings', false ) ) {
-				SolrPower_Options::get_instance()->initalize_options();
-		}
 		return;
 	}
 
@@ -87,14 +84,7 @@ class SolrPower {
 			return $links;
 		}
 
-		if ( is_multisite() ) {
-			$settings_link = network_admin_url( 'settings.php' );
-		} else {
-			$settings_link = admin_url( 'settings.php' );
-		}
-		$settings_link = add_query_arg( 'page', 'solr-power', $settings_link );
-
-		array_unshift( $links, '<a href="' . esc_url( $settings_link ) . '">' . __( 'Settings', 's4wp' ) . '</a>' );
+		array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-power">' . __( 'Settings', 's4wp' ) . '</a>' );
 
 		return $links;
 	}

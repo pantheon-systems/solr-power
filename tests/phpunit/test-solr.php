@@ -8,6 +8,7 @@ class SolrTest extends WP_UnitTestCase {
 		add_filter( 'solr_scheme', function () {
 			return 'http';
 		} );
+		SolrPower_Options::get_instance()->initalize_options();
 	}
 
 	/**
