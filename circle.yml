@@ -24,14 +24,13 @@ dependencies:
     - echo "date.timezone = 'US/Central'"  >  /opt/circleci/php/5.6.22/etc/conf.d/xdebug.ini
   override:
     - composer global require pantheon-systems/terminus
+    - PATH=~/.composer/vendor/bin:$PATH
     - terminus auth login --machine-token=$TERMINUS_TOKEN
 
 test:
   pre:
+    - composer install --prefer-dist
     - ./bin/behat-prepare.sh
-    # Only run after the current directory has been deployed to Pantheon
-    # See https://github.com/pantheon-systems/solr-power/issues/72#issuecomment-234073642
-    - composer install
   override:
     - ./bin/behat-test.sh
   post:
