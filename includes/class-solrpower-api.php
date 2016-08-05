@@ -315,6 +315,7 @@ class SolrPower_Api {
 
 			$query->setQueryDefaultOperator( $default_operator );
 
+			$query = apply_filters( 'solr_query', $query );
 
 			try {
 				$response = $solr->select( $query );
