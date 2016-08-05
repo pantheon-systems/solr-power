@@ -1,9 +1,9 @@
 # Solr Search for WordPress #
-**Contributors:** getpantheon, Outlandish Josh, 10up, collinsinternet  
+**Contributors:** getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor  
 **Tags:** search  
 **Requires at least:** 4.2  
 **Tested up to:** 4.5.3  
-**Stable tag:** 0.4.1  
+**Stable tag:** 0.4.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -69,6 +69,9 @@ PHPUnit requires the [WordPress PHPUnit test suite](https://make.wordpress.org/c
 Behat requires a Pantheon site with Solr enabled. Once you've created the site, you'll need [install Terminus](https://github.com/pantheon-systems/terminus#installation), and set the `TERMINUS_TOKEN`, `TERMINUS_SITE`, and `TERMINUS_ENV` environment variables. Then, you can run `./bin/behat-prepare.sh` to prepare the site for the test suite.
 
 ## Changelog ##
+
+### 0.4.2 ###
+* Defork Solarium and update it to version 3.6.0
 
 ### 0.4.1 ###
 * Do not allow plugin activation if the `PANTHEON_INDEX_HOST` or `PANTHEON_INDEX_PORT` environment variables are not set. Instead, show an admin notice to the user advising them to configure the environment variables.
