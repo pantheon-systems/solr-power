@@ -124,6 +124,7 @@ if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 	}
 	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-api.php' );
 	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-wp-query.php' );
+	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-facet-widget.php' );
 	require_once( SOLR_POWER_PATH . '/includes/legacy-functions.php' );
 	if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		require_once( SOLR_POWER_PATH . '/includes/class-solrpower-cli.php' );
