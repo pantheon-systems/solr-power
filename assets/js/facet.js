@@ -1,0 +1,1 @@
+var Facet_Widget={init:function(){var e=document.getElementById("solr_s");null!==e&&e.addEventListener("change",this.uncheckall)},uncheckall:function(){var e=[];e=document.getElementById("solr_facet").getElementsByTagName("input");for(var t=0;t<e.length;t++)"checkbox"==e[t].type&&(e[t].checked=!1)}};window.onload=function(){Facet_Widget.init()};
