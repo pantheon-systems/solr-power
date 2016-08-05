@@ -1,5 +1,5 @@
 # Solr Search for WordPress #
-**Contributors:** getpantheon, Outlandish Josh, 10up, collinsinternet  
+**Contributors:** getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor  
 **Tags:** search  
 **Requires at least:** 4.2  
 **Tested up to:** 4.5.3  
@@ -74,6 +74,7 @@ Behat requires a Pantheon site with Solr enabled. Once you've created the site, 
 ### 0.4.2 ###
 * Update options page internals to utilize WordPress settings API
 * Add Behat tests to ensure the plugin's compatibility with the Pantheon platform.
+* Defork Solarium and update it to version 3.6.0
 
 ### 0.4.1 ###
 * Do not allow plugin activation if the `PANTHEON_INDEX_HOST` or `PANTHEON_INDEX_PORT` environment variables are not set. Instead, show an admin notice to the user advising them to configure the environment variables.
