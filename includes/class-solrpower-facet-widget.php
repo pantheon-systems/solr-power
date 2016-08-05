@@ -189,6 +189,12 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	}
 
 	function dummy_query() {
+		// For a wildcard search, lets change the parser to lucene.
+		add_filter( 'solr_query', function ( $query ) {
+			$query->addParam( 'defType', 'lucene' );
+
+			return $query;
+		} );
 		global $wp_query;
 		$query = new WP_Query();
 		if ( ! $wp_query->get( 's' ) ) {

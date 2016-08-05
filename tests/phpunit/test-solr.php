@@ -96,6 +96,33 @@ class SolrTest extends WP_UnitTestCase {
 		$this->assertTrue( SolrPower_Api::get_instance()->ping_server() );
 	}
 
+
+	/**
+	 * By default, a wildcard query *:* will yield all results,
+	 * however if edismax is the set query parser it won't work.
+	 * Therefore, we hook into the solr_query filter to set the parser to lucene.
+	 */
+	function test_wildcard_search() {
+
+		add_filter( 'solr_query', function ( $query ) {
+			$query->addParam( 'defType', 'lucene' );
+
+			return $query;
+		} );
+		$this->__create_multiple( 5 );
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+		$search = $this->__run_test_query( '*:*' );
+
+
+		if ( is_null( $search ) ) {
+			$this->assertTrue( false );
+		}
+		$search = $search->getData();
+		$search = $search['response'];
+
+		$this->assertEquals( 5, $search['numFound'] );
+	}
+
 	/**
 	 * Create a post and see if it gets indexed.
 	 */
@@ -374,5 +401,33 @@ class SolrTest extends WP_UnitTestCase {
 
 		wp_delete_category( $cat_id_one );
 		wp_delete_category( $cat_id_two );
+	}
+
+	/**
+	 * Test to see if a two facets can be selected.
+	 * @group 37
+	 */
+	function test_facet_category_ampersand() {
+		$cat_name = 'Tests & More Tests';
+		$cat_id   = wp_create_category( $cat_name );
+
+		$p_id = $this->__create_test_post();
+
+		wp_set_object_terms( $p_id, $cat_id, 'category', true );
+
+
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+
+		$query = $this->__facet_query( array(
+			'facet' => array(
+				'categories' => array( $cat_name . '^^' )
+			)
+		) );
+
+		$this->assertEquals( 1, $query->post_count );
+		$this->assertEquals( 1, $query->found_posts );
+
+		wp_delete_category( $cat_id );
+
 	}
 }
