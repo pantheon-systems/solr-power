@@ -49,13 +49,12 @@ class SolrPower_Sync {
 		$post_info = get_post( $post_id );
 
 		$plugin_s4wp_settings = solr_options();
-		$index_pages          = $plugin_s4wp_settings['s4wp_index_pages'];
-		$index_posts          = $plugin_s4wp_settings['s4wp_index_posts'];
+
 		$this->handle_status_change( $post_id, $post_info );
 		if ( $post_info->post_type == 'revision' || $post_info->post_status != 'publish' ) {
 			return;
 		}
-		$index_posts = $plugin_s4wp_settings['s4wp_index_posts'];
+
 		$this->handle_status_change( $post_id, $post_info );
 		if ( $post_info->post_type == 'revision' || $post_info->post_status != 'publish' ) {
 			return;

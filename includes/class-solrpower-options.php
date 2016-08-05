@@ -94,7 +94,7 @@ class SolrPower_Options {
 		}
 	}
 
-	private function update_option( $options ) {
+	function update_option( $options ) {
 		$optval   = $this->sanitise_options( $options );
 		$indexall = false;
 		$option   = 'plugin_s4wp_settings';
@@ -148,7 +148,7 @@ class SolrPower_Options {
 		$clean['s4wp_facet_on_custom_fields'] = $this->filter_str2list( $options['s4wp_facet_on_custom_fields'] );
 		$clean['s4wp_default_operator']       = sanitize_text_field( $options['s4wp_default_operator'] );
 		$clean['s4wp_default_sort']           = sanitize_text_field( $options['s4wp_default_sort'] );
-
+		$clean['s4wp_solr_initialized']       = 1;
 		return $clean;
 	}
 
@@ -246,7 +246,7 @@ class SolrPower_Options {
 		$options['s4wp_facet_on_custom_fields'] = '';
 		$options['s4wp_default_operator']       = 'OR';
 		$options['s4wp_default_sort']           = 'score';
-
+		$options['s4wp_solr_initialized']       = 1;
 		$this->update_option( $options );
 	}
 

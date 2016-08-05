@@ -47,8 +47,8 @@ class SolrPower {
 				wp_die( 'Submitting the schema failed with the message ' . $errorMessage );
 			}
 		}
-		$options = SolrPower_Options::get_instance()->initalize_options();
-		SolrPower_Options::get_instance()->update_option( $options );
+		SolrPower_Options::get_instance()->initalize_options();
+
 
 		return;
 	}
