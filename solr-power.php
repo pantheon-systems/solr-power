@@ -29,20 +29,6 @@
   THE SOFTWARE.
  */
 
-/*
- * NOTE: We have had to hack the Solarium Curl class to get it to support
- * https:. There is probably a better way to do this and a future version
- * may include a new "Pantheon" provider for Solarium. Until then, if you
- * do a composer update, and it updates, Solarium, things WILL STOP
- * WORKING.
- *
- * Make a backup!
- *  - Cal
- *
- * @TODO refactor as an object
- *
- */
-
 /**
  * Echo the admin notice HTML that PHP is less than 5.4
  * and the Solr Power plugin has been deactivated or
@@ -126,13 +112,16 @@ if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 	add_action( 'admin_notices', 'solr_power_env_variables_admin_notice' );
 	add_action( 'admin_init', 'solr_power__deactivate' );
 } else {
-	define( 'SOLR_POWER_PATH', plugin_dir_path( __FILE__ ) . '/' );
+	define( 'SOLR_POWER_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 	define( 'SOLR_POWER_URL', plugin_dir_url( __FILE__ ) );
 
 	require_once( SOLR_POWER_PATH . '/vendor/autoload.php' );
 	require_once( SOLR_POWER_PATH . '/includes/class-solrpower.php' );
 	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-options.php' );
 	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-sync.php' );
+	if ( ! class_exists( 'PantheonCurl' ) ){
+		require_once( SOLR_POWER_PATH . '/includes/class-pantheon-curl.php' );
+	}
 	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-api.php' );
 	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-wp-query.php' );
 	require_once( SOLR_POWER_PATH . '/includes/legacy-functions.php' );

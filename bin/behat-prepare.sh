@@ -17,6 +17,7 @@ fi
 # Create a new environment for this particular test run.
 ###
 terminus site create-env --to-env=$TERMINUS_ENV --from-env=dev
+yes | terminus site wipe
 
 ###
 # Get all necessary environment details.
@@ -45,7 +46,7 @@ rm -rf $PREPARE_DIR/wp-content/plugins/solr-power/.git
 # Push files to the environment
 ###
 cd $PREPARE_DIR
-git add wp-content
+git add -A wp-content
 git config user.email "solr-power@getpantheon.com"
 git config user.name "Pantheon"
 git commit -m "Include Solr Power"
@@ -57,5 +58,7 @@ sleep 10
 ###
 # Set up WordPress, theme, and plugins for the test run
 ###
-terminus wp "user create pantheon solr-power@getpantheon.com --user_pass=pantheon --role=administrator"
+{
+  terminus wp "core install --title=$TERMINUS_ENV-$TERMINUS_SITE --url=$PANTHEON_SITE_URL --admin_user=$WORDPRESS_ADMIN_USERNAME --admin_email=no-reply@getpantheon.com --admin_password=$WORDPRESS_ADMIN_PASSWORD"
+} &> /dev/null
 terminus wp "plugin activate solr-power"
