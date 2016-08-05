@@ -104,8 +104,9 @@ class SolrPower_Facet_Widget extends WP_Widget {
 
 				$nice_name = str_replace( '^^', '', $name );
 				$checked   = '';
+
 				if ( isset( $this->facets[ $facet_name ] )
-				     && in_array( $name, $this->facets[ $facet_name ] )
+				     && in_array( htmlspecialchars_decode( $name ), $this->facets[ $facet_name ] )
 				) {
 					$checked = checked( true, true, false );
 				}
