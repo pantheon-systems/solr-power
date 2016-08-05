@@ -3,7 +3,7 @@
 **Tags:** search  
 **Requires at least:** 4.2  
 **Tested up to:** 4.5.3  
-**Stable tag:** 0.4.1
+**Stable tag:** 0.4.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -27,9 +27,9 @@ Search is critical for your site, but the default search for WordPress leaves a 
 First install the plugin as per normal. If you are installing on Pantheon, you will need to enable the Apache Solr add-on within the Pantheon Site Dashboard before you can enable the plugin.
 
 1. Index your existing content by going to the plugin options screen and selecting the applicable **Actions**:
- - **Index Searchable Post Types**
-2. Search on! Use the **Query** tab to validate indexing options.
-3. See the examples/template directories for more rich implementation guidelines.
+   - - **Index Searchable Post Types**
+2. Search on!
+3. See the examples/templates directories for more rich implementation guidelines.
 
 ## Development ##
 
@@ -51,6 +51,10 @@ PHPUnit requires the [WordPress PHPUnit test suite](https://make.wordpress.org/c
 Behat requires a Pantheon site with Solr enabled. Once you've created the site, you'll need [install Terminus](https://github.com/pantheon-systems/terminus#installation), and set the `TERMINUS_TOKEN`, `TERMINUS_SITE`, and `TERMINUS_ENV` environment variables. Then, you can run `./bin/behat-prepare.sh` to prepare the site for the test suite.
 
 ## Changelog ##
+
+### 0.4.2 ###
+* Update options page internals to utilize WordPress settings API
+* Add Behat tests to ensure the plugin's compatibility with the Pantheon platform.
 
 ### 0.4.1 ###
 * Do not allow plugin activation if the `PANTHEON_INDEX_HOST` or `PANTHEON_INDEX_PORT` environment variables are not set. Instead, show an admin notice to the user advising them to configure the environment variables.
