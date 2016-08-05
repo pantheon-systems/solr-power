@@ -46,7 +46,7 @@ rm -rf $PREPARE_DIR/wp-content/plugins/solr-power/.git
 # Push files to the environment
 ###
 cd $PREPARE_DIR
-git add wp-content
+git add -A wp-content
 git config user.email "solr-power@getpantheon.com"
 git config user.name "Pantheon"
 git commit -m "Include Solr Power"
