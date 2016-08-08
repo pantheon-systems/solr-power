@@ -71,6 +71,14 @@ class SolrPower {
 		wp_enqueue_script( 'solr-js', SOLR_POWER_URL . 'template/script.js', false );
 		$solr_js = array(
 			'ajax_url'	 => admin_url( 'admin-ajax.php' ),
+
+			/**
+			 * Filter indexed post types
+			 *
+			 * Filter the list of post types available to index.
+			 *
+			 * @param array $post_types Array of post type names for indexing.
+			 */
 			'post_types' => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
 			'security'	 => wp_create_nonce( "solr_security" )
 		);

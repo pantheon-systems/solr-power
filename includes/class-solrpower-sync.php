@@ -407,6 +407,14 @@ class SolrPower_Sync {
 
 				// now we actually gather the blog posts
 				$args	 = array(
+
+					/**
+					 * Filter indexed post types
+					 *
+					 * Filter the list of post types available to index.
+					 *
+					 * @param array $post_types Array of post type names for indexing.
+					 */
 					'post_type'		 => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
 					'post_status'	 => 'publish',
 					'fields'		 => 'ids',
@@ -463,6 +471,14 @@ class SolrPower_Sync {
 			restore_current_blog();
 		} else {
 			$args		 = array(
+
+				/**
+				 * Filter indexed post types
+				 *
+				 * Filter the list of post types available to index.
+				 *
+				 * @param array $post_types Array of post type names for indexing.
+				 */
 				'post_type'		 => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
 				'post_status'	 => 'publish',
 				'fields'		 => 'ids',
