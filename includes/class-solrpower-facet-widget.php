@@ -83,11 +83,30 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			if ( false === $this->show_facet( $facet_name ) ) {
 				continue;
 			}
+			/**
+			 * Filter facet HTML
+			 *
+			 * Filter the HTML output of a facet.
+			 *
+			 * @param string $facet_name the facet name.
+			 *
+			 * @param object $data the Solarium facet data object.
+			 */
 			$html = apply_filters( 'solr_facet_items', false, $facet_name, $data );
 			if ( $html ) {
 				echo $html;
 				continue;
 			}
+			/**
+			 * Filter facet title
+			 *
+			 * Filter the facet title displayed in the widget.
+			 *
+			 * @param boolean|string the custom facet title, defaults to false.
+			 *
+			 * @param string $facet_name the facet name.
+			 *
+			 */
 			$facet_nice_name = apply_filters( 'solr_facet_title', false, $facet_name );
 			if ( false === $facet_nice_name ) {
 				$replace         = array( '/\_taxonomy/', '/\_str/', '/\_/' );
@@ -147,6 +166,13 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	function render_searchbox() {
 		$html = '<input type="text" name="s" value="' . get_search_query() . '" id="solr_s"> <br/><br/>';
 		$html .= '<input type="submit" value="Search"><br/><br/>';
+		/**
+		 * Filter facet widget search box HTML
+		 *
+		 * Filter the HTML output of the facet widget search box.
+		 *
+		 * @param string $html the search box html.
+		 */
 		echo apply_filters( 'solr_facet_searchbox', $html );
 	}
 

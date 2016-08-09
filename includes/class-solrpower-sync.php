@@ -180,7 +180,15 @@ class SolrPower_Sync {
 		$exclude_ids                                      = ( is_array( $plugin_s4wp_settings['s4wp_exclude_pages'] ) ) ? $plugin_s4wp_settings['s4wp_exclude_pages'] : explode( ',', $plugin_s4wp_settings['s4wp_exclude_pages'] );
 		$categoy_as_taxonomy                              = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
 		$index_comments                                   = $plugin_s4wp_settings['s4wp_index_comments'];
-		$plugin_s4wp_settings['s4wp_index_custom_fields'] = apply_filters( 'solr_index_custom_fields', $plugin_s4wp_settings['s4wp_index_custom_fields'] );
+		$facet_on_custom_fields = $plugin_s4wp_settings['s4wp_index_custom_fields'];
+		/**
+		 * Filter indexed custom fields
+		 *
+		 * Filter the list of custom field slugs available to index.
+		 *
+		 * @param array $facet_on_custom_fields Array of custom field slugs for indexing.
+		 */
+		$plugin_s4wp_settings['s4wp_index_custom_fields'] = apply_filters( 'solr_index_custom_fields', $facet_on_custom_fields );
 		$index_custom_fields                              = ( is_array( $plugin_s4wp_settings['s4wp_index_custom_fields'] ) ) ? $plugin_s4wp_settings['s4wp_index_custom_fields'] : explode( ',', $plugin_s4wp_settings['s4wp_index_custom_fields'] );
 
 		if ( $post_info ) {

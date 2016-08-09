@@ -266,7 +266,15 @@ class SolrPower_Api {
 			}
 		}
 
-		$facet_on_custom_fields = apply_filters( 'solr_facet_custom_fields', $plugin_s4wp_settings['s4wp_facet_on_custom_fields'] );
+		$facet_on_custom_fields = $plugin_s4wp_settings['s4wp_facet_on_custom_fields'];
+		/**
+		 * Filter indexed custom fields
+		 *
+		 * Filter the list of custom field slugs available to index.
+		 *
+		 * @param array $facet_on_custom_fields Array of custom field slugs for indexing.
+		*/
+		$facet_on_custom_fields = apply_filters( 'solr_facet_custom_fields', $facet_on_custom_fields );
 		if ( is_array( $facet_on_custom_fields ) and count( $facet_on_custom_fields ) ) {
 			foreach ( $facet_on_custom_fields as $field_name ) {
 				$facet_fields[] = $field_name . '_str';
@@ -315,6 +323,11 @@ class SolrPower_Api {
 
 			$query->setQueryDefaultOperator( $default_operator );
 
+			/**
+			 * Filter the Solarium query object.
+			 *
+			 * @param object $query Solarium query object.
+			 */
 			$query = apply_filters( 'solr_query', $query );
 
 			try {
