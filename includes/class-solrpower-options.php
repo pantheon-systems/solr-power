@@ -94,7 +94,7 @@ class SolrPower_Options {
 		}
 	}
 
-	private function update_option( $options ) {
+	function update_option( $options ) {
 		$optval   = $this->sanitise_options( $options );
 		$indexall = false;
 		$option   = 'plugin_s4wp_settings';
@@ -132,9 +132,8 @@ class SolrPower_Options {
 		$clean['s4wp_output_pager']        = 1;
 		$clean['s4wp_output_facets']       = 1;
 		$clean['s4wp_exclude_pages']       = $this->filter_str2list_numeric( $options['s4wp_exclude_pages'] );
-		$clean['s4wp_num_results']         = absint( $options['s4wp_num_results'] );
 		$clean['s4wp_cat_as_taxo']         = absint( $options['s4wp_cat_as_taxo'] );
-		$clean['s4wp_max_display_tags']    = absint( $options['s4wp_max_display_tags'] );
+		$clean['s4wp_max_display_tags']    = 10;
 		$clean['s4wp_facet_on_categories'] = absint( $options['s4wp_facet_on_categories'] );
 		$clean['s4wp_facet_on_tags']       = absint( $options['s4wp_facet_on_tags'] );
 		$clean['s4wp_facet_on_author']     = absint( $options['s4wp_facet_on_author'] );
@@ -143,12 +142,11 @@ class SolrPower_Options {
 		if ( is_multisite() ) {
 			$clean['s4wp_index_all_sites'] = absint( $options['s4wp_index_all_sites'] );
 		}
-		$clean['s4wp_connect_type']           = wp_filter_nohtml_kses( $options['s4wp_connect_type'] );
 		$clean['s4wp_index_custom_fields']    = $this->filter_str2list( $options['s4wp_index_custom_fields'] );
 		$clean['s4wp_facet_on_custom_fields'] = $this->filter_str2list( $options['s4wp_facet_on_custom_fields'] );
 		$clean['s4wp_default_operator']       = sanitize_text_field( $options['s4wp_default_operator'] );
 		$clean['s4wp_default_sort']           = sanitize_text_field( $options['s4wp_default_sort'] );
-
+		$clean['s4wp_solr_initialized']       = 1;
 		return $clean;
 	}
 
@@ -229,7 +227,6 @@ class SolrPower_Options {
 		$options['s4wp_output_facets']          = 1;
 		$options['s4wp_exclude_pages']          = array();
 		$options['s4wp_exclude_pages']          = '';
-		$options['s4wp_num_results']            = 5;
 		$options['s4wp_cat_as_taxo']            = 1;
 		$options['s4wp_solr_initialized']       = 1;
 		$options['s4wp_max_display_tags']       = 10;
@@ -239,14 +236,13 @@ class SolrPower_Options {
 		$options['s4wp_facet_on_author']        = 1;
 		$options['s4wp_facet_on_type']          = 1;
 		$options['s4wp_index_comments']         = 1;
-		$options['s4wp_connect_type']           = 'solr';
 		$options['s4wp_index_custom_fields']    = array();
 		$options['s4wp_facet_on_custom_fields'] = array();
 		$options['s4wp_index_custom_fields']    = '';
 		$options['s4wp_facet_on_custom_fields'] = '';
 		$options['s4wp_default_operator']       = 'OR';
 		$options['s4wp_default_sort']           = 'score';
-
+		$options['s4wp_solr_initialized']       = 1;
 		$this->update_option( $options );
 	}
 

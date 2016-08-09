@@ -15,19 +15,26 @@ class SolrPower_WP_Query {
 	private $found_posts = array();
 
 	/**
+	 * Returned facets from search.
+	 * @var array
+	 */
+	var $facets = array();
+
+	/**
 	 * Grab instance of object.
 	 * @return SolrPower_WP_Query
 	 */
 	public static function get_instance() {
-		if ( !self::$instance ) {
+		if ( ! self::$instance ) {
 			self::$instance = new self();
 			add_action( 'init', array( self::$instance, 'setup' ) );
 		}
+
 		return self::$instance;
 	}
 
 	function __construct() {
-		
+
 	}
 
 	function setup() {
@@ -54,39 +61,43 @@ class SolrPower_WP_Query {
 	}
 
 	function posts_request( $request, $query ) {
-		if ( !$query->is_search() ) {
+		if ( ! $query->is_search() ) {
 			return $request;
 		}
 		$solr_options = SolrPower_Options::get_instance()->get_option();
 
-		$the_page = (!$query->get( 'paged' ) ) ? 1 : $query->get( 'paged' );
+		$the_page = ( ! $query->get( 'paged' ) ) ? 1 : $query->get( 'paged' );
 
-		$qry	 = $query->get( 's' );
-		$offset	 = $query->get( 'posts_per_page' ) * ($the_page - 1);
-		$count	 = $query->get( 'posts_per_page' );
-		$fq		 = array();
-		$sortby	 = (isset( $solr_options[ 's4wp_default_sort' ] ) && !empty( $solr_options[ 's4wp_default_sort' ] )) ? $solr_options[ 's4wp_default_sort' ] : 'score';
+		$qry    = $query->get( 's' );
+		$offset = $query->get( 'posts_per_page' ) * ( $the_page - 1 );
+		$count  = $query->get( 'posts_per_page' );
+		$fq     = $this->parse_facets( $query );
+		$sortby = ( isset( $solr_options['s4wp_default_sort'] ) && ! empty( $solr_options['s4wp_default_sort'] ) ) ? $solr_options['s4wp_default_sort'] : 'score';
 
-		$order	 = 'desc';
-		$search	 = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order );
+		$order  = 'desc';
+		$search = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order );
 		if ( is_null( $search ) ) {
 			return false;
 		}
+		$this->search = $search;
+		if ( $search->getFacetSet() ) {
+			$this->facets = $search->getFacetSet()->getFacets();
+		}
 		$search = $search->getData();
 
-		$search_header			 = $search[ 'responseHeader' ];
-		$search					 = $search[ 'response' ];
-		$query->found_posts		 = $search[ 'numFound' ];
-		$query->max_num_pages	 = ceil( $search[ 'numFound' ] / $query->get( 'posts_per_page' ) );
+		$search_header        = $search['responseHeader'];
+		$search               = $search['response'];
+		$query->found_posts   = $search['numFound'];
+		$query->max_num_pages = ceil( $search['numFound'] / $query->get( 'posts_per_page' ) );
 
 		SolrPower_Api::get_instance()->add_log( array(
-			'Results Found'	 => $search[ 'numFound' ],
-			'Query Time'	 => $search_header[ 'QTime' ] . 'ms'
+			'Results Found' => $search['numFound'],
+			'Query Time'    => $search_header['QTime'] . 'ms'
 		) );
 
 		$posts = array();
 
-		foreach ( $search[ 'docs' ] as $post_array ) {
+		foreach ( $search['docs'] as $post_array ) {
 			$post = new stdClass();
 
 			foreach ( $post_array as $key => $value ) {
@@ -109,8 +120,8 @@ class SolrPower_WP_Query {
 
 				$post->$key = $value;
 			}
-			$post->solr	 = true;
-			$posts[]	 = $post;
+			$post->solr = true;
+			$posts[]    = $post;
 		}
 
 		$this->found_posts[ spl_object_hash( $query ) ] = $posts;
@@ -121,14 +132,15 @@ class SolrPower_WP_Query {
 	}
 
 	function found_posts_query( $sql, $query ) {
-		if ( !$query->is_search() ) {
+		if ( ! $query->is_search() ) {
 			return $sql;
 		}
+
 		return '';
 	}
 
 	function the_posts( $posts, &$query ) {
-		if ( !isset( $this->found_posts[ spl_object_hash( $query ) ] ) ) {
+		if ( ! isset( $this->found_posts[ spl_object_hash( $query ) ] ) ) {
 			return $posts;
 		}
 
@@ -137,6 +149,33 @@ class SolrPower_WP_Query {
 		return $new_posts;
 	}
 
+	/**
+	 * Checks for 'facet' as WP_Query variable or query string and sets it up for a filter query.
+	 * @return array
+	 */
+	function parse_facets( $query ) {
+		$facets = $query->get( 'facet' );
+		if ( ! $facets ) {
+			$facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
+		}
+		if ( ! $facets ) {
+			return array();
+		}
+		$return = array();
+		foreach ( $facets as $facet_name => $facet_arr ) {
+			$fq = array();
+			foreach ( $facet_arr as $facet ):
+				$fq[] = '"' . htmlspecialchars($facet) . '"';
+			endforeach;
+			$return[] = $facet_name . ':(' . implode( ' OR ', $fq ) . ')';
+		}
+		$plugin_s4wp_settings = solr_options();
+
+		$default_operator = ( isset( $plugin_s4wp_settings['s4wp_default_operator'] ) ) ? $plugin_s4wp_settings['s4wp_default_operator'] : 'OR';
+
+		return implode( ' ' . $default_operator . ' ', $return );
+
+	}
 }
 
 
