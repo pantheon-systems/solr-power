@@ -164,6 +164,14 @@ class SolrPower_Api {
 				'localhost' => array(
 					'host'   => getenv( 'PANTHEON_INDEX_HOST' ),
 					'port'   => getenv( 'PANTHEON_INDEX_PORT' ),
+
+					/**
+					 * Filter server schema
+					 *
+					 * Filters the schema used to connect to the solr server (http/https).
+					 *
+					 * @param string $default_scheme The connection scheme to the solr server (http/https).
+					 */
 					'scheme' => apply_filters( 'solr_scheme', $default_scheme ),
 					'path'   => $this->compute_path(),
 					'ssl'    => array( 'local_cert' => realpath( ABSPATH . '../certs/binding.pem' ) )
@@ -171,6 +179,16 @@ class SolrPower_Api {
 			)
 		);
 
+		/**
+		 * Filter connection options
+		 *
+		 * Filters connection options for the solr server.
+		 *
+		 * @param array $solarium_config {
+		 *      Array of connection information.
+		 *      @type array $endpoint Array of endpoint information.
+		 * }
+		 */
 		$solarium_config = apply_filters( 's4wp_connection_options', $solarium_config );
 
 
@@ -187,6 +205,13 @@ class SolrPower_Api {
 
 		$solr = new Solarium\Client( $solarium_config );
 
+		/**
+		 * Filter solarium client
+		 *
+		 * Replace the solarium client with a custom client.
+		 *
+		 * @param Solarium $solr The default Solarium client created by this plugin.
+		 */
 		$solr       = apply_filters( 's4wp_solr', $solr ); // better name?
 		$this->solr = $solr;
 
