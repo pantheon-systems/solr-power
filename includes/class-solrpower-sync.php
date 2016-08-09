@@ -579,5 +579,3 @@ class SolrPower_Sync {
 	}
 
 }
-
-SolrPower_Sync::get_instance();

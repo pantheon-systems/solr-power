@@ -192,4 +192,4 @@ class SolrPower_WP_Query {
 	}
 }
 
-SolrPower_WP_Query::get_instance();
+

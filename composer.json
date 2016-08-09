@@ -18,5 +18,10 @@
     },
     "require-dev": {
         "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master"
+    },
+    "autoload": {
+        "classmap": [
+            "includes"
+        ]
     }
 }
