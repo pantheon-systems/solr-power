@@ -1,0 +1,7 @@
+.solrtab {
+	display: none;
+}
+
+.solrtab.active {
+	display: block;
+}
