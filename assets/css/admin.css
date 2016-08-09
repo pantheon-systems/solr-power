@@ -5,3 +5,16 @@
 .solrtab.active {
 	display: block;
 }
+
+.solrtab .solr-display {
+	width: 50%;
+	float: left;
+}
+
+.solr-green {
+	color: green;
+}
+
+.solr-red {
+	color: red;
+}

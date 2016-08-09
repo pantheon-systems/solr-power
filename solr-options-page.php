@@ -52,7 +52,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 		<?php
 		$server_ping = SolrPower_Api::get_instance()->ping_server();
 		?>
-		<div style="width:50%;float:left;">
+		<div class="solr-display">
 			<table class="widefat">
 				<thead>
 				<tr>
@@ -62,7 +62,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 				<tbody>
 				<tr>
 					<td>Ping Status:</td>
-					<td><?php echo ( $server_ping ) ? '<span style="color:green">Successful</span>' : '<span style="color:red">Failed</span>'; ?></td>
+					<td><?php echo ( $server_ping ) ? '<span class="solr-green">Successful</span>' : '<span class="solr-red">Failed</span>'; ?></td>
 				</tr>
 				<tr>
 					<td>Solr Server IP address:</td>
@@ -81,7 +81,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 			</table>
 		</div>
 		<?php if ( $server_ping ) { ?>
-			<div style="width:50%;float:left;">
+			<div class="solr-display">
 				<table class="widefat">
 					<thead>
 					<tr>
@@ -102,7 +102,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 				</table>
 			</div>
 		<?php } ?>
-		<br style="clear:both;">
+		<br class="clear">
 	</div>
 	<?php
 	if ( is_multisite() ) {
