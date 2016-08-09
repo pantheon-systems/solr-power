@@ -3,7 +3,7 @@ Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor
 Tags: search
 Requires at least: 4.2
 Tested up to: 4.5.3
-Stable tag: 0.4.2
+Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,7 +71,8 @@ Behat requires a Pantheon site with Solr enabled. Once you've created the site, 
 
 == Changelog ==
 
-= 0.4.2 =
+= 0.5.0 =
+* Add facet search widget
 * Update options page internals to utilize WordPress settings API
 * Add Behat tests to ensure the plugin's compatibility with the Pantheon platform.
 * Defork Solarium and update it to version 3.6.0
