@@ -371,6 +371,12 @@ class SolrPower_Api {
 	 * @return int
 	 */
 	private function fetch_stat( $type ) {
+		// Can't do wildcard with dismax...
+		add_filter( 'solr_query', function ( $query ) {
+			$query->addParam( 'defType', 'lucene' );
+
+			return $query;
+		} );
 		$qry    = 'post_type:' . $type;
 		$offset = 0;
 		$count  = 1;
