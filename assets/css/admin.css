@@ -1,7 +1,7 @@
 .solrtab {
   display: none; }
   .solrtab.active {
-    display: none; }
+    display: block; }
   .solrtab .solr-display {
     width: 50%;
     float: left; }
