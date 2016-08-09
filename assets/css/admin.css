@@ -1,20 +1,14 @@
 .solrtab {
-	display: none;
-}
-
-.solrtab.active {
-	display: block;
-}
-
-.solrtab .solr-display {
-	width: 50%;
-	float: left;
-}
+  display: none; }
+  .solrtab.active {
+    display: none; }
+  .solrtab .solr-display {
+    width: 50%;
+    float: left; }
 
 .solr-green {
-	color: green;
-}
+  color: green; }
 
 .solr-red {
-	color: red;
-}
+  color: red; }
+/*# sourceMappingURL=admin.css.map */
