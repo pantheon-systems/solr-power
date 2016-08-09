@@ -254,15 +254,16 @@ class SolrPower_Api {
 			'Search Query' => $qry,
 			'Offset'       => $offset,
 			'Count'        => $count,
-			'fq'           => $fq,
+			'Filter Query' => $fq,
 			'Sort By'      => $sortby,
 			'Order'        => $order
 		) );
 
 
-		$response       = null;
-		$facet_fields   = array();
-		$number_of_tags = $plugin_s4wp_settings['s4wp_max_display_tags'];
+		$response         = null;
+		$facet_fields     = array();
+		$number_of_tags   = $plugin_s4wp_settings['s4wp_max_display_tags'];
+		$default_operator = ( isset( $plugin_s4wp_settings['s4wp_default_operator'] ) ) ? $plugin_s4wp_settings['s4wp_default_operator'] : 'OR';
 
 		if ( $plugin_s4wp_settings['s4wp_facet_on_categories'] ) {
 			$facet_fields[] = 'categories';
@@ -291,6 +292,14 @@ class SolrPower_Api {
 		}
 
 		$facet_on_custom_fields = $plugin_s4wp_settings['s4wp_facet_on_custom_fields'];
+		/**
+		 * Filter indexed custom fields
+		 *
+		 * Filter the list of custom field slugs available to index.
+		 *
+		 * @param array $facet_on_custom_fields Array of custom field slugs for indexing.
+		*/
+		$facet_on_custom_fields = apply_filters( 'solr_facet_custom_fields', $facet_on_custom_fields );
 		if ( is_array( $facet_on_custom_fields ) and count( $facet_on_custom_fields ) ) {
 			foreach ( $facet_on_custom_fields as $field_name ) {
 				$facet_fields[] = $field_name . '_str';
@@ -314,6 +323,7 @@ class SolrPower_Api {
 			$query = $solr->createSelect( $select );
 
 			$facetSet = $query->getFacetSet();
+
 			foreach ( $facet_fields as $facet_field ) {
 				$facetSet->createFacetField( $facet_field )->setField( $facet_field );
 			}
@@ -323,20 +333,28 @@ class SolrPower_Api {
 			}
 
 			if ( isset( $fq ) ) {
-				foreach ( $fq as $filter ) {
-					if ( $filter !== "" ) {
-						$query->createFilterQuery( $filter )->setQuery( $filter );
-					}
+				if ( is_array( $fq ) ) {
+					$fq = implode( ' ' . $default_operator . ' ', $fq );
 				}
+				if ( '' !== $fq ) {
+					$query->createFilterQuery( 'searchfq' )->setQuery( $fq );
+				}
+
 			}
 			$query->getHighlighting()->setFields( 'post_content' );
 			$query->getHighlighting()->setSimplePrefix( '<b>' );
 			$query->getHighlighting()->setSimplePostfix( '</b>' );
 			$query->getHighlighting()->setHighlightMultiTerm( true );
 
-			if ( isset( $plugin_s4wp_settings['s4wp_default_operator'] ) ) {
-				$query->setQueryDefaultOperator( $plugin_s4wp_settings['s4wp_default_operator'] );
-			}
+			$query->setQueryDefaultOperator( $default_operator );
+
+			/**
+			 * Filter the Solarium query object.
+			 *
+			 * @param object $query Solarium query object.
+			 */
+			$query = apply_filters( 'solr_query', $query );
+
 			try {
 				$response = $solr->select( $query );
 				if ( ! $response->getResponse()->getStatusCode() == 200 ) {
@@ -391,6 +409,12 @@ class SolrPower_Api {
 	 * @return int
 	 */
 	private function fetch_stat( $type ) {
+		// Can't do wildcard with dismax...
+		add_filter( 'solr_query', function ( $query ) {
+			$query->addParam( 'defType', 'lucene' );
+
+			return $query;
+		} );
 		$qry    = 'post_type:' . $type;
 		$offset = 0;
 		$count  = 1;
