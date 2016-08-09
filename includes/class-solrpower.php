@@ -181,5 +181,3 @@ class SolrPower {
 	}
 
 }
-
-SolrPower::get_instance();

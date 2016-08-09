@@ -413,12 +413,3 @@ class SolrPower_Api {
 		}
 	}
 }
-
-SolrPower_Api::get_instance();
-
-/**
- * Helper function to return Solr object.
- */
-function get_solr() {
-	return SolrPower_Api::get_instance()->get_solr();
-}
