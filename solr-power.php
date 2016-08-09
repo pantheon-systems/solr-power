@@ -112,22 +112,33 @@ if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 	add_action( 'admin_notices', 'solr_power_env_variables_admin_notice' );
 	add_action( 'admin_init', 'solr_power__deactivate' );
 } else {
+
 	define( 'SOLR_POWER_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 	define( 'SOLR_POWER_URL', plugin_dir_url( __FILE__ ) );
 
 	require_once( SOLR_POWER_PATH . '/vendor/autoload.php' );
-	require_once( SOLR_POWER_PATH . '/includes/class-solrpower.php' );
-	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-options.php' );
-	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-sync.php' );
-	if ( ! class_exists( 'PantheonCurl' ) ){
-		require_once( SOLR_POWER_PATH . '/includes/class-pantheon-curl.php' );
-	}
-	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-api.php' );
-	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-wp-query.php' );
-	require_once( SOLR_POWER_PATH . '/includes/class-solrpower-facet-widget.php' );
 	require_once( SOLR_POWER_PATH . '/includes/legacy-functions.php' );
-	if ( defined( 'WP_CLI' ) && WP_CLI ) {
-		require_once( SOLR_POWER_PATH . '/includes/class-solrpower-cli.php' );
+
+	SolrPower::get_instance();
+	SolrPower_Api::get_instance();
+	SolrPower_Options::get_instance();
+	SolrPower_Sync::get_instance();
+	SolrPower_WP_Query::get_instance();
+
+	function solr_options() {
+		return SolrPower_Options::get_instance()->get_option();
 	}
+
+	/**
+	 * Helper function to return Solr object.
+	 */
+	function get_solr() {
+		return SolrPower_Api::get_instance()->get_solr();
+	}
+
+	if ( defined( 'WP_CLI' ) && true === WP_CLI ) {
+		WP_CLI::add_command( 'solr', 'SolrPower_CLI' );
+	}
+
 	register_activation_hook( __FILE__, array( SolrPower::get_instance(), 'activate' ) );
 }

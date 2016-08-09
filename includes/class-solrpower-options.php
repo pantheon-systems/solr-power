@@ -533,9 +533,3 @@ class SolrPower_Options {
 	}
 
 }
-
-SolrPower_Options::get_instance();
-
-function solr_options() {
-	return SolrPower_Options::get_instance()->get_option();
-}
