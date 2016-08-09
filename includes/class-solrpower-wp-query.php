@@ -169,8 +169,11 @@ class SolrPower_WP_Query {
 			endforeach;
 			$return[] = $facet_name . ':(' . implode( ' OR ', $fq ) . ')';
 		}
+		$plugin_s4wp_settings = solr_options();
 
-		return implode( ' OR ', $return );
+		$default_operator = ( isset( $plugin_s4wp_settings['s4wp_default_operator'] ) ) ? $plugin_s4wp_settings['s4wp_default_operator'] : 'OR';
+
+		return implode( ' ' . $default_operator . ' ', $return );
 
 	}
 }
