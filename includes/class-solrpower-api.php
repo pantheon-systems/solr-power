@@ -461,4 +461,24 @@ class SolrPower_Api {
 
 		}
 	}
+
+	/**
+	 * Returns an array of server information.
+	 *
+	 * @since 1.0
+	 *
+	 * @return array Array of server connection information.
+	 */
+	public function get_server() {
+
+		$ping = SolrPower_Api::get_instance()->ping_server();
+
+		return array(
+			'ping_status' => $ping ? 'successful' : 'failed',
+			'ip_address'  => getenv( 'PANTHEON_INDEX_HOST' ),
+			'port'        => getenv( 'PANTHEON_INDEX_PORT' ),
+			'path'        => SolrPower_Api::get_instance()->compute_path(),
+		);
+
+	}
 }
