@@ -15,6 +15,7 @@ machine:
 dependencies:
   cache_directories:
     - ~/.composer/cache
+    - ~/node_modules
   pre:
     # The environment step uses this file to set a global variable.
     - echo $(openssl rand -hex 8) > ~/WORDPRESS_ADMIN_PASSWORD
