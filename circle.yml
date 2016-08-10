@@ -31,6 +31,9 @@ test:
   pre:
     - composer install --prefer-dist
     - ./bin/behat-prepare.sh
+    - npm -g install grunt-cli
+    - npm install
+    - grunt
   override:
     - ./bin/behat-test.sh
   post:
