@@ -50,7 +50,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 
 	<div id="solr_info" class="solrtab active">
 		<?php
-		$server_ping = SolrPower_Api::get_instance()->ping_server();
+		$server_info = SolrPower_Api::get_instance()->get_server();
 		?>
 		<div class="solr-display">
 			<table class="widefat">
@@ -62,19 +62,19 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 				<tbody>
 				<tr>
 					<td>Ping Status:</td>
-					<td><?php echo ( $server_ping ) ? '<span class="solr-green">Successful</span>' : '<span class="solr-red">Failed</span>'; ?></td>
+					<td><?php echo ( $server_info['ping_status'] ) ? '<span class="solr-green">Successful</span>' : '<span class="solr-red">Failed</span>'; ?></td>
 				</tr>
 				<tr>
 					<td>Solr Server IP address:</td>
-					<td><?php echo esc_html( getenv( 'PANTHEON_INDEX_HOST' ) ); ?></td>
+					<td><?php echo esc_html( $server_info['ip_address'] ); ?></td>
 				</tr>
 				<tr>
 					<td>Solr Server Port:</td>
-					<td><?php echo esc_html( getenv( 'PANTHEON_INDEX_PORT' ) ); ?></td>
+					<td><?php echo esc_html( getenv( $server_info['port'] ) ); ?></td>
 				</tr>
 				<tr>
 					<td>Solr Server Path:</td>
-					<td><?php echo esc_html( SolrPower_Api::get_instance()->compute_path() ); ?></td>
+					<td><?php echo esc_html( $server_info['path'] ); ?></td>
 				</tr>
 				</tbody>
 
