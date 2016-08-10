@@ -10,6 +10,10 @@ branches:
     - master
     - /^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+.*$/
 
+cache:
+  directories:
+    - node_modules
+
 php:
   - 5.5
 
