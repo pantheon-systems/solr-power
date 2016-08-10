@@ -44,7 +44,7 @@ class SolrPower {
 		if ( ! defined( 'SOLR_PATH' ) ) {
 			$schemaSubmit = SolrPower_Api::get_instance()->submit_schema();
 			if ( strpos( $schemaSubmit, 'Error' ) ) {
-				wp_die( 'Submitting the schema failed with the message ' . $errorMessage );
+				wp_die( 'Submitting the schema failed with the message ' . $errMessage );
 			}
 		}
 		SolrPower_Options::get_instance()->initalize_options();
