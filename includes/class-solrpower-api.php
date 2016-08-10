@@ -471,13 +471,13 @@ class SolrPower_Api {
 	 */
 	public function get_server() {
 
-		$ping = SolrPower_Api::get_instance()->ping_server();
+		$ping = $this->ping_server();
 
 		return array(
 			'ping_status' => $ping ? 'successful' : 'failed',
 			'ip_address'  => getenv( 'PANTHEON_INDEX_HOST' ),
 			'port'        => getenv( 'PANTHEON_INDEX_PORT' ),
-			'path'        => SolrPower_Api::get_instance()->compute_path(),
+			'path'        => $this->compute_path(),
 		);
 
 	}
