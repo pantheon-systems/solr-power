@@ -15,6 +15,7 @@ machine:
 dependencies:
   cache_directories:
     - ~/.composer/cache
+    - ~/node_modules
   pre:
     # The environment step uses this file to set a global variable.
     - echo $(openssl rand -hex 8) > ~/WORDPRESS_ADMIN_PASSWORD
@@ -31,6 +32,9 @@ test:
   pre:
     - composer install --prefer-dist
     - ./bin/behat-prepare.sh
+    - npm -g install grunt-cli
+    - npm install
+    - grunt
   override:
     - ./bin/behat-test.sh
   post:

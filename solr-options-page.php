@@ -52,7 +52,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 		<?php
 		$server_ping = SolrPower_Api::get_instance()->ping_server();
 		?>
-		<div style="width:50%;float:left;">
+		<div class="solr-display">
 			<table class="widefat">
 				<thead>
 				<tr>
@@ -62,7 +62,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 				<tbody>
 				<tr>
 					<td>Ping Status:</td>
-					<td><?php echo ( $server_ping ) ? '<span style="color:green">Successful</span>' : '<span style="color:red">Failed</span>'; ?></td>
+					<td><?php echo ( $server_ping ) ? '<span class="solr-green">Successful</span>' : '<span class="solr-red">Failed</span>'; ?></td>
 				</tr>
 				<tr>
 					<td>Solr Server IP address:</td>
@@ -81,7 +81,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 			</table>
 		</div>
 		<?php if ( $server_ping ) { ?>
-			<div style="width:50%;float:left;">
+			<div class="solr-display">
 				<table class="widefat">
 					<thead>
 					<tr>
@@ -102,7 +102,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 				</table>
 			</div>
 		<?php } ?>
-		<br style="clear:both;">
+		<br class="clear">
 	</div>
 	<?php
 	if ( is_multisite() ) {
@@ -114,43 +114,3 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 	include 'views/options/action.php';
 	include 'views/options/query.php';
 	?>
-
-
-</div>
-
-<script>
-	jQuery(document).ready(function () {
-		jQuery('#solr-tabs').find('a').click(function () {
-				jQuery('#solr-tabs').find('a').removeClass('nav-tab-active');
-				jQuery('.solrtab').removeClass('active');
-
-				var id = jQuery(this).attr('id').replace('-tab', '');
-				jQuery('#' + id).addClass('active');
-				jQuery(this).addClass('nav-tab-active');
-			}
-		);
-
-		// init
-		var solrActiveTab = window.location.hash.replace('#top#', '');
-
-		// default to first tab
-		if (solrActiveTab === '' || solrActiveTab === '#_=_') {
-			solrActiveTab = jQuery('.solrtab').attr('id');
-		}
-
-		jQuery('#' + solrActiveTab).addClass('active');
-		jQuery('#' + solrActiveTab + '-tab').addClass('nav-tab-active');
-
-		jQuery('.nav-tab-active').click();
-	});
-
-</script>
-<style>
-	.solrtab {
-		display: none;
-	}
-
-	.solrtab.active {
-		display: block;
-	}
-</style>

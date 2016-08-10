@@ -66,6 +66,12 @@ class SolrPower {
 	}
 
 	function admin_head() {
+
+		$min = ( defined( 'SCRIPT_DEBUG' ) && true === SCRIPT_DEBUG ) ? '' : '.min';
+
+		wp_enqueue_style( 'solr-admin-css', SOLR_POWER_URL . 'assets/css/admin' . $min . '.css' );
+		wp_enqueue_script( 'solr-admin-js', SOLR_POWER_URL . 'assets/js/admin' . $min . '.js', array( 'jquery' ) );
+
 		// include our default css
 		if ( file_exists( SOLR_POWER_PATH . '/template/search.css' ) ) {
 			wp_enqueue_style( 'solr-search', SOLR_POWER_URL . 'template/search.css' );
