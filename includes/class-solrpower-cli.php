@@ -165,13 +165,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 */
 	public function info( $args, $assoc_args ) {
 
-		$ping = SolrPower_Api::get_instance()->ping_server();
-		$server = array(
-			'ping_status' => $ping ? 'successful' : 'failed',
-			'ip_address'  => getenv( 'PANTHEON_INDEX_HOST' ),
-			'port'        => getenv( 'PANTHEON_INDEX_PORT' ),
-			'path'        => SolrPower_Api::get_instance()->compute_path(),
-		);
+		$server = SolrPower_Api::get_instance()->get_server_info();
 
 		$formatter = new \WP_CLI\Formatter( $assoc_args, array( 'ping_status', 'ip_address', 'port', 'path' ) );
 		$formatter->display_item( $server );
