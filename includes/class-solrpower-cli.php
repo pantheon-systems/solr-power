@@ -165,7 +165,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 */
 	public function info( $args, $assoc_args ) {
 
-		$server = SolrPower_Api::get_instance()->get_server();
+		$server = SolrPower_Api::get_instance()->get_server_info();
 
 		$formatter = new \WP_CLI\Formatter( $assoc_args, array( 'ping_status', 'ip_address', 'port', 'path' ) );
 		$formatter->display_item( $server );

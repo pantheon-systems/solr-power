@@ -469,7 +469,7 @@ class SolrPower_Api {
 	 *
 	 * @return array Array of server connection information.
 	 */
-	public function get_server() {
+	public function get_server_info() {
 
 		$ping = $this->ping_server();
 

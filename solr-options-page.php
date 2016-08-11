@@ -50,7 +50,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 
 	<div id="solr_info" class="solrtab active">
 		<?php
-		$server_info = SolrPower_Api::get_instance()->get_server();
+		$server_info = SolrPower_Api::get_instance()->get_server_info();
 		?>
 		<div class="solr-display">
 			<table class="widefat">
