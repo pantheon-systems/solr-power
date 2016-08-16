@@ -2,7 +2,7 @@
 **Contributors:** getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor  
 **Tags:** search  
 **Requires at least:** 4.2  
-**Tested up to:** 4.5.3  
+**Tested up to:** 4.6  
 **Stable tag:** 0.5.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
@@ -50,14 +50,6 @@ putenv( 'PANTHEON_INDEX_PORT=8983' );
 
 add_filter( 'solr_scheme', function(){ return 'http'; });
 ```
-
-To get local styles and JavaScript for testing or other use you will need to compile the assets using grunt. The following will get you going:
-
-1. `npm -g install grunt grunt-cli`
-2. From the repo: `npm install`
-3. `grunt`
-
-Note that if you're making changes to the CSS or JS you can run `grunt watch` from the repository directory. This will watch the admin.js file and all .scss files and compile new assets when they are changed.
 
 ## Development ##
 
