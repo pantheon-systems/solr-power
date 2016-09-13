@@ -36,6 +36,6 @@ test:
     - npm install
     - grunt
   override:
-    - ./bin/behat-test.sh
+    - ./bin/behat-test.sh --strict
   post:
     - ./bin/behat-cleanup.sh
