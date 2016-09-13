@@ -47,23 +47,25 @@
 			</tr>
 		</table>
 	</form>
-	<form method="post" action="<?php echo esc_url($action); ?>#top#solr_action">
-		<?php wp_nonce_field( 'solr_action', 'solr_repost_schema' ); ?>
-		<input type="hidden" name="action" value="repost_schema"/>
-		<table class="form-table">
-			<tr valign="top">
-				<th scope="row"><?php esc_html_e( 'Repost schema.xml', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td><input type="submit" class="button-primary" name="s4wp_repost_schema"
-				           value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>"/></td>
-			</tr>
-			<tr valign="top">
-				<td scope="row" colspan="2">To use a custom schema.xml, upload it to the <b>/wp-content/uploads/solr-for-wordpress-on-pantheon/</b>
-					directory.
-				</td>
-			</tr>
-		</table>
-	</form>
-
+	<?php
+	if ( false !== getenv( 'PANTHEON_ENVIRONMENT' )) { ?>
+		<form method="post" action="<?php echo esc_url($action); ?>#top#solr_action">
+			<?php wp_nonce_field( 'solr_action', 'solr_repost_schema' ); ?>
+			<input type="hidden" name="action" value="repost_schema"/>
+			<table class="form-table">
+				<tr valign="top">
+					<th scope="row"><?php esc_html_e( 'Repost schema.xml', 'solr-for-wordpress-on-pantheon' ) ?></th>
+					<td><input type="submit" class="button-primary" name="s4wp_repost_schema"
+					           value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>"/></td>
+				</tr>
+				<tr valign="top">
+					<td scope="row" colspan="2">To use a custom schema.xml, upload it to the <b>/wp-content/uploads/solr-for-wordpress-on-pantheon/</b>
+						directory.
+					</td>
+				</tr>
+			</table>
+		</form>
+	<?php } ?>
 	<form method="post" action="<?php echo esc_url($action); ?>#top#solr_action">
 		<input type="hidden" name="action" value="index_all"/>
 		<table class="form-table">
