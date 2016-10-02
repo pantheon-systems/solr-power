@@ -99,7 +99,7 @@ class SolrPower {
 			return $links;
 		}
 
-		array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-power">' . __( 'Settings', 's4wp' ) . '</a>' );
+		array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-power">' . __( 'Settings', 'solr-for-wordpress-on-pantheon' ) . '</a>' );
 
 		return $links;
 	}

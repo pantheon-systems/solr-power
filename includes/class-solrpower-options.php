@@ -53,7 +53,7 @@ class SolrPower_Options {
 		if ( file_exists( SOLR_POWER_PATH . '/solr-options-page.php' ) ) {
 			include( SOLR_POWER_PATH . '/solr-options-page.php' );
 		} else {
-			esc_html_e( "Couldn't locate the options page.", 'solr4wp' );
+			esc_html_e( "Couldn't locate the options page.", 'solr-for-wordpress-on-pantheon' );
 		}
 	}
 
@@ -359,7 +359,7 @@ class SolrPower_Options {
 		$header   = $data['responseHeader'];
 
 		$out['hits']  = $response['numFound'];
-		$out['qtime'] = sprintf( __( "%.3f" ), $header['QTime'] / 1000 );
+		$out['qtime'] = sprintf( __( "%.3f", 'solr-for-wordpress-on-pantheon' ), $header['QTime'] / 1000 );
 
 
 		$this->msg = __( '<p><strong>Solr Results for string "' . esc_html( $qry ) . '

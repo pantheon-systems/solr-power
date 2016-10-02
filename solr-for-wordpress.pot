@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Solr for WordPress 0.2.0\n"
+"Project-Id-Version: Solr for WordPress 0.5.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/solr-for-wordpress\n"
-"POT-Creation-Date: 2009-05-13 10:15-0700\n"
+"POT-Creation-Date: 2016-10-02 00:05:41+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,277 +16,197 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: solr-for-wordpress.php:36
-msgid "Solr for WordPress requires WordPress 2.7 or greater. "
+#: includes/class-solrpower-options.php:56
+msgid "Couldn't locate the options page."
 msgstr ""
 
-#: solr-for-wordpress.php:108
-msgid "Post Information is NULL"
-msgstr ""
-
-#: solr-for-wordpress.php:215
-#, php-format
-msgid ""
-"<form name=\"searchbox\" method=\"get\" id=\"searchbox\" action=\"\"><input "
-"type=\"text\" id=\"qrybox\" name=\"s\" value=\"%s\"/><input type=\"submit\" "
-"id=\"searchbtn\" /></form>"
-msgstr ""
-
-#: solr-for-wordpress.php:262
-#, php-format
-msgid ""
-"<div id=\"resultinfo\"><p>Found <em id=\"resultcnt\">%d</em> results for <em "
-"id=\"resultqry\">%s</em> in <em id=\"qrytime\">%.3f</em> seconds.</p></"
-"div><div id=\"infoclear\"></div>"
-msgstr ""
-
-#: solr-for-wordpress.php:275
-msgid "<div id=\"resultpager\"><ul>"
-msgstr ""
-
-#: solr-for-wordpress.php:279
-#, php-format
-msgid "<li><a href=\"?s=%s&offset=%d&count=%d\">%d</a></li>"
-msgstr ""
-
-#: solr-for-wordpress.php:282
-#, php-format
-msgid "<li>%d</li>"
-msgstr ""
-
-#: solr-for-wordpress.php:285
-msgid "</ul></div><div id=\"pagerclear\"></div>"
-msgstr ""
-
-#: solr-for-wordpress.php:290
-msgid "<div id=\"facets\"><ul class=\"facets\">"
-msgstr ""
-
-#: solr-for-wordpress.php:299
-#, php-format
-msgid "<li class=\"facet\"><h3>%s</h3><ul class=\"facetitems\">"
-msgstr ""
-
-#: solr-for-wordpress.php:314 solr-for-wordpress.php:364
-#, php-format
-msgid "?s=%s&fq=%s:%s%s"
-msgstr ""
-
-#: solr-for-wordpress.php:315 solr-for-wordpress.php:365
-#, php-format
-msgid "<li class=\"facetitem\"><a href=\"%s\">%s</a> (%d)</li>"
-msgstr ""
-
-#: solr-for-wordpress.php:318 solr-for-wordpress.php:370
-msgid "</ul></li>"
-msgstr ""
-
-#: solr-for-wordpress.php:323
-msgid "</ul></div><div id=\"facetclear\"></div>"
-msgstr ""
-
-#: solr-for-wordpress.php:324
-msgid "<div id=\"results\">"
-msgstr ""
-
-#: solr-for-wordpress.php:327
-msgid "<div id=\"noresults\">No Results Found</div>"
-msgstr ""
-
-#: solr-for-wordpress.php:331
-msgid "<div class=\"result\">"
-msgstr ""
-
-#: solr-for-wordpress.php:332
-#, php-format
-msgid ""
-"<h2><a href=\"%s\">%s</a></h2><h3>by <em id=\"resultauthor\">%s</em> has a "
-"score of <em id=\"resultscore\">%f</em></h3>"
-msgstr ""
-
-#: solr-for-wordpress.php:337
-#, php-format
-msgid "<p>...%s...</p></div>"
-msgstr ""
-
-#: solr-for-wordpress.php:341
-#, php-format
-msgid "<p>%s...</p></div>"
-msgstr ""
-
-#: solr-for-wordpress.php:345
-msgid "</div><div id=\"resultsclear\"></div>"
-msgstr ""
-
-#: solr-for-wordpress.php:358
-msgid "<li><ul class=\"facetchildren\">"
-msgstr ""
-
-#: solr-for-wordpress.php:493
-msgid "<p>Couldn't locate the options page.</p>"
-msgstr ""
-
-#: solr-options-page.php:60
+#: includes/class-solrpower-options.php:271
 msgid "Ping Success!"
 msgstr ""
 
-#: solr-options-page.php:64
+#: includes/class-solrpower-options.php:273
 msgid "Ping Failed!"
 msgstr ""
 
-#: solr-options-page.php:70
-msgid "Pages Loaded!"
+#: includes/class-solrpower-options.php:281
+msgid "Configuration has been copied to all blogs!"
 msgstr ""
 
-#: solr-options-page.php:75
-msgid "Posts Loaded!"
+#: includes/class-solrpower-options.php:288
+msgid "Index Optimized!"
 msgstr ""
 
-#: solr-options-page.php:80
+#: includes/class-solrpower-options.php:295
 msgid "All Indexed Pages Deleted!"
 msgstr ""
 
-#: solr-options-page.php:86
-msgid "Solr For WordPress"
+#: includes/class-solrpower-options.php:362 includes/legacy-functions.php:136
+msgid "%.3f"
 msgstr ""
 
-#: solr-options-page.php:89
-msgid "Connection Information"
+#: includes/class-solrpower-sync.php:303
+msgid "Post Information is NULL"
 msgstr ""
 
-#: solr-options-page.php:92
-msgid "Solr Host"
+#: includes/class-solrpower.php:60
+msgid ""
+"Before you can activate this plugin, you must first <a "
+"href=\"https://pantheon.io/docs/articles/sites/apache-solr/\">activate "
+"Solr</a> in your Pantheon Dashboard."
 msgstr ""
 
-#: solr-options-page.php:97
-msgid "Solr Port"
+#: includes/class-solrpower.php:62
+msgid "This plugin requires WordPress 3.0 or greater."
 msgstr ""
 
-#: solr-options-page.php:102
-msgid "Solr Path"
+#: includes/class-solrpower.php:102
+msgid "Settings"
 msgstr ""
 
-#: solr-options-page.php:107
-msgid "Indexing Options"
+#: includes/legacy-functions.php:13
+msgid ""
+"<option value=\"score\">Score</option><option value=\"date\" "
+"selected=\"selected\">Date</option><option value=\"modified\">Last "
+"Modified</option>"
 msgstr ""
 
-#: solr-options-page.php:110
-msgid "Index Pages"
+#: includes/legacy-functions.php:15
+msgid ""
+"<option value=\"score\">Score</option><option "
+"value=\"date\">Date</option><option value=\"modified\" "
+"selected=\"selected\">Last Modified</option>"
 msgstr ""
 
-#: solr-options-page.php:112
-msgid "Index Posts"
+#: includes/legacy-functions.php:17
+msgid ""
+"<option value=\"score\" selected=\"selected\">Score</option><option "
+"value=\"date\">Date</option><option value=\"modified\">Last "
+"Modified</option>"
 msgstr ""
 
-#: solr-options-page.php:117
-msgid "Remove Page on Delete"
+#: includes/legacy-functions.php:21
+msgid ""
+"<option value=\"desc\">Descending</option><option value=\"asc\" "
+"selected=\"selected\">Ascending</option>"
 msgstr ""
 
-#: solr-options-page.php:119
-msgid "Remove Post on Delete"
+#: includes/legacy-functions.php:23
+msgid ""
+"<option value=\"desc\" selected=\"selected\">Descending</option><option "
+"value=\"asc\">Ascending</option>"
 msgstr ""
 
-#: solr-options-page.php:124
-msgid "Remove Page on Status Change"
+#: includes/legacy-functions.php:29
+msgid ""
+"<form name=\"searchbox\" method=\"get\" id=\"searchbox\" action=\"\"><input "
+"type=\"text\" id=\"qrybox\" name=\"ssearch\" value=\"%s\"/><input "
+"type=\"submit\" id=\"searchbtn\" /><label for=\"sortselect\" "
+"id=\"sortlabel\">Sort By:</label><select name=\"sort\" "
+"id=\"sortselect\">%s</select><label for=\"orderselect\" "
+"id=\"orderlabel\">Order By:</label><select name=\"order\" "
+"id=\"orderselect\">%s</select>%s</form>"
 msgstr ""
 
-#: solr-options-page.php:126
-msgid "Remove Post on Status Change"
+#: includes/legacy-functions.php:101
+msgid "%s:%s"
 msgstr ""
 
-#: solr-options-page.php:131
-msgid "Excludes (comma-separated integer ids)"
+#: includes/legacy-functions.php:111
+msgid "?ssearch=%s&fq=%s"
 msgstr ""
 
-#: solr-options-page.php:136
-msgid "Result Options"
+#: includes/legacy-functions.php:113
+msgid "?ssearch=%s"
 msgstr ""
 
-#: solr-options-page.php:139
-msgid "Output Result Info"
+#: includes/legacy-functions.php:155 includes/legacy-functions.php:173
+#: includes/legacy-functions.php:208 includes/legacy-functions.php:321
+msgid "%d"
 msgstr ""
 
-#: solr-options-page.php:141
-msgid "Output Result Pager"
+#: includes/legacy-functions.php:163
+msgid "?ssearch=%s&offset=%d&count=%d&sort=%s&order=%s"
 msgstr ""
 
-#: solr-options-page.php:146
-msgid "Output Facets"
+#: includes/legacy-functions.php:209 includes/legacy-functions.php:322
+msgid "?ssearch=%s&fq=%s:%s%s"
 msgstr ""
 
-#: solr-options-page.php:148
-msgid "Category Facet as Taxonomy"
+#: includes/legacy-functions.php:257
+msgid "...%s..."
 msgstr ""
 
-#: solr-options-page.php:153
-msgid "Categories as Facet"
+#: includes/legacy-functions.php:261
+msgid "%s..."
 msgstr ""
 
-#: solr-options-page.php:155
-msgid "Tags as Facet"
+#: includes/legacy-functions.php:298 includes/legacy-functions.php:307
+msgid "%s\n"
 msgstr ""
 
-#: solr-options-page.php:160
-msgid "Author as Facet"
+#: includes/legacy-functions.php:300
+msgid "%s<a href=\"%s\">%s (%s)</a>%s\n"
 msgstr ""
 
-#: solr-options-page.php:162
-msgid "Type as Facet"
+#. Plugin Name of the plugin/theme
+msgid "Solr Power"
 msgstr ""
 
-#: solr-options-page.php:167
-msgid "Number of Results Per Page"
-msgstr ""
-
-#: solr-options-page.php:172
-msgid "Max Number of Tags to Display"
-msgstr ""
-
-#: solr-options-page.php:180
-msgid "Save Changes"
-msgstr ""
-
-#: solr-options-page.php:186
+#: views/options/action.php:3
 msgid "Actions"
 msgstr ""
 
-#: solr-options-page.php:189
+#: views/options/action.php:9
 msgid "Check Server Settings"
 msgstr ""
 
-#: solr-options-page.php:190 solr-options-page.php:195
-#: solr-options-page.php:200 solr-options-page.php:205
+#: views/options/action.php:11 views/options/action.php:23
+#: views/options/action.php:35 views/options/action.php:46
+#: views/options/action.php:59 views/options/action.php:76
+#: views/options/query.php:14
 msgid "Execute"
 msgstr ""
 
-#: solr-options-page.php:194
-msgid "Load All Pages"
+#: views/options/action.php:21
+msgid "Push Solr Configuration to All Blogs"
 msgstr ""
 
-#: solr-options-page.php:199
-msgid "Load All Posts"
+#: views/options/action.php:33
+msgid "Optimize Index"
 msgstr ""
 
-#: solr-options-page.php:204
+#: views/options/action.php:44
 msgid "Delete All"
 msgstr ""
 
-#. Plugin Name of an extension
-msgid "Solr for WordPress"
+#: views/options/action.php:57
+msgid "Repost schema.xml"
 msgstr ""
 
-#. Plugin URI of an extension
-msgid "https://launchpad.net/solr4wordpress"
+#: views/options/action.php:74
+msgid "Index Searchable Post Types"
 msgstr ""
 
-#. Description of an extension
-msgid "Indexes, removes, and updates documents in the Solr search engine."
+#: views/options/query.php:4
+msgid "Solr Query"
 msgstr ""
 
-#. Author of an extension
-msgid "Matt Weber"
+#: views/options/query.php:7
+msgid "Words or phrases to search for."
 msgstr ""
 
-#. Author URI of an extension
-msgid "http://www.mattweber.org"
+#: views/options/query.php:12
+msgid "Submit Query"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Allows WordPress sites to index and search content with ApacheSolr."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Pantheon"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://pantheon.io"
 msgstr ""
