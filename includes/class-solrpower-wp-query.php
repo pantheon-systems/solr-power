@@ -179,7 +179,8 @@ class SolrPower_WP_Query {
 		foreach ( $facets as $facet_name => $facet_arr ) {
 			$fq = array();
 			foreach ( $facet_arr as $facet ):
-				$fq[] = '"' . htmlspecialchars($facet) . '"';
+				// htmlspecialchars_decode because of the single quote issue in facet widget. Ex: "Hello'" category
+				$fq[] = '"' . htmlspecialchars( htmlspecialchars_decode( $facet, ENT_QUOTES ) ) . '"';
 			endforeach;
 			$return[] = $facet_name . ':(' . implode( ' OR ', $fq ) . ')';
 		}
