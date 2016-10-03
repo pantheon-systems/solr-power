@@ -8,9 +8,9 @@ function s4wp_search_form() {
 	$order	 = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
 	$server	 = filter_input( INPUT_GET, 'server', FILTER_SANITIZE_STRING );
 
-	$score_str = __( 'Score', 'solr-for-wordpress-on-pantheon' );
-	$date_str = __( 'Date', 'solr-for-wordpress-on-pantheon' );
-	$last_modified_str = __( 'Last Modified', 'solr-for-wordpress-on-pantheon' );
+	$score_str = esc_html__( 'Score', 'solr-for-wordpress-on-pantheon' );
+	$date_str = esc_html__( 'Date', 'solr-for-wordpress-on-pantheon' );
+	$last_modified_str = esc_html__( 'Last Modified', 'solr-for-wordpress-on-pantheon' );
 
 	if ( $sort == 'date' ) {
 		$sortval = '<option value="score">' . $score_str . '</option><option value="date" selected="selected">' . $date_str . '</option><option value="modified">' . $last_modified_str . '</option>';
@@ -20,8 +20,8 @@ function s4wp_search_form() {
 		$sortval = '<option value="score" selected="selected">' . $score_str . '</option><option value="date">' . $date_str . '</option><option value="modified">' . $last_modified_str . '</option>';
 	}
 
-	$desc_str = __( 'Descending', 'solr-for-wordpress-on-pantheon' );
-	$asc_str = __( 'Ascending', 'solr-for-wordpress-on-pantheon' );
+	$desc_str = esc_html__( 'Descending', 'solr-for-wordpress-on-pantheon' );
+	$asc_str = esc_html__( 'Ascending', 'solr-for-wordpress-on-pantheon' );
 	
 	if ( $order == 'asc' ) {
 		$orderval = '<option value="desc">' . $desc_str . '</option><option value="asc" selected="selected">' . $asc_str . '</option>';
@@ -32,7 +32,7 @@ function s4wp_search_form() {
 	if ( $server ) {
 		$serverval = '<input name="server" type="hidden" value="' . $server . '" />';
 	}
-	$form = '<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="ssearch" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">' . __( 'Sort By:', 'solr-for-wordpress-on-pantheon' ) . '</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">' . __( 'Order By:', 'solr-for-wordpress-on-pantheon' ) . '</label><select name="order" id="orderselect">%s</select>%s</form>';
+	$form = '<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="ssearch" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">' . esc_html__( 'Sort By:', 'solr-for-wordpress-on-pantheon' ) . '</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">' . __( 'Order By:', 'solr-for-wordpress-on-pantheon' ) . '</label><select name="order" id="orderselect">%s</select>%s</form>';
 
 	printf( $form, filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_STRING ), $sortval, $orderval, $serverval );
 }
