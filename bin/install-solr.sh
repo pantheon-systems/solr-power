@@ -4,7 +4,7 @@ SOLR_PORT=${SOLR_PORT:-8983}
 
 download() {
     echo "Downloading solr from $1..."
-    curl -s $1 | tar x
+    curl -s $1 | tar xz
     echo "Downloaded"
 }
 
