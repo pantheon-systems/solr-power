@@ -8,25 +8,31 @@ function s4wp_search_form() {
 	$order	 = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
 	$server	 = filter_input( INPUT_GET, 'server', FILTER_SANITIZE_STRING );
 
+	$score_str = esc_html__( 'Score', 'solr-for-wordpress-on-pantheon' );
+	$date_str = esc_html__( 'Date', 'solr-for-wordpress-on-pantheon' );
+	$last_modified_str = esc_html__( 'Last Modified', 'solr-for-wordpress-on-pantheon' );
 
 	if ( $sort == 'date' ) {
-		$sortval = __( '<option value="score">Score</option><option value="date" selected="selected">Date</option><option value="modified">Last Modified</option>' );
+		$sortval = '<option value="score">' . $score_str . '</option><option value="date" selected="selected">' . $date_str . '</option><option value="modified">' . $last_modified_str . '</option>';
 	} else if ( $sort == 'modified' ) {
-		$sortval = __( '<option value="score">Score</option><option value="date">Date</option><option value="modified" selected="selected">Last Modified</option>' );
+		$sortval = '<option value="score">' . $score_str . '</option><option value="date">' . $date_str . '</option><option value="modified" selected="selected">' . $last_modified_str . '</option>';
 	} else {
-		$sortval = __( '<option value="score" selected="selected">Score</option><option value="date">Date</option><option value="modified">Last Modified</option>' );
+		$sortval = '<option value="score" selected="selected">' . $score_str . '</option><option value="date">' . $date_str . '</option><option value="modified">' . $last_modified_str . '</option>';
 	}
 
+	$desc_str = esc_html__( 'Descending', 'solr-for-wordpress-on-pantheon' );
+	$asc_str = esc_html__( 'Ascending', 'solr-for-wordpress-on-pantheon' );
+	
 	if ( $order == 'asc' ) {
-		$orderval = __( '<option value="desc">Descending</option><option value="asc" selected="selected">Ascending</option>' );
+		$orderval = '<option value="desc">' . $desc_str . '</option><option value="asc" selected="selected">' . $asc_str . '</option>';
 	} else {
-		$orderval = __( '<option value="desc" selected="selected">Descending</option><option value="asc">Ascending</option>' );
+		$orderval = '<option value="desc" selected="selected">' . $desc_str . '</option><option value="asc">' . $asc_str . '</option>';
 	}
 	//if server id has been defined keep hold of it
 	if ( $server ) {
 		$serverval = '<input name="server" type="hidden" value="' . $server . '" />';
 	}
-	$form = __( '<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="ssearch" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">Sort By:</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">Order By:</label><select name="order" id="orderselect">%s</select>%s</form>' );
+	$form = '<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="ssearch" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">' . esc_html__( 'Sort By:', 'solr-for-wordpress-on-pantheon' ) . '</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">' . __( 'Order By:', 'solr-for-wordpress-on-pantheon' ) . '</label><select name="order" id="orderselect">%s</select>%s</form>';
 
 	printf( $form, filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_STRING ), $sortval, $orderval, $serverval );
 }
@@ -98,7 +104,7 @@ function s4wp_search_results() {
 		if ( $fqitem && $fqitem !== 'any' ) {
 			$splititm				 = explode( ':', $fqitem );
 			$selectedfacet			 = array();
-			$selectedfacet[ 'name' ] = sprintf( __( "%s:%s" ), ucwords( preg_replace( '/_str$/i', '', $splititm[ 0 ] ) ), str_replace( "^^", "/", $splititm[ 1 ] ) );
+			$selectedfacet[ 'name' ] = sprintf( "%s:%s", ucwords( preg_replace( '/_str$/i', '', $splititm[ 0 ] ) ), str_replace( "^^", "/", $splititm[ 1 ] ) );
 			$removelink				 = '';
 			foreach ( $fqitms as $fqitem2 ) {
 				if ( $fqitem2 && !($fqitem2 === $fqitem) ) {
@@ -108,9 +114,9 @@ function s4wp_search_results() {
 			}
 
 			if ( $removelink ) {
-				$selectedfacet[ 'removelink' ] = htmlspecialchars( sprintf( __( "?ssearch=%s&fq=%s" ), urlencode( $qry ), $removelink ) );
+				$selectedfacet[ 'removelink' ] = htmlspecialchars( sprintf( "?ssearch=%s&fq=%s", urlencode( $qry ), $removelink ) );
 			} else {
-				$selectedfacet[ 'removelink' ] = htmlspecialchars( sprintf( __( "?ssearch=%s" ), urlencode( $qry ) ) );
+				$selectedfacet[ 'removelink' ] = htmlspecialchars( sprintf( "?ssearch=%s", urlencode( $qry ) ) );
 			}
 			//if server is set add it on the end of the url
 			$selectedfacet[ 'removelink' ] .=$serverval;
@@ -133,7 +139,7 @@ function s4wp_search_results() {
 			$teasers	 = $results->getHighlighting()->getResults();
 			if ( $output_info ) {
 				$out[ 'hits' ]	 = $response[ 'numFound' ];
-				$out[ 'qtime' ]	 = sprintf( __( "%.3f" ), $header[ 'QTime' ] / 1000 );
+				$out[ 'qtime' ]	 = sprintf( "%.3f", $header[ 'QTime' ] / 1000 );
 			} else {
 				$out[ 'hits' ] = 0;
 			}
@@ -152,7 +158,7 @@ function s4wp_search_results() {
 					if ( $pagenum != $currentpage ) {
 						$offsetnum			 = ($pagenum - 1) * $count;
 						$pageritm			 = array();
-						$pageritm[ 'page' ]	 = sprintf( __( "%d" ), $pagenum );
+						$pageritm[ 'page' ]	 = sprintf( "%d", $pagenum );
 						if ( !isset( $sortby ) || $sortby == "" ) {
 							$pagersortby = "date";
 							$pagerorder	 = "desc";
@@ -160,7 +166,7 @@ function s4wp_search_results() {
 							$pagersortby = $sortby;
 							$pagerorder	 = $order;
 						}
-						$pagerlink = sprintf( __( "?ssearch=%s&offset=%d&count=%d&sort=%s&order=%s" ), urlencode( $qry ), $offsetnum, $count, $pagersortby, $pagerorder );
+						$pagerlink = sprintf( "?ssearch=%s&offset=%d&count=%d&sort=%s&order=%s", urlencode( $qry ), $offsetnum, $count, $pagersortby, $pagerorder );
 						if ( $fqstr ) {
 							$pagerlink .= '&fq=' . $fqstr;
 						}
@@ -170,7 +176,7 @@ function s4wp_search_results() {
 						$pagerout[]			 = $pageritm;
 					} else {
 						$pageritm			 = array();
-						$pageritm[ 'page' ]	 = sprintf( __( "%d" ), $pagenum );
+						$pageritm[ 'page' ]	 = sprintf( "%d", $pagenum );
 						$pageritm[ 'link' ]	 = "";
 						$pagerout[]			 = $pageritm;
 					}
@@ -205,8 +211,8 @@ function s4wp_search_results() {
 						} else {
 							foreach ( $facet as $facetval => $facetcnt ) {
 								$facetitm			 = array();
-								$facetitm[ 'count' ] = sprintf( __( "%d" ), $facetcnt );
-								$facetitm[ 'link' ]	 = htmlspecialchars( sprintf( __( '?ssearch=%s&fq=%s:%s%s', 'solr4wp' ), urlencode( $qry ), $facetfield, urlencode( '"' . $facetval . '"' ), $fqstr ) );
+								$facetitm[ 'count' ] = sprintf( "%d", $facetcnt );
+								$facetitm[ 'link' ]	 = htmlspecialchars( sprintf( '?ssearch=%s&fq=%s:%s%s', urlencode( $qry ), $facetfield, urlencode( '"' . $facetval . '"' ), $fqstr ) );
 								//if server is set add it on the end of the url
 								$facetitm[ 'link' ] .=$serverval;
 								$facetitm[ 'name' ]	 = $facetval;
@@ -254,11 +260,11 @@ function s4wp_search_results() {
 					$docteaser	 = $docteaser->getFields();
 
 					if ( $docteaser ) {
-						$resultinfo[ 'teaser' ] = sprintf( __( "...%s..." ), implode( "...", $docteaser[ 'content' ] ) );
+						$resultinfo[ 'teaser' ] = sprintf( "...%s...", implode( "...", $docteaser[ 'content' ] ) );
 					} else {
 						$words					 = explode( ' ', $doc[ 'content' ] );
 						$teaser					 = implode( ' ', array_slice( $words, 0, 30 ) );
-						$resultinfo[ 'teaser' ]	 = sprintf( __( "%s..." ), $teaser );
+						$resultinfo[ 'teaser' ]	 = sprintf( "%s...", $teaser );
 					}
 					$resultout[] = $resultinfo;
 				}
@@ -295,16 +301,16 @@ function s4wp_print_facet_items( $items, $pre = "<ul>", $post = "</ul>", $before
 	if ( !$items ) {
 		return;
 	}
-	printf( __( "%s\n" ), $pre );
+	printf( "%s\n", $pre );
 	foreach ( $items as $item ) {
-		printf( __( "%s<a href=\"%s\">%s (%s)</a>%s\n" ), $before, $item[ "link" ], $item[ "name" ], $item[ "count" ], $after );
+		printf( "%s<a href=\"%s\">%s (%s)</a>%s\n", $before, $item[ "link" ], $item[ "name" ], $item[ "count" ], $after );
 		$item_items = isset( $item[ "items" ] ) ? true : false;
 
 		if ( $item_items ) {
 			s4wp_print_facet_items( $item[ "items" ], $nestedpre, $nestedpost, $nestedbefore, $nestedafter, $nestedpre, $nestedpost, $nestedbefore, $nestedafter );
 		}
 	}
-	printf( __( "%s\n" ), $post );
+	printf( "%s\n", $post );
 }
 
 function s4wp_get_output_taxo( $facet, $taxo, $prefix, $fqstr, $field ) {
@@ -318,8 +324,8 @@ function s4wp_get_output_taxo( $facet, $taxo, $prefix, $fqstr, $field ) {
 			$newprefix			 = $prefix . $taxoname . '^^';
 			$facetvars			 = $facet->getValues();
 			$facetitm			 = array();
-			$facetitm[ 'count' ] = sprintf( __( "%d" ), $facetvars[ $newprefix ] );
-			$facetitm[ 'link' ]	 = htmlspecialchars( sprintf( __( '?ssearch=%s&fq=%s:%s%s', 'solr4wp' ), $qry, $field, urlencode( '"' . $newprefix . '"' ), $fqstr ) );
+			$facetitm[ 'count' ] = sprintf( "%d", $facetvars[ $newprefix ] );
+			$facetitm[ 'link' ]	 = htmlspecialchars( sprintf( '?ssearch=%s&fq=%s:%s%s', $qry, $field, urlencode( '"' . $newprefix . '"' ), $fqstr ) );
 			$facetitm[ 'name' ]	 = $taxoname;
 			$outitms			 = s4wp_get_output_taxo( $facet, $taxoval, $newprefix, $fqstr, $field );
 			if ( $outitms ) {
