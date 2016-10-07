@@ -62,6 +62,10 @@ This plugin is under active development on GitHub:
 
 Please feel free to file issues there. Pull requests are also welcome!
 
+For further documentation, such as available filters, please see the project wiki:
+
+[https://github.com/pantheon-systems/solr-power/wiki](https://github.com/pantheon-systems/solr-power/wiki)
+
 You may notice there are two sets of tests running, on two different services:
 
 * Travis CI runs the [PHPUnit](https://phpunit.de/) test suite against a Solr instance.
