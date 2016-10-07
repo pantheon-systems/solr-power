@@ -261,50 +261,11 @@ class SolrPower_Api {
 
 
 		$response         = null;
-		$facet_fields     = array();
 		$number_of_tags   = $plugin_s4wp_settings['s4wp_max_display_tags'];
 		$default_operator = ( isset( $plugin_s4wp_settings['s4wp_default_operator'] ) ) ? $plugin_s4wp_settings['s4wp_default_operator'] : 'OR';
-
-		if ( $plugin_s4wp_settings['s4wp_facet_on_categories'] ) {
-			$facet_fields[] = 'categories';
-		}
-
+		
+		$facet_fields = SolrPower::get_instance()->get_facet_fields();
 		$facet_on_tags = $plugin_s4wp_settings['s4wp_facet_on_tags'];
-		if ( $facet_on_tags ) {
-			$facet_fields[] = 'tags';
-		}
-
-		if ( $plugin_s4wp_settings['s4wp_facet_on_author'] ) {
-			$facet_fields[] = 'post_author';
-		}
-
-		if ( $plugin_s4wp_settings['s4wp_facet_on_type'] ) {
-			$facet_fields[] = 'post_type';
-		}
-
-
-		$facet_on_custom_taxonomy = $plugin_s4wp_settings['s4wp_facet_on_taxonomy'];
-		if ( count( $facet_on_custom_taxonomy ) ) {
-			$taxonomies = (array) get_taxonomies( array( '_builtin' => false ), 'names' );
-			foreach ( $taxonomies as $parent ) {
-				$facet_fields[] = $parent . "_taxonomy";
-			}
-		}
-
-		$facet_on_custom_fields = $plugin_s4wp_settings['s4wp_facet_on_custom_fields'];
-		/**
-		 * Filter indexed custom fields
-		 *
-		 * Filter the list of custom field slugs available to index.
-		 *
-		 * @param array $facet_on_custom_fields Array of custom field slugs for indexing.
-		*/
-		$facet_on_custom_fields = apply_filters( 'solr_facet_custom_fields', $facet_on_custom_fields );
-		if ( is_array( $facet_on_custom_fields ) and count( $facet_on_custom_fields ) ) {
-			foreach ( $facet_on_custom_fields as $field_name ) {
-				$facet_fields[] = $field_name . '_str';
-			}
-		}
 
 		if ( $solr ) {
 			$select = array(
