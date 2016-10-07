@@ -6,9 +6,10 @@
   Version: 0.5.0
   Author: Pantheon
   Author URI: http://pantheon.io
+  Text Domain: solr-for-wordpress-on-pantheon
  */
 /*
-  Copyright (c) 2011 Matt Weber
+  Copyright (c) 2011 Pantheon
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal

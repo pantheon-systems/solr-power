@@ -53,7 +53,7 @@ class SolrPower_Options {
 		if ( file_exists( SOLR_POWER_PATH . '/solr-options-page.php' ) ) {
 			include( SOLR_POWER_PATH . '/solr-options-page.php' );
 		} else {
-			esc_html_e( "Couldn't locate the options page.", 'solr4wp' );
+			esc_html_e( "Couldn't locate the options page.", 'solr-for-wordpress-on-pantheon' );
 		}
 	}
 
@@ -268,9 +268,9 @@ class SolrPower_Options {
 					return;
 				}
 				if ( SolrPower_Api::get_instance()->ping_server() ) {
-					$this->msg = __( 'Ping Success!', 'solr-for-wordpress-on-pantheon' );
+					$this->msg = esc_html__( 'Ping Success!', 'solr-for-wordpress-on-pantheon' );
 				} else {
-					$this->msg = __( 'Ping Failed!', 'solr-for-wordpress-on-pantheon' );
+					$this->msg = esc_html__( 'Ping Failed!', 'solr-for-wordpress-on-pantheon' );
 				}
 				break;
 			case 'init_blogs':
@@ -278,21 +278,21 @@ class SolrPower_Options {
 					return;
 				}
 				SolrPower_Sync::get_instance()->copy_config_to_all_blogs();
-				$this->msg = __( 'Configuration has been copied to all blogs!', 'solr-for-wordpress-on-pantheon' );
+				$this->msg = esc_html__( 'Configuration has been copied to all blogs!', 'solr-for-wordpress-on-pantheon' );
 				break;
 			case 'optimize':
 				if ( ! $this->check_nonce( 'solr_optimize' ) ) {
 					return;
 				}
 				SolrPower_Api::get_instance()->optimize();
-				$this->msg = __( 'Index Optimized!', 'solr-for-wordpress-on-pantheon' );
+				$this->msg = esc_html__( 'Index Optimized!', 'solr-for-wordpress-on-pantheon' );
 				break;
 			case 'delete_all':
 				if ( ! $this->check_nonce( 'solr_delete_all' ) ) {
 					return;
 				}
 				SolrPower_Sync::get_instance()->delete_all();
-				$this->msg = __( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' );
+				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' );
 				break;
 			case 'repost_schema':
 				if ( ! $this->check_nonce( 'solr_repost_schema' ) ) {
@@ -300,7 +300,7 @@ class SolrPower_Options {
 				}
 				SolrPower_Sync::get_instance()->delete_all();
 				$output    = SolrPower_Api::get_instance()->submit_schema();
-				$this->msg = __( 'All Indexed Pages Deleted!<br />' . esc_html( $output ), 'solr-for-wordpress-on-pantheon' );
+				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon') .'<br />' . esc_html( $output );
 				break;
 
 			case 'run_query':
@@ -326,7 +326,7 @@ class SolrPower_Options {
 		if ( ! isset( $_POST[ $field ] )
 		     || ! wp_verify_nonce( $_POST[ $field ], 'solr_action' )
 		) {
-			$this->msg = __( 'Action failed. Please try again.' . $field, 'solr-for-wordpress-on-pantheon' );
+			$this->msg = esc_html__( 'Action failed. Please try again.' . $field, 'solr-for-wordpress-on-pantheon' );
 
 			return false;
 		}
@@ -347,10 +347,12 @@ class SolrPower_Options {
 		$results = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order );
 
 		if ( ! $results ) {
-			$this->msg = __( '<p><strong>Solr Results for string "' . esc_html( $qry ) . '
+			$this->msg = sprintf( '<p><strong>%s "' . esc_html( $qry ) . '
 				":</strong>
-			<br/>Search Failed.
-		</p>', 'solr-for-wordpress-on-pantheon' );
+			<br/>%s.
+		</p>', esc_html__( 'Solr Results for string', 'solr-for-wordpress-on-pantheon' )
+				, esc_html__( 'Search Failed', 'solr-for-wordpress-on-pantheon' )
+			);
 
 			return;
 		}
@@ -359,14 +361,17 @@ class SolrPower_Options {
 		$header   = $data['responseHeader'];
 
 		$out['hits']  = $response['numFound'];
-		$out['qtime'] = sprintf( __( "%.3f" ), $header['QTime'] / 1000 );
+		$out['qtime'] = sprintf( __( "%.3f", 'solr-for-wordpress-on-pantheon' ), $header['QTime'] / 1000 );
 
 
-		$this->msg = __( '<p><strong>Solr Results for string "' . esc_html( $qry ) . '
+		$this->msg = sprintf( '<p><strong>%s "' . esc_html( $qry ) . '
 				":</strong>
-			<br/>Hits: ' . esc_html( $out['hits'] ) . '
-			<br/>Query Time: ' . esc_html( $out['qtime'] ) . '
-		</p>', 'solr-for-wordpress-on-pantheon' );
+			<br/>%s ' . esc_html( $out['hits'] ) . '
+			<br/>%s ' . esc_html( $out['qtime'] ) . '
+		</p>', esc_html__( 'Solr Results for string', 'solr-for-wordpress-on-pantheon' )
+			, esc_html__( 'Hits:', 'solr-for-wordpress-on-pantheon' )
+			, esc_html__( 'Query Time:', 'solr-for-wordpress-on-pantheon' )
+		);
 	}
 
 	/**
