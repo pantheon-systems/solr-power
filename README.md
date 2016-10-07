@@ -62,7 +62,7 @@ This plugin is under active development on GitHub:
 
 Please feel free to file issues there. Pull requests are also welcome!
 
-For documentation, please check project's wiki:
+For further documentation, such as available filters, please check project's wiki:
 
 [https://github.com/pantheon-systems/solr-power/wiki](https://github.com/pantheon-systems/solr-power/wiki)
 
