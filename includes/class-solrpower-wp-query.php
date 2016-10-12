@@ -86,6 +86,11 @@ class SolrPower_WP_Query {
 		$offset = $query->get( 'posts_per_page' ) * ( $the_page - 1 );
 		$count  = $query->get( 'posts_per_page' );
 		$fq     = $this->parse_facets( $query );
+		
+		if( empty( $fq ) && apply_filters( 's4wp_match_facets', true, $query ) ) {
+			$fq = $this->get_should_match_facets( $query );
+		}
+		
 		$sortby = ( isset( $solr_options['s4wp_default_sort'] ) && ! empty( $solr_options['s4wp_default_sort'] ) ) ? $solr_options['s4wp_default_sort'] : 'score';
 
 		$order  = 'desc';
@@ -189,7 +194,41 @@ class SolrPower_WP_Query {
 		$default_operator = ( isset( $plugin_s4wp_settings['s4wp_default_operator'] ) ) ? $plugin_s4wp_settings['s4wp_default_operator'] : 'OR';
 
 		return implode( ' ' . $default_operator . ' ', $return );
-
+	}
+	
+	/**
+	 * Build facet query for normal search.
+	 *
+	 * Solr search should return matches for facets in full text search. For example, if a post has the category "Movie"
+	 * it should return in the results for the query "movie".
+	 *
+	 * @param $query
+	 *
+	 * @return string
+	 */
+	function get_should_match_facets( $query ) {
+		
+		$return = array();
+		
+		/*
+		 * Filter if need to filter facets from default search.
+		 */
+		$facets = apply_filters( 'should_match_facets', SolrPower::get_instance()->get_facet_fields(), $query );
+		
+		$search_field = $query->get( 's' );
+		
+		if( ! empty( $search_field ) && is_array( $facets ) && ! empty( $facets ) ) {
+			$return[] = '*:*';
+			foreach ( $facets as $facet_name ) {
+				if( 'categories' == $facet_name ) {
+					$search_field .= '^^';
+				}
+				$fq = '"' . htmlspecialchars( $search_field ) . '"';
+				$return[] = $facet_name . ':(' . $fq . ')';
+			}
+		}
+		
+		return implode( ' OR ', $return );
 	}
 }
 
