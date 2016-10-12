@@ -146,7 +146,7 @@ class SolrPower_Api {
 
 	/**
 	 * Connect to the solr service
-	 * @return solr service object
+	 * @return Solarium\Client Solr service object
 	 */
 	function get_solr() {
 
@@ -186,7 +186,8 @@ class SolrPower_Api {
 		 *
 		 * @param array $solarium_config {
 		 *      Array of connection information.
-		 *      @type array $endpoint Array of endpoint information.
+		 *
+		 * @type array $endpoint Array of endpoint information.
 		 * }
 		 */
 		$solarium_config = apply_filters( 's4wp_connection_options', $solarium_config );
@@ -210,13 +211,13 @@ class SolrPower_Api {
 		 *
 		 * Replace the solarium client with a custom client.
 		 *
-		 * @param Solarium $solr The default Solarium client created by this plugin.
+		 * @param Solarium\Client $solr The default Solarium client created by this plugin.
 		 */
 		$solr       = apply_filters( 's4wp_solr', $solr ); // better name?
 		$this->solr = $solr;
 
 		// Use the PantheonCurl adapter to get https.
-		$this->solr->setAdapter('\PantheonCurl');
+		$this->solr->setAdapter( '\PantheonCurl' );
 
 		return $solr;
 	}
@@ -238,18 +239,39 @@ class SolrPower_Api {
 	 * Query the required server
 	 * passes all parameters to the appropriate function based on the server name
 	 * This allows for extensible server/core based query functions.
-	 * TODO allow for similar theme/output function
+	 *
+	 * @param $qry
+	 * @param $offset
+	 * @param $count
+	 * @param $fq
+	 * @param $sortby
+	 * @param $order
+	 * @param string $server
+	 *
+	 * @return Solarium\QueryType\Select\Result\Result
 	 */
-	function query( $qry, $offset, $count, $fq, $sortby, $order, $server = 'master' ) {
+	function query( $qry, $offset, $count, $fq, $sortby, $order, $fields = null ) {
 		//NOTICE: does this needs to be cached to stop the db being hit to grab the options everytime search is being done.
 		$plugin_s4wp_settings = solr_options();
 
 		$solr = get_solr();
 
-		return $this->master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, $plugin_s4wp_settings );
+		return $this->master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, $plugin_s4wp_settings, $fields );
 	}
 
-	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings ) {
+	/**
+	 * @param Solarium\Client $solr
+	 * @param $qry
+	 * @param $offset
+	 * @param $count
+	 * @param $fq
+	 * @param $sortby
+	 * @param $order
+	 * @param $plugin_s4wp_settings
+	 *
+	 * @return Solarium\QueryType\Select\Result\Result
+	 */
+	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings, $fields = null ) {
 		$this->add_log( array(
 			'Search Query' => $qry,
 			'Offset'       => $offset,
@@ -298,7 +320,7 @@ class SolrPower_Api {
 		 * Filter the list of custom field slugs available to index.
 		 *
 		 * @param array $facet_on_custom_fields Array of custom field slugs for indexing.
-		*/
+		 */
 		$facet_on_custom_fields = apply_filters( 'solr_facet_custom_fields', $facet_on_custom_fields );
 		if ( is_array( $facet_on_custom_fields ) and count( $facet_on_custom_fields ) ) {
 			foreach ( $facet_on_custom_fields as $field_name ) {
@@ -314,14 +336,14 @@ class SolrPower_Api {
 				'rows'       => $count,
 				'omitheader' => false
 			);
-			if ( $sortby != "" ) {
+			if ( $sortby !== "" ) {
 				$select['sort'] = array( $sortby => $order );
 			} else {
 				$select['sort'] = array( 'post_date' => 'desc' );
 			}
-
-			$query = $solr->createSelect( $select );
-
+			$select   = apply_filters( 'solr_select_query', $select );
+			$query    = $solr->createSelect( $select );
+			$dismax   = $query->getDisMax();
 			$facetSet = $query->getFacetSet();
 
 			foreach ( $facet_fields as $facet_field ) {
@@ -348,16 +370,21 @@ class SolrPower_Api {
 
 			$query->setQueryDefaultOperator( $default_operator );
 
+			// Wildcards.
+			if ( strstr( $query->getQuery(), '*:*' ) ) {
+				$dismax->setQueryAlternative( $query->getQuery() );
+				$query->setQuery( '' );
+			}
 			/**
 			 * Filter the Solarium query object.
 			 *
 			 * @param object $query Solarium query object.
 			 */
-			$query = apply_filters( 'solr_query', $query );
+			$query = apply_filters( 'solr_query', $query, $dismax );
 
 			try {
 				$response = $solr->select( $query );
-				if ( ! $response->getResponse()->getStatusCode() == 200 ) {
+				if ( ! $response->getResponse()->getStatusCode() === 200 ) {
 					$response = null;
 				}
 			} catch ( Exception $e ) {
@@ -410,11 +437,8 @@ class SolrPower_Api {
 	 */
 	private function fetch_stat( $type ) {
 		// Can't do wildcard with dismax...
-		add_filter( 'solr_query', function ( $query ) {
-			$query->addParam( 'defType', 'lucene' );
 
-			return $query;
-		} );
+		add_filter( 'solr_query', array( $this, 'dismax_query' ), 10, 2 );
 		$qry    = 'post_type:' . $type;
 		$offset = 0;
 		$count  = 1;
@@ -480,5 +504,18 @@ class SolrPower_Api {
 			'path'        => $this->compute_path(),
 		);
 
+	}
+
+	/**
+	 * @param Solarium\QueryType\Select\Query\Query $query
+	 * @param Solarium\QueryType\Select\Query\Component\DisMax $dismax
+	 *
+	 * @return Solarium\QueryType\Select\Query\Query
+	 */
+	function dismax_query( $query, $dismax ) {
+		$dismax->setQueryAlternative( $query->getQuery() );
+		$query->setQuery( '' );
+
+		return $query;
 	}
 }
