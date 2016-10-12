@@ -609,7 +609,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		add_post_meta( $post_id7, 'baz', rand_str() );
 		add_post_meta( $post_id7, 'bar', 'val2' );
 		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
-		sleep(1);
+		sleep( 1 );
 		$query = new WP_Query( array(
 			'meta_query'             => array(
 				array(
@@ -666,10 +666,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-
-	/**
-	 * @ticket 30681
-	 */
 	public function test_meta_query_compare_exists() {
 		$posts = self::factory()->post->create_many( 3 );
 		add_post_meta( $posts[0], 'foo', 'bar' );
@@ -694,9 +690,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 30681
-	 */
 	public function test_meta_query_compare_exists_with_value_should_convert_to_equals() {
 		$posts = self::factory()->post->create_many( 3 );
 		add_post_meta( $posts[0], 'foo', 'bar' );
@@ -722,9 +715,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 30681
-	 */
 	public function test_meta_query_compare_not_exists_should_ignore_value() {
 		$posts = self::factory()->post->create_many( 3 );
 		add_post_meta( $posts[0], 'foo', 'bar' );
@@ -752,9 +742,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 	}
 
 
-	/**
-	 * @ticket 18158
-	 */
 	public function test_meta_query_compare_not_exists() {
 		$post_id = self::factory()->post->create();
 		add_post_meta( $post_id, 'foo', rand_str() );
@@ -837,9 +824,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEquals( 0, count( $query->posts ) );
 	}
 
-	/**
-	 * @ticket 24093
-	 */
 	public function test_meta_query_relation_or_compare_equals() {
 		$posts = self::factory()->post->create_many( 4 );
 		add_post_meta( $posts[0], 'color', 'orange' );
@@ -878,9 +862,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 	}
 
 
-	/**
-	 * @ticket 24093
-	 */
 	public function test_meta_query_relation_or_compare_equals_and_in() {
 		$posts = self::factory()->post->create_many( 4 );
 		add_post_meta( $posts[0], 'color', 'orange' );
@@ -917,9 +898,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 24093
-	 */
 	public function test_meta_query_relation_or_compare_equals_and_like() {
 		$posts = self::factory()->post->create_many( 4 );
 		add_post_meta( $posts[0], 'color', 'orange' );
@@ -956,9 +934,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 24093
-	 */
 	public function test_meta_query_relation_or_compare_equals_and_between() {
 		$posts = self::factory()->post->create_many( 4 );
 		add_post_meta( $posts[0], 'number_of_colors', '2' );
@@ -996,10 +971,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-
-	/**
-	 * @ticket 24093
-	 */
 	public function test_meta_query_relation_and_compare_in_same_keys() {
 		$posts = self::factory()->post->create_many( 4 );
 		add_post_meta( $posts[0], 'color', 'orange' );
@@ -1038,9 +1009,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 24093
-	 */
 	public function test_meta_query_relation_and_compare_in_different_keys() {
 		$posts = self::factory()->post->create_many( 4 );
 		add_post_meta( $posts[0], 'color', 'orange' );
@@ -1079,9 +1047,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 24093
-	 */
 	public function test_meta_query_relation_and_compare_not_equals() {
 		$posts = self::factory()->post->create_many( 4 );
 		add_post_meta( $posts[0], 'color', 'orange' );
@@ -1119,9 +1084,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 24093
-	 */
 	public function test_meta_query_relation_and_compare_not_equals_different_keys() {
 		$posts = self::factory()->post->create_many( 4 );
 
@@ -1166,9 +1128,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 24093
-	 */
 	public function test_meta_query_relation_and_compare_not_equals_not_in() {
 		$posts = self::factory()->post->create_many( 4 );
 		add_post_meta( $posts[0], 'color', 'orange' );
@@ -1206,9 +1165,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 24093
-	 */
 	public function test_meta_query_relation_and_compare_not_equals_and_not_like() {
 		$posts = self::factory()->post->create_many( 4 );
 		add_post_meta( $posts[0], 'color', 'orange' );
@@ -1246,9 +1202,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 23033
-	 */
+
 	public function test_meta_query_decimal_results() {
 		$post_1 = self::factory()->post->create();
 		$post_2 = self::factory()->post->create();
@@ -1507,9 +1461,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 29604
-	 */
 	public function test_meta_query_with_orderby_meta_value_relation_or() {
 		$posts = self::factory()->post->create_many( 4 );
 		update_post_meta( $posts[0], 'foo', 5 );
@@ -1553,9 +1504,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 29604
-	 */
 	public function test_meta_query_with_orderby_meta_value_relation_and() {
 		$posts = self::factory()->post->create_many( 4 );
 		update_post_meta( $posts[0], 'foo', 5 );
@@ -1602,9 +1550,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 29642
-	 */
 	public function test_meta_query_nested() {
 		$p1 = self::factory()->post->create();
 		$p2 = self::factory()->post->create();
@@ -1649,9 +1594,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-	/**
-	 * @ticket 29642
-	 */
 	public function test_meta_query_nested_two_levels_deep() {
 		$p1 = self::factory()->post->create();
 		$p2 = self::factory()->post->create();
@@ -1756,10 +1698,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
-
-	/**
-	 * @ticket 16829
-	 */
 	public function test_meta_default_compare() {
 		// compare should default to IN when meta_value is an array
 		$post_id = self::factory()->post->create();
@@ -1799,9 +1737,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( array( $post_id, $post_id3 ), $posts );
 	}
 
-	/**
-	 * @ticket 17264
-	 */
 	public function test_duplicate_posts_when_no_key() {
 		$post_id = self::factory()->post->create();
 		add_post_meta( $post_id, 'city', 'Lorem' );
@@ -1831,9 +1766,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( array( $post_id, $post_id2 ), $posts );
 	}
 
-	/**
-	 * @ticket 15292
-	 */
 	public function test_empty_meta_value() {
 		$post_id = self::factory()->post->create();
 		add_post_meta( $post_id, 'foo', '0' );
@@ -1895,9 +1827,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( array( $post_id, $post_id3, $post_id4, $post_id5, $post_id6 ), $posts );
 	}
 
-	/**
-	 * @ticket 31045
-	 */
 	public function test_orderby_clause_key() {
 		$posts = self::factory()->post->create_many( 3 );
 		add_post_meta( $posts[0], 'foo', 'aaa' );
@@ -1920,9 +1849,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEquals( array( $posts[1], $posts[2], $posts[0] ), wp_list_pluck( $q->posts, 'ID' ) );
 	}
 
-	/**
-	 * @ticket 31045
-	 */
 	public function test_orderby_clause_key_as_secondary_sort() {
 		$p1 = self::factory()->post->create( array(
 			'post_date' => '2015-01-28 03:00:00',
@@ -1956,9 +1882,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEquals( array( $p3, $p1, $p2 ), wp_list_pluck( $q->posts, 'ID' ) );
 	}
 
-	/**
-	 * @ticket 31045
-	 */
 	public function test_orderby_more_than_one_clause_key() {
 		$posts = self::factory()->post->create_many( 3 );
 
@@ -1990,10 +1913,6 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 
 		$this->assertEquals( array( $posts[2], $posts[0], $posts[1] ), wp_list_pluck( $q->posts, 'ID' ) );
 	}
-
-	/**
-	 * @ticket 29062
-	 */
 
 	public function test_meta_query_compare_not_exists_with_another_condition_relation_or() {
 		$posts = self::factory()->post->create_many( 4 );
