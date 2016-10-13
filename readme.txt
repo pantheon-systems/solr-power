@@ -150,7 +150,7 @@ A meta_query can use the following compare operators:
 
 (```'REGEXP'```, ```'NOT REGEXP'```, and ```'RLIKE'``` are not supported.)
 
-**WP_Query Example w/ meta_query:**
+**WP_Query Example with meta_query:**
 ```
 $query = new WP_Query( array(
 	'solr_integrate' => true,
@@ -176,6 +176,10 @@ $query = new WP_Query( array(
 * Advanced WP_Query Integration - Meta Queries
 * Translatable strings standardized
 * Facet query fixes
+* Hide schema submit option if not on the Pantheon platform
+* Added a method for API status
+* Document available filters
+* Fixed single quote/character issues in the facet widget
 
 = 0.5.0 =
 * Add facet search widget
