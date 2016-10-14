@@ -1,0 +1,205 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the solr-power package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: solr-power 0.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-10-13 22:12-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: includes/class-solrpower-facet-widget.php:47
+msgid "Title:"
+msgstr ""
+
+#: includes/class-solrpower-options.php:56
+msgid "Couldn't locate the options page."
+msgstr ""
+
+#: includes/class-solrpower-options.php:271
+msgid "Ping Success!"
+msgstr ""
+
+#: includes/class-solrpower-options.php:273
+msgid "Ping Failed!"
+msgstr ""
+
+#: includes/class-solrpower-options.php:281
+msgid "Configuration has been copied to all blogs!"
+msgstr ""
+
+#: includes/class-solrpower-options.php:288
+msgid "Index Optimized!"
+msgstr ""
+
+#: includes/class-solrpower-options.php:295
+#: includes/class-solrpower-options.php:303
+msgid "All Indexed Pages Deleted!"
+msgstr ""
+
+#: includes/class-solrpower-options.php:329
+msgid "Action failed. Please try again."
+msgstr ""
+
+#: includes/class-solrpower-options.php:353
+#: includes/class-solrpower-options.php:371
+msgid "Solr Results for string"
+msgstr ""
+
+#: includes/class-solrpower-options.php:354
+msgid "Search Failed"
+msgstr ""
+
+#: includes/class-solrpower-options.php:364
+#, php-format
+msgid "%.3f"
+msgstr ""
+
+#: includes/class-solrpower-options.php:372
+msgid "Hits:"
+msgstr ""
+
+#: includes/class-solrpower-options.php:373
+msgid "Query Time:"
+msgstr ""
+
+#: includes/class-solrpower-sync.php:303
+msgid "Post Information is NULL"
+msgstr ""
+
+#: includes/class-solrpower.php:60
+msgid ""
+"Before you can activate this plugin, you must first <a href=\"https://"
+"pantheon.io/docs/articles/sites/apache-solr/\">activate Solr</a> in your "
+"Pantheon Dashboard."
+msgstr ""
+
+#: includes/class-solrpower.php:66
+msgid "This plugin requires WordPress 3.0 or greater."
+msgstr ""
+
+#: includes/class-solrpower.php:106
+msgid "Settings"
+msgstr ""
+
+#: includes/legacy-functions.php:11
+msgid "Score"
+msgstr ""
+
+#: includes/legacy-functions.php:12
+msgid "Date"
+msgstr ""
+
+#: includes/legacy-functions.php:13
+msgid "Last Modified"
+msgstr ""
+
+#: includes/legacy-functions.php:23
+msgid "Descending"
+msgstr ""
+
+#: includes/legacy-functions.php:24
+msgid "Ascending"
+msgstr ""
+
+#: includes/legacy-functions.php:35
+msgid "Sort By:"
+msgstr ""
+
+#: includes/legacy-functions.php:35
+msgid "Order By:"
+msgstr ""
+
+#: solr-options-page.php:37
+msgid "Solr Power"
+msgstr ""
+
+#: solr-power.php:47
+msgid ""
+"The Solr Power plugin requires PHP 5.4 to function properly and <strong>has "
+"not</strong> been activated.<br />Please upgrade PHP and re-activate the "
+"Solr Power plugin. <a href=\"http://www.wpupdatephp.com/update/\" target="
+"\"_blank\">Learn more.</a>"
+msgstr ""
+
+#: solr-power.php:54
+msgid ""
+"The Solr Power plugin requires PHP 5.4 to function properly and had been "
+"<strong>deactivated</strong>.<br />Please upgrade PHP and re-activate the "
+"Solr Power plugin. <a href=\"http://www.wpupdatephp.com/update/\" target="
+"\"_blank\">Learn more.</a>"
+msgstr ""
+
+#: solr-power.php:82
+msgid ""
+"The Solr Power plugin requires environment variables for "
+"<pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to "
+"function properly.<br />The Solr Power plugin <strong>has not</strong> been "
+"activated.<br />Please configure the environment variables and re-activate "
+"the Solr Power plugin. "
+msgstr ""
+
+#: solr-power.php:89
+msgid ""
+"The Solr Power plugin requires environment variables for "
+"<pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to "
+"function properly.<br />The Solr Power plugin <strong>has been deactivated</"
+"strong>.<br />Please configure the environment variables and re-activate the "
+"Solr Power plugin. "
+msgstr ""
+
+#: views/options/action.php:3
+msgid "Actions"
+msgstr ""
+
+#: views/options/action.php:9
+msgid "Check Server Settings"
+msgstr ""
+
+#: views/options/action.php:11 views/options/action.php:23
+#: views/options/action.php:35 views/options/action.php:46
+#: views/options/action.php:59 views/options/action.php:76
+#: views/options/query.php:14
+msgid "Execute"
+msgstr ""
+
+#: views/options/action.php:21
+msgid "Push Solr Configuration to All Blogs"
+msgstr ""
+
+#: views/options/action.php:33
+msgid "Optimize Index"
+msgstr ""
+
+#: views/options/action.php:44
+msgid "Delete All"
+msgstr ""
+
+#: views/options/action.php:57
+msgid "Repost schema.xml"
+msgstr ""
+
+#: views/options/action.php:74
+msgid "Index Searchable Post Types"
+msgstr ""
+
+#: views/options/query.php:4
+msgid "Solr Query"
+msgstr ""
+
+#: views/options/query.php:7
+msgid "Words or phrases to search for."
+msgstr ""
+
+#: views/options/query.php:12
+msgid "Submit Query"
+msgstr ""
