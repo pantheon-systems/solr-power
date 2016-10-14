@@ -90,16 +90,16 @@
         <field name="post_name" type="string" indexed="true" stored="true"/>  
         <field name="post_type" type="string" indexed="true" stored="true"/>
         <field name="post_title" type="text_lws" indexed="true" stored="true"/>
-        <field name="post_date" type="date" indexed="true" stored="false"/>
-        <field name="post_date_gmt" type="date" indexed="true" stored="false"/>
+        <field name="post_date" type="date" indexed="true" stored="true"/>
+        <field name="post_date_gmt" type="date" indexed="true" stored="true"/>
         <field name="post_content" type="text" indexed="true" stored="true"/>
         <field name="post_excerpt" type="text" indexed="true" stored="true"/>
         <field name="post_status" type="string" indexed="true" stored="true"/>
         <field name="comment_status" type="string" indexed="true" stored="true"/>
         <field name="ping_status" type="string" indexed="true" stored="true"/>
         <field name="post_parent" type="string" indexed="true" stored="true"/>
-        <field name="post_modified" type="date" indexed="true" stored="false"/>
-        <field name="post_modified_gmt" type="date" indexed="true" stored="false"/>
+        <field name="post_modified" type="date" indexed="true" stored="true"/>
+        <field name="post_modified_gmt" type="date" indexed="true" stored="true"/>
         <field name="comment_count" type="string" indexed="true" stored="true"/>
         <field name="menu_order" type="string" indexed="true" stored="true"/>
         
@@ -115,6 +115,9 @@
         <field name="comments" type="text" indexed="true" stored="true" multiValued="true"/>
 
         <field name="categories" type="string" indexed="true" stored="true" multiValued="true"/>
+        <field name="categories_slug" type="string" indexed="true" stored="true" multiValued="true"/>
+        <field name="categories_id" type="string" indexed="true" stored="true" multiValued="true"/>
+
         <field name="categoriessrch" type="text_lws" indexed="true" stored="false" multiValued="true"/>
 		
         <field name="tags" type="string" indexed="true" stored="true" multiValued="true"/>
@@ -138,7 +141,9 @@
         <dynamicField name="*_str"  type="string"  indexed="true"  stored="true" multiValued="true"/>
         <dynamicField name="*_srch"  type="text_lws"  indexed="true"  stored="false" multiValued="true"/>
         <dynamicField name="*_taxonomy" type="string" indexed="true" stored="true" multiValued="true"/>
-        
+        <dynamicField name="*_taxonomy_slug" type="string" indexed="true" stored="true" multiValued="true"/>
+        <dynamicField name="*_id" type="string" indexed="true" stored="true" multiValued="true"/>
+
         <dynamicField name="*_i"  type="sint"    indexed="true"  stored="true"/>
         <dynamicField name="*_s"  type="string"  indexed="true"  stored="true"/>
         <dynamicField name="*_l"  type="slong"   indexed="true"  stored="true"/>

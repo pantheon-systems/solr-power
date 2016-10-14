@@ -1,93 +1,13 @@
 <?php
 
-class SolrTest extends WP_UnitTestCase {
+class SolrTest extends SolrTestBase {
 
-	function __construct() {
-		parent::__construct();
-		// For tests, we're not using https.
-		add_filter( 'solr_scheme', function () {
-			return 'http';
-		} );
-		SolrPower_Options::get_instance()->initalize_options();
-	}
-
-	/**
-	 * Setup for every test.
-	 */
 	function setUp() {
 		parent::setUp();
-		// Delete the entire index.
-		SolrPower_Sync::get_instance()->delete_all();
-		// Setup options (if not already set)
-		$solr_options = solr_options();
-		if ( $solr_options['s4wp_solr_initialized'] != 1 ) {
-			$options = SolrPower_Options::get_instance()->initalize_options();
-			update_option( 'plugin_s4wp_settings', $options );
-		}
 	}
 
-	/**
-	 * Creates a new post.
-	 * @return int|WP_Error
-	 */
-	function __create_test_post( $post_type = 'post' ) {
-		$args = array(
-			'post_type'    => $post_type,
-			'post_status'  => 'publish',
-			'post_title'   => 'Test Post ' . time(),
-			'post_content' => 'This is a solr test.',
-		);
-
-		return wp_insert_post( $args );
-	}
-
-	function __create_multiple( $number = 1 ) {
-		for ( $i = 0; $i < $number; $i ++ ) {
-			$this->__create_test_post();
-		}
-	}
-
-	function __run_test_query( $qry = 'solr' ) {
-		$offset = 0;
-		$count  = 10;
-		$fq     = array();
-		$sortby = 'score';
-		$order  = 'desc';
-
-		return SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order );
-	}
-
-	function __facet_query( $args = array() ) {
-		$defaults = array(
-			's' => 'solr'
-		);
-
-		$args = array_merge( $defaults, $args );
-
-		return new WP_Query( $args );
-	}
-
-	function __change_option( $key, $value ) {
-		$solr_options         = solr_options();
-		$solr_options[ $key ] = $value;
-		update_option( 'plugin_s4wp_settings', $solr_options );
-	}
-
-	function __setup_custom_fields() {
-		$p_id = $this->__create_test_post();
-		update_post_meta( $p_id, 'my_field', 'my_value' );
-		update_post_meta( $p_id, 'other_field', 'other_value' );
-		$p_id = $this->__create_test_post();
-		update_post_meta( $p_id, 'my_field', 'my_value2' );
-		update_post_meta( $p_id, 'other_field', 'other_value2' );
-		$p_id = $this->__create_test_post();
-		update_post_meta( $p_id, 'my_field', 'my_value3' );
-		update_post_meta( $p_id, 'other_field', 'other_value' );
-		$p_id = $this->__create_test_post();
-		// This post will have the same custom field value (so two will have my_value).
-		update_post_meta( $p_id, 'my_field', 'my_value' );
-		update_post_meta( $p_id, 'other_field', 'other_value' );
-		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+	function tearDown() {
+		parent::tearDown();
 	}
 
 	/**
@@ -98,18 +18,8 @@ class SolrTest extends WP_UnitTestCase {
 	}
 
 
-	/**
-	 * By default, a wildcard query *:* will yield all results,
-	 * however if edismax is the set query parser it won't work.
-	 * Therefore, we hook into the solr_query filter to set the parser to lucene.
-	 */
 	function test_wildcard_search() {
 
-		add_filter( 'solr_query', function ( $query ) {
-			$query->addParam( 'defType', 'lucene' );
-
-			return $query;
-		} );
 		$this->__create_multiple( 5 );
 		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
 		$search = $this->__run_test_query( '*:*' );
@@ -173,37 +83,6 @@ class SolrTest extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Performs simple search query with WP_Query.
-	 * @global WP_Post $post
-	 */
-	function test_simple_wp_query() {
-		$post_id = $this->__create_test_post();
-		$args    = array(
-			's' => 'solr'
-		);
-		$query   = new WP_Query( $args );
-		$this->assertEquals( $query->post_count, 1 );
-		$this->assertEquals( $query->found_posts, 1 );
-		while ( $query->have_posts() ) {
-			$query->the_post();
-
-			global $post;
-
-			$wp_post = get_post( get_the_ID() );
-			$this->assertEquals( $post->solr, true );
-			$this->assertEquals( $post->post_title, get_the_title() );
-			$this->assertEquals( $post->post_content, get_the_content() );
-			$this->assertEquals( $post->post_date, $wp_post->post_date );
-			$this->assertEquals( $post->post_modified, $wp_post->post_modified );
-			$this->assertEquals( $post->post_name, $wp_post->post_name );
-			$this->assertEquals( $post->post_parent, $wp_post->post_parent );
-			$this->assertEquals( $post->post_excerpt, $wp_post->post_excerpt );
-		}
-
-		wp_reset_postdata();
-	}
-
-	/**
 	 * Tests to see if Solr indexes all posts.
 	 * @group 43
 	 * @link https://github.com/pantheon-systems/solr-power/issues/43
@@ -236,6 +115,7 @@ class SolrTest extends WP_UnitTestCase {
 		$this->__create_test_post( 'page' );
 		$this->__create_test_post( 'page' );
 		$this->__create_multiple( 5 );
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
 		$stats = SolrPower_Api::get_instance()->index_stats();
 		$this->assertEquals( 2, $stats['page'] );
 		$this->assertEquals( 5, $stats['post'] );
@@ -287,6 +167,7 @@ class SolrTest extends WP_UnitTestCase {
 	 */
 	function test_facets() {
 		$this->__create_multiple( 5 );
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
 		$this->__facet_query();
 		$facets = SolrPower_WP_Query::get_instance()->facets;
 		$this->assertNotEmpty( $facets );

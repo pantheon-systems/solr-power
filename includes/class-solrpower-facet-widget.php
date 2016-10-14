@@ -118,7 +118,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			}
 			echo '<h2>' . esc_html( $facet_nice_name ) . '</h2>';
 			echo '<ul>';
-			
+
 			$facets_facet_name = array();
 			if( isset( $this->facets[ $facet_name ] ) ) {
 				$facets_facet_name = $this->facets[ $facet_name ];
@@ -127,7 +127,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 					$facets_facet_name = array_map( array( __CLASS__, 'htmlspecialchars_decode' ), $this->facets[ $facet_name ] );
 				}
 			}
-			
+
 			foreach ( $values as $name => $count ):
 
 				$nice_name = str_replace( '^^', '', $name );
@@ -216,7 +216,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		$solr_options = solr_options();
 
 		if ( array_key_exists( $key, $solr_options )
-		     && false != $solr_options[ $key ]
+		     && false !== $solr_options[ $key ]
 		) {
 			return true;
 		}
@@ -225,12 +225,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	}
 
 	function dummy_query() {
-		// For a wildcard search, lets change the parser to lucene.
-		add_filter( 'solr_query', function ( $query ) {
-			$query->addParam( 'defType', 'lucene' );
-
-			return $query;
-		} );
+		add_filter('solr_query',array(SolrPower_Api::get_instance(),'dismax_query'),10,2);
 		global $wp_query;
 		$query = new WP_Query();
 		if ( ! $wp_query->get( 's' ) ) {
@@ -239,7 +234,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		}
 
 	}
-	
+
 	/**
 	 * Callback for array_map to decode html special characters
 	 *

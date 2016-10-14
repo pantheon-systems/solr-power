@@ -3,7 +3,7 @@
 **Tags:** search  
 **Requires at least:** 4.2  
 **Tested up to:** 4.6.1  
-**Stable tag:** 0.5.0  
+**Stable tag:** 0.6.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -125,7 +125,61 @@ You can see more details about the commands using `wp help solr`:
 
 ```
 
+## WP_Query Integration ##
+
+Use Solr in a custom WP_Query instead of querying a database. Add ```'solr_integrate' => true``` to the query arguments.
+
+**NOTE:** Currently, only basic queries and meta_query is supported.
+
+A meta_query can use the following compare operators:
+
+* ```'='```
+* ```'!='```
+* ```'>'```
+* ```'>='```
+* ```'<'```
+* ```'<='```
+* ```'LIKE'```
+* ```'NOT LIKE'```
+* ```'IN'```
+* ```'NOT IN'```
+* ```'BETWEEN'```
+* ```'NOT BETWEEN'```
+* ```'EXISTS'```
+* ```'NOT EXISTS'```
+
+(```'REGEXP'```, ```'NOT REGEXP'```, and ```'RLIKE'``` are not supported.)
+
+**WP_Query Example with meta_query:**
+```
+$query = new WP_Query( array(
+	'solr_integrate' => true,
+	'meta_query'     => array(
+		'relation' => 'AND',
+		array(
+			'key'     => 'foo',
+			'value'   => 'bar',
+			'compare' => '='
+
+		),
+		array(
+			'key'     => 'oof',
+			'value'   => 'baz',
+			'compare' => '='
+		)
+	),
+) );
+```
+
 ## Changelog ##
+### 0.6.0 ###
+* Advanced WP_Query Integration - Meta Queries
+* Translatable strings standardized
+* Facet query fixes
+* Hide schema submit option if not on the Pantheon platform
+* Added a method for API status
+* Document available filters
+* Fixed single quote/character issues in the facet widget
 
 ### 0.5.0 ###
 * Add facet search widget

@@ -176,10 +176,10 @@ class SolrPower_Sync {
 		Solarium\QueryType\Update\Query\Document\Document $doc, $post_info, $domain = null,
 		$path = null
 	) {
-		$plugin_s4wp_settings                             = solr_options();
-		$exclude_ids                                      = ( is_array( $plugin_s4wp_settings['s4wp_exclude_pages'] ) ) ? $plugin_s4wp_settings['s4wp_exclude_pages'] : explode( ',', $plugin_s4wp_settings['s4wp_exclude_pages'] );
-		$categoy_as_taxonomy                              = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
-		$index_comments                                   = $plugin_s4wp_settings['s4wp_index_comments'];
+		$plugin_s4wp_settings   = solr_options();
+		$exclude_ids            = ( is_array( $plugin_s4wp_settings['s4wp_exclude_pages'] ) ) ? $plugin_s4wp_settings['s4wp_exclude_pages'] : explode( ',', $plugin_s4wp_settings['s4wp_exclude_pages'] );
+		$categoy_as_taxonomy    = $plugin_s4wp_settings['s4wp_cat_as_taxo'];
+		$index_comments         = $plugin_s4wp_settings['s4wp_index_comments'];
 		$facet_on_custom_fields = $plugin_s4wp_settings['s4wp_index_custom_fields'];
 		/**
 		 * Filter indexed custom fields
@@ -262,6 +262,8 @@ class SolrPower_Sync {
 					} else {
 						$doc->addField( 'categories', $category->cat_name );
 					}
+					$doc->addField( 'categories_slug', $category->slug );
+					$doc->addField( 'categories_id', $category->term_id );
 				}
 			}
 
@@ -275,6 +277,8 @@ class SolrPower_Sync {
 					$parent = $parent . "_taxonomy";
 					foreach ( $terms as $term ) {
 						$doc->addField( $parent, $term->name );
+						$doc->addField( $parent . '_slug', $term->slug );
+						$doc->addField( $parent . '_id', $term->term_id );
 					}
 				}
 			}
@@ -287,13 +291,22 @@ class SolrPower_Sync {
 			}
 
 			if ( count( $index_custom_fields ) > 0 && count( $custom_fields = get_post_custom( $post_info->ID ) ) ) {
+				$used = array();
 				foreach ( (array) $index_custom_fields as $field_name ) {
 					// test a php error notice.
 					if ( isset( $custom_fields[ $field_name ] ) ) {
 						$field = (array) $custom_fields[ $field_name ];
+
 						foreach ( $field as $key => $value ) {
 							$doc->addField( $field_name . '_str', $value );
+							if ( ! in_array( $field_name, $used ) ) {
+								$doc->addField( $field_name . '_i', absint( $value ) );
+								$doc->addField( $field_name . '_d', floatval($value)  );
+								$doc->addField( $field_name . '_f', floatval($value)  );
+								$doc->addField( $field_name . '_s', $value  );
+							}
 							$doc->addField( $field_name . '_srch', $value );
+							$used[] = $field_name;
 						}
 					}
 				}
@@ -341,7 +354,6 @@ class SolrPower_Sync {
 			}
 		} catch ( Exception $e ) {
 			$this->error_msg = esc_html( $e->getMessage() );
-
 			return false;
 		}
 	}
@@ -425,7 +437,7 @@ class SolrPower_Sync {
 				switch_to_blog( $blog_id );
 
 				// now we actually gather the blog posts
-				$args	 = array(
+				$args    = array(
 
 					/**
 					 * Filter indexed post types
@@ -434,9 +446,9 @@ class SolrPower_Sync {
 					 *
 					 * @param array $post_types Array of post type names for indexing.
 					 */
-					'post_type'		 => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
-					'post_status'	 => 'publish',
-					'fields'		 => 'ids',
+					'post_type'      => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
+					'post_status'    => 'publish',
+					'fields'         => 'ids',
 					'posts_per_page' => absint( $limit ),
 					'offset'         => absint( $prev )
 				);
@@ -489,7 +501,7 @@ class SolrPower_Sync {
 			// done importing so lets switch back to the proper blog id
 			restore_current_blog();
 		} else {
-			$args		 = array(
+			$args      = array(
 
 				/**
 				 * Filter indexed post types
@@ -498,9 +510,9 @@ class SolrPower_Sync {
 				 *
 				 * @param array $post_types Array of post type names for indexing.
 				 */
-				'post_type'		 => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
-				'post_status'	 => 'publish',
-				'fields'		 => 'ids',
+				'post_type'      => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
+				'post_status'    => 'publish',
+				'fields'         => 'ids',
 				'posts_per_page' => absint( $limit ),
 				'offset'         => absint( $prev )
 			);
