@@ -149,6 +149,7 @@ module.exports = function( grunt ) {
 			// generate .pot file
 			options:{
 				text_domain: 'solr-for-wordpress-on-pantheon',
+				msgid_bugs_address: 'https://github.com/pantheon-systems/solr-power/issues',
 				dest: './',
 				language: 'PHP',
 				msgmerge: true,
