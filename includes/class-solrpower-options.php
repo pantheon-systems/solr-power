@@ -426,7 +426,7 @@ class SolrPower_Options {
 				echo '<select name="plugin_s4wp_settings[' . esc_attr( $field_name ) . ']">';
 				echo PHP_EOL; //XSS ok
 				foreach ( $args['choices'] as $choice ) {
-					echo '<option value="' . esc_attr( $value ) . '" ' . selected( $value, $choice, false ) . '>' . esc_attr( $choice ) . '</option>';
+					echo '<option value="' . esc_attr( $choice ) . '" ' . selected( $value, $choice, false ) . '>' . esc_attr( $choice ) . '</option>';
 					echo PHP_EOL; //XSS ok
 				}
 				echo '</select>';
