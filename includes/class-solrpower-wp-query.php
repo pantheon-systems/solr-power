@@ -417,18 +417,16 @@ class SolrPower_WP_Query {
 		}
 
 		$solr_query = array();
-		if ( $query->is_date() ) {
-			$solr_query[] = $this->parse_date_query( $query->query_vars );
-		}
 
 		if ( ! empty( $query->meta_query->queries ) ) {
 			$solr_query[] = $this->parse_meta_query( $query->meta_query->queries );
 		}
+
+		if ( ! empty( $query->tax_query->queries ) ) {
+			$solr_query[] = $this->parse_tax_query( $query->tax_query->queries );
+		}
 		foreach ( $query->query_vars as $var_key => $var_value ) {
-			if ( 'tax_query' === $var_key ) {
-				$solr_query[] = $this->parse_tax_query( $var_value );
-				continue;
-			}
+
 
 			if ( 'post_type' === $var_key && 'any' === $var_value ) {
 				continue;
@@ -449,69 +447,161 @@ class SolrPower_WP_Query {
 	 * @param array $tax_query
 	 *
 	 * @return string
-	 * @todo Advanced tax_queries (comparisons, etc.).
 	 */
 	private function parse_tax_query( $tax_query ) {
-		$query    = array();
-		$relation = 'OR';
+		$query          = array();
+		$wildcards_used = array();
+		$tax_fq         = array();
+		$relation       = 'OR';
 		if ( isset( $tax_query['relation'] ) ) {
 			$relation = $tax_query['relation'];
 			unset( $tax_query['relation'] );
 		}
+
 		foreach ( $tax_query as $tax_key => $tax_value ) {
 			if ( ! is_array( $tax_value ) ) {
 				continue;
 			}
-			if ( 'category' === $tax_value['taxonomy'] ) {
-				$terms = array();
-				foreach ( $tax_value['terms'] as $term ) {
-					if ( isset( $tax_value['field'] )
-					     && ( 'slug' === $tax_value['field'] || 'id' === $tax_value['field'] )
-					) {
-						$terms[] = '"' . $term . '"';
-					} else {
-						$terms[] = '"' . $term . '^^"';
-					}
-				}
-				switch ( $tax_value['field'] ) {
-					case 'slug':
-						$query[] = 'categories_slug:(' . implode( 'OR', $terms ) . ')';
-						break;
-					case 'id':
-						$query[] = 'categories_id:(' . implode( 'OR', $terms ) . ')';
-						break;
-					default:
-						$query[] = 'categories:(' . implode( 'OR', $terms ) . ')';
-						break;
-				}
-
+			if ( ! isset( $tax_value['terms'] ) ) {
+				$tax_value['terms'] = array();
+			}
+			if ( isset( $tax_value[0]['taxonomy'] ) ) {
+				$query[] = $this->parse_tax_query( $tax_value );
+				continue;
+			}
+			if ( ! isset( $tax_value['taxonomy'] ) ) {
+				// Kill the query.
 				continue;
 			}
 
+			$used_terms = array();
 			if ( is_array( $tax_value['terms'] ) ) {
 				$terms = array();
 				foreach ( $tax_value['terms'] as $term ) {
-					$terms[] = '"' . $term . '"';
+					if ( ! in_array( $term, $used_terms ) ) {
+						$terms[]      = '"' . $term . '"';
+						$used_terms[] = $term;
+					}
 				}
 			} else {
 				$terms = array( $tax_value['terms'] );
 			}
-			switch ( $tax_value['field'] ) {
-				case 'slug':
-					$query[] = '(' . $tax_value['taxonomy'] . '_taxonomy_slug:' . implode( 'OR', $terms ) . ')';
+			$tax_value['field'] = ( isset( $tax_value['field'] ) ) ? $tax_value['field'] : 'term_id';
+
+			$field = $this->tax_field_name( $tax_value['field'], $tax_value['taxonomy'] );
+
+			$tax_value['operator'] = ( isset( $tax_value['operator'] ) ) ? $tax_value['operator'] : 'IN';
+
+			$tax_value['include_children'] = ( isset( $tax_value['include_children'] ) ) ? $tax_value['include_children'] : true;
+
+			switch ( $tax_value['operator'] ) {
+
+				case 'NOT IN':
+
+					$multi_query = array();
+					foreach ( $terms as $value ) {
+						$multi_query[] = '(' . $field . ':' . $value . ')';
+						$wildcard      = '(ID:*)';
+
+
+						if ( ! in_array( $wildcard, $wildcards_used ) ) {
+							$wildcards_used[] = $wildcard;
+							$query[]          = $wildcard;
+						}
+					}
+					$tax_fq[] = '!(' . implode( 'OR', $multi_query ) . ')';
+
 					break;
-				case 'term_id':
-				case 'id':
-					$query[] = '(' .$tax_value['taxonomy'] . '_taxonomy_id:' . implode( 'OR', $terms ) . ')';
+
+				case 'AND':
+					$wildcard = '(' . $field . ':*)';
+					if ( ! in_array( $wildcard, $wildcards_used ) ) {
+						$wildcards_used[] = $wildcard;
+						$query[]          = $wildcard;
+					}
+					$tax_fq[] = '(' . $field . ':(' . implode( 'AND', $terms ) . '))';
 					break;
-				default:
-					$query[] = '(' .$tax_value['taxonomy'] . '_taxonomy:' . implode( 'OR', $terms ) . ')';
+
+				case 'EXISTS':
+					$terms         = ( ! empty( $terms ) ) ? $terms : array( '*' );
+					$multi_query   = array();
+					$multi_query[] = '(' . $field . ':' . implode( 'OR', $terms ) . ')';
+					$wildcard      = '(' . $field . ':*)';
+
+					if ( ! in_array( $wildcard, $multi_query ) ) {
+						$multi_query[]    = $wildcard;
+						$wildcards_used[] = $wildcard;
+					}
+
+					$query[] = '(ID:*)';
+
+					$fq = implode( 'OR', $multi_query );
+					if ( ! in_array( $fq, $tax_fq ) ) {
+						$tax_fq[] = $fq;
+					}
+					break;
+
+				case 'NOT EXISTS':
+					$terms         = ( ! empty( $terms ) ) ? $terms : array( '*' );
+					$multi_query   = array();
+					$multi_query[] = '!(' . $field . ':' . implode( 'AND', $terms ) . ')';
+					$wildcard      = '!(' . $field . ':*)';
+
+					if ( ! in_array( $wildcard, $multi_query ) ) {
+						$multi_query[]    = $wildcard;
+						$wildcards_used[] = $wildcard;
+					}
+
+					$query[] = '(ID:*)';
+
+					$fq = implode( 'AND', $multi_query );
+					if ( ! in_array( $fq, $tax_fq ) ) {
+						$tax_fq[] = $fq;
+					}
+					break;
+
+				default: // 'IN'
+					$multi_query   = array();
+					$multi_query[] = '(' . $field . ':(' . implode( 'OR', $terms ) . '))';
+					if ( $tax_value['include_children'] && is_taxonomy_hierarchical( $tax_value['taxonomy'] ) ) {
+						$multi_query[] = '(parent_' . $field . ':' . implode( 'OR', $terms ) . ')';
+					}
+					$query[] = '(' . implode( 'OR', $multi_query ) . ')';
 					break;
 			}
-
+		}
+		if ( ! empty( $tax_fq ) ) {
+			$this->fq[] = '(' . implode( 'OR', $tax_fq ) . ')';
 		}
 
-		return implode( $relation, $query );
+		return '(' . implode( $relation, $query ) . ')';
+
+	}
+
+	private function tax_field_name( $tax_field, $taxonomy ) {
+		if ( 'category' === $taxonomy ) {
+			$taxonomy = 'categories';
+		} elseif ( 'post_tag' === $taxonomy ) {
+			$taxonomy = 'tags';
+		} else {
+			$taxonomy .= '_taxonomy';
+		}
+		switch ( $tax_field ) {
+			case 'slug':
+				$field = $taxonomy . '_slug_str';
+				break;
+			case 'name':
+				$field = $taxonomy . '_str';
+				break;
+			case 'term_taxonomy_id':
+				$field = 'term_taxonomy_id';
+				break;
+			default:
+				$field = $taxonomy . '_id';
+				break;
+		}
+
+		return $field;
 	}
 
 	/**

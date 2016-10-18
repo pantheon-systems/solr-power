@@ -34,6 +34,15 @@ class SolrTestBase extends WP_UnitTestCase{
 
 	}
 
+	function tearDown() {
+		parent::tearDown();
+		global $wpdb;
+		$wpdb->query('TRUNCATE ' . $wpdb->posts);
+		$wpdb->query('TRUNCATE ' . $wpdb->postmeta);
+		// Delete the entire index.
+		SolrPower_Sync::get_instance()->delete_all();
+	}
+
 	function __setup_taxonomy() {
 
 		$labels = array(

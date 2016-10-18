@@ -262,8 +262,20 @@ class SolrPower_Sync {
 					} else {
 						$doc->addField( 'categories', $category->cat_name );
 					}
-					$doc->addField( 'categories_slug', $category->slug );
+					$doc->addField( 'categories_str', $category->cat_name );
+					$doc->addField( 'categories_slug_str', $category->slug );
 					$doc->addField( 'categories_id', $category->term_id );
+					$doc->addField( 'term_taxonomy_id', $category->term_taxonomy_id );
+					// Category Parents too:
+					$the_cat=$category;
+					while (0 !== $the_cat->parent){
+						$the_cat=get_category( $the_cat->parent );
+						$doc->addField( 'parent_categories_str', $the_cat->cat_name );
+						$doc->addField( 'parent_categories_slug_str', $the_cat->slug );
+						$doc->addField( 'parent_categories_id', $the_cat->term_id );
+						$doc->addField( 'parent_term_taxonomy_id', $the_cat->term_taxonomy_id );
+
+					}
 				}
 			}
 
@@ -276,9 +288,10 @@ class SolrPower_Sync {
 					//so lets set up all our taxonomies in that format
 					$parent = $parent . "_taxonomy";
 					foreach ( $terms as $term ) {
-						$doc->addField( $parent, $term->name );
-						$doc->addField( $parent . '_slug', $term->slug );
+						$doc->addField( $parent . '_str', $term->name );
+						$doc->addField( $parent . '_slug_str', $term->slug );
 						$doc->addField( $parent . '_id', $term->term_id );
+						$doc->addField( 'term_taxonomy_id', $term->term_taxonomy_id );
 					}
 				}
 			}
@@ -287,6 +300,9 @@ class SolrPower_Sync {
 			if ( ! $tags == null ) {
 				foreach ( $tags as $tag ) {
 					$doc->addField( 'tags', $tag->name );
+					$doc->addField( 'tags_slug_str', $tag->slug );
+					$doc->addField( 'tags_id', $tag->id);
+					$doc->addField( 'term_taxonomy_id', $tag->term_taxonomy_id );
 				}
 			}
 
