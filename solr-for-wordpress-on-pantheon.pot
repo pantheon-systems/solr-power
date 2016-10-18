@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: solr-power 0.6.0\n"
 "Report-Msgid-Bugs-To: https://github.com/pantheon-systems/solr-power/issues\n"
-"POT-Creation-Date: 2016-10-13 22:16-0500\n"
+"POT-Creation-Date: 2016-10-18 13:37-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,7 +72,7 @@ msgstr ""
 msgid "Query Time:"
 msgstr ""
 
-#: includes/class-solrpower-sync.php:303
+#: includes/class-solrpower-sync.php:332
 msgid "Post Information is NULL"
 msgstr ""
 
@@ -155,6 +155,52 @@ msgid ""
 "function properly.<br />The Solr Power plugin <strong>has been deactivated</"
 "strong>.<br />Please configure the environment variables and re-activate the "
 "Solr Power plugin. "
+msgstr ""
+
+#: tests/phpunit/class-solr-test-base.php:49
+msgctxt "taxonomy general name"
+msgid "Genres"
+msgstr ""
+
+#: tests/phpunit/class-solr-test-base.php:50
+msgctxt "taxonomy singular name"
+msgid "Genre"
+msgstr ""
+
+#: tests/phpunit/class-solr-test-base.php:51
+msgid "Search Genres"
+msgstr ""
+
+#: tests/phpunit/class-solr-test-base.php:52
+msgid "All Genres"
+msgstr ""
+
+#: tests/phpunit/class-solr-test-base.php:53
+msgid "Parent Genre"
+msgstr ""
+
+#: tests/phpunit/class-solr-test-base.php:54
+msgid "Parent Genre:"
+msgstr ""
+
+#: tests/phpunit/class-solr-test-base.php:55
+msgid "Edit Genre"
+msgstr ""
+
+#: tests/phpunit/class-solr-test-base.php:56
+msgid "Update Genre"
+msgstr ""
+
+#: tests/phpunit/class-solr-test-base.php:57
+msgid "Add New Genre"
+msgstr ""
+
+#: tests/phpunit/class-solr-test-base.php:58
+msgid "New Genre Name"
+msgstr ""
+
+#: tests/phpunit/class-solr-test-base.php:59
+msgid "Genre"
 msgstr ""
 
 #: views/options/action.php:3

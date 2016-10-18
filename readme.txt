@@ -129,7 +129,7 @@ You can see more details about the commands using `wp help solr`:
 
 Use Solr in a custom WP_Query instead of querying a database. Add ```'solr_integrate' => true``` to the query arguments.
 
-**NOTE:** Currently, only basic queries and meta_query is supported.
+**NOTE:** Currently, only basic queries, tax_query and meta_query is supported.
 
 A meta_query can use the following compare operators:
 
@@ -150,10 +150,12 @@ A meta_query can use the following compare operators:
 
 (```'REGEXP'```, ```'NOT REGEXP'```, and ```'RLIKE'``` are not supported.)
 
-**WP_Query Example with meta_query:**
+**WP_Query Example with meta_query and tax_query:**
 ```
 $query = new WP_Query( array(
 	'solr_integrate' => true,
+	'post_type'      => 'post',
+	'post_status'    => 'publish',
 	'meta_query'     => array(
 		'relation' => 'AND',
 		array(
@@ -166,14 +168,29 @@ $query = new WP_Query( array(
 			'key'     => 'oof',
 			'value'   => 'baz',
 			'compare' => '='
-		)
+		),
+	),
+	'tax_query'     => array(
+		'relation' => 'AND',
+		array(
+			'taxonomy'=> 'foo',
+			'field'   => 'term_id',
+			'terms'   => 4,
+
+		),
+		array(
+			'taxonomy'=> 'oof',
+			'field'   => 'slug',
+			'terms'   => array( 'bar', 'baz' ),
+
+		),
 	),
 ) );
 ```
 
 == Changelog ==
 = 0.6.0 =
-* Advanced WP_Query Integration - Meta Queries
+* Advanced WP_Query Integration - Meta Queries, Tax Queries
 * Translatable strings standardized
 * Facet query fixes
 * Hide schema submit option if not on the Pantheon platform
