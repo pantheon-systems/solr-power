@@ -301,7 +301,7 @@ class SolrPower_Sync {
 				foreach ( $tags as $tag ) {
 					$doc->addField( 'tags', $tag->name );
 					$doc->addField( 'tags_slug_str', $tag->slug );
-					$doc->addField( 'tags_id', $tag->id);
+					$doc->addField( 'tags_id', $tag->term_id);
 					$doc->addField( 'term_taxonomy_id', $tag->term_taxonomy_id );
 				}
 			}
