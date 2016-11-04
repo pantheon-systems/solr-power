@@ -41,6 +41,8 @@ class SolrTestBase extends WP_UnitTestCase{
 		$wpdb->query('TRUNCATE ' . $wpdb->postmeta);
 		// Delete the entire index.
 		SolrPower_Sync::get_instance()->delete_all();
+		// Flush cache.
+		wp_cache_flush();
 	}
 
 	function __setup_taxonomy() {
