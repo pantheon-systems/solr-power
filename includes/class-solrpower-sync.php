@@ -244,10 +244,33 @@ class SolrPower_Sync {
 			$doc->setField( 'post_date_gmt', $this->format_date( $post_info->post_date_gmt ) );
 			$doc->setField( 'post_modified_gmt', $this->format_date( $post_info->post_modified_gmt ) );
 			$doc->setField( 'post_date', $this->format_date( $post_info->post_date ) );
+
 			$doc->setField( 'post_modified', $this->format_date( $post_info->post_modified ) );
 			$doc->setField( 'displaydate', $post_info->post_date );
 			$doc->setField( 'displaymodified', $post_info->post_modified );
 
+			$post_time = strtotime( $post_info->post_date );
+			$doc->setField( 'year_i', date( 'Y', $post_time ) );
+			$doc->setField( 'month_i', date( 'm', $post_time ) );
+			$doc->setField( 'day_i', date( 'd', $post_time ) );
+			$doc->setField( 'week_i', date( 'W', $post_time ) );
+			$doc->setField( 'dayofweek_i', ( date( 'w', $post_time ) + 1 ) );
+			$doc->setField( 'dayofweek_iso_i', date( 'w', $post_time ) );
+			$doc->setField( 'hour_i', date( 'H', $post_time ) );
+			$doc->setField( 'minute_i', date( 'i', $post_time ) );
+			$doc->setField( 'second_i', date( 's', $post_time ) );
+
+
+			$post_time = strtotime( $post_info->post_modified );
+			$doc->setField( 'post_modified_year_i', date( 'Y', $post_time ) );
+			$doc->setField( 'post_modified_month_i', date( 'm', $post_time ) );
+			$doc->setField( 'post_modified_day_i', date( 'd', $post_time ) );
+			$doc->setField( 'post_modified_week_i', date( 'W', $post_time ) );
+			$doc->setField( 'post_modified_dayofweek_i', ( date( 'w', $post_time ) + 1 ) );
+			$doc->setField( 'post_modified_dayofweek_iso_i', date( 'w', $post_time ) );
+			$doc->setField( 'post_modified_hour_i', date( 'H', $post_time ) );
+			$doc->setField( 'post_modified_minute_i', date( 'i', $post_time ) );
+			$doc->setField( 'post_modified_second_i', date( 's', $post_time ) );
 
 			$doc->setField( 'post_status', $post_info->post_status );
 			$doc->setField( 'post_parent', $post_info->post_parent );
@@ -267,9 +290,9 @@ class SolrPower_Sync {
 					$doc->addField( 'categories_id', $category->term_id );
 					$doc->addField( 'term_taxonomy_id', $category->term_taxonomy_id );
 					// Category Parents too:
-					$the_cat=$category;
-					while (0 !== $the_cat->parent){
-						$the_cat=get_category( $the_cat->parent );
+					$the_cat = $category;
+					while ( 0 !== $the_cat->parent ) {
+						$the_cat = get_category( $the_cat->parent );
 						$doc->addField( 'parent_categories_str', $the_cat->cat_name );
 						$doc->addField( 'parent_categories_slug_str', $the_cat->slug );
 						$doc->addField( 'parent_categories_id', $the_cat->term_id );
@@ -301,7 +324,7 @@ class SolrPower_Sync {
 				foreach ( $tags as $tag ) {
 					$doc->addField( 'tags', $tag->name );
 					$doc->addField( 'tags_slug_str', $tag->slug );
-					$doc->addField( 'tags_id', $tag->id);
+					$doc->addField( 'tags_id', $tag->id );
 					$doc->addField( 'term_taxonomy_id', $tag->term_taxonomy_id );
 				}
 			}
@@ -317,9 +340,9 @@ class SolrPower_Sync {
 							$doc->addField( $field_name . '_str', $value );
 							if ( ! in_array( $field_name, $used ) ) {
 								$doc->addField( $field_name . '_i', absint( $value ) );
-								$doc->addField( $field_name . '_d', floatval($value)  );
-								$doc->addField( $field_name . '_f', floatval($value)  );
-								$doc->addField( $field_name . '_s', $value  );
+								$doc->addField( $field_name . '_d', floatval( $value ) );
+								$doc->addField( $field_name . '_f', floatval( $value ) );
+								$doc->addField( $field_name . '_s', $value );
 							}
 							$doc->addField( $field_name . '_srch', $value );
 							$used[] = $field_name;
@@ -370,6 +393,7 @@ class SolrPower_Sync {
 			}
 		} catch ( Exception $e ) {
 			$this->error_msg = esc_html( $e->getMessage() );
+
 			return false;
 		}
 	}
