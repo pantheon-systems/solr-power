@@ -32,6 +32,10 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 
 	}
 
+	function tearDown() {
+		parent::tearDown();
+	}
+
 	public function test_meta_empty() {
 
 		$p1 = self::factory()->post->create();

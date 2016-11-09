@@ -243,6 +243,7 @@ class SolrPower_Options {
 		$options['s4wp_default_operator']       = 'OR';
 		$options['s4wp_default_sort']           = 'score';
 		$options['s4wp_solr_initialized']       = 1;
+		$options['s4wp_index_all_sites']        = 1;
 		$this->update_option( $options );
 	}
 
