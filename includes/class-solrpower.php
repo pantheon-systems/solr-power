@@ -30,6 +30,9 @@ class SolrPower {
 		add_action( 'widgets_init', function () {
 			register_widget( 'SolrPower_Facet_Widget' );
 		} );
+
+		add_action( 'wp_ajax_nopriv_solr_search', array( $this, 'ajax_search' ) );
+		add_action( 'wp_ajax_solr_search', array( $this, 'ajax_search' ) );
 	}
 
 	function activate() {
@@ -82,7 +85,7 @@ class SolrPower {
 		}
 		wp_enqueue_script( 'solr-js', SOLR_POWER_URL . 'template/script.js', false );
 		$solr_js = array(
-			'ajax_url'	 => admin_url( 'admin-ajax.php' ),
+			'ajax_url' => admin_url( 'admin-ajax.php' ),
 
 			/**
 			 * Filter indexed post types
@@ -196,7 +199,37 @@ class SolrPower {
 	}
 
 	function add_scripts() {
-		wp_enqueue_script( 'Solr_Facet', SOLR_POWER_URL . 'assets/js/facet.js' );
+		wp_enqueue_script( 'Solr_Facet', SOLR_POWER_URL . 'assets/js/src/facet.js' );
+	}
+
+	function ajax_search() {
+
+		// Allow an AJAX search.
+		add_filter( 'solr_allow_ajax', '__return_true' );
+		add_filter( 'solr_allow_admin', '__return_true' );
+
+		$args = array(
+			's' => filter_input( INPUT_GET, 's', FILTER_SANITIZE_STRING ),
+			'facets'=>filter_input(INPUT_GET,'facet'),
+			'posts_per_page'=>get_option('posts_per_page')
+		);
+
+		$query = new WP_Query( $args );
+		$query->get_posts();
+		ob_start();
+		while ( $query->have_posts() ) : $query->the_post();
+			get_template_part( 'content', get_post_format() );
+		endwhile;
+		$the_posts=ob_get_clean();
+		$facet_widget = new SolrPower_Facet_Widget();
+
+		$return = array(
+			'posts'  => $the_posts,
+			'facets' => $facet_widget->fetch_facets(false)
+		);
+
+		echo wp_json_encode( $return );
+		wp_die();
 	}
 
 }

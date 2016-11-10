@@ -40,6 +40,7 @@ class SolrPower_WP_Query {
 		if ( ! self::$instance ) {
 			self::$instance = new self();
 			add_action( 'init', array( self::$instance, 'setup' ) );
+
 		}
 
 		return self::$instance;
@@ -56,6 +57,9 @@ class SolrPower_WP_Query {
 	 * SolrPower_WP_Query instance initial setup method.
 	 */
 	function setup() {
+
+
+
 		// We don't want to do a Solr query if we're doing AJAX or in the admin area.
 
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
@@ -68,7 +72,7 @@ class SolrPower_WP_Query {
 			 * @param bool $solr_allow_ajax True to query on AJAX or false [default false].
 			 */
 			if ( false === apply_filters( 'solr_allow_ajax', false ) ) {
-				return;
+			// return;
 			}
 		}
 
@@ -80,7 +84,7 @@ class SolrPower_WP_Query {
 		 * @param bool $solr_allow_admin True to query in WordPress Dashboard or false [default false].
 		 */
 		if ( is_admin() && false === apply_filters( 'solr_allow_admin', false ) ) {
-			return;
+		//	return;
 		}
 
 
@@ -822,6 +826,9 @@ class SolrPower_WP_Query {
 
 
 	}
+
+
+
 }
 
 
