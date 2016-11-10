@@ -51,7 +51,7 @@ class SolrPower_WP_Query {
 	function __construct() {
 
 	}
-	
+
 	/**
 	 * SolrPower_WP_Query instance initial setup method.
 	 */
