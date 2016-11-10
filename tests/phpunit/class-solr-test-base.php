@@ -42,8 +42,6 @@ class SolrTestBase extends WP_UnitTestCase {
 		// Delete the entire index.
 		SolrPower_Sync::get_instance()->delete_all();
 		wp_cache_flush();
-		SolrPower_WP_Query::get_instance()->destroy();
-		SolrPower_WP_Query::get_instance();
 		parent::tearDown();
 	}
 

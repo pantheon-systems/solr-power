@@ -51,14 +51,7 @@ class SolrPower_WP_Query {
 	function __construct() {
 
 	}
-
-	/**
-	 * Destroy Instance.
-	 */
-	function destroy() {
-		self::$instance = false;
-	}
-
+	
 	/**
 	 * SolrPower_WP_Query instance initial setup method.
 	 */
