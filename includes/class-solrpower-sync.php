@@ -267,9 +267,9 @@ class SolrPower_Sync {
 					$doc->addField( 'categories_id', $category->term_id );
 					$doc->addField( 'term_taxonomy_id', $category->term_taxonomy_id );
 					// Category Parents too:
-					$the_cat=$category;
-					while (0 !== $the_cat->parent){
-						$the_cat=get_category( $the_cat->parent );
+					$the_cat = $category;
+					while ( 0 !== $the_cat->parent ) {
+						$the_cat = get_category( $the_cat->parent );
 						$doc->addField( 'parent_categories_str', $the_cat->cat_name );
 						$doc->addField( 'parent_categories_slug_str', $the_cat->slug );
 						$doc->addField( 'parent_categories_id', $the_cat->term_id );
@@ -301,7 +301,7 @@ class SolrPower_Sync {
 				foreach ( $tags as $tag ) {
 					$doc->addField( 'tags', $tag->name );
 					$doc->addField( 'tags_slug_str', $tag->slug );
-					$doc->addField( 'tags_id', $tag->term_id);
+					$doc->addField( 'tags_id', $tag->term_id );
 					$doc->addField( 'term_taxonomy_id', $tag->term_taxonomy_id );
 				}
 			}
@@ -316,10 +316,11 @@ class SolrPower_Sync {
 						foreach ( $field as $key => $value ) {
 							$doc->addField( $field_name . '_str', $value );
 							if ( ! in_array( $field_name, $used ) ) {
-								$doc->addField( $field_name . '_i', absint( $value ) );
-								$doc->addField( $field_name . '_d', floatval($value)  );
-								$doc->addField( $field_name . '_f', floatval($value)  );
-								$doc->addField( $field_name . '_s', $value  );
+								if ( is_numeric( $value ) ) {
+									$doc->addField( $field_name . '_i', absint( $value ) );
+									$doc->addField( $field_name . '_d', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
+									$doc->addField( $field_name . '_f', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
+								}
 							}
 							$doc->addField( $field_name . '_srch', $value );
 							$used[] = $field_name;
@@ -370,6 +371,7 @@ class SolrPower_Sync {
 			}
 		} catch ( Exception $e ) {
 			$this->error_msg = esc_html( $e->getMessage() );
+
 			return false;
 		}
 	}
