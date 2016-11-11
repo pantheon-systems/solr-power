@@ -321,6 +321,7 @@ class SolrPower_Sync {
 									$doc->addField( $field_name . '_d', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
 									$doc->addField( $field_name . '_f', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
 								}
+								$doc->addField( $field_name . '_s', $value  );
 							}
 							$doc->addField( $field_name . '_srch', $value );
 							$used[] = $field_name;
