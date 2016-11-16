@@ -27,7 +27,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			echo $args['before_title'] . $instance['title'] . $args['after_title'];
 		}
 		$this->facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
-		echo '<form action="' . home_url( '/' ) . '" method="get" id="solr_facet">';
+		echo '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="solr_facet">';
 		$this->render_searchbox();
 		echo '<div id="solr_facets">';
 		$this->fetch_facets();
@@ -72,11 +72,15 @@ class SolrPower_Facet_Widget extends WP_Widget {
 
 	/**
 	 * Fetches and displays returned facets.
+	 *
+	 * @param bool $echo Echo the facets?
+	 *
+	 * @return bool|string
 	 */
 	function fetch_facets( $echo = true ) {
 		$solr_options = solr_options();
 		if ( ! $solr_options['s4wp_output_facets'] ) {
-			return;
+			return false;
 		}
 
 		$facets       = SolrPower_WP_Query::get_instance()->facets;
@@ -124,7 +128,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 				continue;
 			}
 			$output .= '<h2>' . esc_html( $facet_nice_name ) . '</h2>';
-			$output .= '<ul>';
+			$output .= '<ul id="fn_' . esc_attr( md5($facet_name) ) . '">';
 
 			$facets_facet_name = array();
 			if ( isset( $this->facets[ $facet_name ] ) ) {
@@ -150,20 +154,24 @@ class SolrPower_Facet_Widget extends WP_Widget {
 				) {
 					$checked = checked( true, true, false );
 				}
-
+				$facet_id = 'f_' . md5( $facet_name . $name );
 				$output .= '<li>';
-				$output .= '<input type="checkbox" name="facet[' . esc_attr( $facet_name ) . '][]" value="' . esc_attr( $name ) . '" ' . $checked . ' class="facet_check" id="f_' . md5( $facet_name .$name ) . '"> ';
-				$output .= '<a href="#" class="facet_link" data-for="f_' . md5( $facet_name .$name ) . '">';
+				$output .= '<input type="checkbox" name="facet[' . esc_attr( $facet_name ) . '][]" value="' . esc_attr( $name ) . '" ' . $checked . ' class="facet_check" id="' . $facet_id . '"> ';
+				if ( $solr_options['allow_ajax'] ) {
+					$output .= '<a href="#" class="facet_link" data-for="' . $facet_id . '">';
+				}
 				$output .= esc_html( $nice_name );
 				$output .= ' (' . esc_html( $count ) . ')';
-				$output .= '</a>';
+				if ( $solr_options['allow_ajax'] ) {
+					$output .= '</a>';
+				}
 				$output .= '</li>';
 			endforeach;
 
 			$output .= '</ul>';
 
 
-			$output .= '<a href="' . $this->reset_url( $facet_name ) . '">Reset</a>';
+			$output .= '<a href="' . $this->reset_url( $facet_name ) . '" class="solr_reset" data-for="fn_' . esc_attr( md5($facet_name) ) . '">Reset</a>';
 
 
 		}
@@ -179,11 +187,17 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	 * Reset link below facet list.
 	 *
 	 * @param string $facet_name
+	 *
+	 * @return string|boolean
 	 */
 	function reset_url( $facet_name ) {
+		$solr_options = solr_options();
+		if ( $solr_options['allow_ajax'] ) {
+			return '#';
+		}
 		$facets = $this->facets;
 		if ( ! isset( $facets[ $facet_name ] ) ) {
-			return;
+			return false;
 		}
 		unset( $facets[ $facet_name ] );
 
@@ -246,7 +260,6 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	}
 
 	function dummy_query() {
-		//add_filter('solr_query',array(SolrPower_Api::get_instance(),'dismax_query'),10,2);
 		global $wp_query;
 		$query = new WP_Query();
 		if ( ! $wp_query->get( 's' ) ) {
@@ -275,7 +288,7 @@ function solr_facet_search() {
 	$facet = new SolrPower_Facet_Widget();
 	$facet->dummy_query();
 	$facet->facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
-	echo '<form action="' . home_url( '/' ) . '" method="get" id="solr_facet">';
+	echo '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="solr_facet">';
 	$facet->render_searchbox();
 	$facet->fetch_facets();
 	echo '</form>';

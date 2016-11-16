@@ -21,8 +21,11 @@ class SolrPower {
 	}
 
 	function __construct() {
-		add_action( 'template_redirect', array( $this, 'template_redirect' ), 1 );
-		add_action( 'wp_enqueue_scripts', array( $this, 'autosuggest_head' ) );
+		$method = filter_input( INPUT_GET, 'method', FILTER_SANITIZE_STRING );
+		if ( 'autocomplete' === $method ) {
+			add_action( 'template_redirect', array( $this, 'template_redirect' ), 1 );
+			add_action( 'wp_enqueue_scripts', array( $this, 'autosuggest_head' ) );
+		}
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_head' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'add_scripts' ) );
 		add_filter( 'plugin_action_links', array( $this, 'plugin_settings_link' ), 10, 2 );
@@ -40,14 +43,14 @@ class SolrPower {
 		// Check to see if we have  environment variables. If not, bail. If so, create the initial options.
 
 		if ( $errMessage = SolrPower::get_instance()->sanity_check() ) {
-			wp_die( $errMessage );
+			wp_die( esc_html( $errMessage ) );
 		}
 
 		// Don't try to send a schema if we're not on Pantheon servers.
 		if ( ! defined( 'SOLR_PATH' ) ) {
 			$schemaSubmit = SolrPower_Api::get_instance()->submit_schema();
 			if ( strpos( $schemaSubmit, 'Error' ) ) {
-				wp_die( 'Submitting the schema failed with the message ' . $errMessage );
+				wp_die( 'Submitting the schema failed with the message ' . esc_html( $errMessage ) );
 			}
 		}
 		SolrPower_Options::get_instance()->initalize_options();
@@ -101,8 +104,17 @@ class SolrPower {
 		wp_localize_script( 'solr-js', 'solr', $solr_js );
 	}
 
+	/**
+	 * Display a settings link on the plugins page.
+	 *
+	 * @param array $links
+	 * @param string $file
+	 *
+	 * @return array
+	 */
 	function plugin_settings_link( $links, $file ) {
-		if ( $file != plugin_basename( SOLR_POWER_PATH . 'solr-power.php' ) ) {
+
+		if ( $file !== plugin_basename( SOLR_POWER_PATH . '/solr-power.php' ) ) {
 			return $links;
 		}
 
@@ -127,14 +139,13 @@ class SolrPower {
 
 		// not a search page; don't do anything and return
 		// thanks to the Better Search plugin for the idea:  http://wordpress.org/extend/plugins/better-search/
-		$search       = stripos( $_SERVER['REQUEST_URI'], '?ssearch=' );
-		$autocomplete = stripos( $_SERVER['REQUEST_URI'], '?method=autocomplete' );
-
-		if ( ( $search || $autocomplete ) == false ) {
+		$search = filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_STRING );
+		$method = filter_input( INPUT_GET, 'method', FILTER_SANITIZE_STRING );
+		if ( ( $search || $method ) === false ) {
 			return;
 		}
 
-		if ( $autocomplete ) {
+		if ( 'autocomplete' === $method ) {
 			$q     = filter_input( INPUT_GET, 'q', FILTER_SANITIZE_STRING );
 			$limit = filter_input( INPUT_GET, 'limit', FILTER_SANITIZE_STRING );
 
@@ -175,12 +186,12 @@ class SolrPower {
 		$query->setLimit( $limit );
 
 		$response = $solr->terms( $query );
-		if ( ! $response->getResponse()->getStatusCode() == 200 ) {
+		if ( ! $response->getResponse()->getStatusCode() === 200 ) {
 			return;
 		}
 		$terms = $response->getResults();
 		foreach ( $terms['spell'] as $term => $count ) {
-			printf( "%s\n", $term );
+			printf( "%s\n", esc_attr( $term ) );
 		}
 	}
 
@@ -198,34 +209,57 @@ class SolrPower {
 		return $panels;
 	}
 
+	/**
+	 * Enqueue and localize scripts.
+	 */
 	function add_scripts() {
-		wp_enqueue_script( 'Solr_Facet', SOLR_POWER_URL . 'assets/js/src/facet.js' );
+		wp_enqueue_script( 'Solr_Facet', SOLR_POWER_URL . 'assets/js/facet.min.js', array( 'jquery' ) );
+		$solr_options = solr_options();
+		$allow_ajax   = isset( $solr_options['allow_ajax'] ) ? boolval( $solr_options['allow_ajax'] ) : false;
+		$div_id       = isset( $solr_options['ajax_div_id'] ) ? esc_html( $solr_options['ajax_div_id'] ) : false;
+		wp_localize_script( 'Solr_Facet', 'solr', array(
+			'ajaxurl'           => admin_url( 'admin-ajax.php' ),
+			'allow_ajax'        => $allow_ajax,
+			'search_results_id' => $div_id
+		) );
 	}
 
+	/**
+	 * AJAX Callback for Facet Search
+	 */
 	function ajax_search() {
+		// Strip out admin-ajax from pagination links:
+		add_filter( 'paginate_links', function ( $url ) {
+			$url = str_replace( 'wp-admin/admin-ajax.php', '', $url );
+			$url = remove_query_arg( 'action', $url );
+
+			return $url;
+		} );
 
 		// Allow an AJAX search.
 		add_filter( 'solr_allow_ajax', '__return_true' );
 		add_filter( 'solr_allow_admin', '__return_true' );
 
 		$args = array(
-			's' => filter_input( INPUT_GET, 's', FILTER_SANITIZE_STRING ),
-			'facets'=>filter_input(INPUT_GET,'facet'),
-			'posts_per_page'=>get_option('posts_per_page')
+			's'              => filter_input( INPUT_GET, 's', FILTER_SANITIZE_STRING ),
+			'facets'         => filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY ),
+			'posts_per_page' => get_option( 'posts_per_page' )
 		);
 
 		$query = new WP_Query( $args );
 		$query->get_posts();
 		ob_start();
-		while ( $query->have_posts() ) : $query->the_post();
-			get_template_part( 'content', get_post_format() );
-		endwhile;
-		$the_posts=ob_get_clean();
+		// Check to see if an overwrite template exists in theme.
+		$theme_template = locate_template( array( 'solr-search-results.php' ), true, true );
+		if ( '' === $theme_template ) {
+			include SOLR_POWER_PATH . '/views/templates/solr-search-results.php';
+		}
+		$the_posts    = ob_get_clean();
 		$facet_widget = new SolrPower_Facet_Widget();
 
 		$return = array(
 			'posts'  => $the_posts,
-			'facets' => $facet_widget->fetch_facets(false)
+			'facets' => $facet_widget->fetch_facets( false )
 		);
 
 		echo wp_json_encode( $return );

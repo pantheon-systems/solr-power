@@ -34,7 +34,7 @@ module.exports = function( grunt ) {
           options : {
               jshintrc : true
           },
-          all     : ['assets/js/admin.js']
+          all     : ['assets/js/admin.js','assets/js/src/facet.js']
       },
 
       /**
@@ -42,7 +42,7 @@ module.exports = function( grunt ) {
        */
       uglify : {
 
-          production : {
+          backend : {
 
               options : {
                   beautify         : false,
@@ -57,7 +57,24 @@ module.exports = function( grunt ) {
 	                  'assets/js/admin.js'
                   ]
               }
+          },
+          frontend : {
+
+              options : {
+                  beautify         : false,
+                  preserveComments : false,
+                  mangle           : {
+                      except : ['jQuery']
+                  }
+              },
+
+              files : {
+                  'assets/js/facet.min.js' : [
+                      'assets/js/src/facet.js'
+                  ]
+              }
           }
+
       },
 
       /**
@@ -192,7 +209,7 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
 	grunt.loadNpmTasks('grunt-pot');
 	grunt.registerTask( 'readme', ['wp_readme_to_markdown']);
-	grunt.registerTask( 'default', ['jshint', 'uglify:production', 'sass', 'autoprefixer', 'cssmin'] );
+	grunt.registerTask( 'default', ['jshint', 'uglify:backend','uglify:frontend', 'sass', 'autoprefixer', 'cssmin'] );
 
 	grunt.util.linefeed = '\n';
 
