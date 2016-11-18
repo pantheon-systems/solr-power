@@ -132,7 +132,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 
 			$facets_facet_name = array();
 			if ( isset( $this->facets[ $facet_name ] ) ) {
-				$facets_facet_name = $this->facets[ $facet_name ];
+				$facets_facet_name = $this->facets[ $facet_name ]->getValues();
 				if ( is_array( $this->facets[ $facet_name ] ) ) {
 					// Decode special characters of facet and store in temporary array
 					$facets_facet_name = array_map( array(
