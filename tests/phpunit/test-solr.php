@@ -401,4 +401,48 @@ class SolrTest extends SolrTestBase {
 		wp_delete_category( $cat_id_two );
 	}
 
+	function test_facets_in_results() {
+		$cat_name = 'Movies';
+		$cat_id   = wp_create_category( $cat_name );
+
+		$p_id = $this->__create_test_post( 'post', 'Casablanca' );
+
+		wp_set_object_terms( $p_id, $cat_id, 'category', true );
+
+		$cat_name = 'Review';
+		$cat_id   = wp_create_category( $cat_name );
+		$p_id2    = $this->__create_test_post( 'post', 'Best Movies of 2015' );
+		wp_set_object_terms( $p_id2, $cat_id, 'category', true );
+
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+		$args  = array(
+			's' => 'Movie'
+		);
+		$query = new WP_Query( $args );
+
+		$this->assertEquals( array( $p_id2, $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
+	}
+
+	function test_facets_in_results_content() {
+		$cat_name = 'Movies';
+		$cat_id   = wp_create_category( $cat_name );
+
+		$p_id = $this->__create_test_post( 'post', 'Casablanca Movie', 'Rated as one of the best movies of all time. This movie is epic.' );
+
+		wp_set_object_terms( $p_id, $cat_id, 'category', true );
+
+		$cat_name = 'Review';
+		$cat_id   = wp_create_category( $cat_name );
+		$p_id2    = $this->__create_test_post( 'post', 'Best Movies of 2015' );
+		wp_set_object_terms( $p_id2, $cat_id, 'category', true );
+
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+		$args  = array(
+			's' => 'Movie'
+		);
+		$query = new WP_Query( $args );
+
+		$this->assertEquals( array( $p_id, $p_id2 ), wp_list_pluck( $query->posts, 'ID' ) );
+	}
+
 }
