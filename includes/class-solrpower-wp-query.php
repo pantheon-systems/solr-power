@@ -938,7 +938,7 @@ class SolrPower_WP_Query {
 					return '(' . $column . ':' . '[' . $the_date . 'T00:00:00Z TO *])';
 					break;
 				default:
-					return '(' . $column . ':' . $the_date . 'T00:00:00Z)';
+					return '(' . $column . ':' . $the_date . '*)';
 					break;
 			}
 
