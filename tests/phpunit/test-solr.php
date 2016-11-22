@@ -444,12 +444,26 @@ class SolrTest extends SolrTestBase {
 		wp_set_object_terms( $p_id, $cat_id2, 'category', true );
 
 
-		$p_id2 = $this->__create_test_post( 'post', 'Best Movies of 2015' );
+		$p_id2 = $this->__create_test_post( 'post', 'Best Films of 2015' );
 		wp_set_object_terms( $p_id2, $cat_id, 'category', true );
 
 		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
 		$args  = array(
 			's' => 'Movie'
+		);
+		$query = new WP_Query( $args );
+
+		$this->assertEquals( array( $p_id, $p_id2 ), wp_list_pluck( $query->posts, 'ID' ) );
+
+		$args  = array(
+			's' => 'Review'
+		);
+		$query = new WP_Query( $args );
+
+		$this->assertEquals( array( $p_id), wp_list_pluck( $query->posts, 'ID' ) );
+
+		$args  = array(
+			's' => 'Movie Reviews'
 		);
 		$query = new WP_Query( $args );
 
