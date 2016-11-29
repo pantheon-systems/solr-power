@@ -1,5 +1,4 @@
 <?php
-
 class SolrTest extends SolrTestBase {
 
 	function setUp() {
@@ -18,6 +17,9 @@ class SolrTest extends SolrTestBase {
 	}
 
 
+	/**
+	 * Tests wildcard search
+	 */
 	function test_wildcard_search() {
 
 		$this->__create_multiple( 5 );
@@ -70,7 +72,7 @@ class SolrTest extends SolrTestBase {
 	 */
 	function test_post_status_change() {
 		$post_id = $this->__create_test_post();
-		// Let's transition the post status from published to draft
+		// Let's transition the post status from published to draft.
 		wp_update_post( array( 'ID' => $post_id, 'post_status' => 'draft' ) );
 		$search = $this->__run_test_query();
 		if ( is_null( $search ) ) {
@@ -84,15 +86,16 @@ class SolrTest extends SolrTestBase {
 
 	/**
 	 * Tests to see if Solr indexes all posts.
+	 *
 	 * @group 43
-	 * @link https://github.com/pantheon-systems/solr-power/issues/43
+	 * @link  https://github.com/pantheon-systems/solr-power/issues/43
 	 */
 	function test_index_all_posts() {
-		// Create 20 posts:
+		// Create 20 posts.
 		$this->__create_multiple( 20 );
 		// Delete index.
 		SolrPower_Sync::get_instance()->delete_all();
-		// Index all posts:
+		// Index all posts.
 		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
 
 		$search = $this->__run_test_query( 'post' );
@@ -108,8 +111,9 @@ class SolrTest extends SolrTestBase {
 
 	/**
 	 * Tests to see if indexing stats work.
+	 *
 	 * @group 40
-	 * @link https://github.com/pantheon-systems/solr-power/issues/40
+	 * @link  https://github.com/pantheon-systems/solr-power/issues/40
 	 */
 	function test_index_stats() {
 		$this->__create_test_post( 'page' );
@@ -123,15 +127,16 @@ class SolrTest extends SolrTestBase {
 
 	/**
 	 * Tests to see if indexing stats work upon delete all.
+	 *
 	 * @group 40
-	 * @link https://github.com/pantheon-systems/solr-power/issues/40
+	 * @link  https://github.com/pantheon-systems/solr-power/issues/40
 	 */
 	function test_index_stats_on_delete_all() {
 		$this->__create_test_post( 'page' );
 		$this->__create_test_post( 'page' );
 		$this->__create_multiple( 5 );
 
-		// Delete all of these newly indexed items:
+		// Delete all of these newly indexed items.
 		SolrPower_Sync::get_instance()->delete_all();
 
 		$stats = SolrPower_Api::get_instance()->index_stats();
@@ -141,8 +146,9 @@ class SolrTest extends SolrTestBase {
 
 	/**
 	 * Tests to see if indexing stats work upon delete.
+	 *
 	 * @group 40
-	 * @link https://github.com/pantheon-systems/solr-power/issues/40
+	 * @link  https://github.com/pantheon-systems/solr-power/issues/40
 	 */
 	function test_index_stats_on_delete() {
 		$delete_id = $this->__create_test_post( 'page' );
@@ -153,7 +159,7 @@ class SolrTest extends SolrTestBase {
 			$blogid    = get_current_blog_id();
 			$delete_id = $blogid . '_' . $delete_id;
 		}
-		// Delete all of these newly indexed items:
+		// Delete all of these newly indexed items.
 		SolrPower_Sync::get_instance()->delete( $delete_id );
 
 		$stats = SolrPower_Api::get_instance()->index_stats();
@@ -163,6 +169,7 @@ class SolrTest extends SolrTestBase {
 
 	/**
 	 * Test to see if facets are being returned from search.
+	 *
 	 * @group 37
 	 */
 	function test_facets() {
@@ -175,6 +182,7 @@ class SolrTest extends SolrTestBase {
 
 	/**
 	 * Test to make custom field a facet.
+	 *
 	 * @group 37
 	 */
 	function test_custom_field_facet() {
@@ -198,6 +206,7 @@ class SolrTest extends SolrTestBase {
 
 	/**
 	 * Perform a search with a facet set.
+	 *
 	 * @group 37
 	 */
 	function test_cf_facet_search() {
@@ -209,8 +218,8 @@ class SolrTest extends SolrTestBase {
 
 		$query = $this->__facet_query( array(
 			'facet' => array(
-				'my_field_str' => array( 'my_value' )
-			)
+				'my_field_str' => array( 'my_value' ),
+			),
 		) );
 
 		$this->assertEquals( $query->post_count, 2 );
@@ -220,6 +229,7 @@ class SolrTest extends SolrTestBase {
 
 	/**
 	 * Test of filter that adds a custom field to index and facet.
+	 *
 	 * @group 37
 	 */
 	function test_cf_facet_filter() {
@@ -240,8 +250,8 @@ class SolrTest extends SolrTestBase {
 
 		$query = $this->__facet_query( array(
 			'facet' => array(
-				'my_field_str' => array( 'my_value' )
-			)
+				'my_field_str' => array( 'my_value' ),
+			),
 		) );
 
 		$this->assertEquals( $query->post_count, 2 );
@@ -250,6 +260,7 @@ class SolrTest extends SolrTestBase {
 
 	/**
 	 * Test to see if a two facets can be selected.
+	 *
 	 * @group 37
 	 */
 	function test_multi_facet() {
@@ -274,8 +285,8 @@ class SolrTest extends SolrTestBase {
 		$query = $this->__facet_query( array(
 			'facet' => array(
 				'my_field_str' => array( 'my_value' ),
-				'categories'   => array( 'smelly_cat^^' )
-			)
+				'categories'   => array( 'smelly_cat^^' ),
+			),
 		) );
 
 		$this->assertEquals( 2, $query->post_count );
@@ -287,6 +298,7 @@ class SolrTest extends SolrTestBase {
 
 	/**
 	 * Test to see if a two facets can be selected.
+	 *
 	 * @group 37
 	 */
 	function test_facet_category_ampersand() {
@@ -302,8 +314,8 @@ class SolrTest extends SolrTestBase {
 
 		$query = $this->__facet_query( array(
 			'facet' => array(
-				'categories' => array( $cat_name . '^^' )
-			)
+				'categories' => array( $cat_name . '^^' ),
+			),
 		) );
 
 		$this->assertEquals( 1, $query->post_count );
@@ -315,6 +327,7 @@ class SolrTest extends SolrTestBase {
 
 	/**
 	 * Test to see if a two facets of the same type can be selected.
+	 *
 	 * @group 37
 	 */
 	function test_multi_same_facet() {
@@ -341,8 +354,8 @@ class SolrTest extends SolrTestBase {
 				'categories'   => array(
 					'smelly_cat^^',
 					'bad_cat^^',
-				)
-			)
+				),
+			),
 		) );
 
 
@@ -363,6 +376,7 @@ class SolrTest extends SolrTestBase {
 	/**
 	 * Test to see if a two facets can be selected with the AND operator.
 	 * Should yield zero results.
+	 *
 	 * @group 37
 	 */
 	function test_multi_facet_and() {
@@ -388,8 +402,8 @@ class SolrTest extends SolrTestBase {
 		$query = $this->__facet_query( array(
 			'facet' => array(
 				'my_field_str' => array( 'my_value' ),
-				'categories'   => array( 'smelly_cat^^' )
-			)
+				'categories'   => array( 'smelly_cat^^' ),
+			),
 		) );
 
 
@@ -401,15 +415,18 @@ class SolrTest extends SolrTestBase {
 		wp_delete_category( $cat_id_two );
 	}
 
+	/**
+	 * Test searching for exact day, month and year (without time)
+	 */
 	public function test_date_query_year_month_day_exact() {
-		$p1 = self::factory()->post->create( array( 'post_date' => '1987-03-03 04:23:57', ) );
+		$p1 = self::factory()->post->create( array( 'post_date' => '1987-03-03 04:23:57' ) );
 
 		$posts = $this->_get_query_result( array(
 			'date_query' => array(
 				array(
 					'year'  => 1987,
 					'month' => 03,
-					'day' => 03,
+					'day'   => 03,
 				),
 			),
 		) );
@@ -417,4 +434,74 @@ class SolrTest extends SolrTestBase {
 
 	}
 
+	/**
+	 * The post_title should appear above facets.
+	 *
+	 * @group 126
+	 * @link  https://github.com/pantheon-systems/solr-power/issues/126
+	 */
+	function test_facets_in_results() {
+		$cat_name = 'Movies';
+		$cat_id   = wp_create_category( $cat_name );
+
+		$p_id = $this->__create_test_post( 'post', 'Casablanca' );
+
+		wp_set_object_terms( $p_id, $cat_id, 'category', true );
+
+		$cat_name = 'Review';
+		$cat_id   = wp_create_category( $cat_name );
+		$p_id2    = $this->__create_test_post( 'post', 'Best Movies of 2015' );
+		wp_set_object_terms( $p_id2, $cat_id, 'category', true );
+
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+		$args  = array(
+			's' => 'Movie',
+		);
+		$query = new WP_Query( $args );
+
+		$this->assertEquals( array( $p_id2, $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
+	}
+
+	/**
+	 * The post_title and post_content should appear above facets.
+	 *
+	 * @group 126
+	 * @link  https://github.com/pantheon-systems/solr-power/issues/126
+	 */
+	function test_facets_in_results_content() {
+		$cat_name  = 'Movies';
+		$cat_id    = wp_create_category( $cat_name );
+		$cat_name2 = 'Review';
+		$cat_id2   = wp_create_category( $cat_name2 );
+
+		$p_id = $this->__create_test_post( 'post', 'Casablanca Movie', 'Rated as one of the best movies of all time. This movie is epic.' );
+
+		wp_set_object_terms( $p_id, $cat_id2, 'category', true );
+
+
+		$p_id2 = $this->__create_test_post( 'post', 'Best Films of 2015' );
+		wp_set_object_terms( $p_id2, $cat_id, 'category', true );
+
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+		$args  = array(
+			's' => 'Movie',
+		);
+		$query = new WP_Query( $args );
+
+		$this->assertEquals( array( $p_id, $p_id2 ), wp_list_pluck( $query->posts, 'ID' ) );
+
+		$args  = array(
+			's' => 'Review',
+		);
+		$query = new WP_Query( $args );
+
+		$this->assertEquals( array( $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
+
+		$args  = array(
+			's' => 'Movie Reviews',
+		);
+		$query = new WP_Query( $args );
+
+		$this->assertEquals( array( $p_id, $p_id2 ), wp_list_pluck( $query->posts, 'ID' ) );
+	}
 }

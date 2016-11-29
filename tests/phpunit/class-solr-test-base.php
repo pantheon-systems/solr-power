@@ -35,10 +35,11 @@ class SolrTestBase extends WP_UnitTestCase{
 	}
 
 	function tearDown() {
+
 		parent::tearDown();
 		global $wpdb;
-		$wpdb->query('TRUNCATE ' . $wpdb->posts);
-		$wpdb->query('TRUNCATE ' . $wpdb->postmeta);
+		$wpdb->query( 'TRUNCATE ' . $wpdb->posts );
+		$wpdb->query( 'TRUNCATE ' . $wpdb->postmeta );
 		// Delete the entire index.
 		SolrPower_Sync::get_instance()->delete_all();
 		// Flush cache.
@@ -81,15 +82,20 @@ class SolrTestBase extends WP_UnitTestCase{
 
 
 	/**
-	 * Creates a new post.
+	 * Creates a test post.
+	 *
+	 * @param string $post_type
+	 * @param bool|string $title
+	 * @param bool|string $content
+	 *
 	 * @return int|WP_Error
 	 */
-	function __create_test_post( $post_type = 'post' ) {
+	function __create_test_post( $post_type = 'post', $title = false, $content = false ) {
 		$args = array(
 			'post_type'    => $post_type,
 			'post_status'  => 'publish',
-			'post_title'   => 'Test Post ' . time(),
-			'post_content' => 'This is a solr test.',
+			'post_title'   => ( $title ) ? $title : 'Test Post ' . time(),
+			'post_content' => ( $content ) ? $content : 'This is a solr test.',
 		);
 
 		return wp_insert_post( $args );
