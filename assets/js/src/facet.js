@@ -1,7 +1,9 @@
 jQuery(document).ready(function ($) {
     var the_body = $('body');
+    var ajax_on=true;
     the_body.on('change', '#solr_s', function (e) {
         $('#solr_facet input').prop('checked', false);
+        ajax_on=false;
     });
     var search_results_div = $('#' + solr.search_results_id);
     if (0 === search_results_div.length) {
@@ -12,7 +14,6 @@ jQuery(document).ready(function ($) {
         var search_form = $('#solr_facet');
         var solr_submit = function () {
             search_results_div.fadeOut();
-            search_form.fadeOut();
             search_form.submit();
         };
         the_body.on('change', '.facet_check', function (e) {
@@ -35,16 +36,17 @@ jQuery(document).ready(function ($) {
             e.preventDefault();
         });
         search_form.submit(function (event) {
+            if (false === ajax_on) {
+                return true;
+            }
             event.preventDefault();
             var args = search_form.serializeArray();
             args.push({name: 'action', 'value': 'solr_search'});
             $.get(solr.ajaxurl, args, function (res) {
                 var results = jQuery.parseJSON(res);
 
-                $('#solr_facets').html(results.facets);
                 search_results_div.html(results.posts).fadeIn();
                 $("html, body").animate({scrollTop: 0}, "slow");
-                $('#solr_facet').fadeIn();
 
             });
             return false;
