@@ -349,6 +349,8 @@ class SolrPower_Api {
 			foreach ( $facet_fields as $facet_field ) {
 				$facetSet->createFacetField( $facet_field )->setField( $facet_field );
 			}
+
+			$dismax->setBoostFunctions('post_title^25 post_content^50');
 			$facetSet->setMinCount( 1 );
 			if ( $facet_on_tags ) {
 				$facetSet->setLimit( $number_of_tags );
