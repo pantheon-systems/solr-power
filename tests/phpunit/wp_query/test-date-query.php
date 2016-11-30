@@ -73,6 +73,30 @@ class SolrDateQueryTest extends SolrTestBase {
 
 	}
 
+	/**
+	 * Test searching for a year range, omitting day, month and time
+	 */
+	public function test_date_query_before_after_year_only() {
+		$p1 = self::factory()->post->create( array( 'post_date' => '1987-03-03 04:23:57' ) );
+		$p2 = self::factory()->post->create( array( 'post_date' => '1988-03-03 04:23:57' ) );
+		$p3 = self::factory()->post->create( array( 'post_date' => '1989-03-03 04:23:57' ) );
+		$p4 = self::factory()->post->create( array( 'post_date' => '1990-03-03 04:23:57' ) );
+
+		$posts = $this->_get_query_result( array(
+			'date_query' => array(
+				'before' => array(
+					'year'  => 1991,
+				),
+				'after' => array(
+					'year'  => 1991,
+				),
+				'relation' => 'AND',
+			),
+		) );
+		$this->assertEqualSets( array( $p1 ), wp_list_pluck( $posts, 'ID' ) );
+
+	}
+
 	public function test_date_query_before_array() {
 		$p1 = self::factory()->post->create( array( 'post_date' => '2007-09-24 07:17:23', ) );
 		$p2 = self::factory()->post->create( array( 'post_date' => '2008-03-29 07:17:23', ) );
