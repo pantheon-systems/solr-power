@@ -21,11 +21,7 @@ class SolrPower {
 	}
 
 	function __construct() {
-		$method = filter_input( INPUT_GET, 'method', FILTER_SANITIZE_STRING );
-		if ( 'autocomplete' === $method ) {
-			add_action( 'template_redirect', array( $this, 'template_redirect' ), 1 );
-			add_action( 'wp_enqueue_scripts', array( $this, 'autosuggest_head' ) );
-		}
+
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_head' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'add_scripts' ) );
 		add_filter( 'plugin_action_links', array( $this, 'plugin_settings_link' ), 10, 2 );
@@ -82,11 +78,6 @@ class SolrPower {
 		wp_enqueue_style( 'solr-admin-css', SOLR_POWER_URL . 'assets/css/admin' . $min . '.css' );
 		wp_enqueue_script( 'solr-admin-js', SOLR_POWER_URL . 'assets/js/admin' . $min . '.js', array( 'jquery' ) );
 
-		// include our default css
-		if ( file_exists( SOLR_POWER_PATH . '/template/search.css' ) ) {
-			wp_enqueue_style( 'solr-search', SOLR_POWER_URL . 'template/search.css' );
-		}
-		wp_enqueue_script( 'solr-js', SOLR_POWER_URL . 'template/script.js', false );
 		$solr_js = array(
 			'ajax_url' => admin_url( 'admin-ajax.php' ),
 
@@ -101,7 +92,7 @@ class SolrPower {
 			'post_types' => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
 			'security'   => wp_create_nonce( "solr_security" )
 		);
-		wp_localize_script( 'solr-js', 'solr', $solr_js );
+		wp_localize_script( 'solr-admin-js', 'solr', $solr_js );
 	}
 
 	/**
@@ -121,85 +112,6 @@ class SolrPower {
 		array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-power">' . esc_html__( 'Settings', 'solr-for-wordpress-on-pantheon' ) . '</a>' );
 
 		return $links;
-	}
-
-	/*
-	 * @TODO change to echo statemnts and get rid of direct output.
-	 */
-
-	function autosuggest_head() {
-		if ( file_exists( SOLR_POWER_PATH . '/template/autocomplete.css' ) ) {
-			wp_enqueue_style( 'solr-autocomplete', SOLR_POWER_URL . 'template/autocomplete.css' );
-		}
-		wp_enqueue_script( 'solr-suggest', SOLR_POWER_URL . 'template/autocomplete.js', false );
-	}
-
-	function template_redirect() {
-		wp_enqueue_script( 'suggest' );
-
-		// not a search page; don't do anything and return
-		// thanks to the Better Search plugin for the idea:  http://wordpress.org/extend/plugins/better-search/
-		$search = filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_STRING );
-		$method = filter_input( INPUT_GET, 'method', FILTER_SANITIZE_STRING );
-		if ( ( $search || $method ) === false ) {
-			return;
-		}
-
-		if ( 'autocomplete' === $method ) {
-			$q     = filter_input( INPUT_GET, 'q', FILTER_SANITIZE_STRING );
-			$limit = filter_input( INPUT_GET, 'limit', FILTER_SANITIZE_STRING );
-
-			$this->autocomplete( $q, $limit );
-			exit;
-		}
-
-		// If there is a template file then we use it
-		if ( file_exists( TEMPLATEPATH . '/s4wp_search.php' ) ) {
-			// use theme file
-			include_once( TEMPLATEPATH . '/s4wp_search.php' );
-		} else if ( file_exists( dirname( __FILE__ ) . '/template/s4wp_search.php' ) ) {
-			// use plugin supplied file
-			add_action( 'wp_head', array( $this, 'default_head' ) );
-			include_once( dirname( __FILE__ ) . '/template/s4wp_search.php' );
-		} else {
-			// no template files found, just continue on like normal
-			// this should get to the normal WordPress search results
-			return;
-		}
-
-		exit;
-	}
-
-	function autocomplete( $q, $limit ) {
-		$solr     = get_solr();
-		$response = null;
-
-		if ( ! $solr ) {
-			return;
-		}
-
-		$query = $solr->createTerms();
-		$query->setFields( 'spell' );
-		$query->setPrefix( $q );
-		$query->setLowerbound( $q );
-		$query->setLowerboundInclude( false );
-		$query->setLimit( $limit );
-
-		$response = $solr->terms( $query );
-		if ( ! $response->getResponse()->getStatusCode() === 200 ) {
-			return;
-		}
-		$terms = $response->getResults();
-		foreach ( $terms['spell'] as $term => $count ) {
-			printf( "%s\n", esc_attr( $term ) );
-		}
-	}
-
-	function default_head() {
-		// include our default css
-		if ( file_exists( dirname( __FILE__ ) . '/template/search.css' ) ) {
-			wp_enqueue_style( 'solr-search', plugins_url( '/template/search.css', __FILE__ ) );
-		}
 	}
 
 	function add_panel( $panels ) {
