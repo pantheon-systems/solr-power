@@ -40,17 +40,23 @@ post_some_documents() {
 
 
 download_and_run() {
+
    
-     
-    url="http://archive.apache.org/dist/lucene/solr/3.6.2/apache-solr-3.6.2.tgz"
+    # Download from a Pantheon hosted file on CI
+    if $CONTINUOUS_INTEGRATION
+    then
+    	url="http://solr-power.pantheon.website/wp-content/uploads/apache-solr-3.6.2.tgz"
+    else
+    	url="http://archive.apache.org/dist/lucene/solr/3.6.2/apache-solr-3.6.2.tgz"
+    fi
     dir_name="apache-solr-3.6.2"
     dir_conf="conf/"
-           
+
     download $url
 
     # copy schema.xml
     cp schema.xml $dir_name/example/solr/$dir_conf
- 
+
     # Run solr
     run $dir_name $SOLR_PORT
 
