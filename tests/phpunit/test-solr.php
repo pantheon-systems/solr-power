@@ -416,25 +416,6 @@ class SolrTest extends SolrTestBase {
 	}
 
 	/**
-	 * Test searching for exact day, month and year (without time)
-	 */
-	public function test_date_query_year_month_day_exact() {
-		$p1 = self::factory()->post->create( array( 'post_date' => '1987-03-03 04:23:57' ) );
-
-		$posts = $this->_get_query_result( array(
-			'date_query' => array(
-				array(
-					'year'  => 1987,
-					'month' => 03,
-					'day'   => 03,
-				),
-			),
-		) );
-		$this->assertEqualSets( array( $p1 ), wp_list_pluck( $posts, 'ID' ) );
-
-	}
-
-	/**
 	 * The post_title should appear above facets.
 	 *
 	 * @group 126
