@@ -88,12 +88,12 @@ class SolrDateQueryTest extends SolrTestBase {
 					'year'  => 1991,
 				),
 				'after' => array(
-					'year'  => 1991,
+					'year'  => 1986,
 				),
 				'relation' => 'AND',
 			),
 		) );
-		$this->assertEqualSets( array( $p1 ), wp_list_pluck( $posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p2, $p3, $p4 ), wp_list_pluck( $posts, 'ID' ) );
 
 	}
 
