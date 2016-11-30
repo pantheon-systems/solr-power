@@ -20,7 +20,6 @@ class SolrTestBase extends WP_UnitTestCase{
 	 * Setup for every test.
 	 */
 	function setUp() {
-		parent::setUp();
 		// Delete the entire index.
 		SolrPower_Sync::get_instance()->delete_all();
 
@@ -31,7 +30,7 @@ class SolrTestBase extends WP_UnitTestCase{
 			$options = SolrPower_Options::get_instance()->initalize_options();
 			update_option( 'plugin_s4wp_settings', $options );
 		}
-
+		parent::setUp();
 	}
 
 	function tearDown() {
@@ -42,6 +41,7 @@ class SolrTestBase extends WP_UnitTestCase{
 		$wpdb->query( 'TRUNCATE ' . $wpdb->postmeta );
 		// Delete the entire index.
 		SolrPower_Sync::get_instance()->delete_all();
+		wp_cache_flush();
 	}
 
 	function __setup_taxonomy() {
