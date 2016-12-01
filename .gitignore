@@ -6,3 +6,4 @@ vendor/
 assets/css/*.css
 assets/css/*.css.map
 assets/js/*.js
+composer.lock

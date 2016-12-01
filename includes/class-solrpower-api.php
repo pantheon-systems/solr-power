@@ -327,7 +327,7 @@ class SolrPower_Api {
 				$facet_fields[] = $field_name . '_str';
 			}
 		}
-
+		$count = ( - 1 === $count ) ? 50000 : $count;
 		if ( $solr ) {
 			$select = array(
 				'query'      => $qry,
