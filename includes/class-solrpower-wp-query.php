@@ -32,6 +32,8 @@ class SolrPower_WP_Query {
 	 */
 	var $fq = array();
 
+	var $query;
+
 	/**
 	 * Grab instance of object.
 	 * @return SolrPower_WP_Query
@@ -398,7 +400,8 @@ class SolrPower_WP_Query {
 	 * @return string
 	 */
 	private function build_query( $query ) {
-		$whitelist = array(
+		$this->query = $query;
+		$whitelist   = array(
 			'post_type',
 			'p',
 			'page_id',
@@ -407,7 +410,7 @@ class SolrPower_WP_Query {
 			'name'
 
 		);
-		$convert   = array(
+		$convert     = array(
 			'p'       => 'ID',
 			'page_id' => 'ID',
 			'name'    => 'post_name'
@@ -418,6 +421,14 @@ class SolrPower_WP_Query {
 
 		$solr_query = array();
 
+		if ( false !== $query->date_query ) {
+			$solr_query[] = $this->parse_date_query( $query->date_query->queries );
+		}
+
+		if ( false !== $query->is_date ) {
+			$solr_query[] = $this->parse_date_query( array( $query->query_vars ) );
+		}
+
 		if ( ! empty( $query->meta_query->queries ) ) {
 			$solr_query[] = $this->parse_meta_query( $query->meta_query->queries );
 		}
@@ -426,7 +437,10 @@ class SolrPower_WP_Query {
 			$solr_query[] = $this->parse_tax_query( $query->tax_query->queries );
 		}
 		foreach ( $query->query_vars as $var_key => $var_value ) {
-
+			if ( 'post_status' === $var_key && 'any' === $var_value ) {
+				//$solr_query[]='(post_status:publish)';
+				continue;
+			}
 
 			if ( 'post_type' === $var_key && 'any' === $var_value ) {
 				continue;
@@ -822,6 +836,235 @@ class SolrPower_WP_Query {
 
 
 	}
+
+	/**
+	 * @param array $date_query
+	 *
+	 * @return string
+	 *
+	 */
+	function parse_date_query( $date_query ) {
+
+		$query    = array();
+		$relation = ( isset( $date_query['relation'] ) ) ? $date_query['relation'] : 'OR';
+		foreach ( $date_query as $dq ):
+
+			if ( ! is_array( $dq ) ) {
+				continue;
+			}
+
+			if ( ( isset( $dq[0]['compare'] ) || isset( $dq[0]['relation'] ) )
+			     && ( ! isset( $dq[0]['after'] ) )
+			) {
+				$query[] = $this->parse_date_query( $dq );
+				continue;
+			}
+			$inclusive = ( isset( $dq['inclusive'] ) ) ? $dq['inclusive'] : false;
+
+			if ( isset( $dq['before'] ) && is_array( $dq['before'] ) ) {
+				$query[] = $this->date_query( $dq['before'], $inclusive, 'before' );
+			} elseif ( isset( $dq['before'] ) ) {
+				$the_date = $this->query->date_query->build_mysql_datetime( $dq['before'], $inclusive );
+				if ( is_array( $the_date ) ) {
+					$query[] = $this->date_query( $the_date, $inclusive, 'before' );
+				} else {
+					$the_date = strtotime( $the_date );
+					$the_date = ( ( isset( $dq['inclusive'] ) && $dq['inclusive'] ) || $inclusive ) ? $the_date : strtotime( '-1 second', $the_date );
+					$the_date = date( 'Y-m-d H:i:s', $the_date );
+					$the_date = SolrPower_Sync::get_instance()->format_date( $the_date );
+					$column   = ( isset( $dq['column'] ) ) ? $dq['column'] : 'post_date';
+
+					$query[] = '(' . $column . ':' . '[* TO ' . $the_date . '])';
+
+				}
+
+			}
+
+			if ( isset( $dq['after'] ) && is_array( $dq['after'] ) ) {
+				$query[] = $this->date_query( $dq['after'], $inclusive, 'after' );
+
+			} elseif ( isset( $dq['after'] ) ) {
+				$do_max   = ( $inclusive ) ? false : true;
+				$the_date = $this->query->date_query->build_mysql_datetime( $dq['after'], $do_max );
+
+				if ( is_array( $the_date ) ) {
+					$query[] = $this->date_query( $the_date, $inclusive, 'after' );
+				} else {
+
+					$the_date = strtotime( $the_date );
+					$the_date = ( ( isset( $dq['inclusive'] ) && $dq['inclusive'] ) || $inclusive ) ? $the_date : strtotime( '+1 second', $the_date );
+					$the_date = date( 'Y-m-d H:i:s', $the_date );
+					$the_date = SolrPower_Sync::get_instance()->format_date( $the_date );
+					$column   = ( isset( $dq['column'] ) ) ? $dq['column'] : 'post_date';
+
+					$query[] = '(' . $column . ':' . '[' . $the_date . ' TO *])';
+				}
+			}
+
+			$the_query = $this->date_query( $dq, $inclusive, false );
+			if ( ! empty( $the_query ) ) {
+				$query[] = $the_query;
+			}
+
+		endforeach;
+
+		return '(' . implode( $relation, $query ) . ')';
+	}
+
+	/**
+	 * @param array $dq
+	 * @param bool $inclusive
+	 * @param bool $type
+	 *
+	 * @return string
+	 */
+	function date_query( $dq, $inclusive = false, $type = false ) {
+		$column = ( isset( $dq['column'] ) ) ? $dq['column'] : 'post_date';
+
+		// If year, month, and day are specified, we can do a range query.
+		if ( ( is_array( $dq ) && array_key_exists( 'year', $dq )
+		       && array_key_exists( 'month', $dq )
+		       && array_key_exists( 'day', $dq ) )
+		) {
+
+			$the_date = date( 'Y-m-d', strtotime( $dq['year'] . '-' . $dq['month'] . '-' . $dq['day'] ) );
+
+			switch ( $type ) {
+				case 'before':
+					return '(' . $column . ':' . '[* TO ' . $the_date . 'T00:00:00Z])';
+					break;
+
+				case 'after':
+					return '(' . $column . ':' . '[' . $the_date . 'T00:00:00Z TO *])';
+					break;
+				default:
+					return '(' . $column . ':' . $the_date . '*)';
+					break;
+			}
+
+		}
+
+		$query = array();
+
+		switch ( $type ) {
+			case 'before':
+				if ( ! isset( $dq['month'] ) ) {
+					$year = ( ( isset( $dq['inclusive'] ) && $dq['inclusive'] ) || $inclusive ) ? $dq['year'] : $dq['year'] - 1;
+
+					return '(year_i:[* TO ' . $year . '])';
+				}
+				if ( ! isset( $dq['day'] ) ) {
+					$the_date = date( 'Y-m-d', strtotime( $dq['year'] . '-' . $dq['month'] . '-01' ) );
+					if ( ( isset( $dq['inclusive'] ) && true === $dq['inclusive'] )
+					     || true === $inclusive
+					) {
+						$the_date = date( 'Y-m-t', strtotime( $dq['year'] . '-' . $dq['month'] . '-01' ) );
+					}
+
+					return '(' . $column . ':' . '[* TO ' . $the_date . 'T00:00:00Z])';
+				}
+
+				break;
+
+			case 'after':
+				if ( ! isset( $dq['month'] ) ) {
+					$year = ( isset( $dq['inclusive'] ) || $inclusive ) ? $dq['year'] : $dq['year'] + 1;
+
+					return '(year_i:[' . $year . ' TO *])';
+				}
+				if ( ! isset( $dq['day'] ) ) {
+					$the_date = date( 'Y-m-d', strtotime( $dq['year'] . '-' . $dq['month'] . '-01' ) );
+					if ( ( isset( $dq['inclusive'] ) && false === $dq['inclusive'] )
+					     || false === $inclusive
+					) {
+						$the_date = date( 'Y-m-t', strtotime( $dq['year'] . '-' . $dq['month'] . '-01' ) );
+						$the_date = date( 'Y-m-d', strtotime( '+1 Day', strtotime( $the_date ) ) );
+					}
+
+					return '(' . $column . ':' . '[' . $the_date . 'T00:00:00Z TO *])';
+				} else {
+					$the_date = date( 'Y-m-t', strtotime( $dq['year'] . '-' . $dq['month'] . '-' . $dq['day'] ) );
+					if ( ( isset( $dq['inclusive'] ) && $dq['inclusive'] ) || $inclusive ) {
+						$the_date = date( 'Y-m-d', strtotime( '+1 Day', strtotime( $the_date ) ) );
+					}
+
+					return '(' . $column . ':' . '[' . $the_date . 'T00:00:00Z TO *])';
+				}
+				break;
+			default:
+				$fields  = array(
+					'year',
+					'month',
+					'day',
+					'week',
+					'dayofweek',
+					'dayofweek_iso',
+					'hour',
+					'monthnum',
+					'minute',
+					'second'
+				);
+				$column  = ( isset( $dq['column'] ) ) ? $dq['column'] : false;
+				$compare = ( isset( $dq['compare'] ) ) ? $dq['compare'] : '=';
+				foreach ( $fields as $field ) {
+					if ( 'monthnum' === $field ) {
+						$field = 'month';
+					}
+					if ( isset( $dq[ $field ] ) && '' !== $dq[ $field ] ) {
+						$the_field = $field;
+						if ( false !== $column && 'post_date' !== $column ) {
+							$the_field = $column . '_' . $field;
+						}
+						$the_query = $this->compare_date( $the_field, $dq[ $field ], $compare );
+						if ( false !== $the_query ) {
+							$query[] = '(' . $the_query . ')';
+						}
+					}
+				}
+
+
+				break;
+		}
+		if ( empty( $query ) ) {
+			return '';
+		}
+
+		return implode( 'AND', $query );
+	}
+
+	/**
+	 * Creates a compare query for date_query.
+	 *
+	 * @param string $field
+	 * @param integer $field_value
+	 * @param string $compare
+	 *
+	 * @return bool|string
+	 */
+	function compare_date( $field, $field_value, $compare = '=' ) {
+		switch ( $compare ) {
+			case '=':
+				return $field . '_i:' . $field_value;
+				break;
+
+			case '>=':
+				if ( 0 === (int) $field_value ) {
+					return false;
+				}
+
+				return '(' . $field . '_i:[' . $field_value . ' TO *])';
+				break;
+
+			case '<=':
+				if ( 0 === (int) $field_value ) {
+					return false;
+				}
+
+				return '(' . $field . '_i:[* TO ' . $field_value . '])';
+				break;
+		}
+	}
+
 }
 
 
