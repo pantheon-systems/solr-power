@@ -112,7 +112,7 @@ class SolrPower_Api {
 	 * @return string
 	 */
 	function compute_path() {
-		if (getenv( 'SOLR_PATH' )) {
+		if (!defined('SOLR_PATH') && getenv( 'SOLR_PATH' )) {
 			define('SOLR_PATH', getenv( 'SOLR_PATH' ));
 		}
 		if ( defined( 'SOLR_PATH' ) ) {
@@ -160,7 +160,7 @@ class SolrPower_Api {
 		 * Check for the SOLR_POWER_SCHEME constant.
 		 * If it exists and is "http" or "https", use it as the default scheme value.
 		 */
-		if (getenv( 'SOLR_POWER_SCHEME' )) {
+		if (!defined('SOLR_POWER_SCHEME') && getenv( 'SOLR_POWER_SCHEME' )) {
  			define('SOLR_POWER_SCHEME', getenv( 'SOLR_POWER_SCHEME' ));
  		}
 		$default_scheme = ( defined( 'SOLR_POWER_SCHEME' ) && 1 === preg_match( '/^http[s]?$/', SOLR_POWER_SCHEME ) ) ? SOLR_POWER_SCHEME : 'https';
