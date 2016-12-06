@@ -125,6 +125,7 @@ if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 	SolrPower_Options::get_instance();
 	SolrPower_Sync::get_instance();
 	SolrPower_WP_Query::get_instance();
+	SolrPower_REST::get_instance();
 
 	function solr_options() {
 		return SolrPower_Options::get_instance()->get_option();
