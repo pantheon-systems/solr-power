@@ -11,11 +11,6 @@ class SolrTaxQueryTest extends SolrTestBase {
 		parent::tearDown();
 	}
 
-	function show_query() {
-		print_r( SolrPower_WP_Query::get_instance()->backup );
-		print_r( SolrPower_Api::get_instance()->log );
-	}
-
 	function test_wp_query_by_tax() {
 		$this->__create_test_post();
 
@@ -61,18 +56,22 @@ class SolrTaxQueryTest extends SolrTestBase {
 	}
 
 	function test_wp_query_by_tax_id() {
+		$t  = self::factory()->term->create( array(
+			'taxonomy' => 'genre',
+			'slug'     => 'horror',
+			'name'     => 'Horror',
+		) );
 		$this->__create_test_post();
 
 		$p_id = $this->__create_test_post();
-		wp_set_object_terms( $p_id, 'Horror', 'genre', true );
-
+		wp_set_post_terms( $p_id, $t, 'genre' );
 		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
 		$args  = array(
 			'solr_integrate' => true,
 			'tax_query'      => array(
 				array(
 					'taxonomy' => 'genre',
-					'terms'    => array( $this->term_id ),
+					'terms'    => array( $t ),
 					'field'    => 'term_id',
 				),
 			),
