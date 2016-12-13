@@ -119,6 +119,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 			}
 			$current_page++;
 		}
+		do_action( 'solr_power_index_all_finished' );
 		$notify->finish();
 		WP_CLI::success( sprintf( '%d of %d items indexed.', $done, $total_posts ) );
 		if ( 0 < $failed ) {
