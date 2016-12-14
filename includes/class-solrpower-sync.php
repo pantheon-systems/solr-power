@@ -594,6 +594,7 @@ class SolrPower_Sync {
 
 		if ( 100 <= $percent ) {
 			$results = sprintf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
+			do_action( 'solr_power_index_all_finished' );
 		} else {
 			$results = sprintf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent );
 		}
