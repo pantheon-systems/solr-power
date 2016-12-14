@@ -49,7 +49,7 @@ class SolrPower_Sync {
 		$post_info = get_post( $post_id );
 		$post_types = apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) );
 
-		if ( !in_array( $post_info->post_type, (array) $post_types ) ) {
+		if ( !in_array( $post_info->post_type, (array) $post_types ), true ) {
 			return;
 		}
 
