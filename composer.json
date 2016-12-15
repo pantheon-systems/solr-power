@@ -13,12 +13,6 @@
       "issues": "https://github.com/pantheon-systems/solr-power/issues"
     },
     "minimum-stability": "dev",
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/pantheon-systems/pantheon-wordpress-upstream-tests"
-        }
-    ],
     "require": {
         "solarium/solarium": "3.6.0"
     },
