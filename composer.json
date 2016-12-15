@@ -17,7 +17,7 @@
         "solarium/solarium": "3.6.0"
     },
     "require-dev": {
-        "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master"
+        "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master#b2f680bcf693a7d7f6ad440d2d58954229a8f942"
     },
     "autoload": {
         "classmap": [
