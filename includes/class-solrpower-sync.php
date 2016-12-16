@@ -47,11 +47,9 @@ class SolrPower_Sync {
 		global $current_blog;
 
 		$post_info = get_post( $post_id );
+		$post_types = apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) );
 
-		$plugin_s4wp_settings = solr_options();
-
-		$this->handle_status_change( $post_id, $post_info );
-		if ( $post_info->post_type == 'revision' || $post_info->post_status != 'publish' ) {
+		if ( !in_array( $post_info->post_type, (array) $post_types, true ) ) {
 			return;
 		}
 
@@ -594,6 +592,7 @@ class SolrPower_Sync {
 
 		if ( 100 <= $percent ) {
 			$results = sprintf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
+			do_action( 'solr_power_index_all_finished' );
 		} else {
 			$results = sprintf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent );
 		}

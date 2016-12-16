@@ -449,6 +449,8 @@ class SolrPower_WP_Query {
 				$var_value    = ( is_array( $var_value ) ) ? '(' . implode( ' OR ', $var_value ) . ')' : $var_value;
 				$var_key      = ( isset( $convert[ $var_key ] ) ) ? $convert[ $var_key ] : $var_key;
 				$solr_query[] = '(' . $var_key . ':' . $var_value . ')';
+			} elseif ( 's' === $var_key && ! empty( $var_value ) ) {
+				array_unshift( $solr_query, $query->get( 's' ) . ' ' );
 			}
 		}
 
