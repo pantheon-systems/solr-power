@@ -36,6 +36,39 @@ class SolrWPQueryTest extends SolrTestBase {
 		wp_reset_postdata();
 	}
 
+	/**
+	 * Performs simple search query with WP_Query using Solr.
+	 *
+	 * @global WP_Post $post
+	 */
+	function test_simple_wp_query_solr_integrate() {
+		$this->__create_test_post();
+		$args  = array(
+			's'              => 'solr',
+			'solr_integrate' => true,
+		);
+		$query = new WP_Query( $args );
+		$this->assertEquals( $query->post_count, 1 );
+		$this->assertEquals( $query->found_posts, 1 );
+		while ( $query->have_posts() ) {
+			$query->the_post();
+
+			global $post;
+
+			$wp_post = get_post( get_the_ID() );
+			$this->assertEquals( $post->solr, true );
+			$this->assertEquals( $post->post_title, get_the_title() );
+			$this->assertEquals( $post->post_content, get_the_content() );
+			$this->assertEquals( $post->post_date, $wp_post->post_date );
+			$this->assertEquals( $post->post_modified, $wp_post->post_modified );
+			$this->assertEquals( $post->post_name, $wp_post->post_name );
+			$this->assertEquals( $post->post_parent, $wp_post->post_parent );
+			$this->assertEquals( $post->post_excerpt, $wp_post->post_excerpt );
+		}
+
+		wp_reset_postdata();
+	}
+
 	function test_wp_query_paged() {
 		$this->__create_multiple( 15 );
 		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
