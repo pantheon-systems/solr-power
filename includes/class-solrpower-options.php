@@ -147,6 +147,9 @@ class SolrPower_Options {
 		$clean['s4wp_default_operator']       = sanitize_text_field( $options['s4wp_default_operator'] );
 		$clean['s4wp_default_sort']           = sanitize_text_field( $options['s4wp_default_sort'] );
 		$clean['s4wp_solr_initialized']       = 1;
+		$clean['allow_ajax']                  = absint( $options['allow_ajax'] );
+		$clean['ajax_div_id']                 = sanitize_text_field( $options['ajax_div_id'] );
+
 		return $clean;
 	}
 
@@ -244,6 +247,8 @@ class SolrPower_Options {
 		$options['s4wp_default_sort']           = 'score';
 		$options['s4wp_solr_initialized']       = 1;
 		$options['s4wp_index_all_sites']        = 1;
+		$options['allow_ajax']                  = 0;
+		$options['ajax_div_id']                 = '';
 		$this->update_option( $options );
 	}
 
@@ -258,12 +263,6 @@ class SolrPower_Options {
 		}
 		$action = sanitize_text_field( $_POST['action'] );
 		switch ( $action ) {
-			case 'update':
-				if ( ! $this->check_nonce( 'solr_update' ) ) {
-					return;
-				}
-				$this->save_options();
-				break;
 			case 'ping':
 				if ( ! $this->check_nonce( 'solr_ping' ) ) {
 					return;
@@ -301,7 +300,7 @@ class SolrPower_Options {
 				}
 				SolrPower_Sync::get_instance()->delete_all();
 				$output    = SolrPower_Api::get_instance()->submit_schema();
-				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon') .'<br />' . esc_html( $output );
+				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' ) . '<br />' . esc_html( $output );
 				break;
 
 			case 'run_query':
@@ -497,6 +496,8 @@ class SolrPower_Options {
 			'solr-power'
 		);
 
+		$this->add_field( 'allow_ajax', 'AJAX Facet Search Support', $section, 'checkbox', 'bool' );
+		$this->add_field( 'ajax_div_id', 'AJAX Div ID (displays search results)', $section, 'input' );
 		$this->add_field( 's4wp_cat_as_taxo', 'Category Facet as Taxonomy', $section, 'checkbox', 'bool' );
 		$this->add_field( 's4wp_facet_on_categories', 'Categories as Facet', $section, 'checkbox', 'bool' );
 		$this->add_field( 's4wp_facet_on_tags', 'Tags as Facet', $section, 'checkbox', 'bool' );
@@ -504,6 +505,7 @@ class SolrPower_Options {
 		$this->add_field( 's4wp_facet_on_type', 'Post Type as Facet', $section, 'checkbox', 'bool' );
 		$this->add_field( 's4wp_facet_on_taxonomy', 'Taxonomy as Facet', $section, 'checkbox', 'bool' );
 		$this->add_field( 's4wp_facet_on_custom_fields', 'Custom fields as Facet (comma separated ordered names list)', $section, 'input', 'list2str' );
+
 
 		$this->add_field( 's4wp_default_operator', 'Default Search Operator', $section, 'radio', null, array(
 			'OR',
