@@ -127,7 +127,7 @@ class SolrPower_Api {
 	 * @return boolean
 	 */
 	function ping_server() {
-		$solr = $this->get_solr();
+		$solr = SolrPower_Api::get_solr();
 
 		if ( ! $solr ) {
 			return false;
