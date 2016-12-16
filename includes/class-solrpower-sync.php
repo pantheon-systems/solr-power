@@ -27,6 +27,13 @@ class SolrPower_Sync {
 	}
 
 	function __construct() {
+		/**
+		 * Only register the Solr sync actions if Solr is available.
+		 */
+		$retval = SolrPower_Api::get_instance()->ping_server();
+		if ( ! $retval ) {
+			return;
+		}
 		add_action( 'publish_post', array( $this, 'handle_modified' ) );
 		add_action( 'publish_page', array( $this, 'handle_modified' ) );
 		add_action( 'save_post', array( $this, 'handle_modified' ) );

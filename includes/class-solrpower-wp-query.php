@@ -85,6 +85,13 @@ class SolrPower_WP_Query {
 			return;
 		}
 
+		/**
+		 * Only enable Solr for WP_Query if Solr is available.
+		 */
+		$retval = SolrPower_Api::get_instance()->ping_server();
+		if ( ! $retval ) {
+			return;
+		}
 
 		add_filter( 'posts_request', array( $this, 'posts_request' ), 10, 2 );
 

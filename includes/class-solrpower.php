@@ -27,9 +27,15 @@ class SolrPower {
 		add_action( 'wp_enqueue_scripts', array( $this, 'add_scripts' ) );
 		add_filter( 'plugin_action_links', array( $this, 'plugin_settings_link' ), 10, 2 );
 		add_filter( 'debug_bar_panels', array( $this, 'add_panel' ) );
-		add_action( 'widgets_init', function () {
-			register_widget( 'SolrPower_Facet_Widget' );
-		} );
+		/**
+		 * Only register the Solr search widget if Solr is available.
+		 */
+		$retval = SolrPower_Api::get_instance()->ping_server();
+		if ( $retval ) {
+			add_action( 'widgets_init', function () {
+				register_widget( 'SolrPower_Facet_Widget' );
+			} );
+		}
 	}
 
 	function activate() {
