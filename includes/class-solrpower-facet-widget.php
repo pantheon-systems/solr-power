@@ -11,7 +11,13 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			'classname'   => 'solrpower_facet_widget',
 			'description' => 'Facet your search results.',
 		);
-		parent::__construct( 'solrpower_facet_widget', 'Solr Search', $widget_ops );
+		/**
+		 * Only register the Solr search widget if Solr is available.
+		 */
+		$retval = SolrPower_Api::get_instance()->ping_server();
+		if ( $retval ) {
+			parent::__construct( 'solrpower_facet_widget', 'Solr Search', $widget_ops );
+		}
 	}
 
 	/**
