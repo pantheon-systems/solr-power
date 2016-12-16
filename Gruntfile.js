@@ -90,7 +90,7 @@ module.exports = function( grunt ) {
           files : {
               expand  : true,
               flatten : true,
-              src     : ['assets/css/admin.css'],
+              src     : ['assets/css/admin.css', 'assets/css/facet.css'],
               dest    : 'assets/css'
           }
       },
@@ -105,7 +105,7 @@ module.exports = function( grunt ) {
               files : [{
                   expand : true,
                   cwd    : 'assets/css',
-                  src    : ['admin.css'],
+                  src    : ['admin.css', 'facet.css'],
                   dest   : 'assets/css',
                   ext    : '.min.css'
               }]
@@ -127,7 +127,8 @@ module.exports = function( grunt ) {
               },
 
               files : {
-                  'assets/css/admin.css' : 'assets/css/scss/admin.scss'
+                  'assets/css/admin.css' : 'assets/css/scss/admin.scss',
+                  'assets/css/facet.css' : 'assets/css/scss/facet.scss'
               }
           }
       },
@@ -144,7 +145,8 @@ module.exports = function( grunt ) {
           scripts : {
 
               files : [
-                  'assets/js/admin.js'
+                  'assets/js/admin.js',
+                  'assets/js/facet.js'
               ],
 
               tasks : ['uglify:production']
