@@ -154,7 +154,7 @@ class SolrPower_Api {
 	function get_solr() {
 
 		# get the connection options
-		$plugin_s4wp_settings = solr_options();
+		$plugin_s4wp_settings = SolrPower_Options::get_instance()->get_option();
 
 		/*
 		 * Check for the SOLR_POWER_SCHEME constant.
@@ -258,7 +258,7 @@ class SolrPower_Api {
 	 */
 	function query( $qry, $offset, $count, $fq, $sortby, $order, $fields = null ) {
 		//NOTICE: does this needs to be cached to stop the db being hit to grab the options everytime search is being done.
-		$plugin_s4wp_settings = solr_options();
+		$plugin_s4wp_settings = SolrPower_Options::get_instance()->get_option();
 
 		$solr = get_solr();
 
