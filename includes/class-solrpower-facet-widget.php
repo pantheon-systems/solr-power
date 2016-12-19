@@ -27,9 +27,11 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			echo $args['before_title'] . $instance['title'] . $args['after_title'];
 		}
 		$this->facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
-		echo '<form action="' . home_url( '/' ) . '" method="get" id="solr_facet">';
+		echo '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="solr_facet">';
 		$this->render_searchbox();
+		echo '<div id="solr_facets">';
 		$this->fetch_facets();
+		echo '</div>';
 		echo '</form>';
 		echo $args['after_widget'];
 	}
@@ -46,8 +48,8 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			<label
 				for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'solr-for-wordpress-on-pantheon' ); ?></label>
 			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
-			       name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text"
-			       value="<?php echo esc_attr( $title ); ?>">
+				   name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text"
+				   value="<?php echo esc_attr( $title ); ?>">
 		</p>
 		<?php
 	}
@@ -70,15 +72,26 @@ class SolrPower_Facet_Widget extends WP_Widget {
 
 	/**
 	 * Fetches and displays returned facets.
+	 *
+	 * @param bool $echo Echo the facets?
+	 *
+	 * @return bool|string
 	 */
-	function fetch_facets() {
+	function fetch_facets( $echo = true ) {
 		$solr_options = solr_options();
 		if ( ! $solr_options['s4wp_output_facets'] ) {
-			return;
+			return false;
 		}
-		$facets = SolrPower_WP_Query::get_instance()->facets;
+
+		$facets       = SolrPower_WP_Query::get_instance()->facets;
+		$this->facets = $facets;
+		$sent_facets  = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
+
+		$output = ''; // HTML Output
 
 		foreach ( $facets as $facet_name => $data ) {
+			// Strict comparisons are used so this needs to be a string.
+			$facet_name = strval( $facet_name );
 
 			if ( false === $this->show_facet( $facet_name ) ) {
 				continue;
@@ -90,11 +103,11 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			 *
 			 * @param string $facet_name the facet name.
 			 *
-			 * @param object $data the Solarium facet data object.
+			 * @param object $data       the Solarium facet data object.
 			 */
 			$html = apply_filters( 'solr_facet_items', false, $facet_name, $data );
-			if ( $html ) {
-				echo $html;
+			if ( false !== $html ) {
+				$output .= $html;
 				continue;
 			}
 			/**
@@ -102,54 +115,72 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			 *
 			 * Filter the facet title displayed in the widget.
 			 *
-			 * @param boolean|string the custom facet title, defaults to false.
+			 * @param boolean|string the         custom facet title, defaults to false.
 			 *
-			 * @param string $facet_name the facet name.
-			 *
+			 * @param string         $facet_name the facet name.
 			 */
 			$facet_nice_name = apply_filters( 'solr_facet_title', false, $facet_name );
 			if ( false === $facet_nice_name ) {
 				$replace         = array( '/\_taxonomy/', '/\_str/', '/\_/' );
-				$facet_nice_name = ucwords( preg_replace( $replace, ' ', $facet_name ) );
+				$facet_nice_name = preg_replace( $replace, ' ', $facet_name );
 			}
 			$values = $data->getValues();
 			if ( 0 === count( $values ) ) {
 				continue;
 			}
-			echo '<h2>' . esc_html( $facet_nice_name ) . '</h2>';
-			echo '<ul>';
+			$output .= '<h2>' . esc_html( $facet_nice_name ) . '</h2>';
+			$output .= '<ul id="fn_' . esc_attr( md5( $facet_name ) ) . '">';
 
 			$facets_facet_name = array();
-			if( isset( $this->facets[ $facet_name ] ) ) {
-				$facets_facet_name = $this->facets[ $facet_name ];
-				if( is_array( $this->facets[ $facet_name ] ) ) {
-					// Decode special characters of facet and store in temporary array
-					$facets_facet_name = array_map( array( __CLASS__, 'htmlspecialchars_decode' ), $this->facets[ $facet_name ] );
+			if ( isset( $this->facets[ $facet_name ] ) ) {
+				$facets_facet_name = $this->facets[ $facet_name ]->getValues();
+				if ( is_array( $this->facets[ $facet_name ] ) ) {
+					// Decode special characters of facet and store in temporary array.
+					$facets_facet_name = array_map( array(
+						__CLASS__,
+						'htmlspecialchars_decode',
+					), $this->facets[ $facet_name ] );
 				}
 			}
 
-			foreach ( $values as $name => $count ):
+			foreach ( $values as $name => $count ) :
 
 				$nice_name = str_replace( '^^', '', $name );
 				$checked   = '';
+				$name      = strval( $name );
 
-				if ( isset( $this->facets[ $facet_name ] )
-				     && in_array( htmlspecialchars_decode( $name ), $facets_facet_name )
+				if ( (
+					     isset( $this->facets[ $facet_name ] ) &&
+					     in_array( htmlspecialchars_decode( $name ), $facets_facet_name, true )
+				     ) || (
+					     isset( $sent_facets[ $facet_name ] ) &&
+					     in_array( $name, $sent_facets[ $facet_name ], true )
+				     )
 				) {
 					$checked = checked( true, true, false );
 				}
-				echo '<li>';
-				echo '<input type="checkbox" name="facet[' . esc_attr( $facet_name ) . '][]" value="' . esc_attr( $name ) . '" ' . $checked . '> ';
-				echo esc_html( $nice_name );
-				echo ' (' . esc_html( $count ) . ')';
-				echo '</li>';
+				$facet_id = 'f_' . md5( $facet_name . $name );
+				$output .= '<li>';
+				$output .= '<input type="checkbox" name="facet[' . esc_attr( $facet_name ) . '][]" value="' . esc_attr( $name ) . '" ' . $checked . ' class="facet_check" id="' . $facet_id . '"> ';
+				if ( $solr_options['allow_ajax'] ) {
+					$output .= '<a href="#" class="facet_link" data-for="' . $facet_id . '">';
+				}
+				$output .= esc_html( $nice_name );
+				$output .= ' (' . esc_html( $count ) . ')';
+				if ( $solr_options['allow_ajax'] ) {
+					$output .= '</a>';
+				}
+				$output .= '</li>';
 			endforeach;
 
-			echo '</ul>';
+			$output .= '<a href="' . $this->reset_url( $facet_name ) . '" class="solr_reset" data-for="fn_' . esc_attr( md5( $facet_name ) ) . '">Reset</a>';
+			$output .= '</ul>';
 
-
-			echo '<a href="' . $this->reset_url( $facet_name ) . '">Reset</a>';
-
+		}
+		if ( $echo ) {
+			echo $output;
+		} else {
+			return $output;
 		}
 
 	}
@@ -158,11 +189,17 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	 * Reset link below facet list.
 	 *
 	 * @param string $facet_name
+	 *
+	 * @return string|boolean
 	 */
 	function reset_url( $facet_name ) {
+		$solr_options = solr_options();
+		if ( $solr_options['allow_ajax'] ) {
+			return '#';
+		}
 		$facets = $this->facets;
 		if ( ! isset( $facets[ $facet_name ] ) ) {
-			return;
+			return false;
 		}
 		unset( $facets[ $facet_name ] );
 
@@ -173,8 +210,10 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	 * Basic input textbox.
 	 */
 	function render_searchbox() {
-		$html = '<input type="text" name="s" value="' . get_search_query() . '" id="solr_s"> <br/><br/>';
+		$paged = ( get_query_var( 'paged' ) ) ? absint( get_query_var( 'paged' ) ) : 1;
+		$html  = '<input type="text" name="s" value="' . get_search_query() . '" id="solr_s"> <br/><br/>';
 		$html .= '<input type="submit" value="Search"><br/><br/>';
+		$html .= '<input type="hidden" name="paged" id="solr_paged" value="' . $paged . '">';
 		/**
 		 * Filter facet widget search box HTML
 		 *
@@ -225,7 +264,6 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	}
 
 	function dummy_query() {
-		add_filter('solr_query',array(SolrPower_Api::get_instance(),'dismax_query'),10,2);
 		global $wp_query;
 		$query = new WP_Query();
 		if ( ! $wp_query->get( 's' ) ) {
@@ -242,7 +280,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	 *
 	 * @return string
 	 */
-	function htmlspecialchars_decode( $facet ){
+	function htmlspecialchars_decode( $facet ) {
 		return htmlspecialchars_decode( $facet, ENT_QUOTES );
 	}
 }
@@ -254,7 +292,7 @@ function solr_facet_search() {
 	$facet = new SolrPower_Facet_Widget();
 	$facet->dummy_query();
 	$facet->facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
-	echo '<form action="' . home_url( '/' ) . '" method="get" id="solr_facet">';
+	echo '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="solr_facet">';
 	$facet->render_searchbox();
 	$facet->fetch_facets();
 	echo '</form>';

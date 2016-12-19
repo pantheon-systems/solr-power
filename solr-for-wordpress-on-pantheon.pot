@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: solr-power 0.6.0\n"
 "Report-Msgid-Bugs-To: https://github.com/pantheon-systems/solr-power/issues\n"
-"POT-Creation-Date: 2016-10-18 13:37-0700\n"
+"POT-Creation-Date: 2016-12-19 08:04-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: includes/class-solrpower-facet-widget.php:47
+#: includes/class-solrpower-facet-widget.php:49
 msgid "Title:"
 msgstr ""
 
@@ -25,69 +25,69 @@ msgstr ""
 msgid "Couldn't locate the options page."
 msgstr ""
 
-#: includes/class-solrpower-options.php:271
+#: includes/class-solrpower-options.php:276
 msgid "Ping Success!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:273
+#: includes/class-solrpower-options.php:278
 msgid "Ping Failed!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:281
+#: includes/class-solrpower-options.php:286
 msgid "Configuration has been copied to all blogs!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:288
+#: includes/class-solrpower-options.php:293
 msgid "Index Optimized!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:295
-#: includes/class-solrpower-options.php:303
+#: includes/class-solrpower-options.php:300
+#: includes/class-solrpower-options.php:308
 msgid "All Indexed Pages Deleted!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:329
+#: includes/class-solrpower-options.php:334
 msgid "Action failed. Please try again."
 msgstr ""
 
-#: includes/class-solrpower-options.php:353
-#: includes/class-solrpower-options.php:371
+#: includes/class-solrpower-options.php:358
+#: includes/class-solrpower-options.php:376
 msgid "Solr Results for string"
 msgstr ""
 
-#: includes/class-solrpower-options.php:354
+#: includes/class-solrpower-options.php:359
 msgid "Search Failed"
 msgstr ""
 
-#: includes/class-solrpower-options.php:364
+#: includes/class-solrpower-options.php:369
 #, php-format
 msgid "%.3f"
 msgstr ""
 
-#: includes/class-solrpower-options.php:372
+#: includes/class-solrpower-options.php:377
 msgid "Hits:"
 msgstr ""
 
-#: includes/class-solrpower-options.php:373
+#: includes/class-solrpower-options.php:378
 msgid "Query Time:"
 msgstr ""
 
-#: includes/class-solrpower-sync.php:332
+#: includes/class-solrpower-sync.php:355
 msgid "Post Information is NULL"
 msgstr ""
 
-#: includes/class-solrpower.php:60
+#: includes/class-solrpower.php:66
 msgid ""
 "Before you can activate this plugin, you must first <a href=\"https://"
 "pantheon.io/docs/articles/sites/apache-solr/\">activate Solr</a> in your "
 "Pantheon Dashboard."
 msgstr ""
 
-#: includes/class-solrpower.php:66
+#: includes/class-solrpower.php:72
 msgid "This plugin requires WordPress 3.0 or greater."
 msgstr ""
 
-#: includes/class-solrpower.php:106
+#: includes/class-solrpower.php:121
 msgid "Settings"
 msgstr ""
 
@@ -157,49 +157,78 @@ msgid ""
 "Solr Power plugin. "
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:49
+#: templates/solr-search-results.php:4
+msgid "Search Results"
+msgstr ""
+
+#: templates/solr-search-results.php:17
+msgctxt "Used between list items, there is a space after the comma."
+msgid ", "
+msgstr ""
+
+#: templates/solr-search-results.php:30
+msgid "Posts navigation"
+msgstr ""
+
+#: templates/solr-search-results.php:40
+msgid "Previous page"
+msgstr ""
+
+#: templates/solr-search-results.php:41
+msgid "Next page"
+msgstr ""
+
+#: templates/solr-search-results.php:42
+msgid "Page"
+msgstr ""
+
+#: templates/solr-search-results.php:51
+msgid "Sorry, no posts matched your criteria."
+msgstr ""
+
+#: tests/phpunit/class-solr-test-base.php:52
 msgctxt "taxonomy general name"
 msgid "Genres"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:50
+#: tests/phpunit/class-solr-test-base.php:53
 msgctxt "taxonomy singular name"
 msgid "Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:51
+#: tests/phpunit/class-solr-test-base.php:54
 msgid "Search Genres"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:52
+#: tests/phpunit/class-solr-test-base.php:55
 msgid "All Genres"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:53
+#: tests/phpunit/class-solr-test-base.php:56
 msgid "Parent Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:54
+#: tests/phpunit/class-solr-test-base.php:57
 msgid "Parent Genre:"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:55
+#: tests/phpunit/class-solr-test-base.php:58
 msgid "Edit Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:56
+#: tests/phpunit/class-solr-test-base.php:59
 msgid "Update Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:57
+#: tests/phpunit/class-solr-test-base.php:60
 msgid "Add New Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:58
+#: tests/phpunit/class-solr-test-base.php:61
 msgid "New Genre Name"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:59
+#: tests/phpunit/class-solr-test-base.php:62
 msgid "Genre"
 msgstr ""
 

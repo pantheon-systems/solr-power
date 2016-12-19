@@ -34,7 +34,7 @@ module.exports = function( grunt ) {
           options : {
               jshintrc : true
           },
-          all     : ['assets/js/admin.js']
+          all     : ['assets/js/admin.js','assets/js/src/facet.js']
       },
 
       /**
@@ -42,7 +42,7 @@ module.exports = function( grunt ) {
        */
       uglify : {
 
-          production : {
+          backend : {
 
               options : {
                   beautify         : false,
@@ -57,7 +57,24 @@ module.exports = function( grunt ) {
 	                  'assets/js/admin.js'
                   ]
               }
+          },
+          frontend : {
+
+              options : {
+                  beautify         : false,
+                  preserveComments : false,
+                  mangle           : {
+                      except : ['jQuery']
+                  }
+              },
+
+              files : {
+                  'assets/js/facet.min.js' : [
+                      'assets/js/src/facet.js'
+                  ]
+              }
           }
+
       },
 
       /**
@@ -73,7 +90,7 @@ module.exports = function( grunt ) {
           files : {
               expand  : true,
               flatten : true,
-              src     : ['assets/css/admin.css'],
+              src     : ['assets/css/admin.css', 'assets/css/facet.css'],
               dest    : 'assets/css'
           }
       },
@@ -88,7 +105,7 @@ module.exports = function( grunt ) {
               files : [{
                   expand : true,
                   cwd    : 'assets/css',
-                  src    : ['admin.css'],
+                  src    : ['admin.css', 'facet.css'],
                   dest   : 'assets/css',
                   ext    : '.min.css'
               }]
@@ -110,7 +127,8 @@ module.exports = function( grunt ) {
               },
 
               files : {
-                  'assets/css/admin.css' : 'assets/css/scss/admin.scss'
+                  'assets/css/admin.css' : 'assets/css/scss/admin.scss',
+                  'assets/css/facet.css' : 'assets/css/scss/facet.scss'
               }
           }
       },
@@ -127,7 +145,8 @@ module.exports = function( grunt ) {
           scripts : {
 
               files : [
-                  'assets/js/admin.js'
+                  'assets/js/admin.js',
+                  'assets/js/facet.js'
               ],
 
               tasks : ['uglify:production']
@@ -192,7 +211,7 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
 	grunt.loadNpmTasks('grunt-pot');
 	grunt.registerTask( 'readme', ['wp_readme_to_markdown']);
-	grunt.registerTask( 'default', ['jshint', 'uglify:production', 'sass', 'autoprefixer', 'cssmin'] );
+	grunt.registerTask( 'default', ['jshint', 'uglify:backend','uglify:frontend', 'sass', 'autoprefixer', 'cssmin'] );
 
 	grunt.util.linefeed = '\n';
 
