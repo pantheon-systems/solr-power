@@ -350,13 +350,6 @@ class SolrPower_Options {
 				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' ) . '<br />' . esc_html( $output );
 				break;
 
-			case 'run_query':
-				if ( ! $this->check_nonce( 'solr_run_query' ) ) {
-					return;
-				}
-				$this->run_query();
-				break;
-
 
 		}
 
@@ -379,46 +372,6 @@ class SolrPower_Options {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Run the Solr query on the options page.
-	 */
-	private function run_query() {
-		$qry     = filter_input( INPUT_POST, 'solrQuery', FILTER_SANITIZE_STRING );
-		$offset  = null;
-		$count   = null;
-		$fq      = null;
-		$sortby  = null;
-		$order   = null;
-		$results = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order );
-
-		if ( ! $results ) {
-			$this->msg = sprintf( '<p><strong>%s "' . esc_html( $qry ) . '
-				":</strong>
-			<br/>%s.
-		</p>', esc_html__( 'Solr Results for string', 'solr-for-wordpress-on-pantheon' )
-				, esc_html__( 'Search Failed', 'solr-for-wordpress-on-pantheon' )
-			);
-
-			return;
-		}
-		$data     = $results->getData();
-		$response = $data['response'];
-		$header   = $data['responseHeader'];
-
-		$out['hits']  = $response['numFound'];
-		$out['qtime'] = sprintf( __( "%.3f", 'solr-for-wordpress-on-pantheon' ), $header['QTime'] / 1000 );
-
-
-		$this->msg = sprintf( '<p><strong>%s "' . esc_html( $qry ) . '
-				":</strong>
-			<br/>%s ' . esc_html( $out['hits'] ) . '
-			<br/>%s ' . esc_html( $out['qtime'] ) . '
-		</p>', esc_html__( 'Solr Results for string', 'solr-for-wordpress-on-pantheon' )
-			, esc_html__( 'Hits:', 'solr-for-wordpress-on-pantheon' )
-			, esc_html__( 'Query Time:', 'solr-for-wordpress-on-pantheon' )
-		);
 	}
 
 	/**
