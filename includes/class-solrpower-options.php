@@ -26,26 +26,28 @@ class SolrPower_Options {
 	}
 
 	function __construct() {
-		add_action( 'admin_menu', array( $this, 'add_pages' ) );
-		add_action( 'network_admin_menu', array( $this, 'add_network_pages' ) );
+		if ( ! is_multisite() ) {
+			add_action( 'admin_menu', array( $this, 'add_pages' ) );
+		} else {
+			add_action( 'network_admin_menu', array( $this, 'add_network_pages' ) );
+		}
 		add_action( 'wp_ajax_solr_options', array( $this, 'options_load' ) );
 		add_action( 'admin_init', array( $this, 'check_for_actions' ) );
 		add_action( 'admin_init', array( $this, 'settings_api' ) );
 	}
 
 	function add_pages() {
-		if ( ! is_multisite() ) {
-			add_options_page( 'Solr Options', 'Solr Options', 'manage_options', 'solr-power', array(
-				$this,
-				'options_page'
-			) );
-		}
-	}
-
-	function add_network_pages() {
-		add_submenu_page( 'settings.php', 'Solr Options', 'Solr Options', 'manage_options', 'solr-power', array(
+		add_menu_page( 'Solr Options', 'Solr Options', 'manage_options', 'solr-power', array(
 			$this,
-			'options_page'
+			'options_page',
+		), 'dashicons-search' );
+		add_submenu_page( 'solr-power', 'Indexing Options', 'Indexing Options', 'manage_options', 'solr-power-index', array(
+			$this,
+			'index_sub_page',
+		) );
+		add_submenu_page( 'solr-power', 'Facet Options', 'Facet Options', 'manage_options', 'solr-power-facet', array(
+			$this,
+			'facet_sub_page',
 		) );
 	}
 
@@ -55,6 +57,45 @@ class SolrPower_Options {
 		} else {
 			esc_html_e( "Couldn't locate the options page.", 'solr-for-wordpress-on-pantheon' );
 		}
+	}
+
+	function index_sub_page() {
+		?>
+		<div class="wrap">
+			<div class="solr-power-subpage">
+				<form method="post" action="options.php">
+					<?php
+					echo '<form method="post" action="options.php">';
+					settings_fields( 'solr-power-index' );
+					do_settings_sections( 'solr-power-index' );
+					echo '<div style="display:none !important;">';
+					do_settings_sections( 'solr-power-facet' );
+					echo '</div>';
+					submit_button();
+					?>
+				</form>
+			</div>
+		</div>
+		<?php
+	}
+
+	function facet_sub_page() {
+		?>
+		<div class="wrap">
+			<div class="solr-power-subpage">
+				<form method="post" action="options.php">
+					<?php
+					settings_fields( 'solr-power-facet' );
+					echo '<div style="display:none !important;">';
+					do_settings_sections( 'solr-power-index' );
+					echo '</div>';
+					do_settings_sections( 'solr-power-facet' );
+					submit_button();
+					?>
+				</form>
+			</div>
+		</div>
+		<?php
 	}
 
 	/**
@@ -96,8 +137,8 @@ class SolrPower_Options {
 
 	function update_option( $options ) {
 		$optval   = $this->sanitise_options( $options );
-		$indexall = false;
 		$option   = 'plugin_s4wp_settings';
+		$indexall = false;
 		if ( is_multisite() ) {
 			$plugin_s4wp_settings = get_site_option( $option );
 			$indexall             = $plugin_s4wp_settings['s4wp_index_all_sites'];
@@ -149,6 +190,7 @@ class SolrPower_Options {
 		$clean['s4wp_solr_initialized']       = 1;
 		$clean['allow_ajax']                  = absint( $options['allow_ajax'] );
 		$clean['ajax_div_id']                 = sanitize_text_field( $options['ajax_div_id'] );
+
 		return $clean;
 	}
 
@@ -305,7 +347,7 @@ class SolrPower_Options {
 				}
 				SolrPower_Sync::get_instance()->delete_all();
 				$output    = SolrPower_Api::get_instance()->submit_schema();
-				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon') .'<br />' . esc_html( $output );
+				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' ) . '<br />' . esc_html( $output );
 				break;
 
 			case 'run_query':
@@ -383,9 +425,11 @@ class SolrPower_Options {
 	 * Register setting and sections for Settings API.
 	 */
 	function settings_api() {
-		register_setting( 'solr-power', 'plugin_s4wp_settings', array( $this, 'sanitise_options' ) );
+		register_setting( 'solr-power-index', 'plugin_s4wp_settings', array( $this, 'sanitise_options' ) );
+		register_setting( 'solr-power-facet', 'plugin_s4wp_settings', array( $this, 'sanitise_options' ) );
 		$this->indexing_section();
 		$this->results_section();
+		$this->facet_section();
 	}
 
 	/**
@@ -443,7 +487,7 @@ class SolrPower_Options {
 	/**
 	 * Type adjustments for value.
 	 *
-	 * @param string $value Value saved in option.
+	 * @param string $value  Value saved in option.
 	 * @param string $filter Type change needed.
 	 *
 	 * @return string Filtered (or unfiltered) value.
@@ -470,20 +514,22 @@ class SolrPower_Options {
 	 */
 	private function indexing_section() {
 		$section = 'solr_indexing';
+		$page    = 'solr-power-index';
+
 		add_settings_section(
 			$section,
 			'Indexing Options',
 			'__return_empty_string',
-			'solr-power'
+			'solr-power-index'
 		);
 
-		$this->add_field( 's4wp_delete_page', 'Remove Page on Delete', $section, 'checkbox', 'bool' );
-		$this->add_field( 's4wp_delete_post', 'Remove Post on Delete', $section, 'checkbox', 'bool' );
-		$this->add_field( 's4wp_private_page', 'Remove Page on Status Change', $section, 'checkbox', 'bool' );
-		$this->add_field( 's4wp_private_post', 'Remove Post on Status Change', $section, 'checkbox', 'bool' );
-		$this->add_field( 's4wp_index_comments', 'Index Comments', $section, 'checkbox', 'bool' );
-		$this->add_field( 's4wp_index_custom_fields', 'Index custom fields (comma separated names list)', $section, 'input', 'list2str' );
-		$this->add_field( 's4wp_exclude_pages', 'Excludes Posts or Pages (comma separated ids list)', $section, 'input', 'list2str' );
+		$this->add_field( 's4wp_delete_page', 'Remove Page on Delete', $page, $section, 'checkbox', 'bool' );
+		$this->add_field( 's4wp_delete_post', 'Remove Post on Delete', $page, $section, 'checkbox', 'bool' );
+		$this->add_field( 's4wp_private_page', 'Remove Page on Status Change', $page, $section, 'checkbox', 'bool' );
+		$this->add_field( 's4wp_private_post', 'Remove Post on Status Change', $page, $section, 'checkbox', 'bool' );
+		$this->add_field( 's4wp_index_comments', 'Index Comments', $page, $section, 'checkbox', 'bool' );
+		$this->add_field( 's4wp_index_custom_fields', 'Index custom fields (comma separated names list)', $page, $section, 'input', 'list2str' );
+		$this->add_field( 's4wp_exclude_pages', 'Excludes Posts or Pages (comma separated ids list)', $page, $section, 'input', 'list2str' );
 
 	}
 
@@ -493,50 +539,68 @@ class SolrPower_Options {
 	 */
 	private function results_section() {
 		$section = 'solr_results';
+		$page    = 'solr-power-index';
 
 		add_settings_section(
 			$section,
 			'Result Options',
 			'__return_empty_string',
-			'solr-power'
+			'solr-power-index'
 		);
 
-		$this->add_field( 'allow_ajax', 'AJAX Facet Search Support', $section, 'checkbox', 'bool' );
-		$this->add_field( 'ajax_div_id', 'AJAX Div ID (displays search results)', $section, 'input' );
-		$this->add_field( 's4wp_cat_as_taxo', 'Category Facet as Taxonomy', $section, 'checkbox', 'bool' );
-		$this->add_field( 's4wp_facet_on_categories', 'Categories as Facet', $section, 'checkbox', 'bool' );
-		$this->add_field( 's4wp_facet_on_tags', 'Tags as Facet', $section, 'checkbox', 'bool' );
-		$this->add_field( 's4wp_facet_on_author', 'Author as Facet', $section, 'checkbox', 'bool' );
-		$this->add_field( 's4wp_facet_on_type', 'Post Type as Facet', $section, 'checkbox', 'bool' );
-		$this->add_field( 's4wp_facet_on_taxonomy', 'Taxonomy as Facet', $section, 'checkbox', 'bool' );
-		$this->add_field( 's4wp_facet_on_custom_fields', 'Custom fields as Facet (comma separated ordered names list)', $section, 'input', 'list2str' );
-
-		$this->add_field( 's4wp_default_operator', 'Default Search Operator', $section, 'radio', null, array(
+		$this->add_field( 's4wp_default_operator', 'Default Search Operator', $page, $section, 'radio', null, array(
 			'OR',
-			'AND'
+			'AND',
 		) );
 
-		$this->add_field( 's4wp_default_sort', 'Default Sort', $section, 'select', null, array(
+		$this->add_field( 's4wp_default_sort', 'Default Sort', $page, $section, 'select', null, array(
 			'score',
-			'displaydate'
+			'displaydate',
 		) );
+	}
+
+	/**
+	 * Facet Section
+	 * Adds fields in section.
+	 */
+	private function facet_section() {
+		$section = 'solr_facet';
+		$page    = 'solr-power-facet';
+
+		add_settings_section(
+			$section,
+			'Facet Options',
+			'__return_empty_string',
+			'solr-power-facet'
+		);
+
+		$this->add_field( 'allow_ajax', 'AJAX Facet Search Support', $page, $section, 'checkbox', 'bool' );
+		$this->add_field( 'ajax_div_id', 'AJAX Div ID (displays search results)', $page, $section, 'input' );
+		$this->add_field( 's4wp_cat_as_taxo', 'Category Facet as Taxonomy', $page, $section, 'checkbox', 'bool' );
+		$this->add_field( 's4wp_facet_on_categories', 'Categories as Facet', $page, $section, 'checkbox', 'bool' );
+		$this->add_field( 's4wp_facet_on_tags', 'Tags as Facet', $page, $section, 'checkbox', 'bool' );
+		$this->add_field( 's4wp_facet_on_author', 'Author as Facet', $page, $section, 'checkbox', 'bool' );
+		$this->add_field( 's4wp_facet_on_type', 'Post Type as Facet', $page, $section, 'checkbox', 'bool' );
+		$this->add_field( 's4wp_facet_on_taxonomy', 'Taxonomy as Facet', $page, $section, 'checkbox', 'bool' );
+		$this->add_field( 's4wp_facet_on_custom_fields', 'Custom fields as Facet (comma separated ordered names list)', $page, $section, 'input', 'list2str' );
+
 	}
 
 	/**
 	 * Adds the settings field with custom arguments.
 	 *
-	 * @param string $name Option Key
-	 * @param string $title Name of field /  label
-	 * @param string $section The section the field is going to be registered to
-	 * @param string $type Type of form element (input, checkbox, radio, select)
-	 * @param null|string $filter Any value typesetting that needs to be done.
+	 * @param string      $name    Option Key
+	 * @param string      $title   Name of field /  label
+	 * @param string      $section The section the field is going to be registered to
+	 * @param string      $type    Type of form element (input, checkbox, radio, select)
+	 * @param null|string $filter  Any value typesetting that needs to be done.
 	 * @param null|string $choices Any default choices for select or radio options.
 	 */
-	private function add_field( $name, $title, $section, $type, $filter = null, $choices = null ) {
+	private function add_field( $name, $title, $page = 'solr-power', $section, $type, $filter = null, $choices = null ) {
 		add_settings_field( $name, $title, array(
 			$this,
 			'render_field'
-		), 'solr-power', $section, array(
+		), $page, $section, array(
 			'field'   => $name,
 			'type'    => $type,
 			'filter'  => $filter,

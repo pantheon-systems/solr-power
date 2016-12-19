@@ -6,10 +6,7 @@
 		display: block;
 	}
 
-	.solr-display {
-		width: 50%;
-		float: left;
-	}
+	font-size: 14px;
 }
 
 .solr-green {
@@ -18,4 +15,17 @@
 
 .solr-red {
 	color: red;
+}
+
+.solr-power-subpage {
+	background: #FFFFFF;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+	border: 1px solid #e5e5e5;
+	width: 100%;
+	clear: both;
+	padding: 8px 10px;
+	line-height: 1.5em;
+	.form-table {
+		width: auto;
+	}
 }

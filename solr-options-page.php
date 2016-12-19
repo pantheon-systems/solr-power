@@ -34,83 +34,35 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 ?>
 
 <div class="wrap">
-	<h2><?php esc_html_e( 'Solr Power', 'solr-for-wordpress-on-pantheon' ) ?></h2>
+	<div class="solr-power-subpage">
+		<h2><?php esc_html_e( 'Solr Power', 'solr-for-wordpress-on-pantheon' ) ?></h2>
 
 
-	<h2 class="nav-tab-wrapper" id="solr-tabs">
+		<h2 class="nav-tab-wrapper" id="solr-tabs">
 
-		<a class="nav-tab <?php echo  ( !isset( $_GET['settings-updated'] ) ) ? 'nav-tab-active' : ''; ?>" id="solr_info-tab"
-		   href="#top#solr_info">Info</a>
-		<a class="nav-tab <?php echo  ( isset( $_GET['settings-updated'] ) ) ? 'nav-tab-active' : ''; ?>" id="solr_indexing-tab"
-		   href="#top#solr_indexing">Indexing</a>
-		<a class="nav-tab" id="solr_action-tab"
-		   href="#top#solr_action">Actions</a>
-		<a class="nav-tab" id="solr_query-tab" href="#top#solr_query">Query</a>
-	</h2>
+			<a class="nav-tab <?php echo ( ! isset( $_GET['settings-updated'] ) ) ? 'nav-tab-active' : ''; ?>" id="solr_info-tab"
+			   href="#top#solr_info">
+				<?php esc_html_e( 'Info', 'solr-for-wordpress-on-pantheon' ); ?>
+			</a>
+			<a class="nav-tab" id="solr_action-tab"
+			   href="#top#solr_action">
+				<?php esc_html_e( 'Actions', 'solr-for-wordpress-on-pantheon' ); ?>
+			</a>
+			<a class="nav-tab" id="solr_query-tab" href="#top#solr_query">
+				<?php esc_html_e( 'Query', 'solr-for-wordpress-on-pantheon' ); ?>
+			</a>
+		</h2>
 
-	<div id="solr_info" class="solrtab active">
+
 		<?php
-		$server_info = SolrPower_Api::get_instance()->get_server_info();
+		if ( is_multisite() ) {
+			$action = 'settings.php?page=solr-power';
+		} else {
+			$action = 'options-general.php?page=solr-power';
+		}
+		include 'views/options/info.php';
+		include 'views/options/action.php';
+		include 'views/options/query.php';
 		?>
-		<div class="solr-display">
-			<table class="widefat">
-				<thead>
-				<tr>
-					<th colspan="2"><strong>Solr Configuration</strong></th>
-				</tr>
-				</thead>
-				<tbody>
-				<tr>
-					<td>Ping Status:</td>
-					<td><?php echo ( $server_info['ping_status'] ) ? '<span class="solr-green">Successful</span>' : '<span class="solr-red">Failed</span>'; ?></td>
-				</tr>
-				<tr>
-					<td>Solr Server IP address:</td>
-					<td><?php echo esc_html( $server_info['ip_address'] ); ?></td>
-				</tr>
-				<tr>
-					<td>Solr Server Port:</td>
-					<td><?php echo esc_html( getenv( $server_info['port'] ) ); ?></td>
-				</tr>
-				<tr>
-					<td>Solr Server Path:</td>
-					<td><?php echo esc_html( $server_info['path'] ); ?></td>
-				</tr>
-				</tbody>
-
-			</table>
-		</div>
-		<?php if ( $server_info['ping_status'] ) { ?>
-			<div class="solr-display">
-				<table class="widefat">
-					<thead>
-					<tr>
-						<th colspan="2"><strong>Indexing Stats by Post Type</strong></th>
-					</tr>
-					</thead>
-					<tbody>
-					<?php
-					foreach ( SolrPower_Api::get_instance()->index_stats() as $type => $stat ) {
-						?>
-						<tr>
-							<td><?php echo esc_html( $type ); ?>:</td>
-							<td><?php echo absint( $stat ); ?></td>
-						</tr>
-					<?php } ?>
-					</tbody>
-
-				</table>
-			</div>
-		<?php } ?>
-		<br class="clear">
 	</div>
-	<?php
-	if ( is_multisite() ) {
-		$action='settings.php?page=solr-power';
-	} else {
-		$action='options-general.php?page=solr-power';
-	}
-	include 'views/options/indexing.php';
-	include 'views/options/action.php';
-	include 'views/options/query.php';
-	?>
+</div>
