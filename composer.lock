@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0f7fb3891fbefa142acf10a42df44c9c",
-    "content-hash": "2bb2fb25f5eac6ba1d90dbfd4f28df00",
+    "hash": "e2ba0b9123a4eae625cbb1da5ee84232",
+    "content-hash": "8ee9cc1b773d20f3e65de72026e1b682",
     "packages": [
         {
             "name": "solarium/solarium",
@@ -129,12 +129,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/Behat.git",
-                "reference": "39fd2cd6d07ca44a619ef2e2f24a7a0d96066edd"
+                "reference": "4ea0ea06aa55145c28dcfac46036a40cfcdcc9f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/39fd2cd6d07ca44a619ef2e2f24a7a0d96066edd",
-                "reference": "39fd2cd6d07ca44a619ef2e2f24a7a0d96066edd",
+                "url": "https://api.github.com/repos/Behat/Behat/zipball/4ea0ea06aa55145c28dcfac46036a40cfcdcc9f8",
+                "reference": "4ea0ea06aa55145c28dcfac46036a40cfcdcc9f8",
                 "shasum": ""
             },
             "require": {
@@ -202,7 +202,7 @@
                 "symfony",
                 "testing"
             ],
-            "time": "2016-11-05 17:18:13"
+            "time": "2016-12-17 12:39:36"
         },
         {
             "name": "behat/gherkin",
@@ -1014,12 +1014,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "c3539b8e8fbfbb44a1c5884473940ea0f1a08d0c"
+                "reference": "d7f17967effab224d04f6dde839156e15b77cd3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/c3539b8e8fbfbb44a1c5884473940ea0f1a08d0c",
-                "reference": "c3539b8e8fbfbb44a1c5884473940ea0f1a08d0c",
+                "url": "https://api.github.com/repos/symfony/config/zipball/d7f17967effab224d04f6dde839156e15b77cd3e",
+                "reference": "d7f17967effab224d04f6dde839156e15b77cd3e",
                 "shasum": ""
             },
             "require": {
@@ -1062,7 +1062,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2016-12-09 07:45:54"
+            "time": "2016-12-19 07:55:13"
         },
         {
             "name": "symfony/console",
@@ -1070,12 +1070,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "a7a4ffcafcc52a474dd12e391837365a580d33bf"
+                "reference": "dc7074a2128a7fef1afaf7ef41903404176ac6d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/a7a4ffcafcc52a474dd12e391837365a580d33bf",
-                "reference": "a7a4ffcafcc52a474dd12e391837365a580d33bf",
+                "url": "https://api.github.com/repos/symfony/console/zipball/dc7074a2128a7fef1afaf7ef41903404176ac6d9",
+                "reference": "dc7074a2128a7fef1afaf7ef41903404176ac6d9",
                 "shasum": ""
             },
             "require": {
@@ -1125,7 +1125,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2016-12-13 15:32:21"
+            "time": "2016-12-17 10:47:22"
         },
         {
             "name": "symfony/css-selector",
@@ -1186,12 +1186,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug.git",
-                "reference": "342af93b6be3aedfc922c7cf07e4e5d0bc96c6a7"
+                "reference": "e45647910b4b6fcb48d8cfe33e1793dd2d56306f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/342af93b6be3aedfc922c7cf07e4e5d0bc96c6a7",
-                "reference": "342af93b6be3aedfc922c7cf07e4e5d0bc96c6a7",
+                "url": "https://api.github.com/repos/symfony/debug/zipball/e45647910b4b6fcb48d8cfe33e1793dd2d56306f",
+                "reference": "e45647910b4b6fcb48d8cfe33e1793dd2d56306f",
                 "shasum": ""
             },
             "require": {
@@ -1235,7 +1235,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2016-11-19 20:35:20"
+            "time": "2016-12-16 16:05:39"
         },
         {
             "name": "symfony/dependency-injection",
@@ -1243,12 +1243,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "afd1e75a68c0906415d16b4326dc058f01322762"
+                "reference": "672fce0beef4a736cc5639525cb1faac6e5c89b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/afd1e75a68c0906415d16b4326dc058f01322762",
-                "reference": "afd1e75a68c0906415d16b4326dc058f01322762",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/672fce0beef4a736cc5639525cb1faac6e5c89b1",
+                "reference": "672fce0beef4a736cc5639525cb1faac6e5c89b1",
                 "shasum": ""
             },
             "require": {
@@ -1298,7 +1298,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2016-12-13 15:48:43"
+            "time": "2016-12-19 08:23:24"
         },
         {
             "name": "symfony/dom-crawler",
