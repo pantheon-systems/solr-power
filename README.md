@@ -3,7 +3,7 @@
 **Tags:** search  
 **Requires at least:** 4.2  
 **Tested up to:** 4.7  
-**Stable tag:** 0.6.0  
+**Stable tag:** 1.0.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -16,9 +16,10 @@ Improve your user experience with the Apache Solr search engine for your WordPre
 
 Search is critical for your site, but the default search for WordPress leaves a lot to be desired. Improve your user experience with the Apache Solr search engine for your WordPress website.
 
-* Fast results, with better accuracy
+* Fast results, with better accuracy.
 * Enables faceting on fields such as tags, categories, author, and page type.
-* Indexing and faceting on custom fields
+* Indexing and faceting on custom fields.
+* Drop-in support for [WP_Query](https://codex.wordpress.org/Class_Reference/WP_Query) with the "solr-integrate" parameter set to true.
 * Completely replaces default WordPress search, just install and configure.
 * Completely integrated into default WordPress theme and search widget.
 * Very developer-friendly: uses the modern [Solarium](http://www.solarium-project.org/) library
@@ -29,10 +30,11 @@ The Solr Power plugin can be installed just like you'd install any other WordPre
 
 If you're using the Solr Power plugin on Pantheon, setting up Apache Solr is as easy as enabling the Apache Solr add-on in your Pantheon dashboard. Once you've done so:
 
-1. Index your existing content by going to the plugin options screen and selecting the applicable **Actions**:
+1. Configure which post types, taxonomies and custom fields to index by going to the **Indexing** tab of the Solr Power settings page.
+2. Index your existing content by going to the plugin options screen and selecting the applicable **Actions**:
    - - **Index Searchable Post Types**
-2. Search on!
-3. See the examples/templates directories for more rich implementation guidelines.
+3. Search on!
+4. See the examples/templates directories for more rich implementation guidelines.
 
 If you're using the Solr Power plugin elsewhere, you'll need to install and configure Apache Solr. On a Linux environment, this involves three steps:
 
@@ -129,7 +131,7 @@ You can see more details about the commands using `wp help solr`:
 
 Use Solr in a custom WP_Query instead of querying a database. Add ```'solr_integrate' => true``` to the query arguments.
 
-**NOTE:** Currently, only basic queries, tax_query and meta_query is supported.
+**NOTE:** Currently, only basic queries, tax_query, meta_query and date_query are supported. See ```examples/example.custom_WP_Query.php``` for an example.
 
 A meta_query can use the following compare operators:
 
@@ -150,45 +152,17 @@ A meta_query can use the following compare operators:
 
 (```'REGEXP'```, ```'NOT REGEXP'```, and ```'RLIKE'``` are not supported.)
 
-**WP_Query Example with meta_query and tax_query:**
-```
-$query = new WP_Query( array(
-	'solr_integrate' => true,
-	'post_type'      => 'post',
-	'post_status'    => 'publish',
-	'meta_query'     => array(
-		'relation' => 'AND',
-		array(
-			'key'     => 'foo',
-			'value'   => 'bar',
-			'compare' => '='
-
-		),
-		array(
-			'key'     => 'oof',
-			'value'   => 'baz',
-			'compare' => '='
-		),
-	),
-	'tax_query'     => array(
-		'relation' => 'AND',
-		array(
-			'taxonomy'=> 'foo',
-			'field'   => 'term_id',
-			'terms'   => 4,
-
-		),
-		array(
-			'taxonomy'=> 'oof',
-			'field'   => 'slug',
-			'terms'   => array( 'bar', 'baz' ),
-
-		),
-	),
-) );
-```
-
 ## Changelog ##
+### 1.0.0 ###
+* Add Ajax functionality to the facet search widget
+* Add date_query support to WP_Query Integration
+* Allow ```s``` parameter for WP_Query when Solr is enabled
+* Checks for searchable post type before indexing modified post
+* Test with WordPress 4.7
+* Add ```solr_power_index_all_finished``` action when indexing all posts is complete
+* Allow post_title and post_content to score higher
+* Make sure that integers and float values are actually of that type. Otherwise, Solr will fail to index the document.
+
 ### 0.6.0 ###
 * Advanced WP_Query Integration - Meta Queries, Tax Queries
 * Translatable strings standardized
