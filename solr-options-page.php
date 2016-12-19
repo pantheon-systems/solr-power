@@ -48,9 +48,6 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 			   href="#top#solr_action">
 				<?php esc_html_e( 'Actions', 'solr-for-wordpress-on-pantheon' ); ?>
 			</a>
-			<a class="nav-tab" id="solr_query-tab" href="#top#solr_query">
-				<?php esc_html_e( 'Query', 'solr-for-wordpress-on-pantheon' ); ?>
-			</a>
 		</h2>
 
 
@@ -62,7 +59,6 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 		}
 		include 'views/options/info.php';
 		include 'views/options/action.php';
-		include 'views/options/query.php';
 		?>
 	</div>
 </div>
