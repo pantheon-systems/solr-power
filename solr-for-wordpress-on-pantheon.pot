@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: solr-power 0.6.0\n"
 "Report-Msgid-Bugs-To: https://github.com/pantheon-systems/solr-power/issues\n"
-"POT-Creation-Date: 2016-12-19 08:04-0600\n"
+"POT-Creation-Date: 2016-12-19 14:44-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,54 +21,54 @@ msgstr ""
 msgid "Title:"
 msgstr ""
 
-#: includes/class-solrpower-options.php:56
+#: includes/class-solrpower-options.php:58
 msgid "Couldn't locate the options page."
 msgstr ""
 
-#: includes/class-solrpower-options.php:276
+#: includes/class-solrpower-options.php:318
 msgid "Ping Success!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:278
+#: includes/class-solrpower-options.php:320
 msgid "Ping Failed!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:286
+#: includes/class-solrpower-options.php:328
 msgid "Configuration has been copied to all blogs!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:293
+#: includes/class-solrpower-options.php:335
 msgid "Index Optimized!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:300
-#: includes/class-solrpower-options.php:308
+#: includes/class-solrpower-options.php:342
+#: includes/class-solrpower-options.php:350
 msgid "All Indexed Pages Deleted!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:334
+#: includes/class-solrpower-options.php:376
 msgid "Action failed. Please try again."
 msgstr ""
 
-#: includes/class-solrpower-options.php:358
-#: includes/class-solrpower-options.php:376
+#: includes/class-solrpower-options.php:400
+#: includes/class-solrpower-options.php:418
 msgid "Solr Results for string"
 msgstr ""
 
-#: includes/class-solrpower-options.php:359
+#: includes/class-solrpower-options.php:401
 msgid "Search Failed"
 msgstr ""
 
-#: includes/class-solrpower-options.php:369
+#: includes/class-solrpower-options.php:411
 #, php-format
 msgid "%.3f"
 msgstr ""
 
-#: includes/class-solrpower-options.php:377
+#: includes/class-solrpower-options.php:419
 msgid "Hits:"
 msgstr ""
 
-#: includes/class-solrpower-options.php:378
+#: includes/class-solrpower-options.php:420
 msgid "Query Time:"
 msgstr ""
 
@@ -119,8 +119,20 @@ msgstr ""
 msgid "Order By:"
 msgstr ""
 
-#: solr-options-page.php:37
+#: solr-options-page.php:38
 msgid "Solr Power"
+msgstr ""
+
+#: solr-options-page.php:45
+msgid "Info"
+msgstr ""
+
+#: solr-options-page.php:49 views/options/action.php:3
+msgid "Actions"
+msgstr ""
+
+#: solr-options-page.php:52
+msgid "Query"
 msgstr ""
 
 #: solr-power.php:47
@@ -232,17 +244,13 @@ msgstr ""
 msgid "Genre"
 msgstr ""
 
-#: views/options/action.php:3
-msgid "Actions"
-msgstr ""
-
 #: views/options/action.php:9
 msgid "Check Server Settings"
 msgstr ""
 
 #: views/options/action.php:11 views/options/action.php:23
 #: views/options/action.php:35 views/options/action.php:46
-#: views/options/action.php:59 views/options/action.php:76
+#: views/options/action.php:59 views/options/action.php:77
 #: views/options/query.php:14
 msgid "Execute"
 msgstr ""
@@ -263,7 +271,7 @@ msgstr ""
 msgid "Repost schema.xml"
 msgstr ""
 
-#: views/options/action.php:74
+#: views/options/action.php:75
 msgid "Index Searchable Post Types"
 msgstr ""
 
