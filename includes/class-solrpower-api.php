@@ -333,7 +333,7 @@ class SolrPower_Api {
 				$facet_fields[] = $field_name . '_str';
 			}
 		}
-		$count = ( - 1 === $count ) ? 50000 : $count;
+		$count = ( $count < 1 ) ? apply_filters( 'solr_max_search_results', 50000 ) : $count;
 		if ( $solr ) {
 			$select = array(
 				'query'      => $qry,
