@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: solr-power 0.6.0\n"
+"Project-Id-Version: solr-power 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/pantheon-systems/solr-power/issues\n"
-"POT-Creation-Date: 2016-12-19 14:44-0600\n"
+"POT-Creation-Date: 2016-12-19 16:24-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,30 +46,8 @@ msgstr ""
 msgid "All Indexed Pages Deleted!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:376
+#: includes/class-solrpower-options.php:369
 msgid "Action failed. Please try again."
-msgstr ""
-
-#: includes/class-solrpower-options.php:400
-#: includes/class-solrpower-options.php:418
-msgid "Solr Results for string"
-msgstr ""
-
-#: includes/class-solrpower-options.php:401
-msgid "Search Failed"
-msgstr ""
-
-#: includes/class-solrpower-options.php:411
-#, php-format
-msgid "%.3f"
-msgstr ""
-
-#: includes/class-solrpower-options.php:419
-msgid "Hits:"
-msgstr ""
-
-#: includes/class-solrpower-options.php:420
-msgid "Query Time:"
 msgstr ""
 
 #: includes/class-solrpower-sync.php:355
@@ -129,10 +107,6 @@ msgstr ""
 
 #: solr-options-page.php:49 views/options/action.php:3
 msgid "Actions"
-msgstr ""
-
-#: solr-options-page.php:52
-msgid "Query"
 msgstr ""
 
 #: solr-power.php:47
@@ -251,7 +225,6 @@ msgstr ""
 #: views/options/action.php:11 views/options/action.php:23
 #: views/options/action.php:35 views/options/action.php:46
 #: views/options/action.php:59 views/options/action.php:77
-#: views/options/query.php:14
 msgid "Execute"
 msgstr ""
 
@@ -273,16 +246,4 @@ msgstr ""
 
 #: views/options/action.php:75
 msgid "Index Searchable Post Types"
-msgstr ""
-
-#: views/options/query.php:4
-msgid "Solr Query"
-msgstr ""
-
-#: views/options/query.php:7
-msgid "Words or phrases to search for."
-msgstr ""
-
-#: views/options/query.php:12
-msgid "Submit Query"
 msgstr ""
