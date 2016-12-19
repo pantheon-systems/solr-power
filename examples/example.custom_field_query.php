@@ -1,22 +1,53 @@
 <?php
-$args = array(
-  //Include multiple post types
-  'post_type', array('post', 'custom_post_type'),
-  'meta_query' => array(
-    //Include posts where both nested custom field clauses are true; can be replaced with 'OR'
-    'relation' => 'AND',
-    array(
-      //Replace values with desired custom field data, modify operator for 'compare' as needed
-      'key' => 'custom_field_key1',
-      'value' => 'custom_field_value1',
-      'compare' => 'LIKE'
-    ),
-    array(
-      //Replace values with desired custom field data, modify operator for 'compare' as needed
-      'key' => 'custom_field_key2',
-      'value' => 'custom_field_value2',
-      'compare' => 'LIKE'
-    )
-  )
+$args  = array(
+	// solr_integrate required for Solr.
+	'solr_integrate' => true,
+	'post_type'      => 'post',
+	'post_status'    => 'publish',
+	'posts_per_page' => 50,
+	'meta_query'     => array(
+		'relation' => 'AND',
+		array(
+			'key'     => 'foo',
+			'value'   => 'bar',
+			'compare' => '='
+
+		),
+		array(
+			'key'     => 'oof',
+			'value'   => 'baz',
+			'compare' => 'LIKE'
+		),
+	),
+	'tax_query'      => array(
+		'relation' => 'AND',
+		array(
+			'taxonomy' => 'foo',
+			'field'    => 'term_id',
+			'terms'    => 4,
+
+		),
+		array(
+			'taxonomy' => 'oof',
+			'field'    => 'slug',
+			'terms'    => array( 'bar', 'baz' ),
+
+		),
+	),
+	'date_query'     => array(
+		// All items between 2000 and 2010.
+		array(
+			'before' => array(
+				'year'  => 2011,
+				'month' => 1,
+				'day'   => 1,
+			),
+			'after'  => array(
+				'year'  => 1999,
+				'month' => 12,
+				'day'   => 31,
+			),
+		),
+	),
 );
 $query = new WP_Query( $args );
