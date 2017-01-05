@@ -140,4 +140,24 @@ class SolrWPQueryTest extends SolrTestBase {
 		$this->assertEquals( 2, $query->found_posts );
 	}
 
+	function test_wp_query_failed_ping() {
+		$this->__create_test_post();
+		$args  = array(
+			's' => 'solr'
+		);
+		SolrPower_Api::get_instance()->ping=false;
+		$query = new WP_Query( $args );
+		$this->assertEquals( $query->post_count, 1 );
+		$this->assertEquals( $query->found_posts, 1 );
+		while ( $query->have_posts() ) {
+			$query->the_post();
+
+			global $post;
+
+			$this->assertFalse( isset($post->solr) );
+		}
+
+		wp_reset_postdata();
+		SolrPower_Api::get_instance()->ping=true;
+	}
 }

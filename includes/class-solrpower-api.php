@@ -27,6 +27,11 @@ class SolrPower_Api {
 	public $last_error;
 
 	/**
+	 * @var bool Ping results from Solr.
+	 */
+	public $ping = false;
+
+	/**
 	 * Grab instance of object.
 	 * @return SolrPower_Api
 	 */
@@ -40,6 +45,7 @@ class SolrPower_Api {
 
 	function __construct() {
 		add_action( 'admin_notices', array( $this, 'check_for_schema' ) );
+		add_action( 'init', array( $this, 'ping_server' ) );
 	}
 
 	function submit_schema() {
@@ -136,7 +142,7 @@ class SolrPower_Api {
 		try {
 			$ping            = $solr->ping( $solr->createPing() );
 			$this->last_code = 200;
-
+			$this->ping = true;
 			return true;
 		} catch ( Solarium\Exception\HttpException $e ) {
 
