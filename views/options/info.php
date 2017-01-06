@@ -2,55 +2,47 @@
 	<?php
 	$server_info = SolrPower_Api::get_instance()->get_server_info();
 	?>
-	<div class="solr-display">
-		<table class="form-table">
-			<thead>
-			<tr>
-				<th colspan="2"><strong>Solr Configuration</strong></th>
-			</tr>
-			</thead>
-			<tbody>
-			<tr>
-				<td>Ping Status:</td>
-				<td><?php echo ( $server_info['ping_status'] ) ? '<span class="solr-green">Successful</span>' : '<span class="solr-red">Failed</span>'; ?></td>
-			</tr>
-			<tr>
-				<td>Solr Server IP address:</td>
-				<td><?php echo esc_html( $server_info['ip_address'] ); ?></td>
-			</tr>
-			<tr>
-				<td>Solr Server Port:</td>
-				<td><?php echo esc_html( getenv( $server_info['port'] ) ); ?></td>
-			</tr>
-			<tr>
-				<td>Solr Server Path:</td>
-				<td><?php echo esc_html( $server_info['path'] ); ?></td>
-			</tr>
-			</tbody>
+    <div class="solr-display">
+        <div>
+            <h3>Solr Configuration</h3>
 
-		</table>
-	</div>
+            <ul>
+                <li><strong>Ping Status:</strong>
+					<?php echo ( $server_info['ping_status'] ) ? '<span class="solr-green">Successful</span>' : '<span class="solr-red">Failed</span>'; ?>
+                </li>
+
+                <li><strong>Solr Server IP address:</strong>
+					<?php echo esc_html( $server_info['ip_address'] ); ?>
+                </li>
+                <li>
+                    <strong>Solr Server Port:</strong>
+					<?php echo esc_html( getenv( $server_info['port'] ) ); ?>
+                </li>
+                <li>
+                    <strong>Solr Server Path:</strong>
+					<?php echo esc_html( $server_info['path'] ); ?>
+                </li>
+            </ul>
+
+        </div>
+    </div>
 	<?php if ( $server_info['ping_status'] ) { ?>
-		<div class="solr-display">
-			<table class="form-table">
-				<thead>
-				<tr>
-					<th colspan="2"><strong>Indexing Stats by Post Type</strong></th>
-				</tr>
-				</thead>
-				<tbody>
-				<?php
-				foreach ( SolrPower_Api::get_instance()->index_stats() as $type => $stat ) {
-					?>
-					<tr>
-						<td><?php echo esc_html( $type ); ?>:</td>
-						<td><?php echo absint( $stat ); ?></td>
-					</tr>
-				<?php } ?>
-				</tbody>
+        <div class="solr-display">
+            <div>
+                <h3>Indexing Stats by Post Type</h3>
+                <ul>
+					<?php
+					foreach ( SolrPower_Api::get_instance()->index_stats() as $type => $stat ) {
+						?>
+                        <li>
+                            <strong><?php echo esc_html( $type ); ?>:</strong>
+							<?php echo absint( $stat ); ?>
+                        </li>
+					<?php } ?>
+                </ul>
 
-			</table>
-		</div>
+            </div>
+        </div>
 	<?php } ?>
-	<br class="clear">
+    <br class="clear">
 </div>

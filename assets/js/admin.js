@@ -44,11 +44,11 @@ function switch1() {
 function doLoad($type, $prev) {
     $j.post(solr.ajax_url, {action:'solr_options', security: solr.security, method: 'load', type: $type, prev: $prev}, function(response) {
         var data = JSON.parse(response);
-        $j('#percentspan').text(data.percent + "%");
+        $j('#percentspan').show().text(data.percent + "%");
         if (!data.end) {
             doLoad(data.type, data.last);
         } else {
-            $j('#percentspan').remove();
+            $j('#percentspan').hide();
             enableAll();
         }
     });
@@ -90,23 +90,12 @@ function enableAll() {
     $j('#settingsbutton').removeAttr('disabled');
 }
 
-$percentspan = '<span style="font-size:1.2em;font-weight:bold;margin:20px;padding:20px" id="percentspan">0%</span>';
-
 $j(document).ready(function() {
+    $j('#percentspan').hide();
     switch1();
-
-    $j.each(solr.post_types,function(index,value){
-        $j('.s4wp_postload_' + value).click(function() {
-            $j(this).after($percentspan);
-            disableAll();
-            doLoad(value, 0);
-        });
-        $j('.s4wp_pageload_' + value).click(function() {
-            $j(this).after($percentspan);
-            disableAll();
-            doLoad(value, 0);
-        });
+    $j('.s4wp_postload_post').click(function() {
+        disableAll();
+        doLoad('post', 0);
     });
-
 
 });

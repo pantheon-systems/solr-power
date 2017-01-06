@@ -72,8 +72,24 @@
 }
 #wpcontent{
   padding-left:0;
-  //margin-top:-18px;
   #wrap{
     margin-left:20px;
   }
+  div.update-nag{
+    display:none;
+  }
+}
+
+#solr_action form{
+  float:left;
+  clear:both;
+  display:block;
+  width:100%;
+}
+
+#percentspan{
+  font-size:1.2em;
+  font-weight:bold;
+  margin:20px;
+  padding:20px
 }

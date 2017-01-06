@@ -50,8 +50,13 @@ class SolrPower_Options {
 			'facet_sub_page',
 		) );
 	}
-
+    function options_header(){
+	    echo '<div id="solr_header">';
+	    echo '<h2>Solr Power <span>Version ' . esc_html(SOLR_POWER_VERSION) . '</span></h2>';
+	    echo '</div>';
+    }
 	function options_page() {
+        $this->options_header();
 		if ( file_exists( SOLR_POWER_PATH . '/solr-options-page.php' ) ) {
 			include( SOLR_POWER_PATH . '/solr-options-page.php' );
 		} else {
@@ -60,9 +65,10 @@ class SolrPower_Options {
 	}
 
 	function index_sub_page() {
+		$this->options_header();
 		?>
 		<div class="wrap">
-			<div class="solr-power-subpage">
+			<div class="solr-power-subpage solrtab active">
 				<form method="post" action="options.php">
 					<?php
 					echo '<form method="post" action="options.php">';
@@ -80,9 +86,10 @@ class SolrPower_Options {
 	}
 
 	function facet_sub_page() {
+		$this->options_header();
 		?>
 		<div class="wrap">
-			<div class="solr-power-subpage">
+			<div class="solr-power-subpage solrtab active">
 				<form method="post" action="options.php">
 					<?php
 					settings_fields( 'solr-power-facet' );

@@ -35,8 +35,6 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 
 <div class="wrap">
 	<div class="solr-power-subpage">
-		<h2><?php esc_html_e( 'Solr Power', 'solr-for-wordpress-on-pantheon' ) ?></h2>
-
 
 		<h2 class="nav-tab-wrapper" id="solr-tabs">
 
@@ -55,7 +53,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 		if ( is_multisite() ) {
 			$action = 'settings.php?page=solr-power';
 		} else {
-			$action = 'options-general.php?page=solr-power';
+			$action = 'admin.php?page=solr-power';
 		}
 		include 'views/options/info.php';
 		include 'views/options/action.php';
