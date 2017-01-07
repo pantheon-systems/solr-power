@@ -29,11 +29,14 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		parent::setUp();
 
 		$this->__change_option( 's4wp_index_custom_fields', $this->postmeta );
-
+		// Setup bulk indexing/syncing
+		SolrPower_Sync::get_instance()->bulk = true;
 	}
 
 	function tearDown() {
 		parent::tearDown();
+		// Disable bulk indexing/syncing
+		SolrPower_Sync::get_instance()->bulk = false;
 	}
 
 	public function test_meta_empty() {
@@ -609,7 +612,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		add_post_meta( $post_id7, 'baz', rand_str() );
 		add_post_meta( $post_id7, 'bar', 'val2' );
 		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
-		sleep( 1 );
+
 		$query = new WP_Query( array(
 			'meta_query'             => array(
 				array(

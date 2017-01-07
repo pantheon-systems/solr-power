@@ -14,14 +14,27 @@
     },
     "minimum-stability": "dev",
     "require": {
-        "solarium/solarium": "3.6.0"
+        "solarium/solarium": "3.6.0",
+        "squizlabs/php_codesniffer": "2.6.2",
+        "wp-coding-standards/wpcs": "0.8.0",
+        "stevegrunwell/wp-enforcer": "^0.4.1"
     },
     "require-dev": {
         "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master"
+    },
+    "scripts": {
+        "post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs",
+        "post-update-cmd" : "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs"
     },
     "autoload": {
         "classmap": [
             "includes"
         ]
-    }
+    },
+    "post-install-cmd": [
+        "wp-enforcer"
+    ],
+    "post-update-cmd": [
+        "wp-enforcer"
+    ]
 }

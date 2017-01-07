@@ -8,9 +8,12 @@ class SolrPower_Debug extends Debug_Bar_Panel {
 
 	function prerender() {
 		$log = SolrPower_Api::get_instance()->log;
-		$this->set_visible( !empty( $log ) );
+		$this->set_visible( ! empty( $log ) );
 	}
 
+	/**
+	 * Renders panel on Debug Bar.
+	 */
 	function render() {
 
 		echo '<h2>Solr Information</h2>';
@@ -18,7 +21,7 @@ class SolrPower_Debug extends Debug_Bar_Panel {
 		$log = SolrPower_Api::get_instance()->log;
 
 		echo '<table>';
-		foreach ( $log as $label => $value ):
+		foreach ( $log as $label => $value ) :
 			echo '<tr>';
 			echo '<td><strong>' . esc_html( $label ) . ':</strong></td>';
 			if ( is_array( $value ) ) {
@@ -34,5 +37,4 @@ class SolrPower_Debug extends Debug_Bar_Panel {
 		endforeach;
 		echo '</table>';
 	}
-
 }

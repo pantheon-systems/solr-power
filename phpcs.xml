@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<ruleset name="SolrPower">
+    <description>Sniffs for the coding standards of the SolrPower plugin</description>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*tests/*</exclude-pattern>
+    <rule ref="Internal.NoCodeFound">
+        <severity>0</severity>
+    </rule>
+
+    <rule ref="WordPress-VIP">
+        <exclude name="WordPress.NamingConventions.ValidFunctionName"/>
+        <exclude name="Generic.WhiteSpace"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature"/>
+        <exclude name="Squiz.PHP.CommentedOutCode"/>
+        <exclude name="Squiz.WhiteSpace"/>
+        <exclude name="WordPress.CSRF.NonceVerification"/>
+        <exclude name="WordPress.VIP.DirectDatabaseQuery"/>
+        <exclude name="WordPress.VIP.PostsPerPage"/>
+        <exclude name="WordPress.VIP.SlowDBQuery"/>
+        <exclude name="WordPress.VIP.SuperGlobalInputUsage"/>
+        <exclude name="WordPress.VIP.ValidatedSanitizedInput"/>
+        <exclude name="WordPress.VIP.RestrictedFunctions"/>
+        <exclude name="WordPress.WP.I18n.NonSingularStringLiteralText"/>
+    </rule>
+
+</ruleset>

@@ -1,38 +1,38 @@
 <div id="solr-search-results">
-	<header class="page-header">
-		<h1 class="page-title">
+    <header class="page-header">
+        <h1 class="page-title">
 			<?php esc_html_e( 'Search Results', 'solr-for-wordpress-on-pantheon' ); ?>
-		</h1>
-	</header><!-- .page-header -->
+        </h1>
+    </header><!-- .page-header -->
 	<?php
 	if ( $query->have_posts() ) :
 		while ( $query->have_posts() ) : $query->the_post(); ?>
 
-			<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-				<header class="entry-header">
+            <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+                <header class="entry-header">
 					<?php
 					the_title( '<h1 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h1>' );
-					if ( in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) : ?>
-						<div class="entry-meta">
-							<span class="cat-links"><?php echo get_the_category_list( _x( ', ', 'Used between list items, there is a space after the comma.', 'solr-for-wordpress-on-pantheon' ) ); ?></span>
-						</div>
+					if ( in_array( 'category', get_object_taxonomies( get_post_type() ), true ) ) : ?>
+                        <div class="entry-meta">
+                            <span class="cat-links"><?php echo get_the_category_list( _x( ', ', 'Used between list items, there is a space after the comma.', 'solr-for-wordpress-on-pantheon' ) ); /* XSS ok */  ?></span>
+                        </div>
 						<?php
 					endif;
 					?>
-				</header><!-- .entry-header -->
+                </header><!-- .entry-header -->
 
-				<div class="entry-summary">
+                <div class="entry-summary">
 					<?php the_excerpt(); ?>
-				</div><!-- .entry-summary -->
-			</article><!-- #post-## -->
+                </div><!-- .entry-summary -->
+            </article><!-- #post-## -->
 		<?php endwhile; ?>
-		<nav class="navigation paging-navigation" role="navigation">
-			<h1 class="screen-reader-text"><?php esc_html_e( 'Posts navigation', 'solr-for-wordpress-on-pantheon' ); ?></h1>
-			<div class="pagination loop-pagination">
+        <nav class="navigation paging-navigation" role="navigation">
+            <h1 class="screen-reader-text"><?php esc_html_e( 'Posts navigation', 'solr-for-wordpress-on-pantheon' ); ?></h1>
+            <div class="pagination loop-pagination">
 				<?php
 				$big = 999999999; // Need an unlikely integer.
 
-				echo paginate_links( array(
+				echo paginate_links( array(  // XSS ok
 					'base'               => str_replace( $big, '%#%', get_pagenum_link( $big, false ) ),
 					'format'             => '?paged=%#%',
 					'current'            => max( 1, $query->get( 'paged' ) ),
@@ -44,11 +44,11 @@
 				) );
 				wp_reset_postdata();
 				?>
-			</div>
-		</nav>
+            </div>
+        </nav>
 	<?php else : ?>
-		<article>
-			<p><?php esc_html_e( 'Sorry, no posts matched your criteria.', 'solr-for-wordpress-on-pantheon' ); ?></p>
-		</article>
+        <article>
+            <p><?php esc_html_e( 'Sorry, no posts matched your criteria.', 'solr-for-wordpress-on-pantheon' ); ?></p>
+        </article>
 	<?php endif; ?>
 </div>
