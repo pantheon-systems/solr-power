@@ -512,7 +512,7 @@ class SolrPower_Api {
 		$ping = $this->ping_server();
 
 		return array(
-			'ping_status' => $ping ? 'successful' : 'failed',
+			'ping_status' => $ping,
 			'ip_address'  => getenv( 'PANTHEON_INDEX_HOST' ),
 			'port'        => getenv( 'PANTHEON_INDEX_PORT' ),
 			'path'        => $this->compute_path(),
