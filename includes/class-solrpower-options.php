@@ -41,68 +41,14 @@ class SolrPower_Options {
 			$this,
 			'options_page',
 		), 'dashicons-search' );
-		add_submenu_page( 'solr-power', 'Indexing Options', 'Indexing Options', 'manage_options', 'solr-power-index', array(
-			$this,
-			'index_sub_page',
-		) );
-		add_submenu_page( 'solr-power', 'Facet Options', 'Facet Options', 'manage_options', 'solr-power-facet', array(
-			$this,
-			'facet_sub_page',
-		) );
 	}
-    function options_header(){
-	    echo '<div id="solr_header">';
-	    echo '<h2>Solr Power <span>Version ' . esc_html(SOLR_POWER_VERSION) . '</span></h2>';
-	    echo '</div>';
-    }
+
 	function options_page() {
-        $this->options_header();
 		if ( file_exists( SOLR_POWER_PATH . '/solr-options-page.php' ) ) {
 			include( SOLR_POWER_PATH . '/solr-options-page.php' );
 		} else {
 			esc_html_e( "Couldn't locate the options page.", 'solr-for-wordpress-on-pantheon' );
 		}
-	}
-
-	function index_sub_page() {
-		$this->options_header();
-		?>
-		<div class="wrap">
-			<div class="solr-power-subpage solrtab active">
-				<form method="post" action="options.php">
-					<?php
-					echo '<form method="post" action="options.php">';
-					settings_fields( 'solr-power-index' );
-					do_settings_sections( 'solr-power-index' );
-					echo '<div style="display:none !important;">';
-					do_settings_sections( 'solr-power-facet' );
-					echo '</div>';
-					submit_button();
-					?>
-				</form>
-			</div>
-		</div>
-		<?php
-	}
-
-	function facet_sub_page() {
-		$this->options_header();
-		?>
-		<div class="wrap">
-			<div class="solr-power-subpage solrtab active">
-				<form method="post" action="options.php">
-					<?php
-					settings_fields( 'solr-power-facet' );
-					echo '<div style="display:none !important;">';
-					do_settings_sections( 'solr-power-index' );
-					echo '</div>';
-					do_settings_sections( 'solr-power-facet' );
-					submit_button();
-					?>
-				</form>
-			</div>
-		</div>
-		<?php
 	}
 
 	/**

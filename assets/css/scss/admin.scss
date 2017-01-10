@@ -4,32 +4,32 @@
 
   &.active {
     display: flex;
-    flex-wrap:wrap;
-    background:#fff;
-    padding:20px;
+    flex-wrap: wrap;
+    background: #fff;
+    padding: 20px;
   }
 
   .solr-display {
     width: 50%;
     float: left;
-    display:flex;
+    display: flex;
     div {
-      width:100%;
-    padding:20px;
+      width: 100%;
+      padding: 20px;
       border: 1px solid #c0c0c0;
-      h3{
-        border-bottom:1px solid #c0c0c0;
-        margin:0;
+      h3 {
+        border-bottom: 1px solid #c0c0c0;
+        margin: 0;
       }
-      ul{
+      ul {
 
-        li{
-          display:flex;
+        li {
+          display: flex;
           flex-wrap: wrap;
-          border-bottom:1px dotted #c0c0c0;
-          strong{
-            width:50%;
-            display:flex;
+          border-bottom: 1px dotted #c0c0c0;
+          strong {
+            width: 50%;
+            display: flex;
           }
         }
       }
@@ -37,15 +37,16 @@
   }
 }
 
-#solr-tabs{
-  .nav-tab-active{
-    background:#fff;
-    border-bottom:1px solid #ffffff;
-    .dashicons{
-      color:#EFD01D;
+#solr-tabs {
+  .nav-tab-active {
+    background: #fff;
+    border-bottom: 1px solid #ffffff;
+    .dashicons {
+      color: #EFD01D;
     }
   }
 }
+
 .solr-green {
   color: green;
 }
@@ -56,40 +57,54 @@
 
 #solr_header {
   height: 55px;
-  border-top:2px solid #000000;
-  border-bottom:2px solid #000000;
+  border-top: 2px solid #000000;
+  border-bottom: 2px solid #000000;
   background: url('../images/logo.svg') no-repeat 99% #635C27;
   h2 {
     color: #fff;
-    padding-left:10px;
-    font-size:20px;
-    text-shadow:1px 1px 5px #000;
-    span{
-      font-size:9px;
+    padding-left: 10px;
+    font-size: 20px;
+    text-shadow: 1px 1px 5px #000;
+    span {
+      font-size: 9px;
     }
   }
 
 }
-#wpcontent{
-  padding-left:0;
-  #wrap{
-    margin-left:20px;
+
+#wpcontent {
+  padding-left: 0;
+  #wrap {
+    margin-left: 20px;
   }
-  div.update-nag{
-    display:none;
+  div.update-nag {
+    display: none;
   }
 }
 
-#solr_action form{
-  float:left;
-  clear:both;
-  display:block;
-  width:100%;
+#solr_action form {
+  float: left;
+  clear: both;
+  display: block;
+  width: 100%;
 }
 
-#percentspan{
-  font-size:1.2em;
-  font-weight:bold;
-  margin:20px;
-  padding:20px
+#percentspan {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 20px;
+  padding: 20px
+}
+
+#message {
+  background: #fff;
+  border-left: 4px solid #fff;
+  border-color: #7ad03a;
+  -webkit-box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.1 );
+  box-shadow: 0 1px 1px 0 rgba( 0, 0, 0, 0.1 );
+  padding: 1px 12px;
+  p{
+    margin: 0.5em 0;
+    padding: 2px;
+  }
 }
