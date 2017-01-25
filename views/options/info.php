@@ -20,7 +20,7 @@
 			</tr>
 			<tr>
 				<td>Solr Server Port:</td>
-				<td><?php echo esc_html( getenv( $server_info['port'] ) ); ?></td>
+				<td><?php echo esc_html( $server_info['port'] ); ?></td>
 			</tr>
 			<tr>
 				<td>Solr Server Path:</td>
