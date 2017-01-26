@@ -3,10 +3,14 @@ class SolrTest extends SolrTestBase {
 
 	function setUp() {
 		parent::setUp();
+		// Setup bulk indexing/syncing
+		SolrPower_Sync::get_instance()->bulk = true;
 	}
 
 	function tearDown() {
 		parent::tearDown();
+		// Disable bulk indexing/syncing
+		SolrPower_Sync::get_instance()->bulk = false;
 	}
 
 	/**
@@ -41,6 +45,7 @@ class SolrTest extends SolrTestBase {
 	 */
 	function test_index_post() {
 		$post_id = $this->__create_test_post();
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
 		$search  = $this->__run_test_query();
 		if ( is_null( $search ) ) {
 			$this->assertTrue( false );
@@ -154,7 +159,7 @@ class SolrTest extends SolrTestBase {
 		$delete_id = $this->__create_test_post( 'page' );
 		$this->__create_test_post( 'page' );
 		$this->__create_multiple( 5 );
-
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
 		if ( is_multisite() ) {
 			$blogid    = get_current_blog_id();
 			$delete_id = $blogid . '_' . $delete_id;

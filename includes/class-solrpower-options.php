@@ -36,6 +36,9 @@ class SolrPower_Options {
 		add_action( 'admin_init', array( $this, 'settings_api' ) );
 	}
 
+	/**
+	 * Add menu pages in wp-admin.
+	 */
 	function add_pages() {
 		add_menu_page( 'Solr Options', 'Solr Options', 'manage_options', 'solr-power', array(
 			$this,
@@ -51,6 +54,9 @@ class SolrPower_Options {
 		) );
 	}
 
+	/**
+	 * Output the primary options page.
+	 */
 	function options_page() {
 		if ( file_exists( SOLR_POWER_PATH . '/solr-options-page.php' ) ) {
 			include( SOLR_POWER_PATH . '/solr-options-page.php' );
@@ -59,11 +65,14 @@ class SolrPower_Options {
 		}
 	}
 
+	/**
+	 * Output the indexing options page.
+	 */
 	function index_sub_page() {
 		?>
-		<div class="wrap">
-			<div class="solr-power-subpage">
-				<form method="post" action="options.php">
+        <div class="wrap">
+            <div class="solr-power-subpage">
+                <form method="post" action="options.php">
 					<?php
 					echo '<form method="post" action="options.php">';
 					settings_fields( 'solr-power-index' );
@@ -73,17 +82,20 @@ class SolrPower_Options {
 					echo '</div>';
 					submit_button();
 					?>
-				</form>
-			</div>
-		</div>
+                </form>
+            </div>
+        </div>
 		<?php
 	}
 
+	/**
+	 * Output the Facet options page.
+	 */
 	function facet_sub_page() {
 		?>
-		<div class="wrap">
-			<div class="solr-power-subpage">
-				<form method="post" action="options.php">
+        <div class="wrap">
+            <div class="solr-power-subpage">
+                <form method="post" action="options.php">
 					<?php
 					settings_fields( 'solr-power-facet' );
 					echo '<div style="display:none !important;">';
@@ -92,9 +104,9 @@ class SolrPower_Options {
 					do_settings_sections( 'solr-power-facet' );
 					submit_button();
 					?>
-				</form>
-			</div>
-		</div>
+                </form>
+            </div>
+        </div>
 		<?php
 	}
 
@@ -119,6 +131,11 @@ class SolrPower_Options {
 		die();
 	}
 
+	/**
+	 * Fetches the plugin options.
+     *
+     * @return array
+	 */
 	function get_option() {
 		$indexall = false;
 		$option   = 'plugin_s4wp_settings';
@@ -135,6 +152,10 @@ class SolrPower_Options {
 		}
 	}
 
+	/**
+	 * Updates plugin options.
+     * @param array $options
+	 */
 	function update_option( $options ) {
 		$optval   = $this->sanitise_options( $options );
 		$option   = 'plugin_s4wp_settings';
@@ -242,12 +263,12 @@ class SolrPower_Options {
 	 */
 	function filter_list2str( $input ) {
 		if ( ! is_array( $input ) ) {
-			return "";
+			return '';
 		}
 
 		$outval = implode( ',', $input );
 		if ( ! $outval ) {
-			$outval = "";
+			$outval = '';
 		}
 
 		return $outval;
@@ -298,18 +319,11 @@ class SolrPower_Options {
 	 * Checks to see if any actions were taken on the settings page.
 	 */
 	function check_for_actions() {
-
-		if ( ! isset( $_POST['action'] ) || ! current_user_can( 'manage_options' ) ) {
+		$action = filter_input( INPUT_POST, 'action', FILTER_SANITIZE_STRING );
+		if ( ! $action || ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
-		$action = sanitize_text_field( $_POST['action'] );
 		switch ( $action ) {
-			case 'update':
-				if ( ! $this->check_nonce( 'solr_update' ) ) {
-					return;
-				}
-				$this->save_options();
-				break;
 			case 'ping':
 				if ( ! $this->check_nonce( 'solr_ping' ) ) {
 					return;
@@ -363,10 +377,11 @@ class SolrPower_Options {
 	 * @return bool
 	 */
 	private function check_nonce( $field ) {
-		if ( ! isset( $_POST[ $field ] )
-		     || ! wp_verify_nonce( $_POST[ $field ], 'solr_action' )
+		$nonce = filter_input( INPUT_POST, $field, FILTER_SANITIZE_STRING );
+		if ( ! $nonce
+		     || ! wp_verify_nonce( $nonce, 'solr_action' )
 		) {
-			$this->msg = esc_html__( 'Action failed. Please try again.' . $field, 'solr-for-wordpress-on-pantheon' );
+			$this->msg = esc_html__( 'Action failed. Please try again.', 'solr-for-wordpress-on-pantheon' );
 
 			return false;
 		}
@@ -440,7 +455,7 @@ class SolrPower_Options {
 	/**
 	 * Type adjustments for value.
 	 *
-	 * @param string $value  Value saved in option.
+	 * @param string $value Value saved in option.
 	 * @param string $filter Type change needed.
 	 *
 	 * @return string Filtered (or unfiltered) value.
@@ -542,23 +557,22 @@ class SolrPower_Options {
 	/**
 	 * Adds the settings field with custom arguments.
 	 *
-	 * @param string      $name    Option Key
-	 * @param string      $title   Name of field /  label
-	 * @param string      $section The section the field is going to be registered to
-	 * @param string      $type    Type of form element (input, checkbox, radio, select)
-	 * @param null|string $filter  Any value typesetting that needs to be done.
+	 * @param string $name Option Key
+	 * @param string $title Name of field /  label
+	 * @param string $section The section the field is going to be registered to
+	 * @param string $type Type of form element (input, checkbox, radio, select)
+	 * @param null|string $filter Any value typesetting that needs to be done.
 	 * @param null|string $choices Any default choices for select or radio options.
 	 */
 	private function add_field( $name, $title, $page = 'solr-power', $section, $type, $filter = null, $choices = null ) {
 		add_settings_field( $name, $title, array(
 			$this,
-			'render_field'
+			'render_field',
 		), $page, $section, array(
 			'field'   => $name,
 			'type'    => $type,
 			'filter'  => $filter,
-			'choices' => $choices
+			'choices' => $choices,
 		) );
 	}
-
 }

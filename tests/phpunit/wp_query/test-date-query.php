@@ -8,10 +8,14 @@ class SolrDateQueryTest extends SolrTestBase {
 		parent::setUp();
 		unset( $this->q );
 		$this->q = new WP_Query();
+		// Setup bulk indexing/syncing
+		SolrPower_Sync::get_instance()->bulk = true;
 	}
 
 	function tearDown() {
 		parent::tearDown();
+		// Disable bulk indexing/syncing
+		SolrPower_Sync::get_instance()->bulk = false;
 	}
 
 	/**

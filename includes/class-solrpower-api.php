@@ -14,6 +14,9 @@ class SolrPower_Api {
 	 */
 	public $log = array();
 
+	/**
+	 * @var Solarium\Client Solr service object
+	 */
 	public $solr = null;
 
 	/**
@@ -48,12 +51,17 @@ class SolrPower_Api {
 		add_action( 'init', array( $this, 'ping_server' ) );
 	}
 
+	/**
+	 * Submits schema.xml on Pantheon Platform.
+	 *
+	 * @return string
+	 */
 	function submit_schema() {
 		// Solarium does not currently support submitting schemas to the server.
 		// So we'll do it ourselves
 
 		$returnValue = '';
-		$upload_dir  = wp_upload_dir();
+
 
 		// Let's check for a custom Schema.xml. It MUST be located in
 		// wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml
@@ -118,8 +126,8 @@ class SolrPower_Api {
 	 * @return string
 	 */
 	function compute_path() {
-		if (!defined('SOLR_PATH') && getenv( 'SOLR_PATH' )) {
-			define('SOLR_PATH', getenv( 'SOLR_PATH' ));
+		if ( ! defined( 'SOLR_PATH' ) && getenv( 'SOLR_PATH' ) ) {
+			define( 'SOLR_PATH', getenv( 'SOLR_PATH' ) );
 		}
 		if ( defined( 'SOLR_PATH' ) ) {
 			return SOLR_PATH;
@@ -158,17 +166,13 @@ class SolrPower_Api {
 	 * @return Solarium\Client Solr service object
 	 */
 	function get_solr() {
-
-		# get the connection options
-		$plugin_s4wp_settings = solr_options();
-
 		/*
 		 * Check for the SOLR_POWER_SCHEME constant.
 		 * If it exists and is "http" or "https", use it as the default scheme value.
 		 */
-		if (!defined('SOLR_POWER_SCHEME') && getenv( 'SOLR_POWER_SCHEME' )) {
- 			define('SOLR_POWER_SCHEME', getenv( 'SOLR_POWER_SCHEME' ));
- 		}
+		if ( ! defined( 'SOLR_POWER_SCHEME' ) && getenv( 'SOLR_POWER_SCHEME' ) ) {
+			define( 'SOLR_POWER_SCHEME', getenv( 'SOLR_POWER_SCHEME' ) );
+		}
 		$default_scheme = ( defined( 'SOLR_POWER_SCHEME' ) && 1 === preg_match( '/^http[s]?$/', SOLR_POWER_SCHEME ) ) ? SOLR_POWER_SCHEME : 'https';
 
 		$solarium_config = array(
@@ -186,9 +190,9 @@ class SolrPower_Api {
 					 */
 					'scheme' => apply_filters( 'solr_scheme', $default_scheme ),
 					'path'   => $this->compute_path(),
-					'ssl'    => array( 'local_cert' => realpath( ABSPATH . '../certs/binding.pem' ) )
-				)
-			)
+					'ssl'    => array( 'local_cert' => realpath( ABSPATH . '../certs/binding.pem' ) ),
+				),
+			),
 		);
 
 		/**
@@ -210,7 +214,6 @@ class SolrPower_Api {
 		         $solarium_config['endpoint']['localhost']['port'] and
 		         $solarium_config['endpoint']['localhost']['path'] )
 		) {
-			syslog( LOG_ERR, "host, port or path are empty, host:$host, port:$port, path:$path" );
 
 			return null;
 		}
@@ -234,10 +237,13 @@ class SolrPower_Api {
 		return $solr;
 	}
 
+	/**
+	 * Runs optimization query on Solr.
+	 */
 	function optimize() {
 		try {
 			$solr = get_solr();
-			if ( ! $solr == null ) {
+			if ( null !== $solr ) {
 				$update = $solr->createUpdate();
 				$update->addOptimize();
 				$solr->update( $update );
@@ -258,12 +264,12 @@ class SolrPower_Api {
 	 * @param $fq
 	 * @param $sortby
 	 * @param $order
-	 * @param string $server
+	 * @param string $fields
 	 *
 	 * @return Solarium\QueryType\Select\Result\Result
 	 */
 	function query( $qry, $offset, $count, $fq, $sortby, $order, $fields = null ) {
-		//NOTICE: does this needs to be cached to stop the db being hit to grab the options everytime search is being done.
+
 		$plugin_s4wp_settings = solr_options();
 
 		$solr = get_solr();
@@ -280,6 +286,7 @@ class SolrPower_Api {
 	 * @param $sortby
 	 * @param $order
 	 * @param $plugin_s4wp_settings
+	 * @param $fields
 	 *
 	 * @return Solarium\QueryType\Select\Result\Result
 	 */
@@ -290,7 +297,7 @@ class SolrPower_Api {
 			'Count'        => $count,
 			'Filter Query' => $fq,
 			'Sort By'      => $sortby,
-			'Order'        => $order
+			'Order'        => $order,
 		) );
 
 
@@ -321,7 +328,7 @@ class SolrPower_Api {
 		if ( count( $facet_on_custom_taxonomy ) ) {
 			$taxonomies = (array) get_taxonomies( array( '_builtin' => false ), 'names' );
 			foreach ( $taxonomies as $parent ) {
-				$facet_fields[] = $parent . "_taxonomy";
+				$facet_fields[] = $parent . '_taxonomy';
 			}
 		}
 
@@ -346,9 +353,9 @@ class SolrPower_Api {
 				'fields'     => '*,score',
 				'start'      => $offset,
 				'rows'       => $count,
-				'omitheader' => false
+				'omitheader' => false,
 			);
-			if ( $sortby !== "" ) {
+			if ( '' !== $sortby ) {
 				$select['sort'] = array( $sortby => $order );
 			} else {
 				$select['sort'] = array( 'post_date' => 'desc' );
@@ -362,7 +369,7 @@ class SolrPower_Api {
 				$facetSet->createFacetField( $facet_field )->setField( $facet_field );
 			}
 
-			$dismax->setBoostFunctions('post_title^25 post_content^50');
+			$dismax->setBoostFunctions( 'post_title^25 post_content^50' );
 			$facetSet->setMinCount( 1 );
 			if ( $facet_on_tags ) {
 				$facetSet->setLimit( $number_of_tags );
@@ -375,7 +382,6 @@ class SolrPower_Api {
 				if ( '' !== $fq ) {
 					$query->createFilterQuery( 'searchfq' )->setQuery( $fq );
 				}
-
 			}
 			$query->getHighlighting()->setFields( 'post_content' );
 			$query->getHighlighting()->setSimplePrefix( '<b>' );
@@ -402,7 +408,7 @@ class SolrPower_Api {
 					$response = null;
 				}
 			} catch ( Exception $e ) {
-				syslog( LOG_ERR, "failed to query solr. " . $e->getMessage() );
+				syslog( LOG_ERR, 'failed to query solr. ' . $e->getMessage() );
 				$response = null;
 			}
 		}
@@ -496,7 +502,6 @@ class SolrPower_Api {
 				// Set a transient so we are not checking on every page load.
 				set_transient( 'schema_check', '1', 300 );
 			}
-
 		}
 	}
 

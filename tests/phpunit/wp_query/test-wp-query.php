@@ -3,6 +3,14 @@
 class SolrWPQueryTest extends SolrTestBase {
 	function setUp() {
 		parent::setUp();
+		// Setup bulk indexing/syncing
+		SolrPower_Sync::get_instance()->bulk = true;
+	}
+
+	function tearDown() {
+		parent::tearDown();
+		// Disable bulk indexing/syncing
+		SolrPower_Sync::get_instance()->bulk = false;
 	}
 
 	/**
@@ -11,6 +19,7 @@ class SolrWPQueryTest extends SolrTestBase {
 	 */
 	function test_simple_wp_query() {
 		$this->__create_test_post();
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
 		$args  = array(
 			's' => 'solr'
 		);
@@ -43,6 +52,7 @@ class SolrWPQueryTest extends SolrTestBase {
 	 */
 	function test_simple_wp_query_solr_integrate() {
 		$this->__create_test_post();
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
 		$args  = array(
 			's'              => 'solr',
 			'solr_integrate' => true,

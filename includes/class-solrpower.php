@@ -38,6 +38,11 @@ class SolrPower {
 		add_action( 'wp_ajax_solr_search', array( $this, 'ajax_search' ) );
 	}
 
+	/**
+	 * Plugin Activation Hook.
+	 *
+	 * Performs sanity check and schema.xml submission if on Pantheon platform.
+	 */
 	function activate() {
 
 		// Check to see if we have  environment variables. If not, bail. If so, create the initial options.
@@ -58,6 +63,11 @@ class SolrPower {
 		return;
 	}
 
+	/**
+	 * Checks if Solr settings are configured and if WordPress version is supported.
+	 *
+	 * @return string
+	 */
 	function sanity_check() {
 		$returnValue = '';
 		$wp_version  = get_bloginfo( 'version' );
@@ -65,16 +75,19 @@ class SolrPower {
 		if ( getenv( 'PANTHEON_ENVIRONMENT' ) !== false && getenv( 'PANTHEON_INDEX_HOST' ) === false ) {
 			$returnValue = wp_kses( __( 'Before you can activate this plugin, you must first <a href="https://pantheon.io/docs/articles/sites/apache-solr/">activate Solr</a> in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' ), array(
 				'a' => array(
-					'href' => array()
-				)
+					'href' => array(),
+				),
 			) );
-		} else if ( version_compare( $wp_version, '3.0', '<' ) ) {
+		} elseif ( version_compare( $wp_version, '3.0', '<' ) ) {
 			$returnValue = esc_html__( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' );
 		}
 
 		return $returnValue;
 	}
 
+	/**
+	 * Enqueues CSS and JS in wp-admin.
+	 */
 	function admin_head() {
 
 		$min = ( defined( 'SCRIPT_DEBUG' ) && true === SCRIPT_DEBUG ) ? '' : '.min';
@@ -99,7 +112,7 @@ class SolrPower {
 			 */
 
 			'post_types' => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
-			'security'   => wp_create_nonce( "solr_security" )
+			'security'   => wp_create_nonce( 'solr_security' ),
 		);
 		wp_localize_script( 'solr-js', 'solr', $solr_js );
 	}
@@ -107,14 +120,14 @@ class SolrPower {
 	/**
 	 * Display a settings link on the plugins page.
 	 *
-	 * @param array  $links
+	 * @param array $links
 	 * @param string $file
 	 *
 	 * @return array
 	 */
 	function plugin_settings_link( $links, $file ) {
 
-		if ( $file !== plugin_basename( SOLR_POWER_PATH . '/solr-power.php' ) ) {
+		if ( plugin_basename( SOLR_POWER_PATH . '/solr-power.php' ) !== $file ) {
 			return $links;
 		}
 
@@ -123,10 +136,9 @@ class SolrPower {
 		return $links;
 	}
 
-	/*
-	 * @TODO change to echo statemnts and get rid of direct output.
+	/**
+	 * Enqueues autosuggest frontend CSS and JS.
 	 */
-
 	function autosuggest_head() {
 		if ( file_exists( SOLR_POWER_PATH . '/template/autocomplete.css' ) ) {
 			wp_enqueue_style( 'solr-autocomplete', SOLR_POWER_URL . 'template/autocomplete.css' );
@@ -134,6 +146,10 @@ class SolrPower {
 		wp_enqueue_script( 'solr-suggest', SOLR_POWER_URL . 'template/autocomplete.js', false );
 	}
 
+	/**
+	 * Retrieves results from autosuggest.
+	 * Legacy code.
+	 */
 	function template_redirect() {
 		wp_enqueue_script( 'suggest' );
 
@@ -154,13 +170,13 @@ class SolrPower {
 		}
 
 		// If there is a template file then we use it
-		if ( file_exists( TEMPLATEPATH . '/s4wp_search.php' ) ) {
+		if ( file_exists( TEMPLATEPATH . '/s4wp-search.php' ) ) {
 			// use theme file
-			include_once( TEMPLATEPATH . '/s4wp_search.php' );
-		} else if ( file_exists( dirname( __FILE__ ) . '/template/s4wp_search.php' ) ) {
+			include_once( TEMPLATEPATH . '/s4wp-search.php' );
+		} elseif ( file_exists( dirname( __FILE__ ) . '/template/s4wp-search.php' ) ) {
 			// use plugin supplied file
 			add_action( 'wp_head', array( $this, 'default_head' ) );
-			include_once( dirname( __FILE__ ) . '/template/s4wp_search.php' );
+			include_once( dirname( __FILE__ ) . '/template/s4wp-search.php' );
 		} else {
 			// no template files found, just continue on like normal
 			// this should get to the normal WordPress search results
@@ -170,6 +186,11 @@ class SolrPower {
 		exit;
 	}
 
+	/**
+	 * Performs autocomplete Solr query.
+	 * @param string $q
+	 * @param int $limit
+	 */
 	function autocomplete( $q, $limit ) {
 		$solr     = get_solr();
 		$response = null;
@@ -195,6 +216,9 @@ class SolrPower {
 		}
 	}
 
+	/**
+	 * Enqueues frontend search CSS.
+	 */
 	function default_head() {
 		// include our default css
 		if ( file_exists( dirname( __FILE__ ) . '/template/search.css' ) ) {
@@ -202,6 +226,13 @@ class SolrPower {
 		}
 	}
 
+	/**
+	 * Adds panel to Debug Bar.
+	 *
+	 * @param array $panels
+	 *
+	 * @return array
+	 */
 	function add_panel( $panels ) {
 		require_once( SOLR_POWER_PATH . '/includes/class-solrpower-debug.php' );
 		array_push( $panels, new SolrPower_Debug() );
@@ -210,7 +241,7 @@ class SolrPower {
 	}
 
 	/**
-	 * Enqueue and localize scripts.
+	 * Enqueue and localize frontend scripts and stylesheets.
 	 */
 	function add_scripts() {
 		if ( ! is_search() ) {
@@ -299,5 +330,4 @@ class SolrPower {
 		echo wp_json_encode( $return );
 		wp_die();
 	}
-
 }

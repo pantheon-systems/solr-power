@@ -23,7 +23,7 @@ module.exports = function( grunt ) {
 			},
 			options: {
 				bin: "vendor/bin/phpcs --extensions=php --ignore=\"*/vendor/*,*/node_modules/*\"",
-				standard: "phpcs.ruleset.xml"
+				standard: "phpcs.xml"
 			}
 		},
 
@@ -211,7 +211,7 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
 	grunt.loadNpmTasks('grunt-pot');
 	grunt.registerTask( 'readme', ['wp_readme_to_markdown']);
-	grunt.registerTask( 'default', ['jshint', 'uglify:backend','uglify:frontend', 'sass', 'autoprefixer', 'cssmin'] );
+	grunt.registerTask( 'default', ['phpcs', 'jshint', 'uglify:backend','uglify:frontend', 'sass', 'autoprefixer', 'cssmin'] );
 
 	grunt.util.linefeed = '\n';
 

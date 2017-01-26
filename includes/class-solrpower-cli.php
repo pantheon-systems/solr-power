@@ -52,8 +52,8 @@ class SolrPower_CLI extends WP_CLI_Command {
 				$last_error = SolrPower_Api::get_instance()->last_error;
 				WP_CLI::error( "Couldn't remove all posts from the index: {$last_error->getMessage()}" );
 			}
-		} else if ( count( $args ) ) {
-			foreach( $args as $post_id ) {
+		} elseif ( count( $args ) ) {
+			foreach ( $args as $post_id ) {
 				if ( SolrPower_Sync::get_instance()->delete( absint( $post_id ) ) ) {
 					WP_CLI::log( "Removed post {$post_id} from the index." );
 				} else {
@@ -83,43 +83,43 @@ class SolrPower_CLI extends WP_CLI_Command {
 	public function index( $args, $assoc_args ) {
 		$defaults = array(
 			'posts_per_page' => 300,
-			'post_status'	 => 'publish',
-			'fields'		 => 'ids',
-			'paged'			 => 1,
-			'post_type'		 => get_post_types( array( 'exclude_from_search' => false ) ),
+			'post_status'    => 'publish',
+			'fields'         => 'ids',
+			'paged'          => 1,
+			'post_type'      => get_post_types( array( 'exclude_from_search' => false ) ),
 		);
 		// Check if specified post_type is valid.
-		if ( isset( $assoc_args[ 'post_type' ] ) && (false === post_type_exists( $assoc_args[ 'post_type' ] )) ) {
-			WP_CLI::error( '"' . $assoc_args[ 'post_type' ] . '" is an invalid post type.' );
+		if ( isset( $assoc_args['post_type'] ) && ( false === post_type_exists( $assoc_args['post_type'] ) ) ) {
+			WP_CLI::error( '"' . $assoc_args['post_type'] . '" is an invalid post type.' );
 		}
-		$query_args		 = array_merge( $defaults, $assoc_args );
-		$query			 = new WP_Query( $query_args );
-		$current_page	 = $query->get( 'paged' );
-		$total			 = $query->max_num_pages;
+		$query_args   = array_merge( $defaults, $assoc_args );
+		$query        = new WP_Query( $query_args );
+		$current_page = $query->get( 'paged' );
+		$total        = $query->max_num_pages;
 		// There's a bug with found_posts that shows two more than what it should.
-		$total_posts	 = (1 == $query->max_num_pages) ? $query->post_count : $query->found_posts - 2;
+		$total_posts = ( 1 === $query->max_num_pages ) ? $query->post_count : $query->found_posts - 2;
 
-		$notify	 = \WP_CLI\Utils\make_progress_bar( 'Indexing Items:', $total_posts );
-		$done	 = 0;
-		$failed	 = 0;
-		$solr	 = get_solr();
-		$update	 = $solr->createUpdate();
+		$notify = \WP_CLI\Utils\make_progress_bar( 'Indexing Items:', $total_posts );
+		$done   = 0;
+		$failed = 0;
+		$solr   = get_solr();
+		$update = $solr->createUpdate();
 		while ( $current_page <= $total ) {
 			$query->set( 'paged', $current_page );
 			$query->get_posts();
 			foreach ( $query->posts as $id ) {
-				$documents	 = array();
+				$documents   = array();
 				$documents[] = SolrPower_Sync::get_instance()->build_document( $update->createDocument(), get_post( $id ) );
-				$post_it	 = SolrPower_Sync::get_instance()->post( $documents, true, FALSE );
+				$post_it     = SolrPower_Sync::get_instance()->post( $documents, true, false );
 
 				if ( false === $post_it ) {
-					$failed++;
+					$failed ++;
 				} else {
-					$done++;
+					$done ++;
 				}
 				$notify->tick();
 			}
-			$current_page++;
+			$current_page ++;
 		}
 		do_action( 'solr_power_index_all_finished' );
 		$notify->finish();
@@ -242,9 +242,8 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 *     1
 	 */
 	public function stats( $args, $assoc_args ) {
-		$stats = SolrPower_Api::get_instance()->index_stats();
+		$stats     = SolrPower_Api::get_instance()->index_stats();
 		$formatter = new \WP_CLI\Formatter( $assoc_args, array_keys( $stats ) );
 		$formatter->display_item( $stats );
 	}
-
 }
