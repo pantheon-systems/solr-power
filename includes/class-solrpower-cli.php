@@ -71,12 +71,14 @@ class SolrPower_CLI extends WP_CLI_Command {
 	/**
 	 * Index all posts for a site.
 	 *
-	 * @synopsis [--posts_per_page] [--post_type]
+	 * [--posts_per_page=<count>]
+	 * : Index a specific number of posts per set.
+	 * ---
+	 * default: 300
+	 * ---
 	 *
-	 * @param array $args
-	 *
-	 *
-	 * @param array $assoc_args
+	 * [--post_type=<type>]
+	 * : Limit indexing to a specific post type.
 	 */
 	public function index( $args, $assoc_args ) {
 		$defaults = array(
