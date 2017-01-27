@@ -57,7 +57,7 @@ class SolrPower_Api {
 
 		// Let's check for a custom Schema.xml. It MUST be located in
 		// wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml
-		if ( is_file( realpath( ABSPATH ) . '/' . $_ENV['FILEMOUNT'] . '/solr-for-wordpress-on-pantheon/schema.xml' ) ) {
+		if ( ! empty( $_ENV['FILEMOUNT'] ) && is_file( realpath( ABSPATH ) . '/' . $_ENV['FILEMOUNT'] . '/solr-for-wordpress-on-pantheon/schema.xml' ) ) {
 			$schema = realpath( ABSPATH ) . '/' . $_ENV['FILEMOUNT'] . '/solr-for-wordpress-on-pantheon/schema.xml';
 		} else {
 			$schema = SOLR_POWER_PATH . '/schema.xml';

@@ -33,7 +33,7 @@ dependencies:
         composer config -g github-oauth.github.com $GITHUB_TOKEN
       } &> /dev/null
   override:
-    - composer global require pantheon-systems/terminus
+    - composer global require pantheon-systems/terminus ">=0.13.3 <0.99"
     - PATH=~/.composer/vendor/bin:$PATH
     - terminus auth login --machine-token=$TERMINUS_TOKEN
 
