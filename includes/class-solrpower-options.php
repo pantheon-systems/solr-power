@@ -37,7 +37,7 @@ class SolrPower_Options {
 	}
 
 	function add_pages() {
-		add_menu_page( 'Solr Options', 'Solr Options', 'manage_options', 'solr-power', array(
+		add_menu_page( 'Solr Power', 'Solr Power', 'manage_options', 'solr-power', array(
 			$this,
 			'options_page',
 		), 'dashicons-search' );
