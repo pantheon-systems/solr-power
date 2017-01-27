@@ -1,5 +1,6 @@
 jQuery(document).ready(function () {
 	var refURI = jQuery('input[name="_wp_http_referer"]').val();
+	refURI = refURI.replace(/#.*$/, '');
 	jQuery('#solr-tabs').find('a').click(function () {
 			jQuery('#solr-tabs').find('a').removeClass('nav-tab-active');
 			jQuery('.solrtab').removeClass('active');
