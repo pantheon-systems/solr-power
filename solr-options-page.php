@@ -74,7 +74,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 		include 'views/options/info.php';
 		include 'views/options/action.php';
 		?>
-		<form method="post" action="options.php">
+		<form method="post" action="<?php echo $action; ?>">
 		<?php
 		include 'views/options/indexing.php';
 		include 'views/options/facet.php';
