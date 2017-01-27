@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: solr-power 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/pantheon-systems/solr-power/issues\n"
-"POT-Creation-Date: 2016-12-19 16:34-0600\n"
+"POT-Creation-Date: 2017-01-27 13:39-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,32 +21,32 @@ msgstr ""
 msgid "Title:"
 msgstr ""
 
-#: includes/class-solrpower-options.php:58
+#: includes/class-solrpower-options.php:50
 msgid "Couldn't locate the options page."
 msgstr ""
 
-#: includes/class-solrpower-options.php:318
+#: includes/class-solrpower-options.php:271
 msgid "Ping Success!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:320
+#: includes/class-solrpower-options.php:273
 msgid "Ping Failed!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:328
+#: includes/class-solrpower-options.php:281
 msgid "Configuration has been copied to all blogs!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:335
+#: includes/class-solrpower-options.php:288
 msgid "Index Optimized!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:342
-#: includes/class-solrpower-options.php:350
+#: includes/class-solrpower-options.php:295
+#: includes/class-solrpower-options.php:303
 msgid "All Indexed Pages Deleted!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:369
+#: includes/class-solrpower-options.php:322
 msgid "Action failed. Please try again."
 msgstr ""
 
@@ -65,7 +65,7 @@ msgstr ""
 msgid "This plugin requires WordPress 3.0 or greater."
 msgstr ""
 
-#: includes/class-solrpower.php:121
+#: includes/class-solrpower.php:124
 msgid "Settings"
 msgstr ""
 
@@ -97,16 +97,20 @@ msgstr ""
 msgid "Order By:"
 msgstr ""
 
-#: solr-options-page.php:38
-msgid "Solr Power"
-msgstr ""
-
-#: solr-options-page.php:45
+#: solr-options-page.php:51
 msgid "Info"
 msgstr ""
 
-#: solr-options-page.php:49 views/options/action.php:3
+#: solr-options-page.php:55 views/options/action.php:3
 msgid "Actions"
+msgstr ""
+
+#: solr-options-page.php:59
+msgid "Indexing Options"
+msgstr ""
+
+#: solr-options-page.php:63
+msgid "Facet Options"
 msgstr ""
 
 #: solr-power.php:47
