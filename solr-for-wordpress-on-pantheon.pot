@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: solr-power 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/pantheon-systems/solr-power/issues\n"
-"POT-Creation-Date: 2017-01-27 13:39-0600\n"
+"POT-Creation-Date: 2017-01-31 15:53-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,32 +21,32 @@ msgstr ""
 msgid "Title:"
 msgstr ""
 
-#: includes/class-solrpower-options.php:50
+#: includes/class-solrpower-options.php:48
 msgid "Couldn't locate the options page."
 msgstr ""
 
-#: includes/class-solrpower-options.php:271
+#: includes/class-solrpower-options.php:269
 msgid "Ping Success!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:273
+#: includes/class-solrpower-options.php:271
 msgid "Ping Failed!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:281
+#: includes/class-solrpower-options.php:279
 msgid "Configuration has been copied to all blogs!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:288
+#: includes/class-solrpower-options.php:286
 msgid "Index Optimized!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:295
-#: includes/class-solrpower-options.php:303
+#: includes/class-solrpower-options.php:293
+#: includes/class-solrpower-options.php:301
 msgid "All Indexed Pages Deleted!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:322
+#: includes/class-solrpower-options.php:320
 msgid "Action failed. Please try again."
 msgstr ""
 
