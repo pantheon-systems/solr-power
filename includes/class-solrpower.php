@@ -75,8 +75,11 @@ class SolrPower {
 		return $returnValue;
 	}
 
-	function admin_head() {
+	function admin_head($hook) {
 
+		if ( ! in_array( $hook, array( 'toplevel_page_solr-power', 'solr-options_page_solr-power-facet', 'solr-options_page_solr-power-index' ), true ) ) {
+			return;
+		}
 		$min = ( defined( 'SCRIPT_DEBUG' ) && true === SCRIPT_DEBUG ) ? '' : '.min';
 
 		wp_enqueue_style( 'solr-admin-css', SOLR_POWER_URL . 'assets/css/admin' . $min . '.css' );

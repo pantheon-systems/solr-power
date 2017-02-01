@@ -28,8 +28,6 @@ class SolrPower_Options {
 	function __construct() {
 		if ( ! is_multisite() ) {
 			add_action( 'admin_menu', array( $this, 'add_pages' ) );
-		} else {
-			add_action( 'network_admin_menu', array( $this, 'add_network_pages' ) );
 		}
 		add_action( 'wp_ajax_solr_options', array( $this, 'options_load' ) );
 		add_action( 'admin_init', array( $this, 'check_for_actions' ) );
@@ -37,18 +35,10 @@ class SolrPower_Options {
 	}
 
 	function add_pages() {
-		add_menu_page( 'Solr Options', 'Solr Options', 'manage_options', 'solr-power', array(
+		add_menu_page( 'Solr Power', 'Solr Power', 'manage_options', 'solr-power', array(
 			$this,
 			'options_page',
 		), 'dashicons-search' );
-		add_submenu_page( 'solr-power', 'Indexing Options', 'Indexing Options', 'manage_options', 'solr-power-index', array(
-			$this,
-			'index_sub_page',
-		) );
-		add_submenu_page( 'solr-power', 'Facet Options', 'Facet Options', 'manage_options', 'solr-power-facet', array(
-			$this,
-			'facet_sub_page',
-		) );
 	}
 
 	function options_page() {
@@ -57,45 +47,6 @@ class SolrPower_Options {
 		} else {
 			esc_html_e( "Couldn't locate the options page.", 'solr-for-wordpress-on-pantheon' );
 		}
-	}
-
-	function index_sub_page() {
-		?>
-		<div class="wrap">
-			<div class="solr-power-subpage">
-				<form method="post" action="options.php">
-					<?php
-					echo '<form method="post" action="options.php">';
-					settings_fields( 'solr-power-index' );
-					do_settings_sections( 'solr-power-index' );
-					echo '<div style="display:none !important;">';
-					do_settings_sections( 'solr-power-facet' );
-					echo '</div>';
-					submit_button();
-					?>
-				</form>
-			</div>
-		</div>
-		<?php
-	}
-
-	function facet_sub_page() {
-		?>
-		<div class="wrap">
-			<div class="solr-power-subpage">
-				<form method="post" action="options.php">
-					<?php
-					settings_fields( 'solr-power-facet' );
-					echo '<div style="display:none !important;">';
-					do_settings_sections( 'solr-power-index' );
-					echo '</div>';
-					do_settings_sections( 'solr-power-facet' );
-					submit_button();
-					?>
-				</form>
-			</div>
-		</div>
-		<?php
 	}
 
 	/**

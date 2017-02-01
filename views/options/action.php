@@ -74,7 +74,7 @@
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Index Searchable Post Types', 'solr-for-wordpress-on-pantheon' ) ?></th>
 				<td><input type="button" class="button-primary s4wp_postload_post" name="s4wp_postload_post"
-						   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
+						   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /><span id="percentspan">0%</span></td>
 			</tr>
 		</table>
 	</form>

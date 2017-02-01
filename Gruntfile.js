@@ -34,7 +34,7 @@ module.exports = function( grunt ) {
           options : {
               jshintrc : true
           },
-          all     : ['assets/js/admin.js','assets/js/src/facet.js']
+          all     : ['assets/js/src/admin.js','assets/js/src/facet.js']
       },
 
       /**
@@ -54,7 +54,7 @@ module.exports = function( grunt ) {
 
               files : {
                   'assets/js/admin.min.js' : [
-	                  'assets/js/admin.js'
+	                  'assets/js/src/admin.js'
                   ]
               }
           },
@@ -145,8 +145,8 @@ module.exports = function( grunt ) {
           scripts : {
 
               files : [
-                  'assets/js/admin.js',
-                  'assets/js/facet.js'
+                  'assets/js/src/admin.js',
+                  'assets/js/src/facet.js'
               ],
 
               tasks : ['uglify:production']
