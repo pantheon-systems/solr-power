@@ -64,7 +64,7 @@ class SolrPower_Api {
 		}
 
 		$path        = $this->compute_path();
-		$url         = 'https://' . getenv( 'PANTHEON_INDEX_HOST' ) . ':' . getenv( 'PANTHEON_INDEX_PORT' ) . '/' . $path;
+		$url         = $this->get_default_scheme() . '://' . getenv( 'PANTHEON_INDEX_HOST' ) . ':' . getenv( 'PANTHEON_INDEX_PORT' ) . '/' . $path;
 		$client_cert = realpath( ABSPATH . '../certs/binding.pem' );
 
 		/*
@@ -162,29 +162,12 @@ class SolrPower_Api {
 		# get the connection options
 		$plugin_s4wp_settings = solr_options();
 
-		/*
-		 * Check for the SOLR_POWER_SCHEME constant.
-		 * If it exists and is "http" or "https", use it as the default scheme value.
-		 */
-		if (!defined('SOLR_POWER_SCHEME') && getenv( 'SOLR_POWER_SCHEME' )) {
- 			define('SOLR_POWER_SCHEME', getenv( 'SOLR_POWER_SCHEME' ));
- 		}
-		$default_scheme = ( defined( 'SOLR_POWER_SCHEME' ) && 1 === preg_match( '/^http[s]?$/', SOLR_POWER_SCHEME ) ) ? SOLR_POWER_SCHEME : 'https';
-
 		$solarium_config = array(
 			'endpoint' => array(
 				'localhost' => array(
 					'host'   => getenv( 'PANTHEON_INDEX_HOST' ),
 					'port'   => getenv( 'PANTHEON_INDEX_PORT' ),
-
-					/**
-					 * Filter server schema
-					 *
-					 * Filters the schema used to connect to the solr server (http/https).
-					 *
-					 * @param string $default_scheme The connection scheme to the solr server (http/https).
-					 */
-					'scheme' => apply_filters( 'solr_scheme', $default_scheme ),
+					'scheme' => $this->get_default_scheme(),
 					'path'   => $this->compute_path(),
 					'ssl'    => array( 'local_cert' => realpath( ABSPATH . '../certs/binding.pem' ) )
 				)
@@ -531,5 +514,24 @@ class SolrPower_Api {
 		$query->setQuery( '' );
 
 		return $query;
+	}
+
+	/**
+	 * Check for the SOLR_POWER_SCHEME constant.
+	 * If it exists and is "http" or "https", use it as the default scheme value.
+	 */
+	private function get_default_scheme() {
+		if ( ! defined( 'SOLR_POWER_SCHEME' ) && getenv( 'SOLR_POWER_SCHEME' ) ) {
+			define( 'SOLR_POWER_SCHEME', getenv( 'SOLR_POWER_SCHEME' ) );
+		}
+		$default_scheme = ( defined( 'SOLR_POWER_SCHEME' ) && 1 === preg_match( '/^http[s]?$/', SOLR_POWER_SCHEME ) ) ? SOLR_POWER_SCHEME : 'https';
+		/**
+		 * Filter server schema
+		 *
+		 * Filters the schema used to connect to the solr server (http/https).
+		 *
+		 * @param string $default_scheme The connection scheme to the solr server (http/https).
+		 */
+		return apply_filters( 'solr_scheme', $default_scheme );
 	}
 }
