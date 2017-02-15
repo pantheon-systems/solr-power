@@ -34,6 +34,13 @@ class SolrPower_Batch_Index {
 	private $solr_update;
 
 	/**
+	 * Cache key for paged incrementing
+	 *
+	 * @var string
+	 */
+	private $paged_cache_key;
+
+	/**
 	 * Number of posts successfully indexed.
 	 *
 	 * @var integer
@@ -64,14 +71,26 @@ class SolrPower_Batch_Index {
 			'orderby'         => 'ID',
 			'order'           => 'ASC',
 			'posts_per_page'  => 500,
-			'paged'           => 1,
 		);
 		$clean_query_args = array();
 		foreach( $defaults as $key => $value ) {
 			$clean_query_args[ $key ] = isset( $query_args[ $key ] ) ? $query_args[ $key ] : $value;
 		}
-		$clean_query_args['fields'] = 'ids'; // Always need to use post ids
+		// Always need to iterate post ids
+		$clean_query_args['fields'] = 'ids';
+		// Generate a cache key to store the current page
+		$this->paged_cache_key = 'solr_power_' . md5( serialize( $clean_query_args ) );
+		// Include 'paged' always starts at that page,
+		// otherwise try to restore the page from cache.
+		if ( isset( $query_args['paged'] ) ) {
+			$clean_query_args['paged'] = $query_args['paged'];
+		} else {
+			$clean_query_args['paged'] = get_option( $this->paged_cache_key, 1 );
+		}
 		$this->query_args = $clean_query_args;
+		// Cache the 'paged' value for resuming.
+		delete_option( $this->paged_cache_key );
+		add_option( $this->paged_cache_key, $this->query_args['paged'], null, 'off' );
 		$query = new WP_Query( $clean_query_args );
 		$this->post_ids = $query->posts;
 		$this->total_posts = $this->remaining_posts = $query->found_posts;
@@ -144,13 +163,24 @@ class SolrPower_Batch_Index {
 	 */
 	public function fetch_next_posts() {
 		self::clear_object_cache();
-		$this->query_args['paged'] = $this->query_args['paged'] + 1;
+		$this->increment_page();
 		$query = new WP_Query( $this->query_args );
 		$this->post_ids = $query->posts;
 		if ( ! empty( $this->post_ids ) ) {
 			return true;
 		}
+		// Out of posts, so remove our offset.
+		delete_option( $this->paged_cache_key );
 		return false;
+	}
+
+	/**
+	 * Increment value for 'paged', and update its value in the cache
+	 */
+	public function increment_page() {
+		$this->query_args['paged'] = $this->query_args['paged'] + 1;
+		delete_option( $this->paged_cache_key );
+		add_option( $this->paged_cache_key, $this->query_args['paged'], null, 'off' );
 	}
 
 	/**

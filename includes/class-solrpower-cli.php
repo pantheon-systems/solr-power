@@ -75,7 +75,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 * : Limit indexing to a specific post type. Defaults to all searchable.
 	 *
 	 * [--page=<page>]
-	 * : Start indexing at a specific page.
+	 * : Start indexing at a specific page. Defaults to last indexed page, or first page.
 	 */
 	public function index( $args, $assoc_args ) {
 
