@@ -71,6 +71,56 @@ class SolrPower_CLI extends WP_CLI_Command {
 	/**
 	 * Index all posts for a site.
 	 *
+	 * [--post_type=<post-type>]
+	 * : Limit indexing to a specific post type. Defaults to all searchable.
+	 *
+	 * [--page=<page>]
+	 * : Start indexing at a specific page.
+	 */
+	public function index( $args, $assoc_args ) {
+
+		$query_args = array();
+		if ( isset( $assoc_args['post_type'] ) ) {
+			$query_args['post_type'] = array( $assoc_args['post_type'] );
+		}
+		if ( isset( $assoc_args['page'] ) ) {
+			$query_args['paged'] = (int) $assoc_args['page'];
+		}
+
+		$batch_index = new SolrPower_Batch_Index;
+		$displayed_page = false;
+		$start_time = microtime( true );
+		while( $batch_index->have_posts() ) {
+			$current_page = $batch_index->get_current_page();
+			if ( $current_page !== $displayed_page ) {
+				WP_CLI::log( '' );
+				$success_posts = $batch_index->get_success_posts();
+				$failed_posts = $batch_index->get_failed_posts();
+				$remaining_posts = $batch_index->get_remaining_posts();
+				$log_time = self::format_log_timestamp( microtime( true ) - $start_time );
+				WP_CLI::log( "Starting page {$current_page} at {$log_time} ({$success_posts} indexed, {$failed_posts} failed, {$remaining_posts} remaining)" );
+				WP_CLI::log( '' );
+				$displayed_page = $current_page;
+			}
+			$result = $batch_index->index_post();
+			$post_mention = "'{$result['post_title']}' ({$result['post_id']})";
+			if ( 'success' === $result['status'] ) {
+				WP_CLI::log( "Submitted {$post_mention} to the index." );
+			} elseif( 'failed' === $result['status'] ) {
+				WP_CLI::log( "Failed to index {$post_mention}: {$result['message']}" );
+			}
+			if ( ! $batch_index->have_posts() ) {
+				$batch_index->fetch_next_posts();
+			}
+		}
+		$success_posts = $batch_index->get_success_posts();
+		$total_posts = $batch_index->get_total_posts();
+		WP_CLI::success( "Indexed {$success_posts} of {$total_posts} posts." );
+	}
+
+	/**
+	 * Index all posts for a site.
+	 *
 	 * [--posts_per_page=<count>]
 	 * : Index a specific number of posts per set.
 	 * ---
@@ -80,7 +130,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 * [--post_type=<type>]
 	 * : Limit indexing to a specific post type.
 	 */
-	public function index( $args, $assoc_args ) {
+	public function index_old( $args, $assoc_args ) {
 		$defaults = array(
 			'posts_per_page' => 300,
 			'post_status'	 => 'publish',
@@ -245,6 +295,20 @@ class SolrPower_CLI extends WP_CLI_Command {
 		$stats = SolrPower_Api::get_instance()->index_stats();
 		$formatter = new \WP_CLI\Formatter( $assoc_args, array_keys( $stats ) );
 		$formatter->display_item( $stats );
+	}
+
+	/**
+	 * Format a log timestamp into something human-readable.
+	 *
+	 * @param integer $s Log time in seconds
+	 * @return string
+	 */
+	private static function format_log_timestamp( $s ) {
+		$h = floor( $s / 3600 );
+		$s -= $h * 3600;
+		$m = floor( $s / 60 );
+		$s -= $m * 60;
+		return $h . ':' . sprintf( '%02d', $m ) . ':' . sprintf( '%02d', $s );
 	}
 
 }
