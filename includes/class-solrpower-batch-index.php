@@ -93,7 +93,11 @@ class SolrPower_Batch_Index {
 		add_option( $this->paged_cache_key, $this->query_args['paged'], null, 'off' );
 		$query = new WP_Query( $clean_query_args );
 		$this->post_ids = $query->posts;
-		$this->total_posts = $this->remaining_posts = $query->found_posts;
+		$found_posts = $query->found_posts;
+		if ( $this->query_args['paged'] > 1 ) {
+			$found_posts = $found_posts - ( ( $this->query_args['paged'] - 1 ) * $this->query_args['posts_per_page'] );
+		}
+		$this->total_posts = $this->remaining_posts = $found_posts;
 		// Initialize the Solr updater
 		$solr = get_solr();
 		$this->solr_update = $solr->createUpdate();
