@@ -66,10 +66,13 @@ class SolrPower_Batch_Index {
 			'posts_per_page'  => 500,
 			'paged'           => 1,
 		);
-		$query_args = array_merge( $defaults, $query_args );
-		$query_args['fields'] = 'ids'; // Always need to use post ids
-		$this->query_args = $query_args;
-		$query = new WP_Query( $query_args );
+		$clean_query_args = array();
+		foreach( $defaults as $key => $value ) {
+			$clean_query_args[ $key ] = isset( $query_args[ $key ] ) ? $query_args[ $key ] : $value;
+		}
+		$clean_query_args['fields'] = 'ids'; // Always need to use post ids
+		$this->query_args = $clean_query_args;
+		$query = new WP_Query( $clean_query_args );
 		$this->post_ids = $query->posts;
 		$this->total_posts = $this->remaining_posts = $query->found_posts;
 		// Initialize the Solr updater
