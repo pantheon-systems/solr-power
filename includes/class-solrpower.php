@@ -80,10 +80,16 @@ class SolrPower {
 		if ( ! in_array( $hook, array( 'toplevel_page_solr-power', 'solr-options_page_solr-power-facet', 'solr-options_page_solr-power-index' ), true ) ) {
 			return;
 		}
-		$min = ( defined( 'SCRIPT_DEBUG' ) && true === SCRIPT_DEBUG ) ? '' : '.min';
-
-		wp_enqueue_style( 'solr-admin-css', SOLR_POWER_URL . 'assets/css/admin' . $min . '.css' );
-		wp_enqueue_script( 'solr-admin-js', SOLR_POWER_URL . 'assets/js/admin' . $min . '.js', array( 'jquery' ) );
+		$style_path = 'assets/css/admin.min.css';
+		$mtime = filemtime( SOLR_POWER_PATH . '/' . $style_path );
+		wp_enqueue_style( 'solr-admin-css', add_query_arg( 'mtime', $mtime, SOLR_POWER_URL . $style_path ) );
+		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+			$script_path = 'assets/js/src/admin.js';
+		} else {
+			$script_path = 'assets/js/admin.min.js';
+		}
+		$mtime = filemtime( SOLR_POWER_PATH . '/' . $script_path );
+		wp_enqueue_script( 'solr-admin-js', add_query_arg( 'mtime', $mtime, SOLR_POWER_URL . $script_path ), array( 'jquery' ) );
 
 		// include our default css
 		if ( file_exists( SOLR_POWER_PATH . '/template/search.css' ) ) {
