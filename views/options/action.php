@@ -7,7 +7,7 @@
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Check Server Settings', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td><input type="submit" class="button-primary" name="s4wp_ping"
+				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_ping"
 						   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 			</tr>
 		</table>
@@ -19,7 +19,7 @@
 			<table class="form-table">
 				<tr valign="top">
 					<th scope="row"><?php esc_html_e( 'Push Solr Configuration to All Blogs', 'solr-for-wordpress-on-pantheon' ) ?></th>
-					<td><input type="submit" class="button-primary" name="s4wp_init_blogs"
+					<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_init_blogs"
 							   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 				</tr>
 			</table>
@@ -31,7 +31,7 @@
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Optimize Index', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td><input type="submit" class="button-primary" name="s4wp_optimize"
+				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_optimize"
 						   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 			</tr>
 		</table>
@@ -42,7 +42,7 @@
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Delete All', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td><input type="submit" class="button-primary" name="s4wp_deleteall"
+				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_deleteall"
 						   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 			</tr>
 		</table>
@@ -55,7 +55,7 @@
 			<table class="form-table">
 				<tr valign="top">
 					<th scope="row"><?php esc_html_e( 'Repost schema.xml', 'solr-for-wordpress-on-pantheon' ) ?></th>
-					<td><input type="submit" class="button-primary" name="s4wp_repost_schema"
+					<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_repost_schema"
 							   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 				</tr>
 				<tr valign="top">
@@ -79,9 +79,9 @@
 					$current_batch = $batch_index->get_current_batch();
 					$total_batches = $batch_index->get_total_batches();
 					if ( $current_batch > 1 ) : ?>
-					<input type="button" class="button-primary" name="s4wp_resume_index" value="<?php echo esc_attr( sprintf( __( 'Resume at batch %d of %d', 'solr-for-wordpress-on-pantheon' ), $current_batch, $total_batches ) ); ?>" /> <input type="button" class="button" name="s4wp_start_index" value="<?php esc_attr_e( 'Restart', 'solr-for-wordpress-on-pantheon' ); ?>" />
+					<input type="button" class="button-primary solr-admin-action" name="s4wp_resume_index" value="<?php echo esc_attr( sprintf( __( 'Resume at batch %d of %d', 'solr-for-wordpress-on-pantheon' ), $current_batch, $total_batches ) ); ?>" /> <input type="button" class="button solr-admin-action" name="s4wp_start_index" value="<?php esc_attr_e( 'Restart', 'solr-for-wordpress-on-pantheon' ); ?>" />
 					<?php else : ?>
-					<input type="button" class="button-primary" name="s4wp_start_index" value="<?php esc_attr_e( 'Start', 'solr-for-wordpress-on-pantheon' ); ?>" />
+					<input type="button" class="button-primary solr-admin-action" name="s4wp_start_index" value="<?php esc_attr_e( 'Start Index', 'solr-for-wordpress-on-pantheon' ); ?>" />
 					<?php endif; ?>
 				</td>
 			</tr>

@@ -107,3 +107,35 @@ $j(document).ready(function () {
 	});
 
 });
+
+(function($){
+
+	var solrActions = {
+
+		init: function() {
+			this.bindEvents();
+		},
+
+		bindEvents: function() {
+			$('[name=s4wp_start_index]').on('click',$.proxy(this.indexPosts,this));
+			$('[name=s4wp_resume_index]').on('click',$.proxy(this.indexPosts,this));
+		},
+
+		disableAll: function() {
+			$('.solr-admin-action').attr('disabled','disabled');
+		},
+
+		enableAll: function() {
+			$('.solr-admin-action').removeAttr('disabled');
+		},
+		
+		indexPosts: function(e) {
+			disableAll();
+			var el = $(e.currentTarget);
+			console.log( 'indexPosts' );
+		}
+	}
+	
+	$(document).ready($.proxy(solrActions.init,solrActions));
+
+}(jQuery));
