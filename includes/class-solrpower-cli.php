@@ -98,7 +98,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 				$failed_posts = $batch_index->get_failed_posts();
 				$remaining_posts = $batch_index->get_remaining_posts();
 				$log_time = self::format_log_timestamp( microtime( true ) - $start_time );
-				WP_CLI::log( "Starting page {$current_page} at {$log_time} ({$success_posts} indexed, {$failed_posts} failed, {$remaining_posts} remaining)" );
+				WP_CLI::log( "Starting page {$current_page} at {$log_time} elapsed time ({$success_posts} indexed, {$failed_posts} failed, {$remaining_posts} remaining)" );
 				WP_CLI::log( '' );
 				$displayed_page = $current_page;
 			}
