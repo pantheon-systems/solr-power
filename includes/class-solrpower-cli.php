@@ -71,11 +71,11 @@ class SolrPower_CLI extends WP_CLI_Command {
 	/**
 	 * Index all posts for a site.
 	 *
+	 * [--batch=<batch>]
+	 * : Start indexing at a specific batch. Defaults to last indexed batch, or very beginning.
+	 *
 	 * [--post_type=<post-type>]
 	 * : Limit indexing to a specific post type. Defaults to all searchable.
-	 *
-	 * [--page=<page>]
-	 * : Start indexing at a specific page. Defaults to last indexed page, or first page.
 	 */
 	public function index( $args, $assoc_args ) {
 
@@ -83,24 +83,25 @@ class SolrPower_CLI extends WP_CLI_Command {
 		if ( isset( $assoc_args['post_type'] ) ) {
 			$query_args['post_type'] = array( $assoc_args['post_type'] );
 		}
-		if ( isset( $assoc_args['page'] ) ) {
-			$query_args['paged'] = (int) $assoc_args['page'];
+		if ( isset( $assoc_args['batch'] ) ) {
+			$query_args['batch'] = (int) $assoc_args['batch'];
 		}
 
-		$batch_index = new SolrPower_Batch_Index;
-		$displayed_page = false;
+		$batch_index = new SolrPower_Batch_Index( $query_args );
+		$displayed_batch = false;
 		$start_time = microtime( true );
 		while( $batch_index->have_posts() ) {
-			$current_page = $batch_index->get_current_page();
-			if ( $current_page !== $displayed_page ) {
+			$current_batch = $batch_index->get_current_batch();
+			if ( $current_batch !== $displayed_batch ) {
 				WP_CLI::log( '' );
 				$success_posts = $batch_index->get_success_posts();
 				$failed_posts = $batch_index->get_failed_posts();
 				$remaining_posts = $batch_index->get_remaining_posts();
+				$total_batches = $batch_index->get_total_batches();
 				$log_time = self::format_log_timestamp( microtime( true ) - $start_time );
-				WP_CLI::log( "Starting page {$current_page} at {$log_time} elapsed time ({$success_posts} indexed, {$failed_posts} failed, {$remaining_posts} remaining)" );
+				WP_CLI::log( "Starting batch {$current_batch} of {$total_batches} at {$log_time} elapsed time ({$success_posts} indexed, {$failed_posts} failed, {$remaining_posts} remaining)" );
 				WP_CLI::log( '' );
-				$displayed_page = $current_page;
+				$displayed_batch = $current_batch;
 			}
 			$result = $batch_index->index_post();
 			$post_mention = "'{$result['post_title']}' ({$result['post_id']})";

@@ -34,11 +34,18 @@ class SolrPower_Batch_Index {
 	private $solr_update;
 
 	/**
-	 * Cache key for paged incrementing
+	 * Total batches of posts.
+	 *
+	 * @var integer
+	 */
+	private $total_batches;
+
+	/**
+	 * Cache key for resuming batch at specific offset
 	 *
 	 * @var string
 	 */
-	private $paged_cache_key;
+	private $batch_cache_key;
 
 	/**
 	 * Number of posts successfully indexed.
@@ -79,18 +86,18 @@ class SolrPower_Batch_Index {
 		// Always need to iterate post ids
 		$clean_query_args['fields'] = 'ids';
 		// Generate a cache key to store the current page
-		$this->paged_cache_key = 'solr_power_' . md5( serialize( $clean_query_args ) );
+		$this->batch_cache_key = 'solr_power_' . md5( serialize( $clean_query_args ) );
 		// Include 'paged' always starts at that page,
 		// otherwise try to restore the page from cache.
-		if ( isset( $query_args['paged'] ) ) {
-			$clean_query_args['paged'] = $query_args['paged'];
+		if ( isset( $query_args['batch'] ) ) {
+			$clean_query_args['paged'] = $query_args['batch'];
 		} else {
-			$clean_query_args['paged'] = get_option( $this->paged_cache_key, 1 );
+			$clean_query_args['paged'] = get_option( $this->batch_cache_key, 1 );
 		}
 		$this->query_args = $clean_query_args;
 		// Cache the 'paged' value for resuming.
-		delete_option( $this->paged_cache_key );
-		add_option( $this->paged_cache_key, $this->query_args['paged'], null, 'off' );
+		delete_option( $this->batch_cache_key );
+		add_option( $this->batch_cache_key, $this->query_args['paged'], null, 'off' );
 		$query = new WP_Query( $clean_query_args );
 		$this->post_ids = $query->posts;
 		$found_posts = $query->found_posts;
@@ -98,6 +105,7 @@ class SolrPower_Batch_Index {
 			$found_posts = $found_posts - ( ( $this->query_args['paged'] - 1 ) * $this->query_args['posts_per_page'] );
 		}
 		$this->total_posts = $this->remaining_posts = $found_posts;
+		$this->total_batches = $query->max_num_pages;
 		// Initialize the Solr updater
 		$solr = get_solr();
 		$this->solr_update = $solr->createUpdate();
@@ -156,8 +164,17 @@ class SolrPower_Batch_Index {
 	 *
 	 * @return integer
 	 */
-	public function get_current_page() {
+	public function get_current_batch() {
 		return $this->query_args['paged'];
+	}
+
+	/**
+	 * Get the total batches that need to be indexed.
+	 *
+	 * @return integer
+	 */
+	public function get_total_batches() {
+		return $this->total_batches;
 	}
 
 	/**
@@ -174,7 +191,7 @@ class SolrPower_Batch_Index {
 			return true;
 		}
 		// Out of posts, so remove our offset.
-		delete_option( $this->paged_cache_key );
+		delete_option( $this->batch_cache_key );
 		return false;
 	}
 
@@ -183,8 +200,8 @@ class SolrPower_Batch_Index {
 	 */
 	public function increment_page() {
 		$this->query_args['paged'] = $this->query_args['paged'] + 1;
-		delete_option( $this->paged_cache_key );
-		add_option( $this->paged_cache_key, $this->query_args['paged'], null, 'off' );
+		delete_option( $this->batch_cache_key );
+		add_option( $this->batch_cache_key, $this->query_args['paged'], null, 'off' );
 	}
 
 	/**
