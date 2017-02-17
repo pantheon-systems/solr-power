@@ -70,7 +70,7 @@ class SolrPower_Batch_Index {
 			'post_type'       => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
 			'orderby'         => 'ID',
 			'order'           => 'ASC',
-			'posts_per_page'  => 500,
+			'posts_per_page'  => 100,
 		);
 		$clean_query_args = array();
 		foreach( $defaults as $key => $value ) {
