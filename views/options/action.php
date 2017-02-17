@@ -73,8 +73,17 @@
 
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Index Searchable Post Types', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td><input type="button" class="button-primary s4wp_postload_post" name="s4wp_postload_post"
-						   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /><span id="percentspan">0%</span></td>
+				<td>
+				<?php
+					$batch_index = new SolrPower_Batch_Index;
+					$current_batch = $batch_index->get_current_batch();
+					$total_batches = $batch_index->get_total_batches();
+					if ( $current_batch > 1 ) : ?>
+					<input type="button" class="button-primary" name="s4wp_resume_index" value="<?php echo esc_attr( sprintf( __( 'Resume at batch %d of %d', 'solr-for-wordpress-on-pantheon' ), $current_batch, $total_batches ) ); ?>" /> <input type="button" class="button" name="s4wp_start_index" value="<?php esc_attr_e( 'Restart', 'solr-for-wordpress-on-pantheon' ); ?>" />
+					<?php else : ?>
+					<input type="button" class="button-primary" name="s4wp_start_index" value="<?php esc_attr_e( 'Start', 'solr-for-wordpress-on-pantheon' ); ?>" />
+					<?php endif; ?>
+				</td>
 			</tr>
 		</table>
 	</form>
