@@ -355,7 +355,13 @@ class SolrPower_Sync {
 			esc_html_e( 'Post Information is NULL', 'solr-for-wordpress-on-pantheon' );
 		}
 
-		return $doc;
+		/**
+		 * Filter the generated Solr document.
+		 *
+		 * @param object $doc       Generated Solr document.
+		 * @param object $post_info Original post object.
+		 */
+		return apply_filters( 'solr_build_document', $doc, $post_info );
 	}
 
 	function post( $documents, $commit = true, $optimize = false ) {
