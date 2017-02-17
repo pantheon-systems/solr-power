@@ -75,8 +75,6 @@ class SolrPower_Batch_Index {
 		$defaults = array(
 			'post_status'     => 'publish',
 			'post_type'       => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
-			'orderby'         => 'ID',
-			'order'           => 'ASC',
 			'posts_per_page'  => 100,
 		);
 		$clean_query_args = array();
@@ -85,6 +83,8 @@ class SolrPower_Batch_Index {
 		}
 		// Always need to iterate post ids
 		$clean_query_args['fields'] = 'ids';
+		$clean_query_args['orderby'] = 'ID';
+		$clean_query_args['order'] = 'ASC';
 		// Generate a cache key to store the current page
 		$this->batch_cache_key = 'solr_power_' . md5( serialize( $clean_query_args ) );
 		// Include 'paged' always starts at that page,
