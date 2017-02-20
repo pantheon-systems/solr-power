@@ -89,7 +89,7 @@ class SolrPower {
 			$script_path = 'assets/js/admin.min.js';
 		}
 		$mtime = filemtime( SOLR_POWER_PATH . '/' . $script_path );
-		wp_enqueue_script( 'solr-admin-js', add_query_arg( 'mtime', $mtime, SOLR_POWER_URL . $script_path ), array( 'jquery' ) );
+		wp_enqueue_script( 'solr-admin-js', add_query_arg( 'mtime', $mtime, SOLR_POWER_URL . $script_path ), array( 'jquery', 'wp-util' ) );
 
 		// include our default css
 		if ( file_exists( SOLR_POWER_PATH . '/template/search.css' ) ) {

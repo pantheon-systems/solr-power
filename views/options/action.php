@@ -73,18 +73,21 @@
 
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Index Searchable Post Types', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td>
-				<?php
-					$batch_index = new SolrPower_Batch_Index;
-					$current_batch = $batch_index->get_current_batch();
-					$total_batches = $batch_index->get_total_batches();
-					if ( $current_batch > 1 ) : ?>
-					<input type="button" class="button-primary solr-admin-action" name="s4wp_resume_index" value="<?php echo esc_attr( sprintf( __( 'Resume at batch %d of %d', 'solr-for-wordpress-on-pantheon' ), $current_batch, $total_batches ) ); ?>" /> <input type="button" class="button solr-admin-action" name="s4wp_start_index" value="<?php esc_attr_e( 'Restart', 'solr-for-wordpress-on-pantheon' ); ?>" />
-					<?php else : ?>
-					<input type="button" class="button-primary solr-admin-action" name="s4wp_start_index" value="<?php esc_attr_e( 'Start Index', 'solr-for-wordpress-on-pantheon' ); ?>" />
-					<?php endif; ?>
-				</td>
+				<td id="solr-batch-index"><?php /** Rendered with JS **/ ?></td>
 			</tr>
 		</table>
 	</form>
 </div>
+
+<?php
+	$batch_index = new SolrPower_Batch_Index;
+	$current_batch = $batch_index->get_current_batch();
+	$total_batches = $batch_index->get_total_batches();
+	?>
+<script type="text/html" id="tmpl-solr-batch-index" data-current-batch="<?php echo (int) $current_batch; ?>" data-total-batches="<?php echo (int) $total_batches; ?>">
+	<# if ( data.currentBatch > 1 ) { #>
+	<input type="button" class="button-primary solr-admin-action" name="s4wp_resume_index" value="<?php echo esc_attr( sprintf( __( 'Resume at batch %s of %s', 'solr-for-wordpress-on-pantheon' ), '{{ data.currentBatch }}', '{{ data.totalBatches }}' ) ); ?>" /> <input type="button" class="button solr-admin-action" name="s4wp_start_index" value="<?php esc_attr_e( 'Restart', 'solr-for-wordpress-on-pantheon' ); ?>" />
+	<# } else { #>
+	<input type="button" class="button-primary solr-admin-action" name="s4wp_start_index" value="<?php esc_attr_e( 'Start Index', 'solr-for-wordpress-on-pantheon' ); ?>" />
+	<# } #>
+</script>

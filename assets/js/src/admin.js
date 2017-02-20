@@ -112,13 +112,20 @@ $j(document).ready(function () {
 
 	var solrActions = {
 
+		batchIndexTemplate: false,
+		currentBatch: 0,
+		totalBatches: 0,
+
 		init: function() {
 			this.bindEvents();
+			this.renderIndexButtons();
 		},
 
 		bindEvents: function() {
-			$('[name=s4wp_start_index]').on('click',$.proxy(this.indexPosts,this));
-			$('[name=s4wp_resume_index]').on('click',$.proxy(this.indexPosts,this));
+			$('#solr-batch-index').on('click', 'input',$.proxy(this.indexPosts,this));
+			this.batchIndexTemplate = wp.template('solr-batch-index');
+			this.currentBatch = $('#tmpl-solr-batch-index').data('current-batch');
+			this.totalBatches = $('#tmpl-solr-batch-index').data('total-batches');
 		},
 
 		disableAll: function() {
@@ -128,14 +135,22 @@ $j(document).ready(function () {
 		enableAll: function() {
 			$('.solr-admin-action').removeAttr('disabled');
 		},
-		
+
 		indexPosts: function(e) {
 			disableAll();
+			e.preventDefault();
 			var el = $(e.currentTarget);
-			console.log( 'indexPosts' );
+			var type = 's4wp_resume_index' === el.attr('name') ? 'resume' : 'start';
+		},
+
+		renderIndexButtons: function() {
+			$('#solr-batch-index').html( this.batchIndexTemplate({
+				currentBatch: this.currentBatch,
+				totalBatches: this.totalBatches,
+			} ) );
 		}
 	}
-	
+
 	$(document).ready($.proxy(solrActions.init,solrActions));
 
 }(jQuery));
