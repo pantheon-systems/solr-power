@@ -149,7 +149,7 @@ $j(document).ready(function () {
 				totalBatches: this.totalBatches,
 			} ) );
 		}
-	}
+	};
 
 	$(document).ready($.proxy(solrActions.init,solrActions));
 
