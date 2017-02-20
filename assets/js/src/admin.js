@@ -156,13 +156,16 @@ $j(document).ready(function () {
 				this.currentBatch = 1;
 				this.remainingPosts = this.totalPosts;
 			}
-			this.startTime = new Date;
+			this.startTime = new Date();
 			this.elapsedTime = '00:00:00';
 			this.renderIndexUI();
 			this.indexPosts( action );
 		},
 
-		indexPosts: function( action = 'resume' ) {
+		indexPosts: function( action ) {
+			if ( typeof action === 'undefined' ) {
+				action = 'resume';
+			}
 			$.post( solr.ajax_url, {
 				action  : 'solr_options',
 				security: solr.security,
@@ -187,7 +190,7 @@ $j(document).ready(function () {
 				paddingLeft = function(originalValue,paddingValue) {
 					return String(paddingValue + originalValue).slice(-paddingValue.length);
 				};
-				var endTime = new Date;
+				var endTime = new Date();
 				var timeDiff = endTime - this.startTime;
 				timeDiff /= 1000;
 				var seconds = paddingLeft( Math.round(timeDiff % 60), '00' );
