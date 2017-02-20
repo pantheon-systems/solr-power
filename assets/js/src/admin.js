@@ -115,17 +115,28 @@ $j(document).ready(function () {
 		batchIndexTemplate: false,
 		currentBatch: 0,
 		totalBatches: 0,
+		successPosts: 0,
+		failedPosts: 0,
+		remainingPosts: 0,
+		elapsedTime: false,
 
 		init: function() {
 			this.bindEvents();
-			this.renderIndexButtons();
+			this.setupInitialState();
+			this.renderIndexUI();
 		},
 
 		bindEvents: function() {
-			$('#solr-batch-index').on('click', 'input',$.proxy(this.indexPosts,this));
+			$('#solr-batch-index').on('click', 'input',$.proxy(this.handleClickIndexPosts,this));
+		},
+
+		setupInitialState: function() {
 			this.batchIndexTemplate = wp.template('solr-batch-index');
-			this.currentBatch = $('#tmpl-solr-batch-index').data('current-batch');
-			this.totalBatches = $('#tmpl-solr-batch-index').data('total-batches');
+			var tmpl = $('#tmpl-solr-batch-index');
+			this.currentBatch = tmpl.data('current-batch');
+			this.totalBatches = tmpl.data('total-batches');
+			this.remainingPosts = tmpl.data('remaining-posts');
+			this.totalPosts = tmpl.data('total-posts');
 		},
 
 		disableAll: function() {
@@ -136,17 +147,41 @@ $j(document).ready(function () {
 			$('.solr-admin-action').removeAttr('disabled');
 		},
 
-		indexPosts: function(e) {
+		handleClickIndexPosts: function(e) {
 			disableAll();
 			e.preventDefault();
 			var el = $(e.currentTarget);
-			var type = 's4wp_resume_index' === el.attr('name') ? 'resume' : 'start';
+			var action = 's4wp_start_index' === el.attr('name') ? 'start' : 'resume';
+			this.elapsedTime = '00:00:00';
+			this.renderIndexUI();
+			this.indexPosts( action );
 		},
 
-		renderIndexButtons: function() {
+		indexPosts: function( action = 'resume' ) {
+			$.post( solr.ajax_url, {
+				action  : 'solr_options',
+				security: solr.security,
+				method  : action + '-index',
+			}, $.proxy(function( response ){
+				this.currentBatch = response.currentBatch;
+				this.successPosts += response.successPosts;
+				this.failedPosts += response.failedPosts;
+				this.remainingPosts = response.remainingPosts;
+				if ( this.remainingPosts > 0 ) {
+					this.renderIndexUI();
+					this.indexPosts();
+				}
+			}, this ) );
+		},
+
+		renderIndexUI: function() {
 			$('#solr-batch-index').html( this.batchIndexTemplate({
 				currentBatch: this.currentBatch,
 				totalBatches: this.totalBatches,
+				elapsedTime: this.elapsedTime,
+				successPosts: this.successPosts,
+				failedPosts: this.failedPosts,
+				remainingPosts: this.remainingPosts,
 			} ) );
 		}
 	};

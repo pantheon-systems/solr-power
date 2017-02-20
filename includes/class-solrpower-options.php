@@ -66,6 +66,30 @@ class SolrPower_Options {
 				SolrPower_Sync::get_instance()->load_all_posts( $prev, $type );
 				die();
 			}
+		} elseif ( in_array( $method, array( 'start-index', 'resume-index' ), true ) ) {
+			$query_args = array();
+			if ( 'start-index' === $method ) {
+				$query_args['batch'] = 1;
+			}
+			$batch_index = new SolrPower_Batch_Index( $query_args );
+			$success_posts = $failed_posts = 0;
+			while( $batch_index->have_posts() ) {
+				$result = $batch_index->index_post();
+				if ( 'success' === $result['status'] ) {
+					$success_posts++;
+				} elseif ( 'failed' === $result['status'] ) {
+					$failed_posts++;
+				}
+			}
+			// Iterate to the next set, but don't start it.
+			$batch_index->fetch_next_posts();
+			header( 'Content-Type: application/json' );
+			echo json_encode( array(
+				'currentBatch'      => $batch_index->get_current_batch(),
+				'successPosts'      => $success_posts,
+				'failedPosts'       => $failed_posts,
+				'remainingPosts'    => $batch_index->get_remaining_posts(),
+			) );
 		}
 		die();
 	}

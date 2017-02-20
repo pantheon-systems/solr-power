@@ -83,11 +83,20 @@
 	$batch_index = new SolrPower_Batch_Index;
 	$current_batch = $batch_index->get_current_batch();
 	$total_batches = $batch_index->get_total_batches();
+	$remaining_posts = $batch_index->get_remaining_posts();
+	$total_posts = $batch_index->get_total_posts();
 	?>
-<script type="text/html" id="tmpl-solr-batch-index" data-current-batch="<?php echo (int) $current_batch; ?>" data-total-batches="<?php echo (int) $total_batches; ?>">
+<script type="text/html" id="tmpl-solr-batch-index" data-current-batch="<?php echo (int) $current_batch; ?>" data-total-batches="<?php echo (int) $total_batches; ?>" data-remaining-posts="<?php echo (int) $remaining_posts; ?>" data-total-posts="<?php echo (int) $total_posts; ?>">
 	<# if ( data.currentBatch > 1 ) { #>
 	<input type="button" class="button-primary solr-admin-action" name="s4wp_resume_index" value="<?php echo esc_attr( sprintf( __( 'Resume at batch %s of %s', 'solr-for-wordpress-on-pantheon' ), '{{ data.currentBatch }}', '{{ data.totalBatches }}' ) ); ?>" /> <input type="button" class="button solr-admin-action" name="s4wp_start_index" value="<?php esc_attr_e( 'Restart', 'solr-for-wordpress-on-pantheon' ); ?>" />
 	<# } else { #>
 	<input type="button" class="button-primary solr-admin-action" name="s4wp_start_index" value="<?php esc_attr_e( 'Start Index', 'solr-for-wordpress-on-pantheon' ); ?>" />
 	<# } #>
+	<# if ( data.elapsedTime ) { #>
+		<p><?php echo sprintf( __( 'Running batch %s of %s at %s elapsed time (%s indexed, %s failed, %s remaining)' ), '{{ data.currentBatch }}', '{{ data.totalBatches }}', '{{ data.elapsedTime }}', '{{ data.successPosts }}', '{{ data.failedPosts }}', '{{ data.remainingPosts }}' ); ?></p>
+	<# } else { #>
+		<p>&nbsp;<?php /** Empty space to keep the line height **/ ?></p>
+	<# } #>
+	<p>{{ data.progressMessage }}</p>
 </script>
+
