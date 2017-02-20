@@ -118,7 +118,7 @@ $j(document).ready(function () {
 		successPosts: 0,
 		failedPosts: 0,
 		remainingPosts: 0,
-		elapsedTime: false,
+		startTime: false,
 
 		init: function() {
 			this.bindEvents();
@@ -156,6 +156,7 @@ $j(document).ready(function () {
 				this.currentBatch = 1;
 				this.remainingPosts = this.totalPosts;
 			}
+			this.startTime = new Date;
 			this.elapsedTime = '00:00:00';
 			this.renderIndexUI();
 			this.indexPosts( action );
@@ -174,15 +175,32 @@ $j(document).ready(function () {
 				if ( this.remainingPosts > 0 ) {
 					this.renderIndexUI();
 					this.indexPosts();
+				} else {
+					this.startTime = false;
 				}
 			}, this ) );
 		},
 
 		renderIndexUI: function() {
+			var elapsedTime = false;
+			if ( this.startTime ) {
+				paddingLeft = function(originalValue,paddingValue) {
+					return String(paddingValue + originalValue).slice(-paddingValue.length);
+				};
+				var endTime = new Date;
+				var timeDiff = endTime - this.startTime;
+				timeDiff /= 1000;
+				var seconds = paddingLeft( Math.round(timeDiff % 60), '00' );
+				timeDiff = Math.floor(timeDiff / 60);
+				var minutes = paddingLeft( Math.round(timeDiff % 60), '00' );
+				timeDiff = Math.floor(timeDiff / 60);
+				var hours = paddingLeft( Math.round(timeDiff % 24), '00' );
+				elapsedTime = hours + ':' + minutes + ':' + seconds;
+			}
 			$('#solr-batch-index').html( this.batchIndexTemplate({
 				currentBatch: this.currentBatch,
 				totalBatches: this.totalBatches,
-				elapsedTime: this.elapsedTime,
+				elapsedTime: elapsedTime,
 				successPosts: this.successPosts,
 				failedPosts: this.failedPosts,
 				remainingPosts: this.remainingPosts,
