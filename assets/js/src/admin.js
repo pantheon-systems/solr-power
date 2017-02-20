@@ -152,6 +152,10 @@ $j(document).ready(function () {
 			e.preventDefault();
 			var el = $(e.currentTarget);
 			var action = 's4wp_start_index' === el.attr('name') ? 'start' : 'resume';
+			if ( 'start' === action ) {
+				this.currentBatch = 1;
+				this.remainingPosts = this.totalPosts;
+			}
 			this.elapsedTime = '00:00:00';
 			this.renderIndexUI();
 			this.indexPosts( action );
