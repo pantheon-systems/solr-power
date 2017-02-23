@@ -1,6 +1,0 @@
-/build
-/phpunit.xml
-/composer.phar
-/composer.lock
-/vendor
-/phar/solarium.phar

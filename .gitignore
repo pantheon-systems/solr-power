@@ -1,0 +1,9 @@
+.DS_Store
+node_modules/
+phpredis
+.idea
+vendor/
+assets/css/*.css
+assets/css/*.css.map
+assets/js/*.js
+composer.lock
