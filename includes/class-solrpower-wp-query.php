@@ -81,7 +81,7 @@ class SolrPower_WP_Query {
 		 *
 		 * @param bool $solr_allow_admin True to query in WordPress Dashboard or false [default false].
 		 */
-		if ( is_admin() && false === apply_filters( 'solr_allow_admin', false ) && (!defined( 'DOING_AJAX' ) || !DOING_AJAX ) ) {
+		if ( is_admin() && false === apply_filters( 'solr_allow_admin', false ) && ( ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) ) {
 			return;
 		}
 
