@@ -238,6 +238,10 @@ class SolrPower {
 		wp_enqueue_style( 'Solr_Facet', SOLR_POWER_URL . 'assets/css/facet.css' );
 	}
 
+	function return_true(){
+		return true;
+	}
+
 	/**
 	 * AJAX Callback for Facet Search
 	 */
@@ -251,8 +255,8 @@ class SolrPower {
 		} );
 
 		// Allow an AJAX search.
-		add_filter( 'solr_allow_ajax', '__return_true' );
-		add_filter( 'solr_allow_admin', '__return_true' );
+		add_filter( 'solr_allow_ajax', array( $this, 'return_true' ) );
+		add_filter( 'solr_allow_admin', array( $this, 'return_true' ) );
 
 		$paged = filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_STRING );
 		$paged = ( false === $paged || null === $paged ) ? 1 : absint( $paged );
@@ -306,6 +310,11 @@ class SolrPower {
 		);
 
 		echo wp_json_encode( $return );
+
+		// Allow an AJAX search.
+		remove_filter( 'solr_allow_ajax', array( $this, 'return_true' ) );
+		remove_filter( 'solr_allow_admin', array( $this, 'return_true' ) );
+
 		wp_die();
 	}
 
