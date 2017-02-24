@@ -1,5 +1,7 @@
 <?php
 
+use WP_CLI\Utils;
+
 /**
  * Perform a variety of actions against your Solr instance.
  */
@@ -71,6 +73,9 @@ class SolrPower_CLI extends WP_CLI_Command {
 	/**
 	 * Index all posts for a site.
 	 *
+	 * Automatically resumes indexing process from the point it was stopped,
+	 * unless the `--force` flag is used.
+	 *
 	 * [--posts_per_page=<count>]
 	 * : Index a specific number of posts per set.
 	 * ---
@@ -79,20 +84,39 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 *
 	 * [--post_type=<type>]
 	 * : Limit indexing to a specific post type.
+	 *
+	 * [--force]
+	 * : Restart indexing from the beginning, regardless of whether it's been run.
 	 */
 	public function index( $args, $assoc_args ) {
+
 		$defaults = array(
 			'posts_per_page' => 300,
-			'post_status'	 => 'publish',
-			'fields'		 => 'ids',
-			'paged'			 => 1,
-			'post_type'		 => get_post_types( array( 'exclude_from_search' => false ) ),
+			'post_status'    => 'publish',
+			'fields'         => 'ids',
+			'paged'          => 1,
+			'order'          => 'ASC',
+			'orderby'        => 'ID',
+			'post_type'      => get_post_types( array( 'exclude_from_search' => false ) ),
 		);
 		// Check if specified post_type is valid.
 		if ( isset( $assoc_args[ 'post_type' ] ) && (false === post_type_exists( $assoc_args[ 'post_type' ] )) ) {
 			WP_CLI::error( '"' . $assoc_args[ 'post_type' ] . '" is an invalid post type.' );
 		}
 		$query_args		 = array_merge( $defaults, $assoc_args );
+
+		$log_key         = 'solr_index_paged_' . md5( serialize( $query_args ) );
+		$paged           = (int) get_option( $log_key, 0 );
+		if ( ! $paged || Utils\get_flag_value( $assoc_args, 'force' ) ) {
+			$paged       = 1;
+		} else {
+			WP_CLI::log( "Resuming index at page {$paged}..." );
+		}
+		// Ensure each index starts from a fresh point
+		delete_option( $log_key );
+		add_option( $log_key, $paged, null, 'off' );
+		$query_args['paged'] = $paged;
+
 		$query			 = new WP_Query( $query_args );
 		$current_page	 = $query->get( 'paged' );
 		$total			 = $query->max_num_pages;
@@ -120,9 +144,12 @@ class SolrPower_CLI extends WP_CLI_Command {
 				$notify->tick();
 			}
 			$current_page++;
+			update_option( $log_key, $current_page );
 		}
 		do_action( 'solr_power_index_all_finished' );
 		$notify->finish();
+		// Clean up the log because the next index can start from scratch
+		delete_option( $log_key );
 		WP_CLI::success( sprintf( '%d of %d items indexed.', $done, $total_posts ) );
 		if ( 0 < $failed ) {
 			WP_CLI::error( 'Failed to index ' . $failed . ' item(s).' );
