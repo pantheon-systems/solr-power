@@ -70,7 +70,7 @@ class SolrPower_WP_Query {
 			 * @param bool $solr_allow_ajax True to query on AJAX or false [default false].
 			 */
 			if ( false === apply_filters( 'solr_allow_ajax', false ) ) {
-				// return;
+				return;
 			}
 		}
 
