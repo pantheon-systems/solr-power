@@ -196,7 +196,7 @@ class SolrPower_Batch_Index {
 	 * Increment value for 'paged', and update its value in the cache
 	 */
 	public function increment_page() {
-		$this->query_args['paged'] = $this->query_args['paged'] + 1;
+		$this->query_args['paged']++;
 		delete_option( $this->batch_cache_key );
 		add_option( $this->batch_cache_key, $this->query_args['paged'], null, 'off' );
 	}
