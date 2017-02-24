@@ -59,14 +59,7 @@ class SolrPower_Options {
 		}
 		check_ajax_referer( 'solr_security', 'security' );
 		$method = filter_input( INPUT_POST, 'method', FILTER_SANITIZE_STRING );
-		if ( 'load' === $method ) {
-			$type = filter_input( INPUT_POST, 'type', FILTER_SANITIZE_STRING );
-			$prev = filter_input( INPUT_POST, 'prev', FILTER_SANITIZE_STRING );
-			if ( $type ) {
-				SolrPower_Sync::get_instance()->load_all_posts( $prev, $type );
-				die();
-			}
-		} elseif ( in_array( $method, array( 'start-index', 'resume-index' ), true ) ) {
+		if ( in_array( $method, array( 'start-index', 'resume-index' ), true ) ) {
 			$query_args = array();
 			if ( 'start-index' === $method ) {
 				$query_args['batch'] = 1;

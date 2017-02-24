@@ -42,70 +42,8 @@ function switch1() {
 	}
 }
 
-
-function doLoad($type, $prev) {
-	$j.post(solr.ajax_url, {
-		action  : 'solr_options',
-		security: solr.security,
-		method  : 'load',
-		type    : $type,
-		prev    : $prev
-	}, function (response) {
-		var data = JSON.parse(response);
-		$j('#percentspan').show().text(data.percent + "%");
-		if (!data.end) {
-			doLoad(data.type, data.last);
-		} else {
-			$j('#percentspan').hide();
-			enableAll();
-		}
-	});
-
-	// handleResults, "json");
-}
-
-function handleResults(data) {
-
-	$j('#percentspan').text(data.percent + "%");
-	if (!data.end) {
-		doLoad(data.type, data.last);
-	} else {
-		$j('#percentspan').remove();
-		enableAll();
-	}
-}
-
-function disableAll() {
-	$j.each(solr.post_types, function (index, value) {
-		$j('[name=s4wp_postload_' + value.post_type).attr('disabled', 'disabled');
-	});
-	$j('[name=s4wp_deleteall]').attr('disabled', 'disabled');
-	$j('[name=s4wp_init_blogs]').attr('disabled', 'disabled');
-	$j('[name=s4wp_optimize]').attr('disabled', 'disabled');
-	$j('[name=s4wp_ping]').attr('disabled', 'disabled');
-	$j('#settingsbutton').attr('disabled', 'disabled');
-}
-function enableAll() {
-	$j.each(solr.post_types, function (index, value) {
-		$j('[name=s4wp_postload_' + value.post_type + ']').removeAttr('disabled');
-	});
-	$j('[name=s4wp_postload]').removeAttr('disabled');
-	$j('[name=s4wp_deleteall]').removeAttr('disabled');
-	$j('[name=s4wp_init_blogs]').removeAttr('disabled');
-	$j('[name=s4wp_optimize]').removeAttr('disabled');
-	// $j('[name=s4wp_pageload]').removeAttr('disabled');
-	$j('[name=s4wp_ping]').removeAttr('disabled');
-	$j('#settingsbutton').removeAttr('disabled');
-}
-
 $j(document).ready(function () {
-	$j('#percentspan').hide();
 	switch1();
-	$j('.s4wp_postload_post').click(function () {
-		disableAll();
-		doLoad('post', 0);
-	});
-
 });
 
 (function($){
@@ -148,7 +86,7 @@ $j(document).ready(function () {
 		},
 
 		handleClickIndexPosts: function(e) {
-			disableAll();
+			this.disableAll();
 			e.preventDefault();
 			var el = $(e.currentTarget);
 			var action = 's4wp_start_index' === el.attr('name') ? 'start' : 'resume';
