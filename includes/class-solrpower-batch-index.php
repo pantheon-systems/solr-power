@@ -198,7 +198,7 @@ class SolrPower_Batch_Index {
 	public function increment_page() {
 		$this->query_args['paged']++;
 		delete_option( $this->batch_cache_key );
-		add_option( $this->batch_cache_key, $this->query_args['paged'], null, 'off' );
+		add_option( $this->batch_cache_key, $this->query_args['paged'], null, false );
 	}
 
 	/**
