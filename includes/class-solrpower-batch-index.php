@@ -153,10 +153,7 @@ class SolrPower_Batch_Index {
 	 * @return bool
 	 */
 	public function have_posts() {
-		if ( ! empty( $this->post_ids ) ) {
-			return true;
-		}
-		return false;
+		return ! empty( $this->post_ids );
 	}
 
 	/**
