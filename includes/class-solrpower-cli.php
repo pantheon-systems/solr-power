@@ -116,6 +116,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 		}
 		$success_posts = $batch_index->get_success_posts();
 		$total_posts = $batch_index->get_total_posts();
+		do_action( 'solr_power_index_all_finished' );
 		WP_CLI::success( "Indexed {$success_posts} of {$total_posts} posts." );
 	}
 

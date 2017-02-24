@@ -83,6 +83,9 @@ class SolrPower_Options {
 			}
 			// Iterate to the next set, but don't start it.
 			$batch_index->fetch_next_posts();
+			if ( 0 == $batch_index->get_remaining_posts() ) {
+				do_action( 'solr_power_index_all_finished' );
+			}
 			header( 'Content-Type: application/json' );
 			echo json_encode( array(
 				'currentBatch'      => $batch_index->get_current_batch(),
