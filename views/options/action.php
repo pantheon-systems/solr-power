@@ -88,7 +88,11 @@
 	?>
 <script type="text/html" id="tmpl-solr-batch-index" data-current-batch="<?php echo (int) $current_batch; ?>" data-total-batches="<?php echo (int) $total_batches; ?>" data-remaining-posts="<?php echo (int) $remaining_posts; ?>" data-total-posts="<?php echo (int) $total_posts; ?>">
 	<# if ( data.elapsedTime ) { #>
+		<# if ( data.remainingPosts > 0 ) { #>
 		<input type="button" class="button" disabled="disabled" value="<?php echo esc_attr( sprintf( __( 'Running batch %s of %s at %s elapsed time (%s indexed, %s failed, %s remaining)' ), '{{ data.currentBatch }}', '{{ data.totalBatches }}', '{{ data.elapsedTime }}', '{{ data.successPosts }}', '{{ data.failedPosts }}', '{{ data.remainingPosts }}' ) ); ?>" />
+		<# } else { #>
+		<input type="button" class="button" disabled="disabled" value="<?php echo esc_attr( sprintf( __( 'Completed indexing in %s elapsed time (%s indexed, %s failed)' ),  '{{ data.elapsedTime }}', '{{ data.successPosts }}', '{{ data.failedPosts }}' ) ); ?>" />
+		<# } #>
 	<# } else { #>
 		<# if ( data.currentBatch > 1 ) { #>
 		<input type="button" class="button-primary solr-admin-action" name="s4wp_resume_index" value="<?php echo esc_attr( sprintf( __( 'Resume at batch %s of %s', 'solr-for-wordpress-on-pantheon' ), '{{ data.currentBatch }}', '{{ data.totalBatches }}' ) ); ?>" /> <input type="button" class="button solr-admin-action" name="s4wp_start_index" value="<?php esc_attr_e( 'Restart', 'solr-for-wordpress-on-pantheon' ); ?>" />

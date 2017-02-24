@@ -113,8 +113,8 @@ $j(document).ready(function () {
 				this.successPosts += response.successPosts;
 				this.failedPosts += response.failedPosts;
 				this.remainingPosts = response.remainingPosts;
+				this.renderIndexUI();
 				if ( this.remainingPosts > 0 ) {
-					this.renderIndexUI();
 					this.indexPosts();
 				} else {
 					this.startTime = false;
