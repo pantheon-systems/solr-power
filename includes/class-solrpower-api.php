@@ -347,7 +347,9 @@ class SolrPower_Api {
 
 			$solr_boost_query = apply_filters( 'solr_boost_query', 'post_title^25 post_content^50' );
 			// $dismax->setQueryFields($solr_boost_query);
-			$dismax->setBoostFunctions( $solr_boost_query );
+			if( false !== $solr_boost_query ){
+				$dismax->setBoostFunctions( $solr_boost_query );
+			}
 			$facetSet->setMinCount( 1 );
 			if ( $facet_on_tags ) {
 				$facetSet->setLimit( $number_of_tags );
