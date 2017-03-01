@@ -8,6 +8,7 @@ class Test_Batch_Index extends SolrTestBase {
 		$stats = SolrPower_Api::get_instance()->index_stats();
 		$this->assertEquals( 0, $stats['post'] );
 		$batch_index = new SolrPower_Batch_Index;
+		$this->assertEquals( 1, $batch_index->get_current_batch() );
 		while( $batch_index->have_posts() ) {
 			$batch_index->index_post();
 		}
@@ -26,6 +27,7 @@ class Test_Batch_Index extends SolrTestBase {
 		$this->assertEquals( 0, $stats['post'] );
 		// First batch
 		$batch_index = new SolrPower_Batch_Index( array( 'posts_per_page' => 2 ) );
+		$this->assertEquals( 1, $batch_index->get_current_batch() );
 		while( $batch_index->have_posts() ) {
 			$batch_index->index_post();
 		}
