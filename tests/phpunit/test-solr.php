@@ -432,7 +432,6 @@ class SolrTest extends SolrTestBase {
 		$cat_name = 'Review';
 		$cat_id   = wp_create_category( $cat_name );
 		$p_id2    = $this->__create_test_post( 'post', 'Best Movies of 2015' );
-		wp_set_object_terms( $p_id2, $cat_id, 'category', true );
 
 		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
 		$args  = array(
