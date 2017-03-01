@@ -256,7 +256,6 @@ class SolrPower {
 
 		$paged = filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_STRING );
 		$paged = ( false === $paged || null === $paged ) ? 1 : absint( $paged );
-		error_log( '$paged: ' . print_r( $paged, true ) );
 
 		$args = array(
 			's'              => filter_input( INPUT_GET, 's', FILTER_SANITIZE_STRING ),
