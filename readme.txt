@@ -153,6 +153,9 @@ A meta_query can use the following compare operators:
 (```'REGEXP'```, ```'NOT REGEXP'```, and ```'RLIKE'``` are not supported.)
 
 == Changelog ==
+= 1.1.0 =
+* Add ```solr_boost_query``` filter for boosted items
+
 = 1.0.0 =
 * Add Ajax functionality to the facet search widget
 * Add date_query support to WP_Query Integration

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: solr-power 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/pantheon-systems/solr-power/issues\n"
-"POT-Creation-Date: 2017-01-31 15:53-0600\n"
+"POT-Creation-Date: 2017-03-01 09:59-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,7 +65,7 @@ msgstr ""
 msgid "This plugin requires WordPress 3.0 or greater."
 msgstr ""
 
-#: includes/class-solrpower.php:124
+#: includes/class-solrpower.php:130
 msgid "Settings"
 msgstr ""
 
