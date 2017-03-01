@@ -59,13 +59,33 @@ class SolrPower_Options {
 		}
 		check_ajax_referer( 'solr_security', 'security' );
 		$method = filter_input( INPUT_POST, 'method', FILTER_SANITIZE_STRING );
-		if ( 'load' === $method ) {
-			$type = filter_input( INPUT_POST, 'type', FILTER_SANITIZE_STRING );
-			$prev = filter_input( INPUT_POST, 'prev', FILTER_SANITIZE_STRING );
-			if ( $type ) {
-				SolrPower_Sync::get_instance()->load_all_posts( $prev, $type );
-				die();
+		if ( in_array( $method, array( 'start-index', 'resume-index' ), true ) ) {
+			$query_args = array();
+			if ( 'start-index' === $method ) {
+				$query_args['batch'] = 1;
 			}
+			$batch_index = new SolrPower_Batch_Index( $query_args );
+			$success_posts = $failed_posts = 0;
+			while( $batch_index->have_posts() ) {
+				$result = $batch_index->index_post();
+				if ( 'success' === $result['status'] ) {
+					$success_posts++;
+				} elseif ( 'failed' === $result['status'] ) {
+					$failed_posts++;
+				}
+			}
+			// Iterate to the next set, but don't start it.
+			$batch_index->fetch_next_posts();
+			if ( 0 == $batch_index->get_remaining_posts() ) {
+				do_action( 'solr_power_index_all_finished' );
+			}
+			header( 'Content-Type: application/json' );
+			echo json_encode( array(
+				'currentBatch'      => $batch_index->get_current_batch(),
+				'successPosts'      => $success_posts,
+				'failedPosts'       => $failed_posts,
+				'remainingPosts'    => $batch_index->get_remaining_posts(),
+			) );
 		}
 		die();
 	}

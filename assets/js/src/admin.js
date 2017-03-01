@@ -42,68 +42,113 @@ function switch1() {
 	}
 }
 
-
-function doLoad($type, $prev) {
-	$j.post(solr.ajax_url, {
-		action  : 'solr_options',
-		security: solr.security,
-		method  : 'load',
-		type    : $type,
-		prev    : $prev
-	}, function (response) {
-		var data = JSON.parse(response);
-		$j('#percentspan').show().text(data.percent + "%");
-		if (!data.end) {
-			doLoad(data.type, data.last);
-		} else {
-			$j('#percentspan').hide();
-			enableAll();
-		}
-	});
-
-	// handleResults, "json");
-}
-
-function handleResults(data) {
-
-	$j('#percentspan').text(data.percent + "%");
-	if (!data.end) {
-		doLoad(data.type, data.last);
-	} else {
-		$j('#percentspan').remove();
-		enableAll();
-	}
-}
-
-function disableAll() {
-	$j.each(solr.post_types, function (index, value) {
-		$j('[name=s4wp_postload_' + value.post_type).attr('disabled', 'disabled');
-	});
-	$j('[name=s4wp_deleteall]').attr('disabled', 'disabled');
-	$j('[name=s4wp_init_blogs]').attr('disabled', 'disabled');
-	$j('[name=s4wp_optimize]').attr('disabled', 'disabled');
-	$j('[name=s4wp_ping]').attr('disabled', 'disabled');
-	$j('#settingsbutton').attr('disabled', 'disabled');
-}
-function enableAll() {
-	$j.each(solr.post_types, function (index, value) {
-		$j('[name=s4wp_postload_' + value.post_type + ']').removeAttr('disabled');
-	});
-	$j('[name=s4wp_postload]').removeAttr('disabled');
-	$j('[name=s4wp_deleteall]').removeAttr('disabled');
-	$j('[name=s4wp_init_blogs]').removeAttr('disabled');
-	$j('[name=s4wp_optimize]').removeAttr('disabled');
-	// $j('[name=s4wp_pageload]').removeAttr('disabled');
-	$j('[name=s4wp_ping]').removeAttr('disabled');
-	$j('#settingsbutton').removeAttr('disabled');
-}
-
 $j(document).ready(function () {
-	$j('#percentspan').hide();
 	switch1();
-	$j('.s4wp_postload_post').click(function () {
-		disableAll();
-		doLoad('post', 0);
-	});
-
 });
+
+(function($){
+
+	var solrActions = {
+
+		batchIndexTemplate: false,
+		currentBatch: 0,
+		totalBatches: 0,
+		successPosts: 0,
+		failedPosts: 0,
+		remainingPosts: 0,
+		startTime: false,
+
+		init: function() {
+			this.bindEvents();
+			this.setupInitialState();
+			this.renderIndexUI();
+		},
+
+		bindEvents: function() {
+			$('#solr-batch-index').on('click', 'input',$.proxy(this.handleClickIndexPosts,this));
+		},
+
+		setupInitialState: function() {
+			this.batchIndexTemplate = wp.template('solr-batch-index');
+			var tmpl = $('#tmpl-solr-batch-index');
+			this.currentBatch = tmpl.data('current-batch');
+			this.totalBatches = tmpl.data('total-batches');
+			this.remainingPosts = tmpl.data('remaining-posts');
+			this.totalPosts = tmpl.data('total-posts');
+		},
+
+		disableAll: function() {
+			$('.solr-admin-action').attr('disabled','disabled');
+		},
+
+		enableAll: function() {
+			$('.solr-admin-action').removeAttr('disabled');
+		},
+
+		handleClickIndexPosts: function(e) {
+			this.disableAll();
+			e.preventDefault();
+			var el = $(e.currentTarget);
+			var action = 's4wp_start_index' === el.attr('name') ? 'start' : 'resume';
+			if ( 'start' === action ) {
+				this.currentBatch = 1;
+				this.remainingPosts = this.totalPosts;
+			}
+			this.startTime = new Date();
+			this.elapsedTime = '00:00:00';
+			this.renderIndexUI();
+			this.indexPosts( action );
+		},
+
+		indexPosts: function( action ) {
+			if ( typeof action === 'undefined' ) {
+				action = 'resume';
+			}
+			$.post( solr.ajax_url, {
+				action  : 'solr_options',
+				security: solr.security,
+				method  : action + '-index',
+			}, $.proxy(function( response ){
+				this.currentBatch = response.currentBatch;
+				this.successPosts += response.successPosts;
+				this.failedPosts += response.failedPosts;
+				this.remainingPosts = response.remainingPosts;
+				this.renderIndexUI();
+				if ( this.remainingPosts > 0 ) {
+					this.indexPosts();
+				} else {
+					this.startTime = false;
+				}
+			}, this ) );
+		},
+
+		renderIndexUI: function() {
+			var elapsedTime = false;
+			if ( this.startTime ) {
+				paddingLeft = function(originalValue,paddingValue) {
+					return String(paddingValue + originalValue).slice(-paddingValue.length);
+				};
+				var endTime = new Date();
+				var timeDiff = endTime - this.startTime;
+				timeDiff /= 1000;
+				var seconds = paddingLeft( Math.round(timeDiff % 60), '00' );
+				timeDiff = Math.floor(timeDiff / 60);
+				var minutes = paddingLeft( Math.round(timeDiff % 60), '00' );
+				timeDiff = Math.floor(timeDiff / 60);
+				var hours = paddingLeft( Math.round(timeDiff % 24), '00' );
+				elapsedTime = hours + ':' + minutes + ':' + seconds;
+			}
+			$('#solr-batch-index').html( this.batchIndexTemplate({
+				currentBatch: this.currentBatch,
+				totalBatches: this.totalBatches,
+				elapsedTime: elapsedTime,
+				successPosts: this.successPosts,
+				failedPosts: this.failedPosts,
+				remainingPosts: this.remainingPosts,
+			} ) );
+		}
+	};
+
+	$(document).ready($.proxy(solrActions.init,solrActions));
+
+}(jQuery));

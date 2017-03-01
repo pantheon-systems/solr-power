@@ -71,63 +71,53 @@ class SolrPower_CLI extends WP_CLI_Command {
 	/**
 	 * Index all posts for a site.
 	 *
-	 * [--posts_per_page=<count>]
-	 * : Index a specific number of posts per set.
-	 * ---
-	 * default: 300
-	 * ---
+	 * [--batch=<batch>]
+	 * : Start indexing at a specific batch. Defaults to last indexed batch, or very beginning.
 	 *
-	 * [--post_type=<type>]
-	 * : Limit indexing to a specific post type.
+	 * [--post_type=<post-type>]
+	 * : Limit indexing to a specific post type. Defaults to all searchable.
 	 */
 	public function index( $args, $assoc_args ) {
-		$defaults = array(
-			'posts_per_page' => 300,
-			'post_status'	 => 'publish',
-			'fields'		 => 'ids',
-			'paged'			 => 1,
-			'post_type'		 => get_post_types( array( 'exclude_from_search' => false ) ),
-		);
-		// Check if specified post_type is valid.
-		if ( isset( $assoc_args[ 'post_type' ] ) && (false === post_type_exists( $assoc_args[ 'post_type' ] )) ) {
-			WP_CLI::error( '"' . $assoc_args[ 'post_type' ] . '" is an invalid post type.' );
+
+		$query_args = array();
+		if ( isset( $assoc_args['post_type'] ) ) {
+			$query_args['post_type'] = array( $assoc_args['post_type'] );
 		}
-		$query_args		 = array_merge( $defaults, $assoc_args );
-		$query			 = new WP_Query( $query_args );
-		$current_page	 = $query->get( 'paged' );
-		$total			 = $query->max_num_pages;
-		// There's a bug with found_posts that shows two more than what it should.
-		$total_posts	 = (1 == $query->max_num_pages) ? $query->post_count : $query->found_posts - 2;
+		if ( isset( $assoc_args['batch'] ) ) {
+			$query_args['batch'] = (int) $assoc_args['batch'];
+		}
 
-		$notify	 = \WP_CLI\Utils\make_progress_bar( 'Indexing Items:', $total_posts );
-		$done	 = 0;
-		$failed	 = 0;
-		$solr	 = get_solr();
-		$update	 = $solr->createUpdate();
-		while ( $current_page <= $total ) {
-			$query->set( 'paged', $current_page );
-			$query->get_posts();
-			foreach ( $query->posts as $id ) {
-				$documents	 = array();
-				$documents[] = SolrPower_Sync::get_instance()->build_document( $update->createDocument(), get_post( $id ) );
-				$post_it	 = SolrPower_Sync::get_instance()->post( $documents, true, FALSE );
-
-				if ( false === $post_it ) {
-					$failed++;
-				} else {
-					$done++;
-				}
-				$notify->tick();
+		$batch_index = new SolrPower_Batch_Index( $query_args );
+		$displayed_batch = false;
+		$start_time = microtime( true );
+		while( $batch_index->have_posts() ) {
+			$current_batch = $batch_index->get_current_batch();
+			if ( $current_batch !== $displayed_batch ) {
+				WP_CLI::log( '' );
+				$success_posts = $batch_index->get_success_posts();
+				$failed_posts = $batch_index->get_failed_posts();
+				$remaining_posts = $batch_index->get_remaining_posts();
+				$total_batches = $batch_index->get_total_batches();
+				$log_time = self::format_log_timestamp( microtime( true ) - $start_time );
+				WP_CLI::log( "Starting batch {$current_batch} of {$total_batches} at {$log_time} elapsed time ({$success_posts} indexed, {$failed_posts} failed, {$remaining_posts} remaining)" );
+				WP_CLI::log( '' );
+				$displayed_batch = $current_batch;
 			}
-			$current_page++;
+			$result = $batch_index->index_post();
+			$post_mention = "'{$result['post_title']}' ({$result['post_id']})";
+			if ( 'success' === $result['status'] ) {
+				WP_CLI::log( "Submitted {$post_mention} to the index." );
+			} elseif( 'failed' === $result['status'] ) {
+				WP_CLI::log( "Failed to index {$post_mention}: {$result['message']}" );
+			}
+			if ( ! $batch_index->have_posts() ) {
+				$batch_index->fetch_next_posts();
+			}
 		}
+		$success_posts = $batch_index->get_success_posts();
+		$total_posts = $batch_index->get_total_posts();
 		do_action( 'solr_power_index_all_finished' );
-		$notify->finish();
-		WP_CLI::success( sprintf( '%d of %d items indexed.', $done, $total_posts ) );
-		if ( 0 < $failed ) {
-			WP_CLI::error( 'Failed to index ' . $failed . ' item(s).' );
-			WP_CLI::error( SolrPower_Sync::get_instance()->error_msg );
-		}
+		WP_CLI::success( "Indexed {$success_posts} of {$total_posts} posts." );
 	}
 
 	/**
@@ -245,6 +235,20 @@ class SolrPower_CLI extends WP_CLI_Command {
 		$stats = SolrPower_Api::get_instance()->index_stats();
 		$formatter = new \WP_CLI\Formatter( $assoc_args, array_keys( $stats ) );
 		$formatter->display_item( $stats );
+	}
+
+	/**
+	 * Format a log timestamp into something human-readable.
+	 *
+	 * @param integer $s Log time in seconds
+	 * @return string
+	 */
+	private static function format_log_timestamp( $s ) {
+		$h = floor( $s / 3600 );
+		$s -= $h * 3600;
+		$m = floor( $s / 60 );
+		$s -= $m * 60;
+		return $h . ':' . sprintf( '%02d', $m ) . ':' . sprintf( '%02d', $s );
 	}
 
 }
