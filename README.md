@@ -160,6 +160,8 @@ A meta_query can use the following compare operators:
 * Remove old `wp solr index` code
 * Fire `solr_power_index_all_finished` action when indexing is complete
 * Ensure a completion message displays after indexing is complete
+* Fix a bug around Solr taking over searches in wp-admin
+* Properly apply the ```solr_allow_admin``` and ```solr_allow_ajax``` filters
 * Add ```solr_boost_query``` filter for boosted items
 
 ### 1.0.0 ###
