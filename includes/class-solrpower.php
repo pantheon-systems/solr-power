@@ -251,8 +251,8 @@ class SolrPower {
 		} );
 
 		// Add __return_true to the admin/ajax filters so the widget can access admin ajax.
-		add_filter( 'solr_allow_ajax', array( $this, '__return_true' ) );
-		add_filter( 'solr_allow_admin', array( $this, '__return_true' ) );
+		add_filter( 'solr_allow_ajax', '__return_true' );
+		add_filter( 'solr_allow_admin', '__return_true' );
 
 		$paged = filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_STRING );
 		$paged = ( false === $paged || null === $paged ) ? 1 : absint( $paged );
@@ -308,8 +308,8 @@ class SolrPower {
 		echo wp_json_encode( $return );
 
 		// Remove __return_true from the admin/ajax filters so they don't impact other areas.
-		remove_filter( 'solr_allow_ajax', array( $this, '__return_true' ) );
-		remove_filter( 'solr_allow_admin', array( $this, '__return_true' ) );
+		remove_filter( 'solr_allow_ajax', '__return_true' );
+		remove_filter( 'solr_allow_admin', '__return_true' );
 
 		wp_die();
 	}
