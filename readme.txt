@@ -153,6 +153,14 @@ A meta_query can use the following compare operators:
 (```'REGEXP'```, ```'NOT REGEXP'```, and ```'RLIKE'``` are not supported.)
 
 == Changelog ==
+= 1.1.0 =
+* Introduce a new class for managing batch indexes
+* Rewrite `wp solr index` to provide more verbosity
+* Make batch indexes resumeable by logging `paged` to an option
+* Remove old `wp solr index` code
+* Fire `solr_power_index_all_finished` action when indexing is complete
+* Ensure a completion message displays after indexing is complete
+
 = 1.0.0 =
 * Add Ajax functionality to the facet search widget
 * Add date_query support to WP_Query Integration
