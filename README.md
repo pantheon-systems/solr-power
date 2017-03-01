@@ -91,7 +91,7 @@ All Solr Power related commands are grouped into the `wp solr` command, see an e
 $ wp solr
 usage: wp solr check-server-settings
    or: wp solr delete [<id>...] [--all]
-   or: wp solr index [--posts_per_page] [--post_type]
+   or: wp solr index [--page] [--post_type]
    or: wp solr info [--field=<field>] [--format=<format>]
    or: wp solr optimize-index
    or: wp solr repost-schema
@@ -154,6 +154,12 @@ A meta_query can use the following compare operators:
 
 ## Changelog ##
 ### 1.1.0 ###
+* Introduce a new class for managing batch indexes
+* Rewrite `wp solr index` to provide more verbosity
+* Make batch indexes resumeable by logging `paged` to an option
+* Remove old `wp solr index` code
+* Fire `solr_power_index_all_finished` action when indexing is complete
+* Ensure a completion message displays after indexing is complete
 * Add ```solr_boost_query``` filter for boosted items
 
 ### 1.0.0 ###

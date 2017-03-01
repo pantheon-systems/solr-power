@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: solr-power 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/pantheon-systems/solr-power/issues\n"
-"POT-Creation-Date: 2017-03-01 09:59-0600\n"
+"POT-Creation-Date: 2017-03-01 10:36-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,28 +25,28 @@ msgstr ""
 msgid "Couldn't locate the options page."
 msgstr ""
 
-#: includes/class-solrpower-options.php:269
+#: includes/class-solrpower-options.php:289
 msgid "Ping Success!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:271
+#: includes/class-solrpower-options.php:291
 msgid "Ping Failed!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:279
+#: includes/class-solrpower-options.php:299
 msgid "Configuration has been copied to all blogs!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:286
+#: includes/class-solrpower-options.php:306
 msgid "Index Optimized!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:293
-#: includes/class-solrpower-options.php:301
+#: includes/class-solrpower-options.php:313
+#: includes/class-solrpower-options.php:321
 msgid "All Indexed Pages Deleted!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:320
+#: includes/class-solrpower-options.php:340
 msgid "Action failed. Please try again."
 msgstr ""
 
@@ -228,7 +228,7 @@ msgstr ""
 
 #: views/options/action.php:11 views/options/action.php:23
 #: views/options/action.php:35 views/options/action.php:46
-#: views/options/action.php:59 views/options/action.php:77
+#: views/options/action.php:59
 msgid "Execute"
 msgstr ""
 
@@ -250,4 +250,29 @@ msgstr ""
 
 #: views/options/action.php:75
 msgid "Index Searchable Post Types"
+msgstr ""
+
+#: views/options/action.php:93
+#, php-format
+msgid ""
+"Running batch %s of %s at %s elapsed time (%s indexed, %s failed, %s "
+"remaining)"
+msgstr ""
+
+#: views/options/action.php:95
+#, php-format
+msgid "Completed indexing in %s elapsed time (%s indexed, %s failed)"
+msgstr ""
+
+#: views/options/action.php:100
+#, php-format
+msgid "Resume at batch %s of %s"
+msgstr ""
+
+#: views/options/action.php:100
+msgid "Restart"
+msgstr ""
+
+#: views/options/action.php:102
+msgid "Start Index"
 msgstr ""
