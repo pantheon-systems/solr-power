@@ -70,7 +70,7 @@ class SolrPower_WP_Query {
 			 * @param bool $solr_allow_ajax True to query on AJAX or false [default false].
 			 */
 			if ( false === apply_filters( 'solr_allow_ajax', false ) ) {
-				// return;
+				return;
 			}
 		}
 
@@ -81,8 +81,8 @@ class SolrPower_WP_Query {
 		 *
 		 * @param bool $solr_allow_admin True to query in WordPress Dashboard or false [default false].
 		 */
-		if ( is_admin() && false === apply_filters( 'solr_allow_admin', false ) ) {
-			// return;
+		if ( is_admin() && false === apply_filters( 'solr_allow_admin', false ) && ( ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) ) {
+			return;
 		}
 
 
