@@ -345,7 +345,26 @@ class SolrPower_Api {
 				$facetSet->createFacetField( $facet_field )->setField( $facet_field );
 			}
 
-			$dismax->setBoostFunctions('post_title^25 post_content^50');
+			/**
+			 * Filter boost query
+			 *
+			 * Filter the items boosted in the Solr query.
+			 *
+			 * @param string $solr_boost_query String of items, with their boost applied.
+			 */
+			$solr_boost_query = apply_filters( 'solr_boost_query', 'post_title^25 post_content^50' );
+			if ( false !== $solr_boost_query ) {
+				$dismax->setBoostFunctions( $solr_boost_query );
+			}
+
+			/**
+			 * Filter the Solarium dismax query object.
+			 *
+			 * @param object $dismax Solarium DisMax query object.
+			 * @param object $query Solarium query object.
+			 */
+			$dismax = apply_filters( 'solr_dismax_query', $dismax, $query );
+
 			$facetSet->setMinCount( 1 );
 			if ( $facet_on_tags ) {
 				$facetSet->setLimit( $number_of_tags );
@@ -376,6 +395,7 @@ class SolrPower_Api {
 			 * Filter the Solarium query object.
 			 *
 			 * @param object $query Solarium query object.
+			 * @param object $dismax Solarium DisMax query object.
 			 */
 			$query = apply_filters( 'solr_query', $query, $dismax );
 
