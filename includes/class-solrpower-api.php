@@ -356,6 +356,15 @@ class SolrPower_Api {
 			if ( false !== $solr_boost_query ) {
 				$dismax->setBoostFunctions( $solr_boost_query );
 			}
+
+			/**
+			 * Filter the Solarium dismax query object.
+			 *
+			 * @param object $dismax Solarium DisMax query object.
+			 * @param object $query Solarium query object.
+			 */
+			$dismax = apply_filters( 'solr_dismax_query', $dismax, $query );
+
 			$facetSet->setMinCount( 1 );
 			if ( $facet_on_tags ) {
 				$facetSet->setLimit( $number_of_tags );
