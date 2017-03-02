@@ -275,12 +275,6 @@ class SolrPower_Options {
 		}
 		$action = sanitize_text_field( $_POST['action'] );
 		switch ( $action ) {
-			case 'update':
-				if ( ! $this->check_nonce( 'solr_update' ) ) {
-					return;
-				}
-				$this->save_options();
-				break;
 			case 'ping':
 				if ( ! $this->check_nonce( 'solr_ping' ) ) {
 					return;
