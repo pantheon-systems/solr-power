@@ -163,6 +163,7 @@ A meta_query can use the following compare operators:
 * Fix a bug around Solr taking over searches in wp-admin
 * Properly apply the ```solr_allow_admin``` and ```solr_allow_ajax``` filters
 * Add ```solr_boost_query``` filter for boosted items
+* Add ```solr_dismax_query``` filter for Dismax
 
 = 1.0.0 =
 * Add Ajax functionality to the facet search widget
