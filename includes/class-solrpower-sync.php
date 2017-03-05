@@ -273,7 +273,6 @@ class SolrPower_Sync {
 			$doc->setField( 'post_status', $post_info->post_status );
 			$doc->setField( 'post_parent', $post_info->post_parent );
 			$doc->setField( 'post_excerpt', $post_info->post_excerpt );
-			$doc->setField( 'post_status', $post_info->post_status );
 
 			$categories = get_the_category( $post_info->ID );
 			if ( ! $categories == null ) {
