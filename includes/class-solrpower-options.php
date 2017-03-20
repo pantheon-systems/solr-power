@@ -26,9 +26,8 @@ class SolrPower_Options {
 	}
 
 	function __construct() {
-		if ( ! is_multisite() ) {
-			add_action( 'admin_menu', array( $this, 'add_pages' ) );
-		}
+		$menu_action = is_multisite() ? 'network_admin_menu' : 'admin_menu';
+		add_action( $menu_action, array( $this, 'add_pages' ) );
 		add_action( 'wp_ajax_solr_options', array( $this, 'options_load' ) );
 		add_action( 'admin_init', array( $this, 'check_for_actions' ) );
 		add_action( 'admin_init', array( $this, 'settings_api' ) );

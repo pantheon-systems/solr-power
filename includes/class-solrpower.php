@@ -127,7 +127,9 @@ class SolrPower {
 			return $links;
 		}
 
-		array_unshift( $links, '<a href="' . admin_url( 'admin.php' ) . '?page=solr-power">' . esc_html__( 'Settings', 'solr-for-wordpress-on-pantheon' ) . '</a>' );
+		$base_link = is_multisite() ? network_admin_url( 'admin.php' ) : admin_url( 'admin.php' );
+		$settings_link = add_query_arg( 'page', 'solr-power', $base_link );
+		array_unshift( $links, '<a href="' . esc_url( $settings_link ) . '">' . esc_html__( 'Settings', 'solr-for-wordpress-on-pantheon' ) . '</a>' );
 
 		return $links;
 	}
