@@ -341,6 +341,10 @@ class SolrPower_Api {
 			$dismax   = $query->getDisMax();
 			$facetSet = $query->getFacetSet();
 
+			if ( is_multisite() ) {
+				$facet_fields[] = 'blogid';
+			}
+
 			foreach ( $facet_fields as $facet_field ) {
 				$facetSet->createFacetField( $facet_field )->setField( $facet_field );
 			}

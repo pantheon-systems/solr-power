@@ -418,7 +418,11 @@ class SolrPower_WP_Query {
 			'name'    => 'post_name'
 		);
 		if ( ! $query->get( 'solr_integrate' ) ) {
-			return $query->get( 's' );
+			$s = $query->get( 's' );
+			if ( is_multisite() ) {
+				$s .= ' AND(blogid:' . get_current_blog_id() . ')';
+			}
+			return $s;
 		}
 
 		$solr_query = array();
@@ -455,7 +459,9 @@ class SolrPower_WP_Query {
 				array_unshift( $solr_query, $query->get( 's' ) . ' ' );
 			}
 		}
-
+		if ( is_multisite() ) {
+			$solr_query[] = '(blogid:' . get_current_blog_id() . ')';
+		}
 		return implode( 'AND', $solr_query );
 	}
 
