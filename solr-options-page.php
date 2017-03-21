@@ -67,7 +67,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 
 		<?php
 		if ( is_multisite() ) {
-			$action = 'options.php?page=solr-power';
+			$action = 'settings.php?page=solr-power';
 		} else {
 			$action = 'admin.php?page=solr-power';
 		}
