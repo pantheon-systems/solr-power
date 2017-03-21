@@ -31,6 +31,7 @@ class SolrPower_Options {
 		add_action( 'wp_ajax_solr_options', array( $this, 'options_load' ) );
 		add_action( 'admin_init', array( $this, 'check_for_actions' ) );
 		add_action( 'admin_init', array( $this, 'settings_api' ) );
+		add_action( 'wpmuadminedit', array( $this, 'action_wpmuadminedit' ) );
 	}
 
 	function add_pages() {
@@ -46,6 +47,38 @@ class SolrPower_Options {
 		} else {
 			esc_html_e( "Couldn't locate the options page.", 'solr-for-wordpress-on-pantheon' );
 		}
+	}
+
+	/**
+	 * Handles saving of options in the network admin
+	 * because the WordPress settings API doesn't do this for us.
+	 */
+	public function action_wpmuadminedit() {
+		if ( empty( $_POST['option_page'] )
+			|| ! in_array( $_POST['option_page'], array( 'solr-power-facet', 'solr-power-index' ), true ) ) {
+			return;
+		}
+
+		// Mostly cribbed from wp-admin/options.php
+		$option_page = sanitize_text_field( $_POST['option_page'] );
+		check_admin_referer( $option_page . '-options' );
+		$whitelist_options = apply_filters( 'whitelist_options', array() );
+		$options = $whitelist_options[ $option_page ];
+		foreach ( $options as $option ) {
+			$option = trim( $option );
+			$value = null;
+			if ( isset( $_POST[ $option ] ) ) {
+				$value = $_POST[ $option ];
+				if ( ! is_array( $value ) ) {
+					$value = trim( $value );
+				}
+				$value = wp_unslash( $value );
+			}
+			update_site_option( $option, $value );
+		}
+		$goback = add_query_arg( 'settings-updated', 'true',  wp_get_referer() );
+		wp_redirect( $goback );
+		exit;
 	}
 
 	/**
@@ -90,15 +123,8 @@ class SolrPower_Options {
 	}
 
 	function get_option() {
-		$indexall = false;
-		$option   = 'plugin_s4wp_settings';
-
+		$option = 'plugin_s4wp_settings';
 		if ( is_multisite() ) {
-			$plugin_s4wp_settings = get_site_option( $option );
-			$indexall             = $plugin_s4wp_settings['s4wp_index_all_sites'];
-		}
-
-		if ( $indexall ) {
 			return get_site_option( $option );
 		} else {
 			return get_option( $option );
@@ -108,13 +134,7 @@ class SolrPower_Options {
 	function update_option( $options ) {
 		$optval   = $this->sanitise_options( $options );
 		$option   = 'plugin_s4wp_settings';
-		$indexall = false;
 		if ( is_multisite() ) {
-			$plugin_s4wp_settings = get_site_option( $option );
-			$indexall             = $plugin_s4wp_settings['s4wp_index_all_sites'];
-		}
-
-		if ( $indexall ) {
 			update_site_option( $option, $optval );
 		} else {
 			update_option( $option, $optval );

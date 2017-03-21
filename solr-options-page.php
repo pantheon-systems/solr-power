@@ -73,8 +73,10 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 		}
 		include 'views/options/info.php';
 		include 'views/options/action.php';
+
+        $options_action = is_multisite() ? network_admin_url( 'settings.php' ) : admin_url( 'options.php' );
 		?>
-		<form method="post" action="options.php">
+		<form method="post" action="<?php echo esc_url( $options_action ); ?>">
 		<?php
 		include 'views/options/indexing.php';
 		include 'views/options/facet.php';
