@@ -228,7 +228,12 @@ class SolrPower_Batch_Index {
 		} else {
 			$this->failed_posts++;
 			$result['status'] = 'failed';
-			$result['message'] = SolrPower_Sync::get_instance()->error_msg;
+			$error_msg = SolrPower_Sync::get_instance()->error_msg;
+			// Pull out the document <title> when this looks like escaped HTML
+			if ( preg_match( '#' . preg_quote( '&lt;title&gt;' ) . '(.+)' . preg_quote( '&lt;/title&gt;' ) . '#', $error_msg, $matches ) ) {
+				$error_msg = $matches[1];
+			}
+			$result['message'] = $error_msg;
 		}
 		$this->remaining_posts--;
 		return $result;
