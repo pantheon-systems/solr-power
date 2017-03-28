@@ -16,7 +16,7 @@
                 </li>
                 <li>
                     <strong>Solr Server Port:</strong>
-					<?php echo esc_html( getenv( $server_info['port'] ) ); ?>
+					<?php echo esc_html( $server_info['port'] ); ?>
                 </li>
                 <li>
                     <strong>Solr Server Path:</strong>
