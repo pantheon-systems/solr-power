@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: solr-power 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/pantheon-systems/solr-power/issues\n"
-"POT-Creation-Date: 2017-03-17 15:13-0500\n"
+"POT-Creation-Date: 2017-04-07 13:43-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgstr ""
 msgid "Action failed. Please try again."
 msgstr ""
 
-#: includes/class-solrpower-sync.php:354
+#: includes/class-solrpower-sync.php:355
 msgid "Post Information is NULL"
 msgstr ""
 
