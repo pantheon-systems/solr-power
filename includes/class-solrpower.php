@@ -318,7 +318,7 @@ class SolrPower {
 	 *
 	 * @return array
 	 */
-	public function get_post_types() {
+	public static function get_post_types() {
 		return apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) );
 	}
 
@@ -327,7 +327,7 @@ class SolrPower {
 	 *
 	 * @return array
 	 */
-	public function get_post_statuses() {
+	public static function get_post_statuses() {
 		return apply_filters( 'solr_post_status', array( 'publish' ) );
 	}
 

@@ -432,7 +432,7 @@ class SolrPower_Api {
 		$stats     = wp_cache_get( $cache_key, 'solr' );
 		if ( false === $stats ) {
 
-			$post_types = apply_filters('solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) );
+			$post_types = SolrPower::get_post_types();
 
 			$stats = array();
 			foreach ( $post_types as $type ) {
