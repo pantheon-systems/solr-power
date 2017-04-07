@@ -64,7 +64,7 @@ class SolrPower_Api {
 		}
 
 		$path        = $this->compute_path();
-		$url         = $this->get_default_scheme() . '://' . getenv( 'PANTHEON_INDEX_HOST' ) . ':' . getenv( 'PANTHEON_INDEX_PORT' ) . '/' . $path;
+		$url         = $this->get_default_scheme() . '://' . getenv( 'PANTHEON_INDEX_HOST' ) . ':' . getenv( 'PANTHEON_INDEX_PORT' ) . $path;
 		$client_cert = realpath( ABSPATH . '../certs/binding.pem' );
 
 		/*
@@ -87,7 +87,7 @@ class SolrPower_Api {
 		// set URL and other appropriate options
 		$opts = array(
 			CURLOPT_URL            => $url,
-			CURLOPT_PORT           => 449,
+			CURLOPT_PORT           => getenv( 'PANTHEON_INDEX_PORT' ),
 			CURLOPT_RETURNTRANSFER => 1,
 			CURLOPT_SSLCERT        => $client_cert,
 			CURLOPT_SSL_VERIFYPEER => false,
