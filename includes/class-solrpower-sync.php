@@ -47,14 +47,14 @@ class SolrPower_Sync {
 		global $current_blog;
 
 		$post_info = get_post( $post_id );
-		$post_types = apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) );
+		$post_types = SolrPower::get_instance()->get_post_types();
 
 		if ( !in_array( $post_info->post_type, (array) $post_types, true ) ) {
 			return;
 		}
 
 		$this->handle_status_change( $post_id, $post_info );
-		$post_status = apply_filters( 'solr_post_status', array('publish') );
+		$post_status = SolrPower::get_instance()->get_post_statuses();
 		if ( $post_info->post_type == 'revision' || !in_array( $post_info->post_status, $post_status, true ) ) {
 			return;
 		}
@@ -492,8 +492,8 @@ class SolrPower_Sync {
 					 *
 					 * @param array $post_types Array of post type names for indexing.
 					 */
-					'post_type'      => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
-					'post_status'    => apply_filters( 'solr_post_status', array('publish') ),
+					'post_type'      => SolrPower::get_instance()->get_post_types(),
+					'post_status'    => SolrPower::get_instance()->get_post_statuses(),
 					'fields'         => 'ids',
 					'posts_per_page' => absint( $limit ),
 					'offset'         => absint( $prev )
@@ -556,8 +556,8 @@ class SolrPower_Sync {
 				 *
 				 * @param array $post_types Array of post type names for indexing.
 				 */
-				'post_type'      => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
-				'post_status'    => apply_filters( 'solr_post_status', array('publish') ),
+				'post_type'      => SolrPower::get_instance()->get_post_types(),
+				'post_status'    => SolrPower::get_instance()->get_post_statuses(),
 				'fields'         => 'ids',
 				'posts_per_page' => absint( $limit ),
 				'offset'         => absint( $prev )
