@@ -54,7 +54,8 @@ class SolrPower_Sync {
 		}
 
 		$this->handle_status_change( $post_id, $post_info );
-		if ( $post_info->post_type == 'revision' || $post_info->post_status != 'publish' ) {
+		$post_status = apply_filters( 'solr_post_status', array('publish') );
+		if ( $post_info->post_type == 'revision' || !in_array( $post_info->post_status, $post_status, true ) ) {
 			return;
 		}
 		# make sure this blog is not private or a spam if indexing on a multisite install
