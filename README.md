@@ -164,6 +164,11 @@ A meta_query can use the following compare operators:
 * Properly apply the ```solr_allow_admin``` and ```solr_allow_ajax``` filters
 * Add ```solr_boost_query``` filter for boosted items
 * Add ```solr_dismax_query``` filter for Dismax
+* Add ```get_post_types``` and ```get_post_statuses``` helper methods
+* Remove unnecessary ```get_env``` call
+* Add ```solr_post_status``` filter
+* Add missing ```solr_post_types``` filter to ```get_post_types``` call
+* Use ```PANTHEON_INDEX_PORT``` instead of hard-coded port in curl
 
 ### 1.0.0 ###
 * Add Ajax functionality to the facet search widget
