@@ -492,8 +492,8 @@ class SolrPower_Sync {
 					 *
 					 * @param array $post_types Array of post type names for indexing.
 					 */
-					'post_type'      => SolrPower::get_instance()->get_post_types(),
-					'post_status'    => SolrPower::get_instance()->get_post_statuses(),
+					'post_type'      => SolrPower::get_post_types(),
+					'post_status'    => SolrPower::get_post_statuses(),
 					'fields'         => 'ids',
 					'posts_per_page' => absint( $limit ),
 					'offset'         => absint( $prev )
@@ -556,8 +556,8 @@ class SolrPower_Sync {
 				 *
 				 * @param array $post_types Array of post type names for indexing.
 				 */
-				'post_type'      => SolrPower::get_instance()->get_post_types(),
-				'post_status'    => SolrPower::get_instance()->get_post_statuses(),
+				'post_type'      => SolrPower::get_post_types(),
+				'post_status'    => SolrPower::get_post_statuses(),
 				'fields'         => 'ids',
 				'posts_per_page' => absint( $limit ),
 				'offset'         => absint( $prev )

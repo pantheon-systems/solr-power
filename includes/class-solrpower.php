@@ -107,7 +107,7 @@ class SolrPower {
 			 * @param array $post_types Array of post type names for indexing.
 			 */
 
-			'post_types' => $this->get_post_types(),
+			'post_types' => self::get_post_types(),
 			'security'   => wp_create_nonce( "solr_security" )
 		);
 		wp_localize_script( 'solr-js', 'solr', $solr_js );
