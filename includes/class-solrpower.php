@@ -107,7 +107,7 @@ class SolrPower {
 			 * @param array $post_types Array of post type names for indexing.
 			 */
 
-			'post_types' => apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) ),
+			'post_types' => self::get_post_types(),
 			'security'   => wp_create_nonce( "solr_security" )
 		);
 		wp_localize_script( 'solr-js', 'solr', $solr_js );
@@ -313,6 +313,24 @@ class SolrPower {
 		remove_filter( 'solr_allow_admin', '__return_true' );
 
 		wp_die();
+	}
+
+	/**
+	 * Returns the post types used for Solr after applying the solr_post_types filter
+	 *
+	 * @return array
+	 */
+	public static function get_post_types() {
+		return apply_filters( 'solr_post_types', get_post_types( array( 'exclude_from_search' => false ) ) );
+	}
+
+	/**
+	 * Returns the post statuses used for Solr after applying the solr_post_status filter
+	 *
+	 * @return array
+	 */
+	public static function get_post_statuses() {
+		return apply_filters( 'solr_post_status', array( 'publish' ) );
 	}
 
 }
