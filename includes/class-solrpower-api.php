@@ -108,6 +108,9 @@ class SolrPower_Api {
 			$returnValue = 'Schema Upload Success: ' . $curl_opts['http_code'];
 		} else {
 			$returnValue = 'Schema Upload Error: ' . $curl_opts['http_code'];
+			if ( preg_match( '#<h1>(HTTP Status [\d]+ - )?(.+)</h1>#', $response, $matches ) ) {
+				$returnValue .= ' - ' . $matches[2];
+			}
 		}
 
 		return $returnValue;
