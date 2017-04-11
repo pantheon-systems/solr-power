@@ -29,7 +29,7 @@ class SolrPower_Api {
 	/**
 	 * @var bool Ping results from Solr.
 	 */
-	public $ping = false;
+	public static $ping = false;
 
 	/**
 	 * Grab instance of object.
@@ -136,6 +136,7 @@ class SolrPower_Api {
 		$solr = get_solr();
 
 		if ( ! $solr ) {
+			$this->ping = false;
 			return false;
 		}
 
@@ -148,6 +149,8 @@ class SolrPower_Api {
 
 			$this->last_code  = $e->getCode();
 			$this->last_error = $e;
+
+			$this->ping = false;
 
 			return false;
 		}
