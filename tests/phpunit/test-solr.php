@@ -476,7 +476,7 @@ class SolrTest extends SolrTestBase {
 		$this->assertEquals( array( $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
 
 		$args  = array(
-			's' => 'Movie Reviews',
+			's' => 'Movies Review',
 		);
 		$query = new WP_Query( $args );
 
