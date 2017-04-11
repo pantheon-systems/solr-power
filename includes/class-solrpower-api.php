@@ -136,21 +136,21 @@ class SolrPower_Api {
 		$solr = get_solr();
 
 		if ( ! $solr ) {
-			$this->ping = false;
+			self::$ping = false;
 			return false;
 		}
 
 		try {
 			$ping            = $solr->ping( $solr->createPing() );
 			$this->last_code = 200;
-			$this->ping = true;
+			self::$ping = true;
 			return true;
 		} catch ( Solarium\Exception\HttpException $e ) {
 
 			$this->last_code  = $e->getCode();
 			$this->last_error = $e;
 
-			$this->ping = false;
+			self::$ping = false;
 
 			return false;
 		}
