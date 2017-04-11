@@ -420,7 +420,7 @@ class SolrPower_WP_Query {
 		if ( ! $query->get( 'solr_integrate' ) ) {
 			$s = $query->get( 's' );
 			if ( is_multisite() ) {
-				$s .= ' (blogid:' . get_current_blog_id() . ')';
+				$s .= ' AND (blogid:' . get_current_blog_id() . ')';
 			}
 			return $s;
 		}
