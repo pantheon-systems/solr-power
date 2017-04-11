@@ -322,6 +322,12 @@ class SolrPower_Api {
 				$facet_fields[] = $field_name . '_str';
 			}
 		}
+
+		/*
+		 * Facet blogid for multisite
+		 */
+		$facet_fields[] = 'blogid';
+
 		$count = ( $count < 1 ) ? apply_filters( 'solr_max_search_results', 50000 ) : $count;
 		if ( $solr ) {
 			$select = array(
@@ -340,10 +346,6 @@ class SolrPower_Api {
 			$query    = $solr->createSelect( $select );
 			$dismax   = $query->getDisMax();
 			$facetSet = $query->getFacetSet();
-
-			if ( is_multisite() ) {
-				$facet_fields[] = 'blogid';
-			}
 
 			foreach ( $facet_fields as $facet_field ) {
 				$facetSet->createFacetField( $facet_field )->setField( $facet_field );
