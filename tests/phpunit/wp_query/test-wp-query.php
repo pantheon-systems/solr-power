@@ -158,6 +158,6 @@ class SolrWPQueryTest extends SolrTestBase {
 		}
 
 		wp_reset_postdata();
-		SolrPower_Api::get_instance()->ping=true;
+		SolrPower_Api::$ping=true;
 	}
 }
