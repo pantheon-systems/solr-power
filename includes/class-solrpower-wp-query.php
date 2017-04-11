@@ -463,7 +463,7 @@ class SolrPower_WP_Query {
 		if ( is_multisite() ) {
 			$facet_query[] = '(blogid:' . get_current_blog_id() . ')';
 		}
-		$facet_query = implode( 'AND', $facet_query );
+		$facet_query = implode( ' AND ', $facet_query );
 		return $solr_query . $facet_query;
 	}
 
