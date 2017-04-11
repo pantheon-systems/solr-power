@@ -110,7 +110,7 @@ class SolrPower_WP_Query {
 	 */
 	function posts_request( $request, $query ) {
 		if ( ( ! $query->is_search() && ! $query->get( 'solr_integrate' ) )
-		     || false === SolrPower_Api::get_instance()->ping
+		     || false === SolrPower_Api::get_instance()->ping_server()
 		) {
 			return $request;
 		}
