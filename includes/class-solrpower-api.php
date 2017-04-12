@@ -383,6 +383,9 @@ class SolrPower_Api {
 				}
 
 			}
+			if ( is_multisite() ) {
+				$query->createFilterQuery( 'blogid' )->setQuery( 'blogid:' . get_current_blog_id() );
+			}
 			$query->getHighlighting()->setFields( 'post_content' );
 			$query->getHighlighting()->setSimplePrefix( '<b>' );
 			$query->getHighlighting()->setSimplePostfix( '</b>' );
