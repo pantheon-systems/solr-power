@@ -368,16 +368,12 @@ class SolrPower_WP_Query {
 			$facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
 		}
 		if ( ! $facets ) {
-			$return = '';
 			if ( is_array( $this->fq ) && ! empty( $this->fq ) ) {
 				$return = $this->fq;
 
-				$return = implode( ' ' . $default_operator . ' ', $return );
+				return implode( ' ' . $default_operator . ' ', $return );
 			}
-			if ( is_multisite() ) {
-				$return = self::append_blogid_facet( $return );
-			}
-			return $return;
+			return array();
 		}
 		$return = array();
 		foreach ( $facets as $facet_name => $facet_arr ) {
@@ -392,31 +388,7 @@ class SolrPower_WP_Query {
 
 		// Additional Filter Query:
 		$return = array_merge( $return, $this->fq );
-
-		$return = implode( ' ' . $default_operator . ' ', $return );
-		if ( is_multisite() ) {
-			$return = self::append_blogid_facet( $return );
-		}
-		return $return;
-	}
-
-	/**
-	 * Append blogid: facet depending on how many facets are used
-	 *
-	 * @param string $return
-	 * @return string
-	 */
-	private static function append_blogid_facet( $return ) {
-		$blogid_facet = 'blogid:' . get_current_blog_id();
-		if ( ! $return ) {
-			return $blogid_facet;
-		// These facets need to be logically grouped
-		} elseif ( false !== strpos( $return, 'AND' ) || false !== strpos( $return, 'OR' ) ) {
-			$return = '(' . $return . ')';
-			// Fall through to append blogid:
-		}
-		$return .= 'AND ' . $blogid_facet;
-		return $return;
+		return implode( ' ' . $default_operator . ' ', $return );
 	}
 
 	/**
