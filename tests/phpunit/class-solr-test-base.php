@@ -29,7 +29,11 @@ class SolrTestBase extends WP_UnitTestCase{
 		$solr_options = solr_options();
 		if ( 1 !== $solr_options['s4wp_solr_initialized'] ) {
 			$options = SolrPower_Options::get_instance()->initalize_options();
-			update_option( 'plugin_s4wp_settings', $options );
+			if ( is_multisite() ) {
+				update_site_option( 'plugin_s4wp_settings', $options );
+			} else {
+				update_option( 'plugin_s4wp_settings', $options );
+			}
 		}
 
 	}
@@ -110,7 +114,11 @@ class SolrTestBase extends WP_UnitTestCase{
 	function __change_option( $key, $value ) {
 		$solr_options         = solr_options();
 		$solr_options[ $key ] = $value;
-		update_option( 'plugin_s4wp_settings', $solr_options );
+		if ( is_multisite() ) {
+			update_site_option( 'plugin_s4wp_settings', $solr_options );
+		} else {
+			update_option( 'plugin_s4wp_settings', $solr_options );
+		}
 	}
 
 	/**

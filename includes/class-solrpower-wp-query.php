@@ -110,7 +110,7 @@ class SolrPower_WP_Query {
 	 */
 	function posts_request( $request, $query ) {
 		if ( ( ! $query->is_search() && ! $query->get( 'solr_integrate' ) )
-		     || false === SolrPower_Api::get_instance()->ping
+		     || false === SolrPower_Api::$ping
 		) {
 			return $request;
 		}
@@ -329,7 +329,7 @@ class SolrPower_WP_Query {
 	 * @return string
 	 */
 	function found_posts_query( $sql, $query ) {
-		if ( ! $query->is_search() || false === SolrPower_Api::get_instance()->ping ) {
+		if ( ! $query->is_search() || false === SolrPower_Api::$ping ) {
 			return $sql;
 		}
 
@@ -418,29 +418,34 @@ class SolrPower_WP_Query {
 			'name'    => 'post_name'
 		);
 		if ( ! $query->get( 'solr_integrate' ) ) {
-			return $query->get( 's' );
+			$s = $query->get( 's' );
+			if ( is_multisite() ) {
+				$s .= ' AND (blogid:' . get_current_blog_id() . ')';
+			}
+			return $s;
 		}
 
-		$solr_query = array();
+		$solr_query = '';
+		$facet_query = array();
 
 		if ( false !== $query->date_query ) {
-			$solr_query[] = $this->parse_date_query( $query->date_query->queries );
+			$facet_query[] = $this->parse_date_query( $query->date_query->queries );
 		}
 
 		if ( false !== $query->is_date ) {
-			$solr_query[] = $this->parse_date_query( array( $query->query_vars ) );
+			$facet_query[] = $this->parse_date_query( array( $query->query_vars ) );
 		}
 
 		if ( ! empty( $query->meta_query->queries ) ) {
-			$solr_query[] = $this->parse_meta_query( $query->meta_query->queries );
+			$facet_query[] = $this->parse_meta_query( $query->meta_query->queries );
 		}
 
 		if ( ! empty( $query->tax_query->queries ) ) {
-			$solr_query[] = $this->parse_tax_query( $query->tax_query->queries );
+			$facet_query[] = $this->parse_tax_query( $query->tax_query->queries );
 		}
 		foreach ( $query->query_vars as $var_key => $var_value ) {
 			if ( 'post_status' === $var_key && 'any' === $var_value ) {
-				//$solr_query[]='(post_status:publish)';
+				//$facet_query[]='(post_status:publish)';
 				continue;
 			}
 
@@ -450,13 +455,16 @@ class SolrPower_WP_Query {
 			if ( ! empty( $var_value ) && in_array( $var_key, $whitelist ) ) {
 				$var_value    = ( is_array( $var_value ) ) ? '(' . implode( ' OR ', $var_value ) . ')' : $var_value;
 				$var_key      = ( isset( $convert[ $var_key ] ) ) ? $convert[ $var_key ] : $var_key;
-				$solr_query[] = '(' . $var_key . ':' . $var_value . ')';
+				$facet_query[] = '(' . $var_key . ':' . $var_value . ')';
 			} elseif ( 's' === $var_key && ! empty( $var_value ) ) {
-				array_unshift( $solr_query, $query->get( 's' ) . ' ' );
+				$solr_query .= $query->get( 's' ) . ' ';
 			}
 		}
-
-		return implode( 'AND', $solr_query );
+		if ( is_multisite() ) {
+			$facet_query[] = '(blogid:' . get_current_blog_id() . ')';
+		}
+		$facet_query = implode( ' AND ', $facet_query );
+		return $solr_query . $facet_query;
 	}
 
 	/**

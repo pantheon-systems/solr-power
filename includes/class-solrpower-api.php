@@ -29,7 +29,7 @@ class SolrPower_Api {
 	/**
 	 * @var bool Ping results from Solr.
 	 */
-	public $ping = false;
+	public static $ping = false;
 
 	/**
 	 * Grab instance of object.
@@ -139,18 +139,21 @@ class SolrPower_Api {
 		$solr = get_solr();
 
 		if ( ! $solr ) {
+			self::$ping = false;
 			return false;
 		}
 
 		try {
 			$ping            = $solr->ping( $solr->createPing() );
 			$this->last_code = 200;
-			$this->ping = true;
+			self::$ping = true;
 			return true;
 		} catch ( Solarium\Exception\HttpException $e ) {
 
 			$this->last_code  = $e->getCode();
 			$this->last_error = $e;
+
+			self::$ping = false;
 
 			return false;
 		}
@@ -325,6 +328,12 @@ class SolrPower_Api {
 				$facet_fields[] = $field_name . '_str';
 			}
 		}
+
+		/*
+		 * Facet blogid for multisite
+		 */
+		$facet_fields[] = 'blogid';
+
 		$count = ( $count < 1 ) ? apply_filters( 'solr_max_search_results', 50000 ) : $count;
 		if ( $solr ) {
 			$select = array(

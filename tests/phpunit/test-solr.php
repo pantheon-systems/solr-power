@@ -155,10 +155,8 @@ class SolrTest extends SolrTestBase {
 		$this->__create_test_post( 'page' );
 		$this->__create_multiple( 5 );
 
-		if ( is_multisite() ) {
-			$blogid    = get_current_blog_id();
-			$delete_id = $blogid . '_' . $delete_id;
-		}
+		$blogid    = get_current_blog_id();
+		$delete_id = $blogid . '_' . $delete_id;
 		// Delete all of these newly indexed items.
 		SolrPower_Sync::get_instance()->delete( $delete_id );
 
@@ -478,7 +476,7 @@ class SolrTest extends SolrTestBase {
 		$this->assertEquals( array( $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
 
 		$args  = array(
-			's' => 'Movie Reviews',
+			's' => 'Movies Review',
 		);
 		$query = new WP_Query( $args );
 

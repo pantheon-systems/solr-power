@@ -82,12 +82,7 @@ class SolrPower_Sync {
 		$delete_page          = $plugin_s4wp_settings['s4wp_delete_page'];
 		$delete_post          = $plugin_s4wp_settings['s4wp_delete_post'];
 
-
-		if ( is_multisite() ) {
-			$this->delete( get_current_blog_id() . '_' . $post_info->ID );
-		} else {
-			$this->delete( $post_info->ID );
-		}
+		$this->delete( get_current_blog_id() . '_' . $post_info->ID );
 	}
 
 	function handle_activate_blog( $blogid ) {
@@ -163,12 +158,7 @@ class SolrPower_Sync {
 			$post_info = get_post( $post_id );
 		}
 
-
-		if ( is_multisite() ) {
-			$this->delete( get_current_blog_id() . '_' . $post_info->ID );
-		} else {
-			$this->delete( $post_info->ID );
-		}
+		$this->delete( get_current_blog_id() . '_' . $post_info->ID );
 	}
 
 	function build_document(
@@ -201,20 +191,15 @@ class SolrPower_Sync {
 
 			$auth_info = get_userdata( $post_info->post_author );
 
-			# wpmu specific info
+			$blogid = get_current_blog_id();
+			$doc->setField( 'solr_id', $blogid . '_' . $post_info->ID );
+			$doc->setField( 'blogid', $blogid );
+			$doc->setField( 'blogdomain', $domain );
+			$doc->setField( 'blogpath', $path );
 			if ( is_multisite() ) {
-				// if we get here we expect that we've "switched" what blog we're running
-				// as
-				global $current_blog;
-
-				$blogid = get_current_blog_id();
-				$doc->setField( 'solr_id', $blogid . '_' . $post_info->ID );
-				$doc->setField( 'blogid', $blogid );
-				$doc->setField( 'blogdomain', $domain );
-				$doc->setField( 'blogpath', $path );
 				$doc->setField( 'wp', 'multisite' );
 			} else {
-				$doc->setField( 'solr_id', $post_info->ID );
+				$doc->setField( 'wp', 'single' );
 			}
 			$doc->setField( 'ID', $post_info->ID );
 			$doc->setField( 'permalink', get_permalink( $post_info->ID ) );

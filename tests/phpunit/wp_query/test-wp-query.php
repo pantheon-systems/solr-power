@@ -145,7 +145,7 @@ class SolrWPQueryTest extends SolrTestBase {
 		$args  = array(
 			's' => 'solr'
 		);
-		SolrPower_Api::get_instance()->ping=false;
+		SolrPower_Api::$ping = false;
 		$query = new WP_Query( $args );
 		$this->assertEquals( $query->post_count, 1 );
 		$this->assertEquals( $query->found_posts, 1 );
@@ -158,6 +158,6 @@ class SolrWPQueryTest extends SolrTestBase {
 		}
 
 		wp_reset_postdata();
-		SolrPower_Api::get_instance()->ping=true;
+		SolrPower_Api::$ping=true;
 	}
 }
