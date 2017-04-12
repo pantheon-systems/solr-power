@@ -59,13 +59,24 @@
 		<table class="form-table">
 
 			<tr valign="top">
-				<th scope="row"><?php esc_html_e( 'Index Searchable Post Types', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td id="solr-batch-index"><?php /** Rendered with JS **/ ?></td>
+				<?php if ( is_multisite() ) : ?>
+					<th scope="row"><?php esc_html_e( 'Index Searchable Post Types with WP-CLI', 'solr-for-wordpress-on-pantheon' ) ?></th>
+					<td>
+						<p>To index a single site, use the <code>--url=&lt;url&gt;</code> argument:</p>
+						<pre>wp --url=example.com/site1 solr index</pre>
+						<p>To index all sites, use <code>xargs</code> to pass the list of sites:</p>
+						<pre>wp site list --field=url | xargs -n1 -I % wp --url=% solr index</pre>
+					</td>
+				<?php else : ?>
+					<th scope="row"><?php esc_html_e( 'Index Searchable Post Types', 'solr-for-wordpress-on-pantheon' ) ?></th>
+					<td id="solr-batch-index"><?php /** Rendered with JS **/ ?></td>
+				<?php endif; ?>
 			</tr>
 		</table>
 	</form>
 </div>
 
+<?php if ( ! is_multisite() ) : ?>
 <?php
 	$batch_index = new SolrPower_Batch_Index;
 	$current_batch = $batch_index->get_current_batch();
@@ -90,4 +101,4 @@
 		<# } #>
 	<# } #>
 </script>
-
+<?php endif; ?>
