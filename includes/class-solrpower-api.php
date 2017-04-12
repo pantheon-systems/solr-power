@@ -269,7 +269,7 @@ class SolrPower_Api {
 	 *
 	 * @return Solarium\QueryType\Select\Result\Result
 	 */
-	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings, $fields = null ) {
+	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings, $fields = null, $blogid = null ) {
 		$this->add_log( array(
 			'Search Query' => $qry,
 			'Offset'       => $offset,
@@ -344,6 +344,10 @@ class SolrPower_Api {
 			$dismax   = $query->getDisMax();
 			$facetSet = $query->getFacetSet();
 
+			if ( is_multisite() ) {
+				$facet_fields[] = 'blogid';
+			}
+
 			foreach ( $facet_fields as $facet_field ) {
 				$facetSet->createFacetField( $facet_field )->setField( $facet_field );
 			}
@@ -381,6 +385,12 @@ class SolrPower_Api {
 					$query->createFilterQuery( 'searchfq' )->setQuery( $fq );
 				}
 
+			}
+			if ( is_multisite() && false !== $blogid ) {
+				if ( is_null( $blogid ) ) {
+					$blogid = get_current_blog_id();
+				}
+				$query->createFilterQuery( 'blogid' )->setQuery( 'blogid:' . $blogid );
 			}
 			$query->getHighlighting()->setFields( 'post_content' );
 			$query->getHighlighting()->setSimplePrefix( '<b>' );
