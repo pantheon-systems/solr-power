@@ -373,7 +373,6 @@ class SolrPower_WP_Query {
 
 				return implode( ' ' . $default_operator . ' ', $return );
 			}
-
 			return array();
 		}
 		$return = array();
@@ -389,9 +388,7 @@ class SolrPower_WP_Query {
 
 		// Additional Filter Query:
 		$return = array_merge( $return, $this->fq );
-
 		return implode( ' ' . $default_operator . ' ', $return );
-
 	}
 
 	/**
@@ -418,7 +415,8 @@ class SolrPower_WP_Query {
 			'name'    => 'post_name'
 		);
 		if ( ! $query->get( 'solr_integrate' ) ) {
-			return $query->get( 's' );
+			$s = $query->get( 's' );
+			return $s;
 		}
 
 		$solr_query = array();
@@ -455,7 +453,6 @@ class SolrPower_WP_Query {
 				array_unshift( $solr_query, $query->get( 's' ) . ' ' );
 			}
 		}
-
 		return implode( 'AND', $solr_query );
 	}
 

@@ -344,6 +344,10 @@ class SolrPower_Api {
 			$dismax   = $query->getDisMax();
 			$facetSet = $query->getFacetSet();
 
+			if ( is_multisite() ) {
+				$facet_fields[] = 'blogid';
+			}
+
 			foreach ( $facet_fields as $facet_field ) {
 				$facetSet->createFacetField( $facet_field )->setField( $facet_field );
 			}
@@ -381,6 +385,9 @@ class SolrPower_Api {
 					$query->createFilterQuery( 'searchfq' )->setQuery( $fq );
 				}
 
+			}
+			if ( is_multisite() ) {
+				$query->createFilterQuery( 'blogid' )->setQuery( 'blogid:' . get_current_blog_id() );
 			}
 			$query->getHighlighting()->setFields( 'post_content' );
 			$query->getHighlighting()->setSimplePrefix( '<b>' );

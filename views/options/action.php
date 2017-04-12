@@ -12,19 +12,6 @@
 			</tr>
 		</table>
 	</form>
-	<?php if ( is_multisite() ) { ?>
-		<form method="post" action="<?php echo esc_url( $action ); ?>#top#solr_action">
-			<?php wp_nonce_field( 'solr_action', 'solr_init_blogs' ); ?>
-			<input type="hidden" name="action" value="init_blogs" />
-			<table class="form-table">
-				<tr valign="top">
-					<th scope="row"><?php esc_html_e( 'Push Solr Configuration to All Blogs', 'solr-for-wordpress-on-pantheon' ) ?></th>
-					<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_init_blogs"
-							   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
-				</tr>
-			</table>
-		</form>
-	<?php } ?>
 	<form method="post" action="<?php echo esc_url( $action ); ?>#top#solr_action">
 		<?php wp_nonce_field( 'solr_action', 'solr_optimize' ); ?>
 		<input type="hidden" name="action" value="optimize" />
