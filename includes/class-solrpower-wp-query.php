@@ -417,8 +417,8 @@ class SolrPower_WP_Query {
 			'page_id' => 'ID',
 			'name'    => 'post_name'
 		);
-		if ( ! $query->get( 'solr_integrate' ) ) {
-			return $query->get( 's' );
+		if ( ! $query->get( 's' ) && ! $query->get( 'solr_integrate' ) ) {
+			return '';
 		}
 
 		$solr_query = array();
