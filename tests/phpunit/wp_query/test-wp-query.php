@@ -160,4 +160,18 @@ class SolrWPQueryTest extends SolrTestBase {
 		wp_reset_postdata();
 		SolrPower_Api::get_instance()->ping=true;
 	}
+
+	public function test_wp_query_search_filter_post_type() {
+		$post_id = $this->__create_test_post(); // Title defaults to 'Test Post'
+		$page_id = $this->__create_test_post( 'page' ); // Title defaults to 'Test Post'
+		$args = array(
+			's'         => 'Test',
+			'post_type' => 'page',
+		);
+		$query = new WP_Query( $args );
+		$this->assertEquals( 1, $query->post_count );
+		$this->assertEquals( 1, $query->found_posts );
+		$this->assertEquals( 'page', $query->get('post_type') );
+		$this->assertEquals( array( $page_id ), wp_list_pluck( $query->posts, 'ID' ) );
+	}
 }
