@@ -484,4 +484,29 @@ class SolrTest extends SolrTestBase {
 
 		$this->assertEquals( array( $p_id, $p_id2 ), wp_list_pluck( $query->posts, 'ID' ) );
 	}
+
+	/**
+	 * Ensure multisite results are faceted by blog id
+	 */
+	function test_facet_blogid_multisite() {
+		if ( ! is_multisite() ) {
+			$this->markTestSkipped( 'Multisite-only' );
+		}
+		$p_id = $this->__create_test_post( 'post', 'Best Films of 2015' );
+		$blog2 = $this->factory->blog->create( array( 'domain' => 'example.org', 'path' => '/foo/' ) );
+		switch_to_blog( $blog2 );
+		$p_id2 = $this->__create_test_post( 'post', 'Best Films of 2015' );
+		$args  = array(
+			's' => 'Best Films',
+		);
+		$query = new WP_Query( $args );
+		$this->assertEquals( array( $p_id2 ), wp_list_pluck( $query->posts, 'ID' ) );
+		switch_to_blog( 1 );
+		$args  = array(
+			's' => 'Best Films',
+		);
+		$query = new WP_Query( $args );
+		$this->assertEquals( array( $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
+	}
+
 }

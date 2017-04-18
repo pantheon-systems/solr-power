@@ -59,6 +59,9 @@ $j(document).ready(function () {
 		startTime: false,
 
 		init: function() {
+			if ( ! $('#solr-batch-index').length ) {
+				return;
+			}
 			this.bindEvents();
 			this.setupInitialState();
 			this.renderIndexUI();

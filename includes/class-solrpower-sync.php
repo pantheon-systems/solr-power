@@ -91,7 +91,6 @@ class SolrPower_Sync {
 	}
 
 	function handle_activate_blog( $blogid ) {
-		$this->apply_config_to_blog( $blogid );
 		$this->load_blog_all( $blogid );
 	}
 
@@ -107,21 +106,6 @@ class SolrPower_Sync {
 		} catch ( Exception $e ) {
 			echo esc_html( $e->getMessage() );
 		}
-	}
-
-	function apply_config_to_blog( $blogid ) {
-		syslog( LOG_ERR, "applying config to blog with id $blogid" );
-		if ( ! is_multisite() ) {
-			return;
-		}
-
-		wp_cache_flush();
-		$plugin_s4wp_settings = solr_options();
-		switch_to_blog( $blogid );
-		wp_cache_flush();
-		s4wp_update_option( $plugin_s4wp_settings );
-		restore_current_blog();
-		wp_cache_flush();
 	}
 
 	function load_blog_all( $blogid ) {
