@@ -3,7 +3,7 @@ Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor
 Tags: search
 Requires at least: 4.2
 Tested up to: 4.7.2
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -153,6 +153,11 @@ A meta_query can use the following compare operators:
 (```'REGEXP'```, ```'NOT REGEXP'```, and ```'RLIKE'``` are not supported.)
 
 == Changelog ==
+= 1.2.0 =
+* Add multisite support
+* Respect all query vars when searching with `WP_Query`
+* Display error from schema submit response when Solr includes one
+
 = 1.1.0 =
 * Introduce a new class for managing batch indexes
 * Rewrite `wp solr index` to provide more verbosity
