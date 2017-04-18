@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: solr-power 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/pantheon-systems/solr-power/issues\n"
-"POT-Creation-Date: 2017-04-10 11:20-0500\n"
+"POT-Creation-Date: 2017-04-18 11:10-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,32 +25,32 @@ msgstr ""
 msgid "Couldn't locate the options page."
 msgstr ""
 
-#: includes/class-solrpower-options.php:283
+#: includes/class-solrpower-options.php:302
 msgid "Ping Success!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:285
+#: includes/class-solrpower-options.php:304
 msgid "Ping Failed!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:293
+#: includes/class-solrpower-options.php:312
 msgid "Configuration has been copied to all blogs!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:300
+#: includes/class-solrpower-options.php:319
 msgid "Index Optimized!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:307
-#: includes/class-solrpower-options.php:315
+#: includes/class-solrpower-options.php:326
+#: includes/class-solrpower-options.php:334
 msgid "All Indexed Pages Deleted!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:334
+#: includes/class-solrpower-options.php:353
 msgid "Action failed. Please try again."
 msgstr ""
 
-#: includes/class-solrpower-sync.php:355
+#: includes/class-solrpower-sync.php:339
 msgid "Post Information is NULL"
 msgstr ""
 
@@ -65,7 +65,7 @@ msgstr ""
 msgid "This plugin requires WordPress 3.0 or greater."
 msgstr ""
 
-#: includes/class-solrpower.php:130
+#: includes/class-solrpower.php:132
 msgid "Settings"
 msgstr ""
 
@@ -176,49 +176,49 @@ msgstr ""
 msgid "Sorry, no posts matched your criteria."
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:52
+#: tests/phpunit/class-solr-test-base.php:56
 msgctxt "taxonomy general name"
 msgid "Genres"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:53
+#: tests/phpunit/class-solr-test-base.php:57
 msgctxt "taxonomy singular name"
 msgid "Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:54
+#: tests/phpunit/class-solr-test-base.php:58
 msgid "Search Genres"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:55
+#: tests/phpunit/class-solr-test-base.php:59
 msgid "All Genres"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:56
+#: tests/phpunit/class-solr-test-base.php:60
 msgid "Parent Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:57
+#: tests/phpunit/class-solr-test-base.php:61
 msgid "Parent Genre:"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:58
+#: tests/phpunit/class-solr-test-base.php:62
 msgid "Edit Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:59
+#: tests/phpunit/class-solr-test-base.php:63
 msgid "Update Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:60
+#: tests/phpunit/class-solr-test-base.php:64
 msgid "Add New Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:61
+#: tests/phpunit/class-solr-test-base.php:65
 msgid "New Genre Name"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:62
+#: tests/phpunit/class-solr-test-base.php:66
 msgid "Genre"
 msgstr ""
 
@@ -226,53 +226,52 @@ msgstr ""
 msgid "Check Server Settings"
 msgstr ""
 
-#: views/options/action.php:11 views/options/action.php:23
-#: views/options/action.php:35 views/options/action.php:46
-#: views/options/action.php:59
+#: views/options/action.php:11 views/options/action.php:22
+#: views/options/action.php:33 views/options/action.php:46
 msgid "Execute"
 msgstr ""
 
-#: views/options/action.php:21
-msgid "Push Solr Configuration to All Blogs"
-msgstr ""
-
-#: views/options/action.php:33
+#: views/options/action.php:20
 msgid "Optimize Index"
 msgstr ""
 
-#: views/options/action.php:44
+#: views/options/action.php:31
 msgid "Delete All"
 msgstr ""
 
-#: views/options/action.php:57
+#: views/options/action.php:44
 msgid "Repost schema.xml"
 msgstr ""
 
-#: views/options/action.php:75
+#: views/options/action.php:63
+msgid "Index Searchable Post Types with WP-CLI"
+msgstr ""
+
+#: views/options/action.php:71
 msgid "Index Searchable Post Types"
 msgstr ""
 
-#: views/options/action.php:93
+#: views/options/action.php:91
 #, php-format
 msgid ""
 "Running batch %s of %s at %s elapsed time (%s indexed, %s failed, %s "
 "remaining)"
 msgstr ""
 
-#: views/options/action.php:95
+#: views/options/action.php:93
 #, php-format
 msgid "Completed indexing in %s elapsed time (%s indexed, %s failed)"
 msgstr ""
 
-#: views/options/action.php:100
+#: views/options/action.php:98
 #, php-format
 msgid "Resume at batch %s of %s"
 msgstr ""
 
-#: views/options/action.php:100
+#: views/options/action.php:98
 msgid "Restart"
 msgstr ""
 
-#: views/options/action.php:102
+#: views/options/action.php:100
 msgid "Start Index"
 msgstr ""
