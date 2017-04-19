@@ -159,6 +159,7 @@
     <defaultSearchField>text</defaultSearchField>
     <solrQueryParser defaultOperator="OR"/>
     <copyField source="post_title" dest="text"/>
+    <copyField source="post_author" dest="text"/>
     <copyField source="tags" dest="text"/>
     <copyField source="categories" dest="text"/>
     <copyField source="post_content" dest="text"/>
