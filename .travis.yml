@@ -33,3 +33,10 @@ before_script:
   - grunt
 
 script: phpunit
+
+branches:
+  only:
+    - master
+    - /^[[:digit:]]+\.[[:digit:]]+.*$/
+    - /^ataylorme.*$/
+    
