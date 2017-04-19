@@ -669,7 +669,14 @@ class SolrPower_WP_Query {
 	 */
 	private function parse_meta_query( $meta_query ) {
 		$options      = solr_options();
-		$indexed_keys = $options['s4wp_index_custom_fields'];
+		/**
+		 * Filter indexed custom fields
+		 *
+		 * Filter the list of custom field slugs available to index.
+		 *
+		 * @param array $indexed_keys Array of custom field slugs for indexing.
+		 */
+		$indexed_keys = apply_filters( 'solr_index_custom_fields', $options['s4wp_index_custom_fields'] );
 		$query        = array();
 		$relation     = 'AND'; // AND is default in core.
 		if ( isset( $meta_query['relation'] ) ) {
@@ -798,11 +805,14 @@ class SolrPower_WP_Query {
 				default:
 					$meta_value['value'] = ( isset( $meta_value['value'] ) ) ? $meta_value['value'] : '*';
 					if ( ! isset( $meta_value['key'] ) ) {
-						$multi_query = array();
-						foreach ( $indexed_keys as $the_key ) {
-							$multi_query[] = '(' . $the_key . '_' . $type . ':' . $this->set_query_value( $meta_value['value'], $type ) . ')';
+						// Validate that there are indexed keys before adding them to the query
+						if ( is_array( $indexed_keys ) && count( $indexed_keys ) > 0 ) {
+							$multi_query = array();
+							foreach ( $indexed_keys as $the_key ) {
+								$multi_query[] = '(' . $the_key . '_' . $type . ':' . $this->set_query_value( $meta_value['value'], $type ) . ')';
+							}
+							$query[] = implode( 'OR', $multi_query );
 						}
-						$query[] = implode( 'OR', $multi_query );
 					} else {
 						$query[] = '(' . $meta_value['key'] . '_' . $type . ':' . $this->set_query_value( $meta_value['value'], $type ) . ')';
 					}
