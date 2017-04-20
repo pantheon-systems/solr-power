@@ -259,10 +259,8 @@ class SolrPower_Options {
 		$options['s4wp_output_info']            = 1;
 		$options['s4wp_output_pager']           = 1;
 		$options['s4wp_output_facets']          = 1;
-		$options['s4wp_exclude_pages']          = array();
 		$options['s4wp_exclude_pages']          = '';
 		$options['s4wp_cat_as_taxo']            = 1;
-		$options['s4wp_solr_initialized']       = 1;
 		$options['s4wp_max_display_tags']       = 10;
 		$options['s4wp_facet_on_categories']    = 1;
 		$options['s4wp_facet_on_taxonomy']      = 1;
@@ -270,8 +268,6 @@ class SolrPower_Options {
 		$options['s4wp_facet_on_author']        = 1;
 		$options['s4wp_facet_on_type']          = 1;
 		$options['s4wp_index_comments']         = 1;
-		$options['s4wp_index_custom_fields']    = array();
-		$options['s4wp_facet_on_custom_fields'] = array();
 		$options['s4wp_index_custom_fields']    = '';
 		$options['s4wp_facet_on_custom_fields'] = '';
 		$options['s4wp_default_operator']       = 'OR';
