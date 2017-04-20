@@ -1,13 +1,15 @@
 <?php
+/**
+ * Plugin Name: Solr Power
+ * Description: Allows WordPress sites to index and search content with ApacheSolr.
+ * Version: 1.2.0
+ * Author: Pantheon
+ * Author URI: http://pantheon.io
+ * Text Domain: solr-for-wordpress-on-pantheon
+ *
+ * @package Solr_Power
+ **/
 
-/*
-  Plugin Name: Solr Power
-  Description: Allows WordPress sites to index and search content with ApacheSolr.
-  Version: 1.2.0
-  Author: Pantheon
-  Author URI: http://pantheon.io
-  Text Domain: solr-for-wordpress-on-pantheon
- */
 /*
   Copyright (c) 2011 Pantheon
 
@@ -35,7 +37,7 @@
  * and the Solr Power plugin has been deactivated or
  * cannot be activated.
  */
-function solr_power_PHP_admin_notice() {
+function solr_power_php_admin_notice() {
 	?>
 	<div class="error">
 		<p>
@@ -44,16 +46,12 @@ function solr_power_PHP_admin_notice() {
 				unset( $_GET['activate'] );
 
 				echo wp_kses_post( __(
-					'The Solr Power plugin requires PHP 5.4 to function properly and <strong>has not</strong> been activated.<br />' .
-					'Please upgrade PHP and re-activate the Solr Power plugin. ' .
-					'<a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
+					'The Solr Power plugin requires PHP 5.4 to function properly and <strong>has not</strong> been activated.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
 					'solr-for-wordpress-on-pantheon'
 				) );
 			} else {
 				echo wp_kses_post( __(
-					'The Solr Power plugin requires PHP 5.4 to function properly and had been <strong>deactivated</strong>.<br />' .
-					'Please upgrade PHP and re-activate the Solr Power plugin. ' .
-					'<a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
+					'The Solr Power plugin requires PHP 5.4 to function properly and had been <strong>deactivated</strong>.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
 					'solr-for-wordpress-on-pantheon'
 				) );
 			}
@@ -79,16 +77,12 @@ function solr_power_env_variables_admin_notice() {
 				unset( $_GET['activate'] );
 
 				echo wp_kses_post(__(
-					'The Solr Power plugin requires environment variables for <pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to function properly.<br />' .
-					'The Solr Power plugin <strong>has not</strong> been activated.<br />' .
-					'Please configure the environment variables and re-activate the Solr Power plugin. ',
+					'The Solr Power plugin requires environment variables for <pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to function properly.<br />The Solr Power plugin <strong>has not</strong> been activated.<br />Please configure the environment variables and re-activate the Solr Power plugin. ',
 					'solr-for-wordpress-on-pantheon'
 				));
 			} else {
 				echo wp_kses_post(__(
-					'The Solr Power plugin requires environment variables for <pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to function properly.<br />' .
-					'The Solr Power plugin <strong>has been deactivated</strong>.<br />' .
-					'Please configure the environment variables and re-activate the Solr Power plugin. ',
+					'The Solr Power plugin requires environment variables for <pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to function properly.<br />The Solr Power plugin <strong>has been deactivated</strong>.<br />Please configure the environment variables and re-activate the Solr Power plugin. ',
 					'solr-for-wordpress-on-pantheon'
 				));
 			}
@@ -107,7 +101,7 @@ function solr_power__deactivate() {
 }
 
 if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
-	add_action( 'admin_notices', 'solr_power_PHP_admin_notice' );
+	add_action( 'admin_notices', 'solr_power_php_admin_notice' );
 	add_action( 'admin_init', 'solr_power__deactivate' );
 } elseif ( false === getenv( 'PANTHEON_INDEX_HOST' ) || false === getenv( 'PANTHEON_INDEX_PORT' ) ) {
 	add_action( 'admin_notices', 'solr_power_env_variables_admin_notice' );
@@ -127,6 +121,9 @@ if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 	SolrPower_Sync::get_instance();
 	SolrPower_WP_Query::get_instance();
 
+	/**
+	 * Helper function get Solr Power options.
+	 */
 	function solr_options() {
 		return SolrPower_Options::get_instance()->get_option();
 	}
@@ -143,4 +140,4 @@ if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
 	}
 
 	register_activation_hook( __FILE__, array( SolrPower::get_instance(), 'activate' ) );
-}
+} // End if().
