@@ -5,8 +5,35 @@
 	<rule ref="WordPress-Core" />
 	<rule ref="WordPress-Docs" />
 
+	<exclude-pattern>*/examples/*</exclude-pattern>
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/tests/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
+
+	<exclude-pattern>*/includes/class-pantheon-curl.php</exclude-pattern>
+	<exclude-pattern>*/includes/class-solrpower-api.php</exclude-pattern>
+	<exclude-pattern>*/includes/class-solrpower-batch-index.php</exclude-pattern>
+	<exclude-pattern>*/includes/class-solrpower-cli.php</exclude-pattern>
+	<exclude-pattern>*/includes/class-solrpower-debug.php</exclude-pattern>
+	<exclude-pattern>*/includes/class-solrpower-facet-widget.php</exclude-pattern>
+	<exclude-pattern>*/includes/class-solrpower-options.php</exclude-pattern>
+	<exclude-pattern>*/includes/class-solrpower-sync.php</exclude-pattern>
+	<exclude-pattern>*/includes/class-solrpower-wp-query.php</exclude-pattern>
+	<exclude-pattern>*/includes/class-solrpower.php</exclude-pattern>
+	<exclude-pattern>*/includes/legacy-functions.php</exclude-pattern>
+	<exclude-pattern>*/solr-options-page.php</exclude-pattern>
+	<exclude-pattern>*/solr-power.php</exclude-pattern>
+	<exclude-pattern>*/template/s4w_search.php</exclude-pattern>
+	<exclude-pattern>*/template/s4wp_search.php</exclude-pattern>
+	<exclude-pattern>*/templates/solr-search-results.php</exclude-pattern>
+	<exclude-pattern>*/views/options/action.php</exclude-pattern>
+	<exclude-pattern>*/views/options/facet.php</exclude-pattern>
+	<exclude-pattern>*/views/options/indexing.php</exclude-pattern>
+	<exclude-pattern>*/views/options/info.php</exclude-pattern>
+
+	<rule ref="Squiz.Commenting.FunctionComment.MissingParamTag">
+		<exclude-pattern>*/includes/class-solrpower-cli.php</exclude-pattern>
+	</rule>
 
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
 		<exclude-pattern>*/tests/*</exclude-pattern>
