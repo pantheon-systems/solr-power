@@ -152,6 +152,16 @@ A meta_query can use the following compare operators:
 
 (```'REGEXP'```, ```'NOT REGEXP'```, and ```'RLIKE'``` are not supported.)
 
+== Configuration Tips ==
+
+= Searching by author name =
+
+To support searching by author name (e.g. where "Pantheon" would return posts authored by the "Pantheon" user), add the following to your custom `schema.xml`:
+
+```
+<copyField source="post_author" dest="text"/>
+```
+
 == Changelog ==
 = 1.2.0 =
 * Add multisite support
