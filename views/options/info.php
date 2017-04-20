@@ -2,47 +2,47 @@
 	<?php
 	$server_info = SolrPower_Api::get_instance()->get_server_info();
 	?>
-    <div class="solr-display">
-        <div>
-            <h3>Solr Configuration</h3>
+	<div class="solr-display">
+		<div>
+			<h3>Solr Configuration</h3>
 
-            <ul>
-                <li><strong>Ping Status:</strong>
+			<ul>
+				<li><strong>Ping Status:</strong>
 					<?php echo ( $server_info['ping_status'] ) ? '<span class="solr-green">Successful</span>' : '<span class="solr-red">Failed</span>'; ?>
-                </li>
+				</li>
 
-                <li><strong>Solr Server IP address:</strong>
+				<li><strong>Solr Server IP address:</strong>
 					<?php echo esc_html( $server_info['ip_address'] ); ?>
-                </li>
-                <li>
-                    <strong>Solr Server Port:</strong>
+				</li>
+				<li>
+					<strong>Solr Server Port:</strong>
 					<?php echo esc_html( $server_info['port'] ); ?>
-                </li>
-                <li>
-                    <strong>Solr Server Path:</strong>
+				</li>
+				<li>
+					<strong>Solr Server Path:</strong>
 					<?php echo esc_html( $server_info['path'] ); ?>
-                </li>
-            </ul>
+				</li>
+			</ul>
 
-        </div>
-    </div>
+		</div>
+	</div>
 	<?php if ( $server_info['ping_status'] ) { ?>
-        <div class="solr-display">
-            <div>
-                <h3>Indexing Stats by Post Type</h3>
-                <ul>
+		<div class="solr-display">
+			<div>
+				<h3>Indexing Stats by Post Type</h3>
+				<ul>
 					<?php
 					foreach ( SolrPower_Api::get_instance()->index_stats() as $type => $stat ) {
 						?>
-                        <li>
-                            <strong><?php echo esc_html( $type ); ?>:</strong>
+						<li>
+							<strong><?php echo esc_html( $type ); ?>:</strong>
 							<?php echo absint( $stat ); ?>
-                        </li>
+						</li>
 					<?php } ?>
-                </ul>
+				</ul>
 
-            </div>
-        </div>
+			</div>
+		</div>
 	<?php } ?>
-    <br class="clear">
+	<br class="clear">
 </div>
