@@ -1,3 +1,11 @@
+<?php
+/**
+ * Renders the info tab
+ *
+ * @package Solr_Power
+ */
+
+?>
 <div id="solr_info" class="solrtab active">
 	<?php
 	$server_info = SolrPower_Api::get_instance()->get_server_info();
