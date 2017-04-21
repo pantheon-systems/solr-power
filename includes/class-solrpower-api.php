@@ -136,7 +136,7 @@ class SolrPower_Api {
 	 * @return boolean
 	 */
 	function ping_server() {
-		$solr = get_solr();
+		$solr = SolrPower_Api::get_solr();
 
 		if ( ! $solr ) {
 			return false;
@@ -163,7 +163,7 @@ class SolrPower_Api {
 	function get_solr() {
 
 		# get the connection options
-		$plugin_s4wp_settings = solr_options();
+		$plugin_s4wp_settings = SolrPower_Options::get_instance()->get_option();
 
 		$solarium_config = array(
 			'endpoint' => array(
@@ -250,7 +250,7 @@ class SolrPower_Api {
 	 */
 	function query( $qry, $offset, $count, $fq, $sortby, $order, $fields = null ) {
 		//NOTICE: does this needs to be cached to stop the db being hit to grab the options everytime search is being done.
-		$plugin_s4wp_settings = solr_options();
+		$plugin_s4wp_settings = SolrPower_Options::get_instance()->get_option();
 
 		$solr = get_solr();
 
