@@ -13,7 +13,6 @@
 	<exclude-pattern>*/includes/class-solrpower-api.php</exclude-pattern>
 	<exclude-pattern>*/includes/class-solrpower-batch-index.php</exclude-pattern>
 	<exclude-pattern>*/includes/class-solrpower-debug.php</exclude-pattern>
-	<exclude-pattern>*/includes/class-solrpower-facet-widget.php</exclude-pattern>
 	<exclude-pattern>*/includes/class-solrpower-options.php</exclude-pattern>
 	<exclude-pattern>*/includes/class-solrpower-sync.php</exclude-pattern>
 	<exclude-pattern>*/includes/class-solrpower-wp-query.php</exclude-pattern>

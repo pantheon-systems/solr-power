@@ -1,11 +1,25 @@
 <?php
+/**
+ * Widget for displaying search faceting UI.
+ *
+ * @package Solr_Power
+ */
 
+/**
+ * Widget for displaying search faceting UI.
+ */
 class SolrPower_Facet_Widget extends WP_Widget {
-	/**
-	 * @var array Facets sent to WP_Query
-	 */
-	var $facets = array();
 
+	/**
+	 * Facets sent to WP_Query.
+	 *
+	 * @var array
+	 */
+	public $facets = array();
+
+	/**
+	 * Instantiate the widget object.
+	 */
 	public function __construct() {
 		$widget_ops = array(
 			'classname'   => 'solrpower_facet_widget',
@@ -17,8 +31,8 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	/**
 	 * Outputs the content of the widget
 	 *
-	 * @param array $args
-	 * @param array $instance
+	 * @param array $args     Arguments defined by the user.
+	 * @param array $instance Instantiated widget instance.
 	 */
 	public function widget( $args, $instance ) {
 		$this->dummy_query();
@@ -39,7 +53,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	/**
 	 * Outputs the options form on admin
 	 *
-	 * @param array $instance The widget options
+	 * @param array $instance The widget options.
 	 */
 	public function form( $instance ) {
 		$title = ! empty( $instance['title'] ) ? $instance['title'] : 'Search';
@@ -57,10 +71,9 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	/**
 	 * Processing widget options on save
 	 *
-	 * @param array $new_instance The new options
-	 * @param array $old_instance The previous options
-	 *
-	 * @return array $instance
+	 * @param array $new_instance The new options.
+	 * @param array $old_instance The previous options.
+	 * @return array
 	 */
 	public function update( $new_instance, $old_instance ) {
 		$instance = array();
@@ -73,8 +86,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	/**
 	 * Fetches and displays returned facets.
 	 *
-	 * @param bool $echo Echo the facets?
-	 *
+	 * @param bool $echo Whether or not the facets should be echoed.
 	 * @return bool|string
 	 */
 	function fetch_facets( $echo = true ) {
@@ -87,7 +99,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		$this->facets = $facets;
 		$sent_facets  = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
 
-		$output = ''; // HTML Output
+		$output = ''; // HTML Output.
 
 		foreach ( $facets as $facet_name => $data ) {
 			// Strict comparisons are used so this needs to be a string.
@@ -101,23 +113,22 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			 *
 			 * Filter the HTML output of a facet.
 			 *
-			 * @param string $facet_name the facet name.
-			 *
-			 * @param object $data       the Solarium facet data object.
+			 * @param string $facet_name The facet name.
+			 * @param object $data       The Solarium facet data object.
 			 */
 			$html = apply_filters( 'solr_facet_items', false, $facet_name, $data );
 			if ( false !== $html ) {
 				$output .= $html;
 				continue;
 			}
+
 			/**
 			 * Filter facet title
 			 *
 			 * Filter the facet title displayed in the widget.
 			 *
-			 * @param boolean|string the         custom facet title, defaults to false.
-			 *
-			 * @param string         $facet_name the facet name.
+			 * @param boolean|string $ret        The custom facet title, defaults to false.
+			 * @param string         $facet_name The facet name.
 			 */
 			$facet_nice_name = apply_filters( 'solr_facet_title', false, $facet_name );
 			if ( false === $facet_nice_name ) {
@@ -176,7 +187,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			$output .= '<a href="' . $this->reset_url( $facet_name ) . '" class="solr_reset" data-for="fn_' . esc_attr( md5( $facet_name ) ) . '">Reset</a>';
 			$output .= '</ul>';
 
-		}
+		} // End foreach().
 		if ( $echo ) {
 			echo $output;
 		} else {
@@ -188,11 +199,10 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	/**
 	 * Reset link below facet list.
 	 *
-	 * @param string $facet_name
-	 *
+	 * @param string $facet_name Name of the facet.
 	 * @return string|boolean
 	 */
-	function reset_url( $facet_name ) {
+	public function reset_url( $facet_name ) {
 		$solr_options = solr_options();
 		if ( $solr_options['allow_ajax'] ) {
 			return '#';
@@ -203,13 +213,15 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		}
 		unset( $facets[ $facet_name ] );
 
-		return add_query_arg( array( 'facet' => $facets ) );
+		return add_query_arg( array(
+			'facet' => $facets,
+		) );
 	}
 
 	/**
 	 * Basic input textbox.
 	 */
-	function render_searchbox() {
+	public function render_searchbox() {
 		$paged = ( get_query_var( 'paged' ) ) ? absint( get_query_var( 'paged' ) ) : 1;
 		$html  = '<input type="text" name="s" value="' . get_search_query() . '" id="solr_s"> <br/><br/>';
 		$html .= '<input type="submit" value="Search"><br/><br/>';
@@ -227,12 +239,10 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	/**
 	 * Determine if a facet should be visible based on options set on admin page.
 	 *
-	 * @param string $facet Facet name
-	 *
+	 * @param string $facet Facet name.
 	 * @return bool
 	 */
-	function show_facet( $facet ) {
-
+	public function show_facet( $facet ) {
 
 		if ( 0 < strpos( $facet, 'taxonomy' ) ) {
 			$facet = 'taxonomy';
@@ -263,6 +273,9 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		return false;
 	}
 
+	/**
+	 * Mock a dummy WP_Query
+	 */
 	function dummy_query() {
 		global $wp_query;
 		$query = new WP_Query();
@@ -276,8 +289,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	/**
 	 * Callback for array_map to decode html special characters
 	 *
-	 * @param $facet
-	 *
+	 * @param string $facet Facet to decode.
 	 * @return string
 	 */
 	function htmlspecialchars_decode( $facet ) {
