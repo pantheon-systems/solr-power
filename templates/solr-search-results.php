@@ -1,3 +1,11 @@
+<?php
+/**
+ * Default search results template
+ *
+ * @package Solr_Power
+ */
+
+?>
 <div id="solr-search-results">
 	<header class="page-header">
 		<h1 class="page-title">
