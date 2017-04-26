@@ -17,7 +17,6 @@
 	<exclude-pattern>*/includes/class-solrpower-options.php</exclude-pattern>
 	<exclude-pattern>*/includes/class-solrpower-sync.php</exclude-pattern>
 	<exclude-pattern>*/includes/class-solrpower-wp-query.php</exclude-pattern>
-	<exclude-pattern>*/includes/class-solrpower.php</exclude-pattern>
 	<exclude-pattern>*/includes/legacy-functions.php</exclude-pattern>
 	<exclude-pattern>*/solr-options-page.php</exclude-pattern>
 	<exclude-pattern>*/template/s4w_search.php</exclude-pattern>
