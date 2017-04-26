@@ -1,4 +1,9 @@
 <?php
+/**
+ * WP-CLI command for interacting with Solr Power
+ *
+ * @package Solr_Power
+ */
 
 /**
  * Perform a variety of actions against your Solr instance.
@@ -41,7 +46,6 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 *
 	 *     $ wp solr delete --all
 	 *     Success: All posts successfully removed from the index.
-	 *
 	 */
 	public function delete( $args, $assoc_args ) {
 
@@ -52,8 +56,8 @@ class SolrPower_CLI extends WP_CLI_Command {
 				$last_error = SolrPower_Api::get_instance()->last_error;
 				WP_CLI::error( "Couldn't remove all posts from the index: {$last_error->getMessage()}" );
 			}
-		} else if ( count( $args ) ) {
-			foreach( $args as $post_id ) {
+		} elseif ( count( $args ) ) {
+			foreach ( $args as $post_id ) {
 				if ( SolrPower_Sync::get_instance()->delete( absint( $post_id ) ) ) {
 					WP_CLI::log( "Removed post {$post_id} from the index." );
 				} else {
@@ -90,7 +94,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 		$batch_index = new SolrPower_Batch_Index( $query_args );
 		$displayed_batch = false;
 		$start_time = microtime( true );
-		while( $batch_index->have_posts() ) {
+		while ( $batch_index->have_posts() ) {
 			$current_batch = $batch_index->get_current_batch();
 			if ( $current_batch !== $displayed_batch ) {
 				WP_CLI::log( '' );
@@ -107,7 +111,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 			$post_mention = "'{$result['post_title']}' ({$result['post_id']})";
 			if ( 'success' === $result['status'] ) {
 				WP_CLI::log( "Submitted {$post_mention} to the index." );
-			} elseif( 'failed' === $result['status'] ) {
+			} elseif ( 'failed' === $result['status'] ) {
 				WP_CLI::log( "Failed to index {$post_mention}: {$result['message']}" );
 			}
 			if ( ! $batch_index->have_posts() ) {
@@ -240,7 +244,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 	/**
 	 * Format a log timestamp into something human-readable.
 	 *
-	 * @param integer $s Log time in seconds
+	 * @param integer $s Log time in seconds.
 	 * @return string
 	 */
 	private static function format_log_timestamp( $s ) {
