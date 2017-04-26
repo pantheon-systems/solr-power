@@ -21,7 +21,6 @@
 	<exclude-pattern>*/solr-options-page.php</exclude-pattern>
 	<exclude-pattern>*/template/s4w_search.php</exclude-pattern>
 	<exclude-pattern>*/template/s4wp_search.php</exclude-pattern>
-	<exclude-pattern>*/templates/solr-search-results.php</exclude-pattern>
 
 	<rule ref="Squiz.Commenting.FunctionComment.MissingParamTag">
 		<exclude-pattern>*/includes/class-solrpower-cli.php</exclude-pattern>
