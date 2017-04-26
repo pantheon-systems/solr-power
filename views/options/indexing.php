@@ -1,3 +1,11 @@
+<?php
+/**
+ * Renders the indexing tab
+ *
+ * @package Solr_Power
+ */
+
+?>
 <div id="solr_indexing" class="solrtab">
 	<div class="solr-power-subpage">
 		<?php

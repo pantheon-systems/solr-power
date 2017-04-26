@@ -1,3 +1,11 @@
+<?php
+/**
+ * Renders the facet tab
+ *
+ * @package Solr_Power
+ */
+
+?>
 <div id="solr_facet" class="solrtab">
 	<div class="solr-power-subpage">
 		<?php
