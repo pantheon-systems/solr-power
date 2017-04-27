@@ -1,41 +1,67 @@
 <?php
+/**
+ * Overloads WP_Query to return Solr results
+ *
+ * @package Solr_Power
+ */
 
+/**
+ * Overloads WP_Query to return Solr results
+ */
 class SolrPower_WP_Query {
 
 	/**
 	 * Singleton instance
+	 *
 	 * @var SolrPower_WP_Query|Bool
 	 */
 	private static $instance = false;
 
 	/**
 	 * Array of found Solr returned posts based on query hash.
+	 *
 	 * @var array
 	 */
 	private $found_posts = array();
 
 	/**
 	 * Returned facets from search.
+	 *
 	 * @var Solarium\QueryType\Select\Result\Facet\Field[] $facets
 	 */
-	var $facets = array();
-	/**
-	 * @var string Query being sent to Solr.
-	 */
-	var $qry;
-	/**
-	 * @var array Response from Solr.
-	 */
-	var $search;
-	/**
-	 * @var array Additional filter queries being sent to Solr.
-	 */
-	var $fq = array();
+	public $facets = array();
 
-	var $query;
+	/**
+	 * Query being sent to Solr.
+	 *
+	 * @var string
+	 */
+	public $qry;
+
+	/**
+	 * Response from Solr.
+	 *
+	 * @var array
+	 */
+	public $search;
+
+	/**
+	 * Additional filter queries being sent to Solr.
+	 *
+	 * @var array
+	 */
+	public $fq = array();
+
+	/**
+	 * Prepared Solr query.
+	 *
+	 * @var object
+	 */
+	public $query;
 
 	/**
 	 * Grab instance of object.
+	 *
 	 * @return SolrPower_WP_Query
 	 */
 	public static function get_instance() {
@@ -59,7 +85,6 @@ class SolrPower_WP_Query {
 	 */
 	function setup() {
 		// We don't want to do a Solr query if we're doing AJAX or in the admin area.
-
 		if ( ! is_admin() && defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 
 			/**
@@ -85,10 +110,9 @@ class SolrPower_WP_Query {
 			return;
 		}
 
-
 		add_filter( 'posts_request', array( $this, 'posts_request' ), 10, 2 );
 
-		// Nukes the FOUND_ROWS() database query
+		// Nukes the FOUND_ROWS() database query.
 		add_filter( 'found_posts_query', array( $this, 'found_posts_query' ), 5, 2 );
 
 		add_filter( 'the_posts', array( $this, 'the_posts' ), 10, 2 );
@@ -103,8 +127,10 @@ class SolrPower_WP_Query {
 	}
 
 	/**
-	 * @param string $request SQL Query
-	 * @param WP_Query $query
+	 * Parse the posts request into a Solr request.
+	 *
+	 * @param string   $request SQL Query.
+	 * @param WP_Query $query WP_Query instance.
 	 *
 	 * @return string
 	 */
@@ -144,7 +170,6 @@ class SolrPower_WP_Query {
 			}
 		}
 
-
 		$fields = null;
 		switch ( $query->get( 'fields' ) ) {
 			case 'ids':
@@ -174,7 +199,7 @@ class SolrPower_WP_Query {
 
 		SolrPower_Api::get_instance()->add_log( array(
 			'Results Found' => $search['numFound'],
-			'Query Time'    => $search_header['QTime'] . 'ms'
+			'Query Time'    => $search_header['QTime'] . 'ms',
 		) );
 
 		$posts = $this->parse_results( $search );
@@ -230,8 +255,8 @@ class SolrPower_WP_Query {
 	/**
 	 * Converts the orderby to a Solr-friendly sortby.
 	 *
-	 * @param string|array $orderby
-	 * @param WP_Query $query
+	 * @param string|array $orderby Orderby value.
+	 * @param WP_Query     $query   WP_Query instance.
 	 *
 	 * @return string
 	 */
@@ -312,19 +337,20 @@ class SolrPower_WP_Query {
 					$orderby_clause = "{$meta_clause['key']}_{$this->meta_type(array('type'=>$meta_clause['cast']),true)}";
 				} else {
 					// Default: order by post field.
-					$orderby_clause = "post_" . sanitize_key( $orderby );
+					$orderby_clause = 'post_' . sanitize_key( $orderby );
 				}
 
 				break;
-		}
-
+		} // End switch().
 
 		return $orderby_clause;
 	}
 
 	/**
-	 * @param string $sql
-	 * @param WP_Query $query
+	 * Overload the found posts query.
+	 *
+	 * @param string   $sql   Original SQL string.
+	 * @param WP_Query $query WP_Query instance.
 	 *
 	 * @return string
 	 */
@@ -337,8 +363,10 @@ class SolrPower_WP_Query {
 	}
 
 	/**
-	 * @param array $posts
-	 * @param WP_Query $query
+	 * Overload posts returned by WP_Query
+	 *
+	 * @param array    $posts Original posts.
+	 * @param WP_Query $query WP_Query instance.
 	 *
 	 * @return mixed
 	 */
@@ -355,7 +383,7 @@ class SolrPower_WP_Query {
 	/**
 	 * Checks for 'facet' as WP_Query variable or query string and sets it up for a filter query.
 	 *
-	 * @param WP_Query $query
+	 * @param WP_Query $query Original WP_Query.
 	 *
 	 * @return array
 	 */
@@ -379,15 +407,14 @@ class SolrPower_WP_Query {
 		$return = array();
 		foreach ( $facets as $facet_name => $facet_arr ) {
 			$fq = array();
-			foreach ( $facet_arr as $facet ):
-				// htmlspecialchars_decode because of the single quote issue in facet widget. Ex: "Hello'" category
+			foreach ( $facet_arr as $facet ) :
+				// htmlspecialchars_decode because of the single quote issue in facet widget. Ex: "Hello'" category.
 				$fq[] = '"' . htmlspecialchars( htmlspecialchars_decode( $facet, ENT_QUOTES ) ) . '"';
 			endforeach;
 			$return[] = $facet_name . ':(' . implode( ' OR ', $fq ) . ')';
 		}
 
-
-		// Additional Filter Query:
+		// Additional Filter Query.
 		$return = array_merge( $return, $this->fq );
 
 		return implode( ' ' . $default_operator . ' ', $return );
@@ -397,7 +424,7 @@ class SolrPower_WP_Query {
 	/**
 	 * Parses WP_Query variables to a Solr query.
 	 *
-	 * @param WP_Query $query
+	 * @param WP_Query $query Original WP_Query.
 	 *
 	 * @return string
 	 */
@@ -409,13 +436,13 @@ class SolrPower_WP_Query {
 			'page_id',
 			'post_status',
 			'post_parent',
-			'name'
+			'name',
 
 		);
 		$convert     = array(
 			'p'       => 'ID',
 			'page_id' => 'ID',
-			'name'    => 'post_name'
+			'name'    => 'post_name',
 		);
 		if ( ! $query->get( 's' ) && ! $query->get( 'solr_integrate' ) ) {
 			return '';
@@ -440,7 +467,6 @@ class SolrPower_WP_Query {
 		}
 		foreach ( $query->query_vars as $var_key => $var_value ) {
 			if ( 'post_status' === $var_key && 'any' === $var_value ) {
-				//$solr_query[]='(post_status:publish)';
 				continue;
 			}
 
@@ -462,7 +488,7 @@ class SolrPower_WP_Query {
 	/**
 	 * Parses tax queries to Solr.
 	 *
-	 * @param array $tax_query
+	 * @param array $tax_query Original WP_Query tax query.
 	 *
 	 * @return string
 	 */
@@ -521,7 +547,6 @@ class SolrPower_WP_Query {
 						$multi_query[] = '(' . $field . ':' . $value . ')';
 						$wildcard      = '(ID:*)';
 
-
 						if ( ! in_array( $wildcard, $wildcards_used ) ) {
 							$wildcards_used[] = $wildcard;
 							$query[]          = $wildcard;
@@ -578,7 +603,7 @@ class SolrPower_WP_Query {
 					}
 					break;
 
-				default: // 'IN'
+				default: // 'IN'.
 					$multi_query   = array();
 					$multi_query[] = '(' . $field . ':(' . implode( 'OR', $terms ) . '))';
 					if ( $tax_value['include_children'] && is_taxonomy_hierarchical( $tax_value['taxonomy'] ) ) {
@@ -586,8 +611,8 @@ class SolrPower_WP_Query {
 					}
 					$query[] = '(' . implode( 'OR', $multi_query ) . ')';
 					break;
-			}
-		}
+			} // End switch().
+		} // End foreach().
 		if ( ! empty( $tax_fq ) ) {
 			$this->fq[] = '(' . implode( 'OR', $tax_fq ) . ')';
 		}
@@ -596,6 +621,13 @@ class SolrPower_WP_Query {
 
 	}
 
+	/**
+	 * Transform a taxonomy name to its Solr equivalent.
+	 *
+	 * @param string $tax_field Taxonomy field.
+	 * @param string $taxonomy  Taxonomy.
+	 * @return string
+	 */
 	private function tax_field_name( $tax_field, $taxonomy ) {
 		if ( 'category' === $taxonomy ) {
 			$taxonomy = 'categories';
@@ -625,7 +657,7 @@ class SolrPower_WP_Query {
 	/**
 	 * Parses meta queries to Solr.
 	 *
-	 * @param array $meta_query
+	 * @param array $meta_query Original meta query.
 	 *
 	 * @return string
 	 */
@@ -747,7 +779,6 @@ class SolrPower_WP_Query {
 							$multi_query[] = '!(' . $meta_value['key'] . '_' . $type . ':' . $this->set_query_value( $value, $type ) . ')';
 							$wildcard      = '(' . $meta_value['key'] . '_' . $type . ':*)';
 
-
 							if ( ! in_array( $wildcard, $wildcards_used ) ) {
 								$wildcards_used[] = $wildcard;
 								$query[]          = $wildcard;
@@ -770,8 +801,8 @@ class SolrPower_WP_Query {
 						$query[] = '(' . $meta_value['key'] . '_' . $type . ':' . $this->set_query_value( $meta_value['value'], $type ) . ')';
 					}
 					break;
-			}
-		}
+			} // End switch().
+		} // End foreach().
 
 		return '(' . implode( $relation, $query ) . ')';
 
@@ -780,8 +811,8 @@ class SolrPower_WP_Query {
 	/**
 	 * Determines the dynamic field type based on the meta_type specified.
 	 *
-	 * @param array $meta_value
-	 * @param bool $orderby
+	 * @param array $meta_value Meta value.
+	 * @param bool  $orderby    Orderby value.
 	 *
 	 * @return string
 	 */
@@ -815,8 +846,8 @@ class SolrPower_WP_Query {
 	/**
 	 * Sets query value formatting based on type.
 	 *
-	 * @param string $value
-	 * @param null|string $type
+	 * @param string      $value Original query value.
+	 * @param null|string $type  Query type.
 	 *
 	 * @return float|int|string
 	 */
@@ -838,20 +869,20 @@ class SolrPower_WP_Query {
 				break;
 		}
 
-
 	}
 
 	/**
-	 * @param array $date_query
+	 * Parse a date query into its component bits.
+	 *
+	 * @param array $date_query Original date query.
 	 *
 	 * @return string
-	 *
 	 */
 	function parse_date_query( $date_query ) {
 
 		$query    = array();
 		$relation = ( isset( $date_query['relation'] ) ) ? $date_query['relation'] : 'OR';
-		foreach ( $date_query as $dq ):
+		foreach ( $date_query as $dq ) :
 
 			if ( ! is_array( $dq ) ) {
 				continue;
@@ -881,7 +912,6 @@ class SolrPower_WP_Query {
 					$query[] = '(' . $column . ':' . '[* TO ' . $the_date . '])';
 
 				}
-
 			}
 
 			if ( isset( $dq['after'] ) && is_array( $dq['after'] ) ) {
@@ -916,9 +946,11 @@ class SolrPower_WP_Query {
 	}
 
 	/**
-	 * @param array $dq
-	 * @param bool $inclusive
-	 * @param bool $type
+	 * Transform a date query to a Solr query
+	 *
+	 * @param array $dq        WordPress date query.
+	 * @param bool  $inclusive Whether or not the query should be inclusive.
+	 * @param bool  $type      Type of query.
 	 *
 	 * @return string
 	 */
@@ -945,7 +977,6 @@ class SolrPower_WP_Query {
 					return '(' . $column . ':' . $the_date . '*)';
 					break;
 			}
-
 		}
 
 		$query = array();
@@ -1006,7 +1037,7 @@ class SolrPower_WP_Query {
 					'hour',
 					'monthnum',
 					'minute',
-					'second'
+					'second',
 				);
 				$column  = ( isset( $dq['column'] ) ) ? $dq['column'] : false;
 				$compare = ( isset( $dq['compare'] ) ) ? $dq['compare'] : '=';
@@ -1026,9 +1057,8 @@ class SolrPower_WP_Query {
 					}
 				}
 
-
 				break;
-		}
+		} // End switch().
 		if ( empty( $query ) ) {
 			return '';
 		}
@@ -1039,9 +1069,9 @@ class SolrPower_WP_Query {
 	/**
 	 * Creates a compare query for date_query.
 	 *
-	 * @param string $field
-	 * @param integer $field_value
-	 * @param string $compare
+	 * @param string  $field       Field key.
+	 * @param integer $field_value Field value.
+	 * @param string  $compare     Comparison operator.
 	 *
 	 * @return bool|string
 	 */
@@ -1070,5 +1100,3 @@ class SolrPower_WP_Query {
 	}
 
 }
-
-
