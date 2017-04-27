@@ -1,21 +1,32 @@
 <?php
+/**
+ * Controller for sync behaviors
+ *
+ * @package Solr_Power
+ */
 
+/**
+ * Controller for sync behaviors
+ */
 class SolrPower_Sync {
 
 	/**
 	 * Singleton instance
+	 *
 	 * @var SolrPower_Sync|Bool
 	 */
 	private static $instance = false;
 
 	/**
 	 * Last error message.
+	 *
 	 * @var string
 	 */
 	var $error_msg;
 
 	/**
 	 * Grab instance of object.
+	 *
 	 * @return SolrPower_Sync
 	 */
 	public static function get_instance() {
@@ -26,6 +37,9 @@ class SolrPower_Sync {
 		return self::$instance;
 	}
 
+	/**
+	 * Instantiate the object.
+	 */
 	function __construct() {
 		add_action( 'publish_post', array( $this, 'handle_modified' ) );
 		add_action( 'publish_page', array( $this, 'handle_modified' ) );
@@ -43,23 +57,28 @@ class SolrPower_Sync {
 		}
 	}
 
+	/**
+	 * Handle the post modification event.
+	 *
+	 * @param integer $post_id ID for the post.
+	 */
 	function handle_modified( $post_id ) {
 		global $current_blog;
 
 		$post_info = get_post( $post_id );
 		$post_types = SolrPower::get_post_types();
 
-		if ( !in_array( $post_info->post_type, (array) $post_types, true ) ) {
+		if ( ! in_array( $post_info->post_type, (array) $post_types, true ) ) {
 			return;
 		}
 
 		$this->handle_status_change( $post_id, $post_info );
 		$post_status = SolrPower::get_post_statuses();
-		if ( $post_info->post_type == 'revision' || !in_array( $post_info->post_status, $post_status, true ) ) {
+		if ( 'revision' === $post_info->post_type || ! in_array( $post_info->post_status, $post_status, true ) ) {
 			return;
 		}
-		# make sure this blog is not private or a spam if indexing on a multisite install
-		if ( is_multisite() && ( $current_blog->public != 1 || $current_blog->spam == 1 || $current_blog->archived == 1 ) ) {
+		// make sure this blog is not private or a spam if indexing on a multisite install.
+		if ( is_multisite() && ( 1 != $current_blog->public || 1 == $current_blog->spam || 1 == $current_blog->archived ) ) {
 			return;
 		}
 		$docs   = array();
@@ -75,13 +94,17 @@ class SolrPower_Sync {
 		return;
 	}
 
+	/**
+	 * Handle the post delete event.
+	 *
+	 * @param integer $post_id ID for the post.
+	 */
 	function handle_delete( $post_id ) {
 		global $current_blog;
 		$post_info            = get_post( $post_id );
 		$plugin_s4wp_settings = solr_options();
 		$delete_page          = $plugin_s4wp_settings['s4wp_delete_page'];
 		$delete_post          = $plugin_s4wp_settings['s4wp_delete_post'];
-
 
 		if ( is_multisite() ) {
 			$this->delete( get_current_blog_id() . '_' . $post_info->ID );
@@ -90,14 +113,24 @@ class SolrPower_Sync {
 		}
 	}
 
+	/**
+	 * Handle the blog activation event.
+	 *
+	 * @param integer $blogid ID for the blog.
+	 */
 	function handle_activate_blog( $blogid ) {
 		$this->load_blog_all( $blogid );
 	}
 
+	/**
+	 * Delete the index for a blog
+	 *
+	 * @param integer $blogid ID for the blog.
+	 */
 	function delete_blog( $blogid ) {
 		try {
 			$solr = get_solr();
-			if ( ! $solr == null ) {
+			if ( null !== $solr ) {
 				$update = $solr->createUpdate();
 				$update->addDeleteQuery( "blogid:{$blogid}" );
 				$update->addCommit();
@@ -108,6 +141,11 @@ class SolrPower_Sync {
 		}
 	}
 
+	/**
+	 * Index all blog content
+	 *
+	 * @param integer $blogid ID for the blog.
+	 */
 	function load_blog_all( $blogid ) {
 		global $wpdb;
 		$documents = array();
@@ -117,8 +155,7 @@ class SolrPower_Sync {
 		$bloginfo = get_blog_details( $blogid, false );
 
 		if ( $bloginfo->public && ! $bloginfo->archived && ! $bloginfo->spam && ! $bloginfo->deleted ) {
-			$query   = $wpdb->prepare( "SELECT ID FROM %s WHERE post_type = 'post' and post_status = 'publish';", $wpdb->base_prefix . $blogid . '_posts' );
-			$postids = $wpdb->get_results( $query );
+			$postids = $wpdb->get_results( $wpdb->prepare( "SELECT ID FROM %s WHERE post_type = 'post' and post_status = 'publish';", $wpdb->base_prefix . $blogid . '_posts' ) );
 
 			$solr   = get_solr();
 			$update = $solr->createUpdate();
@@ -140,13 +177,18 @@ class SolrPower_Sync {
 		}
 	}
 
+	/**
+	 * Handle the status change event.
+	 *
+	 * @param integer $post_id   Post ID.
+	 * @param array   $post_info Array of post information.
+	 */
 	function handle_status_change( $post_id, $post_info = null ) {
 		global $current_blog;
 
 		if ( ! $post_info ) {
 			$post_info = get_post( $post_id );
 		}
-
 
 		if ( is_multisite() ) {
 			$this->delete( get_current_blog_id() . '_' . $post_info->ID );
@@ -155,6 +197,15 @@ class SolrPower_Sync {
 		}
 	}
 
+	/**
+	 * Build a Solarium document
+	 *
+	 * @param Solarium\QueryType\Update\Query\Document\Document $doc       Existing Solarium doc.
+	 * @param array                                             $post_info Post information.
+	 * @param string                                            $domain    Domain context.
+	 * @param string                                            $path      Path context.
+	 * @return Document
+	 */
 	function build_document(
 		Solarium\QueryType\Update\Query\Document\Document $doc, $post_info, $domain = null,
 		$path = null
@@ -176,19 +227,16 @@ class SolrPower_Sync {
 
 		if ( $post_info ) {
 
-			# check if we need to exclude this document
+			// check if we need to exclude this document.
 			if ( is_multisite() && in_array( substr( site_url(), 7 ) . $post_info->ID, (array) $exclude_ids ) ) {
 				return null;
-			} else if ( ! is_multisite() && in_array( $post_info->ID, (array) $exclude_ids ) ) {
+			} elseif ( ! is_multisite() && in_array( $post_info->ID, (array) $exclude_ids ) ) {
 				return null;
 			}
 
 			$auth_info = get_userdata( $post_info->post_author );
 
-			# wpmu specific info
 			if ( is_multisite() ) {
-				// if we get here we expect that we've "switched" what blog we're running
-				// as
 				global $current_blog;
 
 				$blogid = get_current_blog_id();
@@ -203,7 +251,6 @@ class SolrPower_Sync {
 			$doc->setField( 'ID', $post_info->ID );
 			$doc->setField( 'permalink', get_permalink( $post_info->ID ) );
 			$doc->setField( 'wp', 'wp' );
-
 
 			$numcomments = 0;
 			if ( $index_comments ) {
@@ -243,7 +290,6 @@ class SolrPower_Sync {
 			$doc->setField( 'minute_i', date( 'i', $post_time ) );
 			$doc->setField( 'second_i', date( 's', $post_time ) );
 
-
 			$post_time = strtotime( $post_info->post_modified );
 			$doc->setField( 'post_modified_year_i', date( 'Y', $post_time ) );
 			$doc->setField( 'post_modified_month_i', date( 'm', $post_time ) );
@@ -260,7 +306,7 @@ class SolrPower_Sync {
 			$doc->setField( 'post_excerpt', $post_info->post_excerpt );
 
 			$categories = get_the_category( $post_info->ID );
-			if ( ! $categories == null ) {
+			if ( $categories ) {
 				foreach ( $categories as $category ) {
 					if ( $categoy_as_taxonomy ) {
 						$doc->addField( 'categories', get_category_parents( $category->cat_ID, false, '^^' ) );
@@ -271,7 +317,7 @@ class SolrPower_Sync {
 					$doc->addField( 'categories_slug_str', $category->slug );
 					$doc->addField( 'categories_id', $category->term_id );
 					$doc->addField( 'term_taxonomy_id', $category->term_taxonomy_id );
-					// Category Parents too:
+					// Category Parents too.
 					$the_cat = $category;
 					while ( 0 !== $the_cat->parent ) {
 						$the_cat = get_category( $the_cat->parent );
@@ -284,14 +330,16 @@ class SolrPower_Sync {
 				}
 			}
 
-			//get all the taxonomy names used by wp
-			$taxonomies = (array) get_taxonomies( array( '_builtin' => false ), 'names' );
+			// get all the taxonomy names used by wp.
+			$taxonomies = (array) get_taxonomies( array(
+				'_builtin' => false,
+			), 'names' );
 			foreach ( $taxonomies as $parent ) {
 				$terms = get_the_terms( $post_info->ID, $parent );
 				if ( (array) $terms === $terms ) {
-					//we are creating *_taxonomy as dynamic fields using our schema
-					//so lets set up all our taxonomies in that format
-					$parent = $parent . "_taxonomy";
+					// we are creating *_taxonomy as dynamic fields using our schema
+					// so lets set up all our taxonomies in that format.
+					$parent = $parent . '_taxonomy';
 					foreach ( $terms as $term ) {
 						$doc->addField( $parent . '_str', $term->name );
 						$doc->addField( $parent . '_slug_str', $term->slug );
@@ -302,7 +350,7 @@ class SolrPower_Sync {
 			}
 
 			$tags = get_the_tags( $post_info->ID );
-			if ( ! $tags == null ) {
+			if ( $tags ) {
 				foreach ( $tags as $tag ) {
 					$doc->addField( 'tags', $tag->name );
 					$doc->addField( 'tags_slug_str', $tag->slug );
@@ -311,7 +359,8 @@ class SolrPower_Sync {
 				}
 			}
 
-			if ( count( $index_custom_fields ) > 0 && count( $custom_fields = get_post_custom( $post_info->ID ) ) ) {
+			$custom_fields = get_post_custom( $post_info->ID );
+			if ( count( $index_custom_fields ) > 0 && count( $custom_fields ) ) {
 				$used = array();
 				foreach ( (array) $index_custom_fields as $field_name ) {
 					// test a php error notice.
@@ -326,7 +375,7 @@ class SolrPower_Sync {
 									$doc->addField( $field_name . '_d', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
 									$doc->addField( $field_name . '_f', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
 								}
-								$doc->addField( $field_name . '_s', $value  );
+								$doc->addField( $field_name . '_s', $value );
 							}
 							$doc->addField( $field_name . '_srch', $value );
 							$used[] = $field_name;
@@ -335,9 +384,9 @@ class SolrPower_Sync {
 				}
 			}
 		} else {
-			// this will fire during blog sign up on multisite, not sure why
+			// this will fire during blog sign up on multisite, not sure why.
 			esc_html_e( 'Post Information is NULL', 'solr-for-wordpress-on-pantheon' );
-		}
+		} // End if().
 
 		/**
 		 * Filter the generated Solr document.
@@ -348,22 +397,29 @@ class SolrPower_Sync {
 		return apply_filters( 'solr_build_document', $doc, $post_info );
 	}
 
+	/**
+	 * Post documents to the Solr index
+	 *
+	 * @param array   $documents Array of Solr documents.
+	 * @param boolean $commit    Whether or not to commit the documents.
+	 * @param boolean $optimize  Whether or not to optimize the index.
+	 */
 	function post( $documents, $commit = true, $optimize = false ) {
 		try {
 			$solr = get_solr();
-			if ( ! $solr == null ) {
+			if ( null !== $solr ) {
 
 				$update = $solr->createUpdate();
 
 				if ( $documents ) {
-					syslog( LOG_INFO, "posting " . count( $documents ) . " documents for blog:" . get_bloginfo( 'wpurl' ) );
+					syslog( LOG_INFO, 'posting ' . count( $documents ) . ' documents for blog:' . get_bloginfo( 'wpurl' ) );
 					$update->addDocuments( $documents );
 				} else {
-					syslog( LOG_INFO, "posting failed documents for blog:" . get_bloginfo( 'wpurl' ) );
+					syslog( LOG_INFO, 'posting failed documents for blog:' . get_bloginfo( 'wpurl' ) );
 				}
 
 				if ( $commit ) {
-					syslog( LOG_INFO, "telling Solr to commit" );
+					syslog( LOG_INFO, 'telling Solr to commit' );
 					$update->addCommit();
 					$solr->update( $update );
 				}
@@ -372,11 +428,11 @@ class SolrPower_Sync {
 					$update = $solr->createUpdate();
 					$update->addOptimize();
 					$solr->update( $update );
-					syslog( LOG_INFO, "Optimizing: " . get_bloginfo( 'wpurl' ) );
+					syslog( LOG_INFO, 'Optimizing: ' . get_bloginfo( 'wpurl' ) );
 				}
 				wp_cache_delete( 'solr_index_stats', 'solr' );
 			} else {
-				syslog( LOG_ERR, "failed to get a solr instance created" );
+				syslog( LOG_ERR, 'failed to get a solr instance created' );
 				$this->error_msg = esc_html( 'failed to get a solr instance created' );
 
 				return false;
@@ -385,13 +441,18 @@ class SolrPower_Sync {
 			$this->error_msg = esc_html( $e->getMessage() );
 
 			return false;
-		}
+		} // End try().
 	}
 
+	/**
+	 * Delete a specific document from the index
+	 *
+	 * @param integer $doc_id Document id.
+	 */
 	function delete( $doc_id ) {
 		try {
 			$solr = get_solr();
-			if ( ! $solr == null ) {
+			if ( null !== $solr ) {
 				$update = $solr->createUpdate();
 				$update->addDeleteById( $doc_id );
 				$update->addCommit();
@@ -407,11 +468,14 @@ class SolrPower_Sync {
 
 	}
 
+	/**
+	 * Delete all documents in the index.
+	 */
 	function delete_all() {
 		try {
 			$solr = get_solr();
 
-			if ( ! $solr == null ) {
+			if ( null !== $solr ) {
 				$update = $solr->createUpdate();
 				$update->addDeleteQuery( '*:*' );
 				$update->addCommit();
@@ -427,46 +491,54 @@ class SolrPower_Sync {
 		}
 	}
 
+	/**
+	 * Load all posts into the index
+	 *
+	 * @param integer $prev      Offset to begin at.
+	 * @param string  $post_type Post type to index.
+	 * @param integer $limit     Number of posts to index.
+	 * @param boolean $echo      Whether or not to echo output.
+	 */
 	function load_all_posts( $prev, $post_type = 'post', $limit = 5, $echo = true ) {
 		global $wpdb, $current_blog, $current_site;
 		$documents = array();
 		$cnt       = 0;
 		$batchsize = 500;
-		$last      = "";
+		$last      = '';
 		$found     = false;
 		$end       = false;
 		$percent   = 0;
-		//multisite logic is decided s4wp_get_option
+		// multisite logic is decided s4wp_get_option.
 		$plugin_s4wp_settings = solr_options();
 		if ( isset( $blog ) ) {
 			$blog_id = $blog->blog_id;
 		}
 		if ( is_multisite() ) {
 
-			// there is potential for this to run for an extended period of time, depending on the # of blgos
-			syslog( LOG_ERR, "starting batch import, setting max execution time to unlimited" );
+			// there is potential for this to run for an extended period of time, depending on the # of blogs.
+			syslog( LOG_ERR, 'starting batch import, setting max execution time to unlimited' );
 			ini_set( 'memory_limit', '1024M' );
 			set_time_limit( 0 );
 
-			// get a list of blog ids
+			// get a list of blog ids.
 			$bloglist = $wpdb->get_col( "SELECT * FROM {$wpdb->base_prefix}blogs WHERE spam = 0 AND deleted = 0", 0 );
-			syslog( LOG_INFO, "pushing posts from " . count( $bloglist ) . " blogs into Solr" );
+			syslog( LOG_INFO, 'pushing posts from ' . count( $bloglist ) . ' blogs into Solr' );
 			foreach ( $bloglist as $bloginfo ) {
 
 				// for each blog we need to import we get their id
-				// and tell wordpress to switch to that blog
+				// and tell wordpress to switch to that blog.
 				$blog_id = trim( $bloginfo );
 				syslog( LOG_INFO, "switching to blogid $blog_id" );
 
-				// attempt to save some memory by flushing wordpress's cache
+				// attempt to save some memory by flushing wordpress's cache.
 				wp_cache_flush();
 
 				// everything just works better if we tell wordpress
 				// to switch to the blog we're using, this is a multi-site
-				// specific function
+				// specific function.
 				switch_to_blog( $blog_id );
 
-				// now we actually gather the blog posts
+				// now we actually gather the blog posts.
 				$args    = array(
 
 					/**
@@ -480,7 +552,7 @@ class SolrPower_Sync {
 					'post_status'    => SolrPower::get_post_statuses(),
 					'fields'         => 'ids',
 					'posts_per_page' => absint( $limit ),
-					'offset'         => absint( $prev )
+					'offset'         => absint( $prev ),
 				);
 				$query   = new WP_Query( $args );
 				$postids = $query->posts;
@@ -505,7 +577,7 @@ class SolrPower_Sync {
 					}
 
 					// using wpurl is better because it will return the proper
-					// URL for the blog whether it is a subdomain install or otherwise
+					// URL for the blog whether it is a subdomain install or otherwise.
 					$solr        = get_solr();
 					$update      = $solr->createUpdate();
 					$documents[] = $this->build_document( $update->createDocument(), get_blog_post( $blog_id, $postid ), substr( get_bloginfo( 'wpurl' ), 7 ), $current_site->path );
@@ -519,16 +591,16 @@ class SolrPower_Sync {
 					}
 				}
 				// post the documents to Solr
-				// and reset the batch counters
+				// and reset the batch counters.
 				$this->post( $documents, true, false );
 				$this->post( false, true, false );
 				$cnt       = 0;
 				$documents = array();
 				syslog( LOG_INFO, "finished building $postcount documents for " . substr( get_bloginfo( 'wpurl' ), 7 ) );
 				wp_cache_flush();
-			}
+			} // End foreach().
 
-			// done importing so lets switch back to the proper blog id
+			// done importing so lets switch back to the proper blog id.
 			restore_current_blog();
 		} else {
 			$args      = array(
@@ -544,14 +616,14 @@ class SolrPower_Sync {
 				'post_status'    => SolrPower::get_post_statuses(),
 				'fields'         => 'ids',
 				'posts_per_page' => absint( $limit ),
-				'offset'         => absint( $prev )
+				'offset'         => absint( $prev ),
 			);
 			$query     = new WP_Query( $args );
 			$posts     = $query->posts;
 			$postcount = count( $posts );
 			if ( 0 == $postcount ) {
 				$end     = true;
-				$results = sprintf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
+				$results = sprintf( '{"type": "' . $post_type . '", "last": "%s", "end": true, "percent": "%.2f"}', $last, 100 );
 				if ( $echo ) {
 					echo $results;
 				}
@@ -574,17 +646,17 @@ class SolrPower_Sync {
 					break;
 				}
 			}
-		}
+		} // End if().
 
 		if ( $documents ) {
 			$this->post( $documents, true, false );
 		}
 
 		if ( 100 <= $percent ) {
-			$results = sprintf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": true, \"percent\": \"%.2f\"}", $last, 100 );
+			$results = sprintf( '{"type": "' . $post_type . '", "last": "%s", "end": true, "percent": "%.2f"}', $last, 100 );
 			do_action( 'solr_power_index_all_finished' );
 		} else {
-			$results = sprintf( "{\"type\": \"" . $post_type . "\", \"last\": \"%s\", \"end\": false, \"percent\": \"%.2f\"}", $last, $percent );
+			$results = sprintf( '{"type\": "' . $post_type . '", "last": "%s", "end": false, "percent": "%.2f"}', $last, $percent );
 		}
 		if ( $echo ) {
 			echo $results;
@@ -595,6 +667,12 @@ class SolrPower_Sync {
 		return $results;
 	}
 
+	/**
+	 * Format a date string
+	 *
+	 * @param string $thedate Date string.
+	 * @return string
+	 */
 	function format_date( $thedate ) {
 		$datere  = '/(\d{4}-\d{2}-\d{2})\s(\d{2}:\d{2}:\d{2})/';
 		$replstr = '${1}T${2}Z';
@@ -602,8 +680,9 @@ class SolrPower_Sync {
 		return preg_replace( $datere, $replstr, $thedate );
 	}
 
-	// copies config settings from the main blog
-// to all of the other blogs
+	/**
+	 * Copy config settings from the main blog to all other blogs
+	 */
 	function copy_config_to_all_blogs() {
 		global $wpdb;
 
