@@ -10,8 +10,6 @@
 	<exclude-pattern>*/tests/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 
-	<exclude-pattern>*/includes/class-solrpower-sync.php</exclude-pattern>
-
 	<rule ref="Squiz.Commenting.FunctionComment.MissingParamTag">
 		<exclude-pattern>*/includes/class-solrpower-cli.php</exclude-pattern>
 	</rule>
