@@ -1,20 +1,32 @@
 <?php
+/**
+ * Controller for options configuration
+ *
+ * @package SolrPower_Options
+ */
 
+/**
+ * Controller for options configuration
+ */
 class SolrPower_Options {
 
 	/**
 	 * Singleton instance
+	 *
 	 * @var SolrPower_Options|Bool
 	 */
 	private static $instance = false;
 
 	/**
-	 * @var null|string Admin message.
+	 * Admin message.
+	 *
+	 * @var null|string
 	 */
 	public $msg = null;
 
 	/**
 	 * Grab instance of object.
+	 *
 	 * @return SolrPower_Options
 	 */
 	public static function get_instance() {
@@ -25,6 +37,9 @@ class SolrPower_Options {
 		return self::$instance;
 	}
 
+	/**
+	 * Instantiate the options object
+	 */
 	function __construct() {
 		$menu_action = is_multisite() ? 'network_admin_menu' : 'admin_menu';
 		add_action( $menu_action, array( $this, 'add_pages' ) );
@@ -34,6 +49,9 @@ class SolrPower_Options {
 		add_action( 'wpmuadminedit', array( $this, 'action_wpmuadminedit' ) );
 	}
 
+	/**
+	 * Register the options page
+	 */
 	function add_pages() {
 		add_menu_page( 'Solr Power', 'Solr Power', 'manage_options', 'solr-power', array(
 			$this,
@@ -41,6 +59,9 @@ class SolrPower_Options {
 		), 'dashicons-search' );
 	}
 
+	/**
+	 * Render the options page
+	 */
 	function options_page() {
 		if ( file_exists( SOLR_POWER_PATH . '/solr-options-page.php' ) ) {
 			include( SOLR_POWER_PATH . '/solr-options-page.php' );
@@ -59,7 +80,7 @@ class SolrPower_Options {
 			return;
 		}
 
-		// Mostly cribbed from wp-admin/options.php
+		// Mostly cribbed from wp-admin/options.php.
 		$option_page = sanitize_text_field( $_POST['option_page'] );
 		check_admin_referer( $option_page . '-options' );
 		$whitelist_options = apply_filters( 'whitelist_options', array() );
@@ -83,7 +104,6 @@ class SolrPower_Options {
 
 	/**
 	 * AJAX Callback
-	 *
 	 */
 	function options_load() {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -97,8 +117,9 @@ class SolrPower_Options {
 				$query_args['batch'] = 1;
 			}
 			$batch_index = new SolrPower_Batch_Index( $query_args );
-			$success_posts = $failed_posts = 0;
-			while( $batch_index->have_posts() ) {
+			$success_posts = 0;
+			$failed_posts = 0;
+			while ( $batch_index->have_posts() ) {
 				$result = $batch_index->index_post();
 				if ( 'success' === $result['status'] ) {
 					$success_posts++;
@@ -122,6 +143,11 @@ class SolrPower_Options {
 		die();
 	}
 
+	/**
+	 * Get the Solr Power option, depending on whether it's multisite or not
+	 *
+	 * @return array
+	 */
 	function get_option() {
 		$option = 'plugin_s4wp_settings';
 		if ( is_multisite() ) {
@@ -131,6 +157,11 @@ class SolrPower_Options {
 		}
 	}
 
+	/**
+	 * Update the Solr Power option, depending on whether it's multisite or not
+	 *
+	 * @param array $options Full options array.
+	 */
 	function update_option( $options ) {
 		$optval   = $this->sanitise_options( $options );
 		$option   = 'plugin_s4wp_settings';
@@ -145,7 +176,7 @@ class SolrPower_Options {
 	/**
 	 * Sanitises the options values
 	 *
-	 * @param $options array of s4w settings options
+	 * @param array $options Array of s4w settings options.
 	 *
 	 * @return array $options sanitised values
 	 */
@@ -187,7 +218,7 @@ class SolrPower_Options {
 	/**
 	 * Converts comma separated string of integers to array.
 	 *
-	 * @param string $input
+	 * @param string $input String to convert.
 	 *
 	 * @return array
 	 */
@@ -208,7 +239,7 @@ class SolrPower_Options {
 	/**
 	 * Converts comma separated string to array.
 	 *
-	 * @param string $input
+	 * @param string $input String to convert.
 	 *
 	 * @return array
 	 */
@@ -226,18 +257,17 @@ class SolrPower_Options {
 	/**
 	 * Converts array to a comma separated string.
 	 *
-	 * @param array $input
-	 *
+	 * @param array $input Array to convert.
 	 * @return string
 	 */
 	function filter_list2str( $input ) {
 		if ( ! is_array( $input ) ) {
-			return "";
+			return '';
 		}
 
 		$outval = implode( ',', $input );
 		if ( ! $outval ) {
-			$outval = "";
+			$outval = '';
 		}
 
 		return $outval;
@@ -245,7 +275,6 @@ class SolrPower_Options {
 
 	/**
 	 * Sets the default options.
-	 * @return array
 	 */
 	function initalize_options() {
 		$options = array();
@@ -329,16 +358,14 @@ class SolrPower_Options {
 				$output    = SolrPower_Api::get_instance()->submit_schema();
 				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' ) . '<br />' . esc_html( $output );
 				break;
-
-
-		}
+		} // End switch().
 
 	}
 
 	/**
 	 * Verifies if nonce is valid for action taken.
 	 *
-	 * @param string $field
+	 * @param string $field Field to check the nonce for.
 	 *
 	 * @return bool
 	 */
@@ -346,7 +373,7 @@ class SolrPower_Options {
 		if ( ! isset( $_POST[ $field ] )
 		     || ! wp_verify_nonce( $_POST[ $field ], 'solr_action' )
 		) {
-			$this->msg = esc_html__( 'Action failed. Please try again.' . $field, 'solr-for-wordpress-on-pantheon' );
+			$this->msg = esc_html__( 'Action failed. Please try again.', 'solr-for-wordpress-on-pantheon' );
 
 			return false;
 		}
@@ -368,7 +395,7 @@ class SolrPower_Options {
 	/**
 	 * Generates HTML form fields based upon array of arguments sent (field, filter, type, choices).
 	 *
-	 * @param array $args
+	 * @param array $args Arguments for rendering the field.
 	 */
 	function render_field( $args ) {
 
@@ -378,11 +405,11 @@ class SolrPower_Options {
 		switch ( $args['type'] ) {
 			case 'input':
 				echo '<input type="text" name="plugin_s4wp_settings[' . esc_attr( $field_name ) . ']" value="' . esc_attr( $value ) . '"/>';
-				echo PHP_EOL; //XSS ok
+				echo PHP_EOL; // XSS ok.
 				break;
 			case 'checkbox':
 				echo '<input type="checkbox" name="plugin_s4wp_settings[' . esc_attr( $field_name ) . ']" value="1" ' . checked( $value, 1, false ) . '/>';
-				echo PHP_EOL; //XSS ok
+				echo PHP_EOL; // XSS ok.
 				break;
 			case 'radio':
 				if ( ! isset( $args['choices'] ) || ! is_array( $args['choices'] ) ) {
@@ -394,7 +421,7 @@ class SolrPower_Options {
 				foreach ( $args['choices'] as $choice ) {
 					echo esc_html( $choice ) . ' ';
 					echo '<input type="radio" name="plugin_s4wp_settings[' . esc_attr( $field_name ) . ']" value="' . esc_attr( $choice ) . '" ' . checked( $value, $choice, false ) . '/>';
-					echo PHP_EOL; //XSS ok
+					echo PHP_EOL; // XSS ok.
 				}
 
 				break;
@@ -406,15 +433,15 @@ class SolrPower_Options {
 					$value = $args['choices'][0];
 				}
 				echo '<select name="plugin_s4wp_settings[' . esc_attr( $field_name ) . ']">';
-				echo PHP_EOL; //XSS ok
+				echo PHP_EOL; // XSS ok.
 				foreach ( $args['choices'] as $choice ) {
 					echo '<option value="' . esc_attr( $choice ) . '" ' . selected( $value, $choice, false ) . '>' . esc_attr( $choice ) . '</option>';
-					echo PHP_EOL; //XSS ok
+					echo PHP_EOL; // XSS ok.
 				}
 				echo '</select>';
-				echo PHP_EOL; //XSS ok
+				echo PHP_EOL; // XSS ok.
 				break;
-		}
+		} // End switch().
 	}
 
 	/**
@@ -522,23 +549,25 @@ class SolrPower_Options {
 	/**
 	 * Adds the settings field with custom arguments.
 	 *
-	 * @param string      $name    Option Key
-	 * @param string      $title   Name of field /  label
-	 * @param string      $section The section the field is going to be registered to
-	 * @param string      $type    Type of form element (input, checkbox, radio, select)
+	 * @param string      $name    Option Key.
+	 * @param string      $title   Name of field / label.
+	 * @param string      $page    Settings page slug.
+	 * @param string      $section The section the field is going to be registered to.
+	 * @param string      $type    Type of form element (input, checkbox, radio, select).
 	 * @param null|string $filter  Any value typesetting that needs to be done.
 	 * @param null|string $choices Any default choices for select or radio options.
 	 */
 	private function add_field( $name, $title, $page = 'solr-power', $section, $type, $filter = null, $choices = null ) {
-		add_settings_field( $name, $title, array(
-			$this,
-			'render_field'
-		), $page, $section, array(
+		$args = array(
 			'field'   => $name,
 			'type'    => $type,
 			'filter'  => $filter,
-			'choices' => $choices
-		) );
+			'choices' => $choices,
+		);
+		add_settings_field( $name, $title, array(
+			$this,
+			'render_field',
+		), $page, $section, $args );
 	}
 
 }
