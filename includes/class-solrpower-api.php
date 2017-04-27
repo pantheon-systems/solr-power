@@ -1,38 +1,60 @@
 <?php
+/**
+ * Interface to the Solr instance.
+ *
+ * @package SolrPower_API
+ */
 
+/**
+ * Interface to the Solr instance.
+ */
 class SolrPower_Api {
 
 	/**
 	 * Singleton instance
+	 *
 	 * @var SolrPower_Api|Bool
 	 */
 	private static $instance = false;
 
 	/**
 	 * Logging for debugging.
+	 *
 	 * @var array
 	 */
 	public $log = array();
 
+	/**
+	 * Solr instance
+	 *
+	 * @var Solarium\Client|null
+	 */
 	public $solr = null;
 
 	/**
-	 * @var string Last response code/exception code.
+	 * Last response code/exception code.
+	 *
+	 * @var string
 	 */
 	public $last_code;
 
 	/**
-	 * @var string Last exception returned.
+	 * Ping results from Solr.
+	 *
+	 * @var string
 	 */
 	public $last_error;
 
 	/**
-	 * @var bool Ping results from Solr.
+	 * Ping results from Solr.
+	 *
+	 * @var bool
 	 */
 	public $ping = false;
 
 	/**
 	 * Grab instance of object.
+	 *
 	 * @return SolrPower_Api
 	 */
 	public static function get_instance() {
@@ -43,20 +65,25 @@ class SolrPower_Api {
 		return self::$instance;
 	}
 
+	/**
+	 * Instantiate the API object.
+	 */
 	function __construct() {
 		add_action( 'admin_notices', array( $this, 'check_for_schema' ) );
 		add_action( 'init', array( $this, 'ping_server' ) );
 	}
 
+	/**
+	 * Submit the schema to Solr.
+	 */
 	function submit_schema() {
 		// Solarium does not currently support submitting schemas to the server.
-		// So we'll do it ourselves
-
-		$returnValue = '';
+		// So we'll do it ourselves.
+		$return_value = '';
 		$upload_dir  = wp_upload_dir();
 
 		// Let's check for a custom Schema.xml. It MUST be located in
-		// wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml
+		// wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml.
 		if ( ! empty( $_ENV['FILEMOUNT'] ) && is_file( realpath( ABSPATH ) . '/' . $_ENV['FILEMOUNT'] . '/solr-for-wordpress-on-pantheon/schema.xml' ) ) {
 			$schema = realpath( ABSPATH ) . '/' . $_ENV['FILEMOUNT'] . '/solr-for-wordpress-on-pantheon/schema.xml';
 		} else {
@@ -70,8 +97,9 @@ class SolrPower_Api {
 		/*
 		 * A couple of quick checks to make sure everything seems sane
 		 */
-		if ( $errorMessage = SolrPower::get_instance()->sanity_check() ) {
-			return $errorMessage;
+		$error_message = SolrPower::get_instance()->sanity_check();
+		if ( $error_message ) {
+			return $error_message;
 		}
 
 		if ( ! file_exists( $schema ) ) {
@@ -82,9 +110,8 @@ class SolrPower_Api {
 			return $client_cert . ' does not exist.';
 		}
 
-
 		$file = fopen( $schema, 'r' );
-		// set URL and other appropriate options
+		// set URL and other appropriate options.
 		$opts = array(
 			CURLOPT_URL            => $url,
 			CURLOPT_PORT           => getenv( 'PANTHEON_INDEX_PORT' ),
@@ -105,24 +132,25 @@ class SolrPower_Api {
 		$curl_opts = curl_getinfo( $ch );
 		fclose( $file );
 		if ( 200 === (int) $curl_opts['http_code'] ) {
-			$returnValue = 'Schema Upload Success: ' . $curl_opts['http_code'];
+			$return_value = 'Schema Upload Success: ' . $curl_opts['http_code'];
 		} else {
-			$returnValue = 'Schema Upload Error: ' . $curl_opts['http_code'];
+			$return_value = 'Schema Upload Error: ' . $curl_opts['http_code'];
 			if ( preg_match( '#<h1>(HTTP Status [\d]+ - )?(.+)</h1>#', $response, $matches ) ) {
-				$returnValue .= ' - ' . $matches[2];
+				$return_value .= ' - ' . $matches[2];
 			}
 		}
 
-		return $returnValue;
+		return $return_value;
 	}
 
 	/**
-	 * build the path that the Solr server uses
+	 * Build the path that the Solr server uses
+	 *
 	 * @return string
 	 */
 	function compute_path() {
-		if (!defined('SOLR_PATH') && getenv( 'SOLR_PATH' )) {
-			define('SOLR_PATH', getenv( 'SOLR_PATH' ));
+		if ( ! defined( 'SOLR_PATH' ) && getenv( 'SOLR_PATH' ) ) {
+			define( 'SOLR_PATH', getenv( 'SOLR_PATH' ) );
 		}
 		if ( defined( 'SOLR_PATH' ) ) {
 			return SOLR_PATH;
@@ -132,7 +160,8 @@ class SolrPower_Api {
 	}
 
 	/**
-	 * check if the server by pinging it
+	 * Check if the server is available by pinging it
+	 *
 	 * @return boolean
 	 */
 	function ping_server() {
@@ -158,13 +187,12 @@ class SolrPower_Api {
 
 	/**
 	 * Connect to the solr service
+	 *
 	 * @return Solarium\Client Solr service object
 	 */
 	function get_solr() {
 
-		# get the connection options
 		$plugin_s4wp_settings = solr_options();
-
 		$solarium_config = array(
 			'endpoint' => array(
 				'localhost' => array(
@@ -172,9 +200,11 @@ class SolrPower_Api {
 					'port'   => getenv( 'PANTHEON_INDEX_PORT' ),
 					'scheme' => $this->get_default_scheme(),
 					'path'   => $this->compute_path(),
-					'ssl'    => array( 'local_cert' => realpath( ABSPATH . '../certs/binding.pem' ) )
-				)
-			)
+					'ssl'    => array(
+						'local_cert' => realpath( ABSPATH . '../certs/binding.pem' ),
+					),
+				),
+			),
 		);
 
 		/**
@@ -190,17 +220,15 @@ class SolrPower_Api {
 		 */
 		$solarium_config = apply_filters( 's4wp_connection_options', $solarium_config );
 
-
-		# double check everything has been set
-		if ( ! ( $solarium_config['endpoint']['localhost']['host'] and
-		         $solarium_config['endpoint']['localhost']['port'] and
+		// double check everything has been set.
+		if ( ! ( $solarium_config['endpoint']['localhost']['host'] &&
+		         $solarium_config['endpoint']['localhost']['port'] &&
 		         $solarium_config['endpoint']['localhost']['path'] )
 		) {
 			syslog( LOG_ERR, "host, port or path are empty, host:$host, port:$port, path:$path" );
 
 			return null;
 		}
-
 
 		$solr = new Solarium\Client( $solarium_config );
 
@@ -220,10 +248,13 @@ class SolrPower_Api {
 		return $solr;
 	}
 
+	/**
+	 * Trigger Solr indexing process.
+	 */
 	function optimize() {
 		try {
 			$solr = get_solr();
-			if ( ! $solr == null ) {
+			if ( null !== $solr ) {
 				$update = $solr->createUpdate();
 				$update->addOptimize();
 				$solr->update( $update );
@@ -238,18 +269,18 @@ class SolrPower_Api {
 	 * passes all parameters to the appropriate function based on the server name
 	 * This allows for extensible server/core based query functions.
 	 *
-	 * @param $qry
-	 * @param $offset
-	 * @param $count
-	 * @param $fq
-	 * @param $sortby
-	 * @param $order
-	 * @param string $server
+	 * @param string  $qry    Solr query.
+	 * @param integer $offset Offset for the query.
+	 * @param integer $count  Total number of results to return.
+	 * @param array   $fq     Any facet queries to apply.
+	 * @param string  $sortby Sort results by an attribute.
+	 * @param string  $order  Order results ascending or descending.
+	 * @param array   $fields Fields to include.
 	 *
 	 * @return Solarium\QueryType\Select\Result\Result
 	 */
 	function query( $qry, $offset, $count, $fq, $sortby, $order, $fields = null ) {
-		//NOTICE: does this needs to be cached to stop the db being hit to grab the options everytime search is being done.
+		// NOTICE: does this needs to be cached to stop the db being hit to grab the options everytime search is being done.
 		$plugin_s4wp_settings = solr_options();
 
 		$solr = get_solr();
@@ -258,14 +289,18 @@ class SolrPower_Api {
 	}
 
 	/**
-	 * @param Solarium\Client $solr
-	 * @param $qry
-	 * @param $offset
-	 * @param $count
-	 * @param $fq
-	 * @param $sortby
-	 * @param $order
-	 * @param $plugin_s4wp_settings
+	 * Perform a Solr query.
+	 *
+	 * @param Solarium\Client $solr   Solarium instance.
+	 * @param string          $qry    Solr query.
+	 * @param integer         $offset Offset for the query.
+	 * @param integer         $count  Total number of results to return.
+	 * @param array           $fq     Any facet queries to apply.
+	 * @param string          $sortby Sort results by an attribute.
+	 * @param string          $order  Order results ascending or descending.
+	 * @param array           $plugin_s4wp_settings Plugin settings.
+	 * @param array           $fields Fields to include.
+	 * @param integer         $blogid Limit results to those of a specific blog.
 	 *
 	 * @return Solarium\QueryType\Select\Result\Result
 	 */
@@ -276,9 +311,8 @@ class SolrPower_Api {
 			'Count'        => $count,
 			'Filter Query' => $fq,
 			'Sort By'      => $sortby,
-			'Order'        => $order
+			'Order'        => $order,
 		) );
-
 
 		$response         = null;
 		$facet_fields     = array();
@@ -302,12 +336,13 @@ class SolrPower_Api {
 			$facet_fields[] = 'post_type';
 		}
 
-
 		$facet_on_custom_taxonomy = $plugin_s4wp_settings['s4wp_facet_on_taxonomy'];
 		if ( count( $facet_on_custom_taxonomy ) ) {
-			$taxonomies = (array) get_taxonomies( array( '_builtin' => false ), 'names' );
+			$taxonomies = (array) get_taxonomies( array(
+				'_builtin' => false,
+			), 'names' );
 			foreach ( $taxonomies as $parent ) {
-				$facet_fields[] = $parent . "_taxonomy";
+				$facet_fields[] = $parent . '_taxonomy';
 			}
 		}
 
@@ -332,24 +367,28 @@ class SolrPower_Api {
 				'fields'     => '*,score',
 				'start'      => $offset,
 				'rows'       => $count,
-				'omitheader' => false
+				'omitheader' => false,
 			);
-			if ( $sortby !== "" ) {
-				$select['sort'] = array( $sortby => $order );
+			if ( '' !== $sortby ) {
+				$select['sort'] = array(
+					$sortby => $order,
+				);
 			} else {
-				$select['sort'] = array( 'post_date' => 'desc' );
+				$select['sort'] = array(
+					'post_date' => 'desc',
+				);
 			}
 			$select   = apply_filters( 'solr_select_query', $select );
 			$query    = $solr->createSelect( $select );
 			$dismax   = $query->getDisMax();
-			$facetSet = $query->getFacetSet();
+			$facet_set = $query->getFacetSet();
 
 			if ( is_multisite() ) {
 				$facet_fields[] = 'blogid';
 			}
 
 			foreach ( $facet_fields as $facet_field ) {
-				$facetSet->createFacetField( $facet_field )->setField( $facet_field );
+				$facet_set->createFacetField( $facet_field )->setField( $facet_field );
 			}
 
 			/**
@@ -372,9 +411,9 @@ class SolrPower_Api {
 			 */
 			$dismax = apply_filters( 'solr_dismax_query', $dismax, $query );
 
-			$facetSet->setMinCount( 1 );
+			$facet_set->setMinCount( 1 );
 			if ( $facet_on_tags ) {
-				$facetSet->setLimit( $number_of_tags );
+				$facet_set->setLimit( $number_of_tags );
 			}
 
 			if ( isset( $fq ) ) {
@@ -384,7 +423,6 @@ class SolrPower_Api {
 				if ( '' !== $fq ) {
 					$query->createFilterQuery( 'searchfq' )->setQuery( $fq );
 				}
-
 			}
 			if ( is_multisite() && false !== $blogid ) {
 				if ( is_null( $blogid ) ) {
@@ -418,11 +456,10 @@ class SolrPower_Api {
 					$response = null;
 				}
 			} catch ( Exception $e ) {
-				syslog( LOG_ERR, "failed to query solr. " . $e->getMessage() );
+				syslog( LOG_ERR, 'failed to query solr. ' . $e->getMessage() );
 				$response = null;
 			}
-		}
-
+		} // End if().
 
 		return $response;
 	}
@@ -438,6 +475,7 @@ class SolrPower_Api {
 
 	/**
 	 * Loops through each public post type and returns array of index count.
+	 *
 	 * @return array
 	 */
 	function index_stats() {
@@ -461,13 +499,11 @@ class SolrPower_Api {
 	/**
 	 * Queries Solr with specified post_type and returns number found.
 	 *
-	 * @param $type
-	 *
+	 * @param string $type Post type registered with WordPress.
 	 * @return int
 	 */
 	private function fetch_stat( $type ) {
 		// Can't do wildcard with dismax...
-
 		add_filter( 'solr_query', array( $this, 'dismax_query' ), 10, 2 );
 		$qry    = 'post_type:' . $type;
 		$offset = 0;
@@ -501,8 +537,8 @@ class SolrPower_Api {
 				$this->ping_server();
 
 				if ( 404 === $this->last_code ) { // Schema is missing on Pantheon.
-					$schemaSubmit = $this->submit_schema();
-					if ( strpos( $schemaSubmit, 'Error' ) ) {
+					$submit_schema = $this->submit_schema();
+					if ( strpos( $submit_schema, 'Error' ) ) {
 						echo '<div class="notice notice-error"><p>';
 						echo '<h2>Solr Power Error:</h2>';
 						echo 'Error posting schema.xml to ApacheSolr backend, which will prevent content from being indexed. You can try navigating to the Solr Power admin section in the WordPress dashboard to try posting the schema directly. If this problem persists, open a support ticket from you Pantheon site dashboard.';
@@ -512,7 +548,6 @@ class SolrPower_Api {
 				// Set a transient so we are not checking on every page load.
 				set_transient( 'schema_check', '1', 300 );
 			}
-
 		}
 	}
 
@@ -537,8 +572,10 @@ class SolrPower_Api {
 	}
 
 	/**
-	 * @param Solarium\QueryType\Select\Query\Query $query
-	 * @param Solarium\QueryType\Select\Query\Component\DisMax $dismax
+	 * Set a basic dismax query
+	 *
+	 * @param Solarium\QueryType\Select\Query\Query            $query  Solarium query object.
+	 * @param Solarium\QueryType\Select\Query\Component\DisMax $dismax Solarium dismax object.
 	 *
 	 * @return Solarium\QueryType\Select\Query\Query
 	 */
@@ -567,4 +604,5 @@ class SolrPower_Api {
 		 */
 		return apply_filters( 'solr_scheme', $default_scheme );
 	}
+
 }

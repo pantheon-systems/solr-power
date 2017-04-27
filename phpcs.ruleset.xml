@@ -10,7 +10,6 @@
 	<exclude-pattern>*/tests/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 
-	<exclude-pattern>*/includes/class-solrpower-api.php</exclude-pattern>
 	<exclude-pattern>*/includes/class-solrpower-debug.php</exclude-pattern>
 	<exclude-pattern>*/includes/class-solrpower-options.php</exclude-pattern>
 	<exclude-pattern>*/includes/class-solrpower-sync.php</exclude-pattern>
