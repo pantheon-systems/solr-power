@@ -12,7 +12,6 @@
 
 	<exclude-pattern>*/includes/class-solrpower-sync.php</exclude-pattern>
 	<exclude-pattern>*/includes/class-solrpower-wp-query.php</exclude-pattern>
-	<exclude-pattern>*/includes/legacy-functions.php</exclude-pattern>
 
 	<rule ref="Squiz.Commenting.FunctionComment.MissingParamTag">
 		<exclude-pattern>*/includes/class-solrpower-cli.php</exclude-pattern>
