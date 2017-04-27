@@ -16,8 +16,6 @@
 	<exclude-pattern>*/includes/class-solrpower-sync.php</exclude-pattern>
 	<exclude-pattern>*/includes/class-solrpower-wp-query.php</exclude-pattern>
 	<exclude-pattern>*/includes/legacy-functions.php</exclude-pattern>
-	<exclude-pattern>*/template/s4w_search.php</exclude-pattern>
-	<exclude-pattern>*/template/s4wp_search.php</exclude-pattern>
 
 	<rule ref="Squiz.Commenting.FunctionComment.MissingParamTag">
 		<exclude-pattern>*/includes/class-solrpower-cli.php</exclude-pattern>
@@ -25,5 +23,9 @@
 
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
 		<exclude-pattern>*/tests/*</exclude-pattern>
+	</rule>
+
+	<rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
+		<exclude-pattern>*/template/*</exclude-pattern>
 	</rule>
 </ruleset>
