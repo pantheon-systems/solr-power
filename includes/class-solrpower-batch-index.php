@@ -1,4 +1,9 @@
 <?php
+/**
+ * Index a batch of WordPress posts
+ *
+ * @package Solr_Power
+ */
 
 /**
  * Index a batch of WordPress posts
@@ -70,6 +75,8 @@ class SolrPower_Batch_Index {
 
 	/**
 	 * Instantiate the batch index object.
+	 *
+	 * @param array $query_args Override arguments passed to WP_Query.
 	 */
 	public function __construct( $query_args = array() ) {
 		$defaults = array(
@@ -78,14 +85,14 @@ class SolrPower_Batch_Index {
 			'posts_per_page'  => 100,
 		);
 		$clean_query_args = array();
-		foreach( $defaults as $key => $value ) {
+		foreach ( $defaults as $key => $value ) {
 			$clean_query_args[ $key ] = isset( $query_args[ $key ] ) ? $query_args[ $key ] : $value;
 		}
-		// Always need to iterate post ids
+		// Always need to iterate post ids.
 		$clean_query_args['fields'] = 'ids';
 		$clean_query_args['orderby'] = 'ID';
 		$clean_query_args['order'] = 'ASC';
-		// Generate a cache key to store the current page
+		// Generate a cache key to store the current page.
 		$this->batch_cache_key = 'solr_power_' . md5( serialize( $clean_query_args ) );
 		// Include 'paged' always starts at that page,
 		// otherwise try to restore the page from cache.
@@ -104,9 +111,10 @@ class SolrPower_Batch_Index {
 		if ( $this->query_args['paged'] > 1 ) {
 			$found_posts = $found_posts - ( ( $this->query_args['paged'] - 1 ) * $this->query_args['posts_per_page'] );
 		}
-		$this->total_posts = $this->remaining_posts = $found_posts;
+		$this->total_posts = $found_posts;
+		$this->remaining_posts = $found_posts;
 		$this->total_batches = $query->max_num_pages;
-		// Initialize the Solr updater
+		// Initialize the Solr updater.
 		$solr = get_solr();
 		$this->solr_update = $solr->createUpdate();
 	}
@@ -221,7 +229,7 @@ class SolrPower_Batch_Index {
 		$result['post_id'] = $post_id;
 		$result['post_title'] = html_entity_decode( $post->post_title );
 		$documents[] = SolrPower_Sync::get_instance()->build_document( $this->solr_update->createDocument(), $post );
-		$sync_result = SolrPower_Sync::get_instance()->post( $documents, true, FALSE );
+		$sync_result = SolrPower_Sync::get_instance()->post( $documents, true, false );
 		if ( false !== $sync_result ) {
 			$this->success_posts++;
 			$result['status'] = 'success';
@@ -229,7 +237,7 @@ class SolrPower_Batch_Index {
 			$this->failed_posts++;
 			$result['status'] = 'failed';
 			$error_msg = SolrPower_Sync::get_instance()->error_msg;
-			// Pull out the document <title> when this looks like escaped HTML
+			// Pull out the document <title> when this looks like escaped HTML.
 			if ( preg_match( '#' . preg_quote( '&lt;title&gt;' ) . '(.+)' . preg_quote( '&lt;/title&gt;' ) . '#', $error_msg, $matches ) ) {
 				$error_msg = $matches[1];
 			}
@@ -248,7 +256,7 @@ class SolrPower_Batch_Index {
 	private static function clear_object_cache() {
 		global $wpdb, $wp_object_cache;
 
-		$wpdb->queries = array(); // or define( 'WP_IMPORTING', true );
+		$wpdb->queries = array();
 
 		if ( ! is_object( $wp_object_cache ) ) {
 			return;
@@ -260,7 +268,7 @@ class SolrPower_Batch_Index {
 		$wp_object_cache->cache = array();
 
 		if ( is_callable( $wp_object_cache, '__remoteset' ) ) {
-			$wp_object_cache->__remoteset(); // important
+			$wp_object_cache->__remoteset();
 		}
 	}
 
