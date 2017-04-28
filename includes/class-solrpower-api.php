@@ -276,16 +276,17 @@ class SolrPower_Api {
 	 * @param string  $sortby Sort results by an attribute.
 	 * @param string  $order  Order results ascending or descending.
 	 * @param array   $fields Fields to include.
+	 * @param string  $bq     Boost query to apply.
 	 *
 	 * @return Solarium\QueryType\Select\Result\Result
 	 */
-	function query( $qry, $offset, $count, $fq, $sortby, $order, $fields = null ) {
+	function query( $qry, $offset, $count, $fq, $sortby, $order, $fields = null, $bq = null ) {
 		// NOTICE: does this needs to be cached to stop the db being hit to grab the options everytime search is being done.
 		$plugin_s4wp_settings = solr_options();
 
 		$solr = get_solr();
 
-		return $this->master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, $plugin_s4wp_settings, $fields );
+		return $this->master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, $plugin_s4wp_settings, $fields, null, $bq );
 	}
 
 	/**
@@ -301,15 +302,17 @@ class SolrPower_Api {
 	 * @param array           $plugin_s4wp_settings Plugin settings.
 	 * @param array           $fields Fields to include.
 	 * @param integer         $blogid Limit results to those of a specific blog.
+	 * @param string          $bq     Boost query to apply.
 	 *
 	 * @return Solarium\QueryType\Select\Result\Result
 	 */
-	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings, $fields = null, $blogid = null ) {
+	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings, $fields = null, $blogid = null, $bq = null ) {
 		$this->add_log( array(
 			'Search Query' => $qry,
 			'Offset'       => $offset,
 			'Count'        => $count,
 			'Filter Query' => $fq,
+			'Boost Query'  => $bq,
 			'Sort By'      => $sortby,
 			'Order'        => $order,
 		) );
@@ -401,6 +404,10 @@ class SolrPower_Api {
 			$solr_boost_query = apply_filters( 'solr_boost_query', 'post_title^25 post_content^50' );
 			if ( false !== $solr_boost_query ) {
 				$dismax->setBoostFunctions( $solr_boost_query );
+			}
+
+			if ( null !== $bq ) {
+				$dismax->setBoostQuery( $bq );
 			}
 
 			/**
