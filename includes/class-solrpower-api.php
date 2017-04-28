@@ -312,6 +312,7 @@ class SolrPower_Api {
 			'Offset'       => $offset,
 			'Count'        => $count,
 			'Filter Query' => $fq,
+			'Boost Query'  => $bq,
 			'Sort By'      => $sortby,
 			'Order'        => $order,
 		) );
