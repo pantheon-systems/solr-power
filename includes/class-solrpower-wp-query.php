@@ -169,6 +169,11 @@ class SolrPower_WP_Query {
 				$sortby = $this->parse_orderby( $orderby, $query );
 			}
 		}
+		// Boost exact match on post_title to simulate WordPress' use of MySQL ORDER BY CASE.
+		$bq = null;
+		if ( $query->get( 's' ) ) {
+			$bq = 'post_title="' . $query->get( 's' ) . '"^10000';
+		}
 
 		$fields = null;
 		switch ( $query->get( 'fields' ) ) {
@@ -181,7 +186,7 @@ class SolrPower_WP_Query {
 		}
 		$query->set( 'fields', '' );
 		unset( $query->query['fields'] );
-		$search = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order, $fields );
+		$search = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order, $fields, $bq );
 
 		if ( is_null( $search ) ) {
 			return false;
