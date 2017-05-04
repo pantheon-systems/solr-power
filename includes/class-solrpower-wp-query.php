@@ -155,6 +155,7 @@ class SolrPower_WP_Query {
 		$fq        = $this->parse_facets( $query );
 		$sortby    = ( isset( $solr_options['s4wp_default_sort'] ) && ! empty( $solr_options['s4wp_default_sort'] ) ) ? $solr_options['s4wp_default_sort'] : 'score';
 		$order     = ( $query->get( 'order', false ) ) ? strtolower( $query->get( 'order' ) ) : 'desc';
+		$extra     = array();
 		if ( $query->get( 'orderby', false ) ) {
 			$orderby = $query->get( 'orderby' );
 
@@ -167,6 +168,11 @@ class SolrPower_WP_Query {
 				$order  = false;
 			} else {
 				$sortby = $this->parse_orderby( $orderby, $query );
+			}
+		} else {
+			// Boost partial match on post_title to simulate WordPress' use of MySQL ORDER BY CASE.
+			if ( $query->get( 's' ) ) {
+				$extra['sort_before'][ "query({!dismax qf=post_title v='\"" . $query->get( 's' ) . "\"'})" ] = 'desc';
 			}
 		}
 
@@ -181,7 +187,7 @@ class SolrPower_WP_Query {
 		}
 		$query->set( 'fields', '' );
 		unset( $query->query['fields'] );
-		$search = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order, $fields );
+		$search = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order, $fields, $extra );
 
 		if ( is_null( $search ) ) {
 			return false;

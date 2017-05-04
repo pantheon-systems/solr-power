@@ -276,16 +276,17 @@ class SolrPower_Api {
 	 * @param string  $sortby Sort results by an attribute.
 	 * @param string  $order  Order results ascending or descending.
 	 * @param array   $fields Fields to include.
+	 * @param array   $extra  Extra arguments to handle in the Solr query.
 	 *
 	 * @return Solarium\QueryType\Select\Result\Result
 	 */
-	function query( $qry, $offset, $count, $fq, $sortby, $order, $fields = null ) {
+	function query( $qry, $offset, $count, $fq, $sortby, $order, $fields = null, $extra = array() ) {
 		// NOTICE: does this needs to be cached to stop the db being hit to grab the options everytime search is being done.
 		$plugin_s4wp_settings = solr_options();
 
 		$solr = get_solr();
 
-		return $this->master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, $plugin_s4wp_settings, $fields );
+		return $this->master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, $plugin_s4wp_settings, $fields, null, $extra );
 	}
 
 	/**
@@ -301,10 +302,11 @@ class SolrPower_Api {
 	 * @param array           $plugin_s4wp_settings Plugin settings.
 	 * @param array           $fields Fields to include.
 	 * @param integer         $blogid Limit results to those of a specific blog.
+	 * @param array           $extra  Extra arguments to handle in the Solr query.
 	 *
 	 * @return Solarium\QueryType\Select\Result\Result
 	 */
-	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings, $fields = null, $blogid = null ) {
+	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings, $fields = null, $blogid = null, $extra = array() ) {
 		$this->add_log( array(
 			'Search Query' => $qry,
 			'Offset'       => $offset,
@@ -369,14 +371,14 @@ class SolrPower_Api {
 				'rows'       => $count,
 				'omitheader' => false,
 			);
+			$select['sort'] = array();
+			if ( ! empty( $extra['sort_before'] ) ) {
+				$select['sort'] = array_merge( $select['sort'], $extra['sort_before'] );
+			}
 			if ( '' !== $sortby ) {
-				$select['sort'] = array(
-					$sortby => $order,
-				);
+				$select['sort'][ $sortby ] = $order;
 			} else {
-				$select['sort'] = array(
-					'post_date' => 'desc',
-				);
+				$select['sort']['post_date'] = 'desc';
 			}
 			$select   = apply_filters( 'solr_select_query', $select );
 			$query    = $solr->createSelect( $select );
