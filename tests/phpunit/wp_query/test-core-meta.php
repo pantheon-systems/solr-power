@@ -1954,4 +1954,72 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 
 	}
 
+	public function test_meta_query_no_key_and_empty_index_custom_fields() {
+		$this->__change_option( 's4wp_index_custom_fields', [] );
+
+		$p1 = self::factory()->post->create();
+		$p2 = self::factory()->post->create();
+		$p3 = self::factory()->post->create();
+
+		add_post_meta( $p1, 'foo', 'bar' );
+		add_post_meta( $p2, 'oof', 'bar' );
+		add_post_meta( $p3, 'oof', 'baz' );
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+		$query    = new WP_Query( array(
+			'solr_integrate'         => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'fields'                 => 'ids',
+			'meta_query'             => array(
+				array(
+					'value' => 'bar',
+				),
+			),
+		) );
+		$expected = array();
+		$returned = array();
+		foreach ( $query->posts as $post ) {
+			$returned[] = $post->ID;
+		}
+
+		$this->assertEqualSets( $expected, $returned );
+	}
+
+	public function test_meta_query_index_custom_fields_filter() {
+		$this->__change_option( 's4wp_index_custom_fields', [] );
+
+		add_filter( 'solr_index_custom_fields', function ( $fields = array() ) {
+			$fields[] = 'my_index_custom_field';
+
+			return $fields;
+		} );
+
+		$p1 = self::factory()->post->create();
+		$p2 = self::factory()->post->create();
+		$p3 = self::factory()->post->create();
+
+		add_post_meta( $p1, 'my_index_custom_field', 'bar' );
+		add_post_meta( $p2, 'my_index_custom_field', 'bar' );
+		add_post_meta( $p3, 'my_index_custom_field', 'baz' );
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+		$query    = new WP_Query( array(
+			'solr_integrate'         => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'fields'                 => 'ids',
+			'meta_query'             => array(
+				array(
+					'value' => 'bar',
+				),
+			),
+		) );
+		$expected = array( $p1, $p2 );
+		$returned = array();
+		foreach ( $query->posts as $post ) {
+			$returned[] = $post->ID;
+		}
+
+		$this->assertEqualSets( $expected, $returned );
+	}
+
 }
