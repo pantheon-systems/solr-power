@@ -161,12 +161,12 @@ class SolrPower_Facet_Widget extends WP_Widget {
 				$name      = strval( $name );
 
 				if ( (
-					     isset( $this->facets[ $facet_name ] ) &&
-					     in_array( htmlspecialchars_decode( $name ), $facets_facet_name, true )
-				     ) || (
-					     isset( $sent_facets[ $facet_name ] ) &&
-					     in_array( $name, $sent_facets[ $facet_name ], true )
-				     )
+						isset( $this->facets[ $facet_name ] ) &&
+						in_array( htmlspecialchars_decode( $name ), $facets_facet_name, true )
+				    ) || (
+						isset( $sent_facets[ $facet_name ] ) &&
+						in_array( $name, $sent_facets[ $facet_name ], true )
+				    )
 				) {
 					$checked = checked( true, true, false );
 				}
@@ -265,7 +265,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		$solr_options = solr_options();
 
 		if ( array_key_exists( $key, $solr_options )
-		     && false !== $solr_options[ $key ]
+			&& false !== $solr_options[ $key ]
 		) {
 			return true;
 		}

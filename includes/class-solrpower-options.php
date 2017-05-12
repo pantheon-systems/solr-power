@@ -371,7 +371,7 @@ class SolrPower_Options {
 	 */
 	private function check_nonce( $field ) {
 		if ( ! isset( $_POST[ $field ] )
-		     || ! wp_verify_nonce( $_POST[ $field ], 'solr_action' )
+			|| ! wp_verify_nonce( $_POST[ $field ], 'solr_action' )
 		) {
 			$this->msg = esc_html__( 'Action failed. Please try again.', 'solr-for-wordpress-on-pantheon' );
 

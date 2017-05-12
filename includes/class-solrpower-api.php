@@ -222,8 +222,8 @@ class SolrPower_Api {
 
 		// double check everything has been set.
 		if ( ! ( $solarium_config['endpoint']['localhost']['host'] &&
-		         $solarium_config['endpoint']['localhost']['port'] &&
-		         $solarium_config['endpoint']['localhost']['path'] )
+				$solarium_config['endpoint']['localhost']['port'] &&
+				$solarium_config['endpoint']['localhost']['path'] )
 		) {
 			syslog( LOG_ERR, "host, port or path are empty, host:$host, port:$port, path:$path" );
 
