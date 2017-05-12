@@ -136,7 +136,7 @@ class SolrPower_WP_Query {
 	 */
 	function posts_request( $request, $query ) {
 		if ( ( ! $query->is_search() && ! $query->get( 'solr_integrate' ) )
-		     || false === SolrPower_Api::get_instance()->ping
+			|| false === SolrPower_Api::get_instance()->ping
 		) {
 			return $request;
 		}
@@ -805,7 +805,7 @@ class SolrPower_WP_Query {
 				default:
 					$meta_value['value'] = ( isset( $meta_value['value'] ) ) ? $meta_value['value'] : '*';
 					if ( ! isset( $meta_value['key'] ) ) {
-						// Validate that there are indexed keys before adding them to the query
+						// Validate that there are indexed keys before adding them to the query.
 						if ( is_array( $indexed_keys ) && count( $indexed_keys ) > 0 ) {
 							$multi_query = array();
 							foreach ( $indexed_keys as $the_key ) {
@@ -905,7 +905,7 @@ class SolrPower_WP_Query {
 			}
 
 			if ( ( isset( $dq[0]['compare'] ) || isset( $dq[0]['relation'] ) )
-			     && ( ! isset( $dq[0]['after'] ) )
+				&& ( ! isset( $dq[0]['after'] ) )
 			) {
 				$query[] = $this->parse_date_query( $dq );
 				continue;
@@ -975,8 +975,8 @@ class SolrPower_WP_Query {
 
 		// If year, month, and day are specified, we can do a range query.
 		if ( ( is_array( $dq ) && array_key_exists( 'year', $dq )
-		       && array_key_exists( 'month', $dq )
-		       && array_key_exists( 'day', $dq ) )
+			&& array_key_exists( 'month', $dq )
+			&& array_key_exists( 'day', $dq ) )
 		) {
 
 			$the_date = date( 'Y-m-d', strtotime( $dq['year'] . '-' . $dq['month'] . '-' . $dq['day'] ) );
@@ -1007,7 +1007,7 @@ class SolrPower_WP_Query {
 				if ( ! isset( $dq['day'] ) ) {
 					$the_date = date( 'Y-m-d', strtotime( $dq['year'] . '-' . $dq['month'] . '-01' ) );
 					if ( ( isset( $dq['inclusive'] ) && true === $dq['inclusive'] )
-					     || true === $inclusive
+						|| true === $inclusive
 					) {
 						$the_date = date( 'Y-m-t', strtotime( $dq['year'] . '-' . $dq['month'] . '-01' ) );
 					}
@@ -1026,7 +1026,7 @@ class SolrPower_WP_Query {
 				if ( ! isset( $dq['day'] ) ) {
 					$the_date = date( 'Y-m-d', strtotime( $dq['year'] . '-' . $dq['month'] . '-01' ) );
 					if ( ( isset( $dq['inclusive'] ) && false === $dq['inclusive'] )
-					     || false === $inclusive
+						|| false === $inclusive
 					) {
 						$the_date = date( 'Y-m-t', strtotime( $dq['year'] . '-' . $dq['month'] . '-01' ) );
 						$the_date = date( 'Y-m-d', strtotime( '+1 Day', strtotime( $the_date ) ) );
