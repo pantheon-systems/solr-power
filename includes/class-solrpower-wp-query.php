@@ -805,7 +805,7 @@ class SolrPower_WP_Query {
 				default:
 					$meta_value['value'] = ( isset( $meta_value['value'] ) ) ? $meta_value['value'] : '*';
 					if ( ! isset( $meta_value['key'] ) ) {
-						// Validate that there are indexed keys before adding them to the query
+						// Validate that there are indexed keys before adding them to the query.
 						if ( is_array( $indexed_keys ) && count( $indexed_keys ) > 0 ) {
 							$multi_query = array();
 							foreach ( $indexed_keys as $the_key ) {
