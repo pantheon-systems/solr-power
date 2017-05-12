@@ -163,10 +163,10 @@ class SolrPower_Facet_Widget extends WP_Widget {
 				if ( (
 						isset( $this->facets[ $facet_name ] ) &&
 						in_array( htmlspecialchars_decode( $name ), $facets_facet_name, true )
-				    ) || (
+					) || (
 						isset( $sent_facets[ $facet_name ] ) &&
 						in_array( $name, $sent_facets[ $facet_name ], true )
-				    )
+					)
 				) {
 					$checked = checked( true, true, false );
 				}
