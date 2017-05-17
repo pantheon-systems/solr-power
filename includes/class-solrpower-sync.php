@@ -381,9 +381,6 @@ class SolrPower_Sync {
 					}
 				}
 			}
-		} else {
-			// this will fire during blog sign up on multisite, not sure why.
-			esc_html_e( 'Post Information is NULL', 'solr-for-wordpress-on-pantheon' );
 		} // End if().
 
 		/**
