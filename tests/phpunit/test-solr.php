@@ -482,7 +482,7 @@ class SolrTest extends SolrTestBase {
 		);
 		$query = new WP_Query( $args );
 
-		$this->assertEquals( array( $p_id, $p_id2 ), wp_list_pluck( $query->posts, 'ID' ) );
+		$this->assertEquals( array( $p_id2, $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
 	}
 
 	/**
