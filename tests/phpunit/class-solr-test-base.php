@@ -22,7 +22,7 @@ class SolrTestBase extends WP_UnitTestCase{
 	function setUp() {
 		parent::setUp();
 
-		if ( ! SolrPower_API::get_instance()->ping ) {
+		if ( ! SolrPower_API::get_instance()->ping_server() ) {
 			$this->fail( 'Cannot connect to Solr. Solr is required for Solr Power tests.' );
 		}
 
