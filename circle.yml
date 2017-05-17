@@ -35,16 +35,7 @@ dependencies:
       {
         composer config -g github-oauth.github.com $GITHUB_TOKEN
       } &> /dev/null
-  override:
-    - |
-      if [ -z "$TERMINUS_TOKEN" ]; then
-        echo "TERMINUS_TOKEN environment variables missing; assuming unauthenticated build"
-        exit 0
-      fi
-      composer install
-      git clone --branch master https://github.com/pantheon-systems/terminus.git ~/terminus
-      cd ~/terminus && composer install
-      terminus auth:login --machine-token=$TERMINUS_TOKEN
+    - ./bin/install-terminus.sh
 
 test:
   pre:
