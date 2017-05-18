@@ -26,7 +26,7 @@ Search is critical for your site, but the default search for WordPress leaves a 
 
 ## Installation ##
 
-The Solr Power plugin can be installed just like you'd install any other WordPress plugin. Because Solr Power is intended to be a bridge between WordPress and the Apache Solr search engine, you'll need access to a functioning Solr instance for the plugin to work as expected.
+The Solr Power plugin can be installed just like you'd install any other WordPress plugin. Because Solr Power is intended to be a bridge between WordPress and the Apache Solr search engine, you'll need access to a functioning Solr 3.6 instance for the plugin to work as expected. This plugin does not support other versions of Solr.
 
 If you're using the Solr Power plugin on Pantheon, setting up Apache Solr is as easy as enabling the Apache Solr add-on in your Pantheon dashboard. Once you've done so:
 
@@ -36,11 +36,12 @@ If you're using the Solr Power plugin on Pantheon, setting up Apache Solr is as 
 3. Search on!
 4. See the examples/templates directories for more rich implementation guidelines.
 
-If you're using the Solr Power plugin elsewhere, you'll need to install and configure Apache Solr. On a Linux environment, this involves three steps:
+If you're using the Solr Power plugin elsewhere, you'll need to install and configure Apache Solr. On a Linux environment, this involves four steps:
 
 1. Install the Java Runtime Environment.
 2. Run `./bin/install-solr.sh` to install and run Apache Solr on port 8983.
 3. Configuring Solr Power to use this particular Solr instance by setting the `PANTHEON_INDEX_HOST` and `PANTHEON_INDEX_PORT` environment variables.
+4. Copying `schema.xml` to the Solr configuration directory (a path similar to `solr/conf/schema.xml`).
 
 In a local development environment, you can point Solr Power to a custom Solr instance by creating a MU plugin with:
 
