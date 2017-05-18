@@ -4,6 +4,7 @@
  *
  * @package Solr_Power
  */
+
 ?>
 <div id="solr_header">
 	<h2>Solr Power <span>Version <?php echo esc_html( SOLR_POWER_VERSION ); ?></span></h2>
