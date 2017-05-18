@@ -354,6 +354,10 @@ class SolrPower_Options {
 				if ( ! $this->check_nonce( 'solr_repost_schema' ) ) {
 					return;
 				}
+				if ( ! getenv( 'PANTHEON_ENVIRONMENT' ) || ! getenv( 'FILEMOUNT' ) ) {
+					$this->msg = esc_html__( 'Schema reposting only works in a Pantheon environment.', 'solr-for-wordpress-on-pantheon' );
+					break;
+				}
 				SolrPower_Sync::get_instance()->delete_all();
 				$output    = SolrPower_Api::get_instance()->submit_schema();
 				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' ) . '<br />' . esc_html( $output );
