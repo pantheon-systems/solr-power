@@ -13,7 +13,7 @@
 define( 'SOLR_POWER_VERSION', '1.2.0' );
 
 /*
-  Copyright (c) 2011 Pantheon
+  Copyright (c) 2011-2017 Pantheon, Matt Weber, Solr Power contributors
 
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
