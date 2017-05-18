@@ -355,7 +355,7 @@ class SolrPower_Options {
 					return;
 				}
 				if ( ! getenv( 'PANTHEON_ENVIRONMENT' ) || ! getenv( 'FILEMOUNT' ) ) {
-					$this->msg = esc_html__( 'Schema repositing only works in a Pantheon environment.', 'solr-for-wordpress-on-pantheon' );
+					$this->msg = esc_html__( 'Schema reposting only works in a Pantheon environment.', 'solr-for-wordpress-on-pantheon' );
 					break;
 				}
 				SolrPower_Sync::get_instance()->delete_all();
