@@ -84,6 +84,7 @@ function solr_power_env_variables_admin_notice() {
 				$error_message[] = __( 'The Solr Power plugin <strong>has been deactivated</strong>', 'solr-for-wordpress-on-pantheon' );
 			}
 			if ( getenv( 'PANTHEON_ENVIRONMENT' ) ) {
+				// Translators: Links to Pantheon documentation.
 				$error_message[] = sprintf( __( 'Please enable the Solr add-on from your Pantheon dashboard and re-activate the Solr Power plugin. <a href="%s" target="_blank">See documentation for more details</a>.', 'solr-for-wordpress-on-pantheon' ), 'https://pantheon.io/docs/solr/' );
 			} else {
 				$error_message[] = __( 'Please configure the environment variables and re-activate the Solr Power plugin.', 'solr-for-wordpress-on-pantheon' );
