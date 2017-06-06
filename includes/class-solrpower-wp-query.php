@@ -85,7 +85,7 @@ class SolrPower_WP_Query {
 	 */
 	function setup() {
 		// We don't want to do a Solr query if we're doing AJAX or in the admin area.
-		if ( ! is_admin() && defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 
 			/**
 			 * Allow Solr Search with AJAX
