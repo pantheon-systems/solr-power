@@ -32,5 +32,6 @@ script:
 after_script:
   - |
     export PATH="$HOME/.composer/vendor/bin:$PATH"
+    composer global property-set minimum-stability dev
     composer global require danielbachhuber/composer-lock-updater
     clu $CLU_REPO_URL
