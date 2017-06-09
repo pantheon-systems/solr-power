@@ -31,6 +31,10 @@ script:
 
 after_script:
   - |
+    if [[ -z "$CLU_RUN" ]] || [[ "master" != "$TRAVIS_BRANCH"]] ; then
+      echo "composer.lock update disabled for this build"
+      return
+    fi
     export PATH="$HOME/.composer/vendor/bin:$PATH"
     composer global require danielbachhuber/composer-lock-updater
     clu $CLU_REPO_URL
