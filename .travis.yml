@@ -60,3 +60,9 @@ script:
     if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
       phpcs --standard=phpcs.ruleset.xml $(find . -name '*.php')
     fi
+
+after_script:
+  - |
+    export PATH="$HOME/.composer/vendor/bin:$PATH"
+    composer global require danielbachhuber/composer-lock-updater
+    clu $CLU_REPO_URL
