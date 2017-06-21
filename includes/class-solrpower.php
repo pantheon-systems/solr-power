@@ -298,6 +298,9 @@ class SolrPower {
 		add_filter( 'solr_allow_ajax', '__return_true' );
 		add_filter( 'solr_allow_admin', '__return_true' );
 
+		// Ensure Solr is set to filter the query properly.
+		SolrPower_WP_Query::get_instance()->setup();
+
 		$paged = filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_STRING );
 		$paged = ( false === $paged || null === $paged ) ? 1 : absint( $paged );
 
