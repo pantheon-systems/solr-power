@@ -84,8 +84,8 @@ class SolrPower_WP_Query {
 	 * SolrPower_WP_Query instance initial setup method.
 	 */
 	function setup() {
-		// We don't want to do a Solr query if we're doing AJAX or in the admin area.
-		if ( ! is_admin() && defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+		// We don't want to do a Solr query if we're doing AJAX.
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 
 			/**
 			 * Allow Solr Search with AJAX
@@ -99,15 +99,18 @@ class SolrPower_WP_Query {
 			}
 		}
 
-		/**
-		 * Allow Solr Search in WordPress Dashboard
-		 *
-		 * By default the plugin won't query Solr in the WordPress Dashboard. Set to true to override
-		 *
-		 * @param bool $solr_allow_admin True to query in WordPress Dashboard or false [default false].
-		 */
-		if ( is_admin() && false === apply_filters( 'solr_allow_admin', false ) && ( ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) ) {
-			return;
+		// We don't want to do a Solr query in the admin, unless opted-in.
+		if ( is_admin() && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+			/**
+			 * Allow Solr Search in WordPress Dashboard
+			 *
+			 * By default the plugin won't query Solr in the WordPress Dashboard. Set to true to override
+			 *
+			 * @param bool $solr_allow_admin True to query in WordPress Dashboard or false [default false].
+			 */
+			if ( false === apply_filters( 'solr_allow_admin', false ) ) {
+				return;
+			}
 		}
 
 		add_filter( 'posts_request', array( $this, 'posts_request' ), 10, 2 );
