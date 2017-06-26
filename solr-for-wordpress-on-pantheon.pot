@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: solr-power 1.0.0\n"
+"Project-Id-Version: solr-power 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/pantheon-systems/solr-power/issues\n"
-"POT-Creation-Date: 2017-04-18 11:10-0500\n"
+"POT-Creation-Date: 2017-06-26 17:05-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,103 +17,103 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: includes/class-solrpower-facet-widget.php:49
+#: includes/class-solrpower-facet-widget.php:63
 msgid "Title:"
 msgstr ""
 
-#: includes/class-solrpower-options.php:48
+#: includes/class-solrpower-options.php:69
 msgid "Couldn't locate the options page."
 msgstr ""
 
-#: includes/class-solrpower-options.php:302
+#: includes/class-solrpower-options.php:327
 msgid "Ping Success!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:304
+#: includes/class-solrpower-options.php:329
 msgid "Ping Failed!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:312
+#: includes/class-solrpower-options.php:337
 msgid "Configuration has been copied to all blogs!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:319
+#: includes/class-solrpower-options.php:344
 msgid "Index Optimized!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:326
-#: includes/class-solrpower-options.php:334
+#: includes/class-solrpower-options.php:351
+#: includes/class-solrpower-options.php:363
 msgid "All Indexed Pages Deleted!"
 msgstr ""
 
-#: includes/class-solrpower-options.php:353
+#: includes/class-solrpower-options.php:358
+msgid "Schema reposting only works in a Pantheon environment."
+msgstr ""
+
+#: includes/class-solrpower-options.php:380
 msgid "Action failed. Please try again."
 msgstr ""
 
-#: includes/class-solrpower-sync.php:339
-msgid "Post Information is NULL"
-msgstr ""
-
-#: includes/class-solrpower.php:66
+#: includes/class-solrpower.php:87
 msgid ""
 "Before you can activate this plugin, you must first <a href=\"https://"
 "pantheon.io/docs/articles/sites/apache-solr/\">activate Solr</a> in your "
 "Pantheon Dashboard."
 msgstr ""
 
-#: includes/class-solrpower.php:72
+#: includes/class-solrpower.php:93
 msgid "This plugin requires WordPress 3.0 or greater."
 msgstr ""
 
-#: includes/class-solrpower.php:132
+#: includes/class-solrpower.php:158
 msgid "Settings"
 msgstr ""
 
-#: includes/legacy-functions.php:11
+#: includes/legacy-functions.php:16
 msgid "Score"
 msgstr ""
 
-#: includes/legacy-functions.php:12
+#: includes/legacy-functions.php:17
 msgid "Date"
 msgstr ""
 
-#: includes/legacy-functions.php:13
+#: includes/legacy-functions.php:18
 msgid "Last Modified"
 msgstr ""
 
-#: includes/legacy-functions.php:23
+#: includes/legacy-functions.php:28
 msgid "Descending"
 msgstr ""
 
-#: includes/legacy-functions.php:24
+#: includes/legacy-functions.php:29
 msgid "Ascending"
 msgstr ""
 
-#: includes/legacy-functions.php:35
+#: includes/legacy-functions.php:40
 msgid "Sort By:"
 msgstr ""
 
-#: includes/legacy-functions.php:35
+#: includes/legacy-functions.php:40
 msgid "Order By:"
 msgstr ""
 
-#: solr-options-page.php:51
+#: solr-options-page.php:36
 msgid "Info"
 msgstr ""
 
-#: solr-options-page.php:55 views/options/action.php:3
+#: solr-options-page.php:40 views/options/action.php:11
 msgid "Actions"
 msgstr ""
 
-#: solr-options-page.php:59
+#: solr-options-page.php:44
 msgid "Indexing Options"
 msgstr ""
 
-#: solr-options-page.php:63
+#: solr-options-page.php:48
 msgid "Facet Options"
 msgstr ""
 
-#: solr-power.php:47
+#: solr-power.php:51
 msgid ""
 "The Solr Power plugin requires PHP 5.4 to function properly and <strong>has "
 "not</strong> been activated.<br />Please upgrade PHP and re-activate the "
@@ -121,7 +121,7 @@ msgid ""
 "\"_blank\">Learn more.</a>"
 msgstr ""
 
-#: solr-power.php:54
+#: solr-power.php:56
 msgid ""
 "The Solr Power plugin requires PHP 5.4 to function properly and had been "
 "<strong>deactivated</strong>.<br />Please upgrade PHP and re-activate the "
@@ -129,149 +129,160 @@ msgid ""
 "\"_blank\">Learn more.</a>"
 msgstr ""
 
+#: solr-power.php:79
+msgid ""
+"The Solr Power plugin requires environment variables for "
+"<code>PANTHEON_INDEX_HOST</code> and <code>PANTHEON_INDEX_PORT</code> to "
+"function properly."
+msgstr ""
+
 #: solr-power.php:82
-msgid ""
-"The Solr Power plugin requires environment variables for "
-"<pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to "
-"function properly.<br />The Solr Power plugin <strong>has not</strong> been "
-"activated.<br />Please configure the environment variables and re-activate "
-"the Solr Power plugin. "
+msgid "The Solr Power plugin <strong>has not</strong> been activated."
 msgstr ""
 
-#: solr-power.php:89
-msgid ""
-"The Solr Power plugin requires environment variables for "
-"<pre>PANTHEON_INDEX_HOST</pre> and <pre>PANTHEON_INDEX_PORT</pre> to "
-"function properly.<br />The Solr Power plugin <strong>has been deactivated</"
-"strong>.<br />Please configure the environment variables and re-activate the "
-"Solr Power plugin. "
+#: solr-power.php:84
+msgid "The Solr Power plugin <strong>has been deactivated</strong>"
 msgstr ""
 
-#: templates/solr-search-results.php:4
+#: solr-power.php:88
+#, php-format
+msgid ""
+"Please enable the Solr add-on from your Pantheon dashboard and re-activate "
+"the Solr Power plugin. <a href=\"%s\" target=\"_blank\">See documentation "
+"for more details</a>."
+msgstr ""
+
+#: solr-power.php:90
+msgid ""
+"Please configure the environment variables and re-activate the Solr Power "
+"plugin."
+msgstr ""
+
+#: templates/solr-search-results.php:12
 msgid "Search Results"
 msgstr ""
 
-#: templates/solr-search-results.php:17
+#: templates/solr-search-results.php:25
 msgctxt "Used between list items, there is a space after the comma."
 msgid ", "
 msgstr ""
 
-#: templates/solr-search-results.php:30
+#: templates/solr-search-results.php:38
 msgid "Posts navigation"
 msgstr ""
 
-#: templates/solr-search-results.php:40
+#: templates/solr-search-results.php:48
 msgid "Previous page"
 msgstr ""
 
-#: templates/solr-search-results.php:41
+#: templates/solr-search-results.php:49
 msgid "Next page"
 msgstr ""
 
-#: templates/solr-search-results.php:42
+#: templates/solr-search-results.php:50
 msgid "Page"
 msgstr ""
 
-#: templates/solr-search-results.php:51
+#: templates/solr-search-results.php:59
 msgid "Sorry, no posts matched your criteria."
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:56
+#: tests/phpunit/class-solr-test-base.php:61
 msgctxt "taxonomy general name"
 msgid "Genres"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:57
+#: tests/phpunit/class-solr-test-base.php:62
 msgctxt "taxonomy singular name"
 msgid "Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:58
+#: tests/phpunit/class-solr-test-base.php:63
 msgid "Search Genres"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:59
+#: tests/phpunit/class-solr-test-base.php:64
 msgid "All Genres"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:60
+#: tests/phpunit/class-solr-test-base.php:65
 msgid "Parent Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:61
+#: tests/phpunit/class-solr-test-base.php:66
 msgid "Parent Genre:"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:62
+#: tests/phpunit/class-solr-test-base.php:67
 msgid "Edit Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:63
+#: tests/phpunit/class-solr-test-base.php:68
 msgid "Update Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:64
+#: tests/phpunit/class-solr-test-base.php:69
 msgid "Add New Genre"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:65
+#: tests/phpunit/class-solr-test-base.php:70
 msgid "New Genre Name"
 msgstr ""
 
-#: tests/phpunit/class-solr-test-base.php:66
+#: tests/phpunit/class-solr-test-base.php:71
 msgid "Genre"
 msgstr ""
 
-#: views/options/action.php:9
+#: views/options/action.php:17
 msgid "Check Server Settings"
 msgstr ""
 
-#: views/options/action.php:11 views/options/action.php:22
-#: views/options/action.php:33 views/options/action.php:46
+#: views/options/action.php:19 views/options/action.php:30
+#: views/options/action.php:41 views/options/action.php:54
 msgid "Execute"
 msgstr ""
 
-#: views/options/action.php:20
+#: views/options/action.php:28
 msgid "Optimize Index"
 msgstr ""
 
-#: views/options/action.php:31
+#: views/options/action.php:39
 msgid "Delete All"
 msgstr ""
 
-#: views/options/action.php:44
+#: views/options/action.php:52
 msgid "Repost schema.xml"
 msgstr ""
 
-#: views/options/action.php:63
+#: views/options/action.php:71
 msgid "Index Searchable Post Types with WP-CLI"
 msgstr ""
 
-#: views/options/action.php:71
+#: views/options/action.php:79
 msgid "Index Searchable Post Types"
 msgstr ""
 
-#: views/options/action.php:91
+#: views/options/action.php:101
 #, php-format
 msgid ""
-"Running batch %s of %s at %s elapsed time (%s indexed, %s failed, %s "
-"remaining)"
+"Running batch %1$s of %2$s at %3$s elapsed time (%4$s indexed, %5$s failed, "
+"%6$s remaining)"
 msgstr ""
 
-#: views/options/action.php:93
+#: views/options/action.php:105
 #, php-format
-msgid "Completed indexing in %s elapsed time (%s indexed, %s failed)"
+msgid "Completed indexing in %1$s elapsed time (%2$s indexed, %3$s failed)"
 msgstr ""
 
-#: views/options/action.php:98
+#: views/options/action.php:112
 #, php-format
-msgid "Resume at batch %s of %s"
+msgid "Resume at batch %1$s of %2$s"
 msgstr ""
 
-#: views/options/action.php:98
+#: views/options/action.php:112
 msgid "Restart"
 msgstr ""
 
-#: views/options/action.php:100
+#: views/options/action.php:114
 msgid "Start Index"
 msgstr ""
