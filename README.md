@@ -3,7 +3,7 @@
 **Tags:** search  
 **Requires at least:** 4.2  
 **Tested up to:** 4.8  
-**Stable tag:** 1.2.0  
+**Stable tag:** 1.3.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -164,6 +164,21 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 ```
 
 ## Changelog ##
+### 1.3.0 ###
+* Add `.distignore` file for wp dist-archive solr-power
+* Make Solr in the admin opt-in only using the `solr_allow_admin` filter
+* Error early when `PANTHEON_ENVIRONMENT` isn't set
+* Clarify error message when environment variables aren't set
+* Mention copying `schema.xml` and supported Solr version in README
+* Include original plugin attribution in the copyright notice
+* Boost `post_title` more than `post_content` with sane boost values
+* Add missing filter for custom fields
+* Boost posts with matching titles to the top of results
+* Remove duplicate options when initializing them
+* Match author name in search results
+* Bug fixes
+* Adhere to WordPress coding standards in PHP files
+
 ### 1.2.0 ###
 * Add multisite support
 * Respect all query vars when searching with `WP_Query`
