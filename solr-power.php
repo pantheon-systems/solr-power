@@ -10,7 +10,7 @@
  * @package Solr_Power
  **/
 
-define( 'SOLR_POWER_VERSION', '1.2.0' );
+define( 'SOLR_POWER_VERSION', '1.3.0' );
 
 /*
   Copyright (c) 2011-2017 Pantheon, Matt Weber, Solr Power contributors
