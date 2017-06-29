@@ -88,45 +88,41 @@ This plugin has [WP-CLI](http://wp-cli.org/) support.
 
 All Solr Power related commands are grouped into the `wp solr` command, see an example:
 
-```
-$ wp solr
-usage: wp solr check-server-settings
-   or: wp solr delete [<id>...] [--all]
-   or: wp solr index [--page] [--post_type]
-   or: wp solr info [--field=<field>] [--format=<format>]
-   or: wp solr optimize-index
-   or: wp solr repost-schema
-   or: wp solr stats [--field=<field>] [--format=<format>]
-
-See 'wp help solr <command>' for more information on a specific command.
-```
+    $ wp solr
+    usage: wp solr check-server-settings
+       or: wp solr delete [<id>...] [--all]
+       or: wp solr index [--page] [--post_type]
+       or: wp solr info [--field=<field>] [--format=<format>]
+       or: wp solr optimize-index
+       or: wp solr repost-schema
+       or: wp solr stats [--field=<field>] [--format=<format>]
+    
+    See 'wp help solr <command>' for more information on a specific command.
 
 You can see more details about the commands using `wp help solr`:
 
-```
-**NAME**
+    **NAME**
+    
+      wp solr
+    
+    **DESCRIPTION**
+    
+      Perform a variety of actions against your Solr instance.
+    
+    **SYNOPSIS**
+    
+      wp solr <command>
+    
+    **SUBCOMMANDS**
+    
+      check-server-settings      Check server settings.
+      delete                     Remove one or more posts from the index.
+      index                      Index all posts for a site.
+      info                       Report information about Solr Power configuration.
+      optimize-index             Optimize the Solr index.
+      repost-schema              Repost schema.xml to Solr.
+      stats                      Report stats about indexed content.
 
-  wp solr
-
-**DESCRIPTION**
-
-  Perform a variety of actions against your Solr instance.
-
-**SYNOPSIS**
-
-  wp solr <command>
-
-**SUBCOMMANDS**
-
-  check-server-settings      Check server settings.
-  delete                     Remove one or more posts from the index.
-  index                      Index all posts for a site.
-  info                       Report information about Solr Power configuration.
-  optimize-index             Optimize the Solr index.
-  repost-schema              Repost schema.xml to Solr.
-  stats                      Report stats about indexed content.
-
-```
 
 ## WP_Query Integration ##
 
