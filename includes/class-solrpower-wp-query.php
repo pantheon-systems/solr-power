@@ -212,6 +212,9 @@ class SolrPower_WP_Query {
 		) );
 
 		$posts = $this->parse_results( $search );
+		if ( 'ID' === $fields ) {
+			$posts = array_map( 'intval', wp_list_pluck( $posts, 'ID' ) );
+		}
 
 		$this->found_posts[ spl_object_hash( $query ) ] = $posts;
 		$this->reset_vars();
