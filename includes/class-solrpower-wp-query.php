@@ -337,7 +337,7 @@ class SolrPower_WP_Query {
 				}
 				break;
 			case 'meta_value_num':
-				$orderby_clause = "{$primary_meta_query['alias']}_i";
+				$orderby_clause = "{$primary_meta_query['key']}_i";
 				break;
 			default:
 				if ( array_key_exists( $orderby, $meta_clauses ) ) {
