@@ -2022,4 +2022,25 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
+	public function test_orderby_meta_value_numeric() {
+		$p1 = self::factory()->post->create();
+		$p2 = self::factory()->post->create();
+		$p3 = self::factory()->post->create();
+
+		update_post_meta( $p1, 'my_index_custom_field', 2 );
+		update_post_meta( $p2, 'my_index_custom_field', 3 );
+		update_post_meta( $p3, 'my_index_custom_field', 1 );
+		$this->__change_option( 's4wp_index_custom_fields', array( 'my_index_custom_field' ) );
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+		$query = new WP_Query( array(
+			'solr_integrate'         => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'meta_key'               => 'my_index_custom_field',
+			'orderby'                => 'meta_value_num',
+			'order'                  => 'ASC',
+		) );
+		$this->assertEquals( array( $p3, $p1, $p2 ), wp_list_pluck( $query->posts, 'ID' ) );
+	}
+
 }
