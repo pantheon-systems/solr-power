@@ -1,7 +1,7 @@
 # Solr Search for WordPress #
 **Contributors:** getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor  
 **Tags:** search  
-**Requires at least:** 4.2  
+**Requires at least:** 4.6  
 **Tested up to:** 4.8  
 **Stable tag:** 1.3.0  
 **License:** GPLv2 or later  
@@ -161,7 +161,8 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 
 ## Changelog ##
 
-### 1.3.1 ###
+### 1.4.0 ###
+* Bumps minimum supported version to WordPress 4.6.
 * Fixes Solr queries using `orderby=>meta_value_num` [[#299](https://github.com/pantheon-systems/solr-power/pull/299)].
 
 ### 1.3.0 ###
