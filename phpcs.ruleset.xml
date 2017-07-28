@@ -21,4 +21,32 @@
 	<rule ref="WordPress.Files.FileName.NotHyphenatedLowercase">
 		<exclude-pattern>*/template/*</exclude-pattern>
 	</rule>
+
+	<rule ref="PSR2.ControlStructures.SwitchDeclaration.BodyOnNextLineCASE">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="PSR2.ControlStructures.SwitchDeclaration.WrongOpenercase">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.PHP.EmbeddedPhp.ContentBeforeOpen">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.PHP.EmbeddedPhp.ContentAfterOpen">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.PHP.EmbeddedPhp.ContentBeforeEnd">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.PHP.EmbeddedPhp.NoSemicolon">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.WhiteSpace.DisallowInlineTabs.NonIndentTabsUsed">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.WP.CapitalPDangit.Misspelled">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
 </ruleset>
