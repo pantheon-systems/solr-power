@@ -205,6 +205,28 @@ class SolrTest extends SolrTestBase {
 	}
 
 	/**
+	 * Test to ensure duplicate fields are normalized
+	 *
+	 * @see https://github.com/pantheon-systems/solr-power/issues/306
+	 */
+	function test_custom_field_facet_duplicate_key() {
+		// Set 'my_field' as a custom field facet.
+		$this->__change_option( 's4wp_facet_on_custom_fields', array( 'my_field', 'my_field' ) );
+		$this->__change_option( 's4wp_index_custom_fields', array( 'my_field' ) );
+
+		$this->__setup_custom_fields();
+
+		$query = $this->__facet_query( array(
+			'facet' => array(
+				'my_field_str' => array( 'my_value' ),
+			),
+		) );
+
+		$this->assertEquals( $query->post_count, 2 );
+		$this->assertEquals( $query->found_posts, 2 );
+	}
+
+	/**
 	 * Perform a search with a facet set.
 	 *
 	 * @group 37
