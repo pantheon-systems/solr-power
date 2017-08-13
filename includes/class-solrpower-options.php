@@ -205,6 +205,7 @@ class SolrPower_Options {
 			$clean['s4wp_index_all_sites'] = absint( $options['s4wp_index_all_sites'] );
 		}
 		$clean['s4wp_index_custom_fields']    = $this->filter_str2list( $options['s4wp_index_custom_fields'] );
+		$clean['s4wp_index_custom_fields_regex']    = $this->filter_str2list( $options['s4wp_index_custom_fields_regex'] );
 		$clean['s4wp_facet_on_custom_fields'] = $this->filter_str2list( $options['s4wp_facet_on_custom_fields'] );
 		$clean['s4wp_default_operator']       = sanitize_text_field( $options['s4wp_default_operator'] );
 		$clean['s4wp_default_sort']           = sanitize_text_field( $options['s4wp_default_sort'] );
@@ -298,6 +299,7 @@ class SolrPower_Options {
 		$options['s4wp_facet_on_type']          = 1;
 		$options['s4wp_index_comments']         = 1;
 		$options['s4wp_index_custom_fields']    = '';
+		$options['s4wp_index_custom_fields_regex']    = '';
 		$options['s4wp_facet_on_custom_fields'] = '';
 		$options['s4wp_default_operator']       = 'OR';
 		$options['s4wp_default_sort']           = 'score';
@@ -492,7 +494,8 @@ class SolrPower_Options {
 		$this->add_field( 's4wp_private_page', 'Remove Page on Status Change', $page, $section, 'checkbox', 'bool' );
 		$this->add_field( 's4wp_private_post', 'Remove Post on Status Change', $page, $section, 'checkbox', 'bool' );
 		$this->add_field( 's4wp_index_comments', 'Index Comments', $page, $section, 'checkbox', 'bool' );
-		$this->add_field( 's4wp_index_custom_fields', 'Index custom fields (comma separated names list)', $page, $section, 'input', 'list2str' );
+		$this->add_field( 's4wp_index_custom_fields', 'Custom fields to index by name (comma separated names list)', $page, $section, 'input', 'list2str' );
+		$this->add_field( 's4wp_index_custom_fields_regex', 'Custom fields to index via regex (comma separated names list)', $page, $section, 'input', 'list2str' );
 		$this->add_field( 's4wp_exclude_pages', 'Excludes Posts or Pages (comma separated ids list)', $page, $section, 'input', 'list2str' );
 
 	}

@@ -1,5 +1,5 @@
 # Solr Search for WordPress #
-**Contributors:** getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor  
+**Contributors:** getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor, jedkcanderson
 **Tags:** search  
 **Requires at least:** 4.6  
 **Tested up to:** 4.8  
@@ -160,6 +160,9 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 ```
 
 ## Changelog ##
+
+### 1.4.1 ###
+* Added support for including custom fields using regex patterns.
 
 ### 1.4.0 ###
 * Bumps minimum supported version to WordPress 4.6.

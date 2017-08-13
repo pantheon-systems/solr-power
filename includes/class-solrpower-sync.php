@@ -222,6 +222,7 @@ class SolrPower_Sync {
 		 * @param array $index_custom_fields Array of custom field slugs for indexing.
 		 */
 		$index_custom_fields 	= apply_filters( 'solr_index_custom_fields', $plugin_s4wp_settings['s4wp_index_custom_fields'] );
+		$index_custom_fields_regex = apply_filters( 'solr_index_custom_fields', $plugin_s4wp_settings['s4wp_index_custom_fields_regex'] );
 
 		if ( $post_info ) {
 
@@ -358,27 +359,30 @@ class SolrPower_Sync {
 			}
 
 			$custom_fields = get_post_custom( $post_info->ID );
+			$used = array();
 			if ( count( $index_custom_fields ) > 0 && count( $custom_fields ) ) {
-				$used = array();
 				foreach ( (array) $index_custom_fields as $field_name ) {
 					// test a php error notice.
 					if ( isset( $custom_fields[ $field_name ] ) ) {
-						$field = (array) $custom_fields[ $field_name ];
-
-						foreach ( $field as $key => $value ) {
-							$doc->addField( $field_name . '_str', $value );
-							if ( ! in_array( $field_name, $used ) ) {
-								if ( is_numeric( $value ) ) {
-									$doc->addField( $field_name . '_i', absint( $value ) );
-									$doc->addField( $field_name . '_d', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
-									$doc->addField( $field_name . '_f', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
-								}
-								$doc->addField( $field_name . '_s', $value );
-							}
-							$doc->addField( $field_name . '_srch', $value );
-							$used[] = $field_name;
-						}
+						$this->addCustomFieldToDoc( $doc, $field_name, $custom_fields[ $field_name ], $used );
+						$used[] = $field_name;
 					}
+
+				}
+			}
+			if ( count ($index_custom_fields_regex) > 0 && count ($custom_fields)) {
+				foreach ( $custom_fields as $key => $value ) {
+					if ( in_array( $key, $used ) ) {
+						continue;
+					}
+					// If any regex match, we add the field to the doc and go to the next field
+					foreach ( $index_custom_fields_regex as $regex ) {
+						if ( preg_match( $regex, $key ) ) {
+							$this->addCustomFieldToDoc( $doc, $key, $value, $used );
+							$used[] = $key;
+							break;
+						}
+				}
 				}
 			}
 		} // End if().
@@ -693,6 +697,28 @@ class SolrPower_Sync {
 
 		wp_cache_flush();
 		restore_current_blog();
+	}
+
+	/**
+	 * @param \Solarium\QueryType\Update\Query\Document\Document $doc
+	 * @param $field_name
+	 * @param $field
+	 * @param $used
+	 */
+	protected function addCustomFieldToDoc( Solarium\QueryType\Update\Query\Document\Document $doc, $field_name, $field, $used ) {
+		foreach ( $field as $key => $value ) {
+			error_log('Adding ' . $field_name .' with value ' . $value);
+			$doc->addField( $field_name . '_str', $value );
+			if ( ! in_array( $field_name, $used ) ) {
+				if ( is_numeric( $value ) ) {
+					$doc->addField( $field_name . '_i', absint( $value ) );
+					$doc->addField( $field_name . '_d', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
+					$doc->addField( $field_name . '_f', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
+				}
+				$doc->addField( $field_name . '_s', $value );
+			}
+			$doc->addField( $field_name . '_srch', $value );
+		}
 	}
 
 }
