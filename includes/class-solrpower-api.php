@@ -79,8 +79,6 @@ class SolrPower_Api {
 	function submit_schema() {
 		// Solarium does not currently support submitting schemas to the server.
 		// So we'll do it ourselves.
-		$return_value = '';
-		$upload_dir  = wp_upload_dir();
 
 		// Let's check for a custom Schema.xml. It MUST be located in
 		// wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml.
