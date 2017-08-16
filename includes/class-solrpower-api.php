@@ -77,13 +77,12 @@ class SolrPower_Api {
 	 * Submit the schema to Solr.
 	 */
 	function submit_schema() {
-		// Solarium does not currently support submitting schemas to the server.
-		// So we'll do it ourselves.
-		$return_value = '';
-		$upload_dir  = wp_upload_dir();
-
-		// Let's check for a custom Schema.xml. It MUST be located in
-		// wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml.
+		/*
+		 * Solarium does not currently support submitting schemas to the server.
+		 * So we'll do it ourselves.
+		 * Let's check for a custom Schema.xml. It MUST be located in
+		 * wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml.
+		*/
 		if ( ! empty( $_ENV['FILEMOUNT'] ) && is_file( realpath( ABSPATH ) . '/' . $_ENV['FILEMOUNT'] . '/solr-for-wordpress-on-pantheon/schema.xml' ) ) {
 			$schema = realpath( ABSPATH ) . '/' . $_ENV['FILEMOUNT'] . '/solr-for-wordpress-on-pantheon/schema.xml';
 		} else {
