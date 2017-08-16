@@ -59,5 +59,6 @@ script:
     fi
   - |
     if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
-      phpcs --standard=phpcs.ruleset.xml $(find . \( -name vendor -or -name tests -or -name examples -or -name node_modules \) -prune -o -type f -name "*.php")
+      phpcs --standard=phpcs.ruleset.xml $(find . -maxdepth 1 -type f -name '*.php')
+      phpcs --standard=phpcs.ruleset.xml $(find includes views template templates -type f -name '*.php')
     fi
