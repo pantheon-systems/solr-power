@@ -1,7 +1,7 @@
 # Solr Search for WordPress #
 **Contributors:** getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor  
 **Tags:** search  
-**Requires at least:** 4.2  
+**Requires at least:** 4.6  
 **Tested up to:** 4.8  
 **Stable tag:** 1.3.0  
 **License:** GPLv2 or later  
@@ -160,6 +160,14 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 ```
 
 ## Changelog ##
+
+### 1.4.0 ###
+* Bumps minimum supported version to WordPress 4.6.
+* Updates bundled Solarium library to 3.8.1.
+* Fixes Solr queries using `orderby=>meta_value_num` [[#299](https://github.com/pantheon-systems/solr-power/pull/299)].
+* Use `$_SERVER['HOME']` as a reliable way of finding the cert on Pantheon [[#314](https://github.com/pantheon-systems/solr-power/pull/314)].
+
+
 ### 1.3.0 ###
 * Add `.distignore` file for wp dist-archive solr-power
 * Make Solr in the admin opt-in only using the `solr_allow_admin` filter
