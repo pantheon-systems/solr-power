@@ -92,7 +92,7 @@ class SolrPower_Api {
 
 		$path        = $this->compute_path();
 		$url         = $this->get_default_scheme() . '://' . getenv( 'PANTHEON_INDEX_HOST' ) . ':' . getenv( 'PANTHEON_INDEX_PORT' ) . $path;
-		$client_cert = realpath( ABSPATH . '../certs/binding.pem' );
+		$client_cert = self::get_cert_path();
 
 		/*
 		 * A couple of quick checks to make sure everything seems sane
@@ -201,7 +201,7 @@ class SolrPower_Api {
 					'scheme' => $this->get_default_scheme(),
 					'path'   => $this->compute_path(),
 					'ssl'    => array(
-						'local_cert' => realpath( ABSPATH . '../certs/binding.pem' ),
+						'local_cert' => self::get_cert_path(),
 					),
 				),
 			),
@@ -606,6 +606,19 @@ class SolrPower_Api {
 		 * @param string $default_scheme The connection scheme to the solr server (http/https).
 		 */
 		return apply_filters( 'solr_scheme', $default_scheme );
+	}
+
+	/**
+	 * Get the cert path, based on whether WP is installed in a subdir or not.
+	 *
+	 * @return string
+	 */
+	private static function get_cert_path() {
+		if ( getenv( 'PANTHEON_ENVIRONMENT' ) !== false
+			&& file_exists( $_SERVER['HOME'] . '/certs/binding.pem' ) ) {
+			return $_SERVER['HOME'] . '/certs/binding.pem';
+		}
+		return realpath( ABSPATH . '../certs/binding.pem' );
 	}
 
 }
