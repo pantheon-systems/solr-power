@@ -100,7 +100,6 @@ class SolrPower_Sync {
 	 * @param integer $post_id ID for the post.
 	 */
 	function handle_delete( $post_id ) {
-		global $current_blog;
 		$post_info            = get_post( $post_id );
 		$plugin_s4wp_settings = solr_options();
 		$delete_page          = $plugin_s4wp_settings['s4wp_delete_page'];
@@ -184,8 +183,6 @@ class SolrPower_Sync {
 	 * @param array   $post_info Array of post information.
 	 */
 	function handle_status_change( $post_id, $post_info = null ) {
-		global $current_blog;
-
 		if ( ! $post_info ) {
 			$post_info = get_post( $post_id );
 		}
@@ -235,8 +232,6 @@ class SolrPower_Sync {
 			$auth_info = get_userdata( $post_info->post_author );
 
 			if ( is_multisite() ) {
-				global $current_blog;
-
 				$blogid = get_current_blog_id();
 				$doc->setField( 'solr_id', $blogid . '_' . $post_info->ID );
 				$doc->setField( 'blogid', $blogid );
@@ -495,7 +490,8 @@ class SolrPower_Sync {
 	 * @param boolean $echo      Whether or not to echo output.
 	 */
 	function load_all_posts( $prev, $post_type = 'post', $limit = 5, $echo = true ) {
-		global $wpdb, $current_blog, $current_site;
+		global $wpdb, $current_site;
+
 		$documents = array();
 		$cnt       = 0;
 		$batchsize = 500;
