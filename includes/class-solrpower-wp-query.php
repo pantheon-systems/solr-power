@@ -679,7 +679,7 @@ class SolrPower_WP_Query {
 		 *
 		 * @param array $indexed_keys Array of custom field slugs for indexing.
 		 */
-		$indexed_keys = apply_filters( 'solr_index_custom_fields', $options['s4wp_index_custom_fields'] );
+		$indexed_keys = apply_filters( 'solr_index_custom_fields', $options['s4wp_index_custom_fields'], false );
 		$query        = array();
 		$relation     = 'AND'; // AND is default in core.
 		if ( isset( $meta_query['relation'] ) ) {
