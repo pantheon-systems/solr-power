@@ -51,7 +51,7 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 
 
 		<?php
-		$action = is_multisite() ? network_admin_url( 'admin.php?page=solr-power' ) : admin_url( 'admin.php?page=solr-power' );
+		$action = self_admin_url( 'admin.php?page=solr-power' );
 		include 'views/options/info.php';
 		include 'views/options/action.php';
 
