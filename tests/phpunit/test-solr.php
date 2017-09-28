@@ -531,4 +531,18 @@ class SolrTest extends SolrTestBase {
 		$this->assertEquals( array( $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
 	}
 
+	public function test_search_query_with_quote_mark() {
+		$p_id = $this->__create_test_post( 'post', "Dragon's breath" );
+		$args  = array(
+			's' => 'Dragon',
+		);
+		$query = new WP_Query( $args );
+		$this->assertEquals( array( $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
+		$args  = array(
+			's' => "Dragon's breath",
+		);
+		$query = new WP_Query( $args );
+		$this->assertEquals( array( $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
+	}
+
 }
