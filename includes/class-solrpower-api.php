@@ -517,7 +517,11 @@ class SolrPower_Api {
 		if ( is_null( $search ) ) {
 			return 0;
 		}
-		$search = $search->getData();
+		try {
+			$search = $search->getData();
+		} catch( \Exception $e ) {
+			return 0;
+		}
 
 		$search = $search['response'];
 
