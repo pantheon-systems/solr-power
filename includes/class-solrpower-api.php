@@ -519,7 +519,7 @@ class SolrPower_Api {
 		}
 		try {
 			$search = $search->getData();
-		} catch( \Exception $e ) {
+		} catch ( \Exception $e ) {
 			return 0;
 		}
 
