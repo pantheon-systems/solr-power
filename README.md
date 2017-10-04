@@ -43,6 +43,8 @@ If you're using the Solr Power plugin elsewhere, you'll need to install and conf
 3. Configuring Solr Power to use this particular Solr instance by setting the `PANTHEON_INDEX_HOST` and `PANTHEON_INDEX_PORT` environment variables.
 4. Copying `schema.xml` to the Solr configuration directory (a path similar to `solr/conf/schema.xml`).
 
+Alternatively, there are a couple of community-maintained Docker containers you may be able to use: [kalabox/pantheon-solr](https://hub.docker.com/r/kalabox/pantheon-solr/), [kshaner/solr](https://hub.docker.com/r/kshaner/solr/).
+
 In a local development environment, you can point Solr Power to a custom Solr instance by creating a MU plugin with:
 
 ```
