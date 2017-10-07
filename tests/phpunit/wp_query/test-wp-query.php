@@ -141,24 +141,28 @@ class SolrWPQueryTest extends SolrTestBase {
 	}
 
 	function test_wp_query_failed_ping() {
-		$this->__create_test_post();
-		$args  = array(
-			's' => 'solr'
-		);
-		SolrPower_Api::get_instance()->ping=false;
-		$query = new WP_Query( $args );
-		$this->assertEquals( $query->post_count, 1 );
-		$this->assertEquals( $query->found_posts, 1 );
-		while ( $query->have_posts() ) {
-			$query->the_post();
-
-			global $post;
-
-			$this->assertFalse( isset($post->solr) );
-		}
-
-		wp_reset_postdata();
-		SolrPower_Api::get_instance()->ping=true;
+		$this->__create_test_post( 'post', 'Query Failed Ping' );
+		$noop_connection = function() {
+			return array(
+				'endpoint' => array(
+					'localhost' => array(
+						'host' => '',
+						'port' => '',
+						'path' => '',
+					)
+				),
+			);
+		};
+		add_filter( 's4wp_connection_options', $noop_connection );
+		SolrPower_Api::get_instance()->solr = null;
+		SolrPower_Api::get_instance()->ping = false;
+		$query = new WP_Query( array(
+			's' => 'Query Failed Ping',
+		) );
+		$this->assertEquals( 1, $query->post_count );
+		$this->assertEquals( 1, $query->found_posts );
+		$this->assertFalse( isset( $query->posts[0]->solr ) );
+		remove_filter( 's4wp_connection_options', $noop_connection );
 	}
 
 	public function test_wp_query_search_filter_post_type() {

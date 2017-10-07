@@ -224,6 +224,9 @@ class SolrPower_Api {
 				$solarium_config['endpoint']['localhost']['port'] &&
 				$solarium_config['endpoint']['localhost']['path'] )
 		) {
+			$host = isset( $solarium_config['endpoint']['localhost']['host'] ) ? $solarium_config['endpoint']['localhost']['host'] : '';
+			$port = isset( $solarium_config['endpoint']['localhost']['port'] ) ? $solarium_config['endpoint']['localhost']['port'] : '';
+			$path = isset( $solarium_config['endpoint']['localhost']['path'] ) ? $solarium_config['endpoint']['localhost']['path'] : '';
 			syslog( LOG_ERR, "host, port or path are empty, host:$host, port:$port, path:$path" );
 
 			return null;
