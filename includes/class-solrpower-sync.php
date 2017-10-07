@@ -364,7 +364,7 @@ class SolrPower_Sync {
 							$doc->addField( $field_name . '_str', $value );
 							if ( ! in_array( $field_name, $used ) ) {
 								if ( is_numeric( $value ) ) {
-									$doc->addField( $field_name . '_i', absint( $value ) );
+									$doc->addField( $field_name . '_i', intval( $value ) );
 									$doc->addField( $field_name . '_d', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
 									$doc->addField( $field_name . '_f', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
 								}

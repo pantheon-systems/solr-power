@@ -971,6 +971,44 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$this->assertEqualSets( $expected, $returned );
 	}
 
+	public function test_meta_query_single_query_compare_not_equals_negative_integer() {
+		$posts = self::factory()->post->create_many( 2 );
+		add_post_meta( $posts[0], 'number_of_colors', '1' );
+		add_post_meta( $posts[1], 'number_of_colors', '-1' );
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+		// Not equals.
+		$query = new WP_Query( array(
+			'solr_integrate'         => true,
+			'meta_query'             => array(
+				array(
+					'key'     => 'number_of_colors',
+					'value'   => 1,
+					'compare' => '!=',
+				),
+			),
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		) );
+		$this->assertEquals( 1, $query->found_posts );
+		$this->assertEquals( $posts[1], $query->posts[0]->ID );
+		// Equals.
+		$query = new WP_Query( array(
+			'solr_integrate'         => true,
+			'meta_query'             => array(
+				array(
+					'key'     => 'number_of_colors',
+					'value'   => -1,
+					'compare' => '==',
+				),
+			),
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		) );
+		// exit;
+		$this->assertEquals( 1, $query->found_posts );
+		$this->assertEquals( $posts[1], $query->posts[0]->ID );
+	}
+
 	public function test_meta_query_relation_and_compare_in_same_keys() {
 		$posts = self::factory()->post->create_many( 4 );
 		add_post_meta( $posts[0], 'color', 'orange' );
