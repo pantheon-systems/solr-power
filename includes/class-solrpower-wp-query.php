@@ -881,7 +881,11 @@ class SolrPower_WP_Query {
 				return floatval( $value );
 				break;
 			case 'i':
-				return absint( $value );
+				// '-' is a special character and needs to be escaped.
+				if ( $value < 0 ) {
+					return '\\' . intval( $value );
+				}
+				return intval( $value );
 				break;
 			default:
 				return '"' . $value . '"';
