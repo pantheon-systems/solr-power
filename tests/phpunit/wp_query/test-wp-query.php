@@ -178,4 +178,22 @@ class SolrWPQueryTest extends SolrTestBase {
 		$this->assertEquals( 'page', $query->get('post_type') );
 		$this->assertEquals( array( $page_id ), wp_list_pluck( $query->posts, 'ID' ) );
 	}
+
+	public function test_wp_query_fields_ids() {
+		$p1 = self::factory()->post->create();
+		$p2 = self::factory()->post->create();
+		$p3 = self::factory()->post->create();
+
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+		$query = new WP_Query( array(
+			'solr_integrate'         => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'fields'                 => 'ids',
+			'orderby'                => 'ID',
+			'order'                  => 'ASC',
+		) );
+		$this->assertEquals( array( $p1, $p2, $p3 ), $query->posts );
+	}
+
 }
