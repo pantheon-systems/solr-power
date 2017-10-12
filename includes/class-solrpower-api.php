@@ -346,7 +346,7 @@ class SolrPower_Api {
 				'_builtin' => false,
 			), 'names' );
 			foreach ( $taxonomies as $parent ) {
-				$facet_fields[] = $parent . '_taxonomy';
+				$facet_fields[] = $parent . '_taxonomy_str';
 			}
 		}
 

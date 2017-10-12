@@ -203,6 +203,9 @@ class SolrTaxQueryTest extends SolrTestBase {
 		) );
 
 		$this->assertEquals( array( $p1 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$facets = SolrPower_WP_Query::get_instance()->facets;
+		$this->assertEquals( 1, $facets['categories']->getValues()['Foo^^'] );
+		$this->assertCount( 0, $facets['tags']->getValues() );
 	}
 
 	public function test_field_name_should_work_for_names_with_spaces() {
@@ -232,6 +235,10 @@ class SolrTaxQueryTest extends SolrTestBase {
 		) );
 
 		$this->assertEquals( array( $p1 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$facets = SolrPower_WP_Query::get_instance()->facets;
+		$this->assertEquals( 1, $facets['categories']->getValues()['Uncategorized^^'] );
+		$this->assertCount( 0, $facets['tags']->getValues() );
+		$this->assertEquals( 1, $facets['wptests_tax_taxonomy_str']->getValues()['Foo Bar'] );
 	}
 
 	public function test_tax_query_single_query_single_term_field_term_taxonomy_id() {
