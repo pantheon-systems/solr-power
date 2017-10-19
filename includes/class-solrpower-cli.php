@@ -79,7 +79,10 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 * : Start indexing at a specific batch. Defaults to last indexed batch, or very beginning.
 	 *
 	 * [--batch-size=<size>]
-	 * : Number of posts per batch. Defaults to 100.
+	 * : Number of posts per batch.
+	 * ---
+	 * default: 100
+	 * ---
 	 *
 	 * [--post_type=<post-type>]
 	 * : Limit indexing to a specific post type. Defaults to all searchable.
