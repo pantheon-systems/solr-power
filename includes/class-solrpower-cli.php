@@ -78,7 +78,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 * [--batch=<batch>]
 	 * : Start indexing at a specific batch. Defaults to last indexed batch, or very beginning.
 	 *
-	 * [--batch-size=<size>]
+	 * [--batch_size=<size>]
 	 * : Number of posts per batch.
 	 * ---
 	 * default: 100
@@ -96,8 +96,8 @@ class SolrPower_CLI extends WP_CLI_Command {
 		if ( isset( $assoc_args['batch'] ) ) {
 			$query_args['batch'] = (int) $assoc_args['batch'];
 		}
-		if ( isset( $assoc_args['batch-size'] ) ) {
-			$query_args['posts_per_page'] = (int) $assoc_args['posts_per_page'];
+		if ( isset( $assoc_args['batch_size'] ) ) {
+			$query_args['posts_per_page'] = (int) $assoc_args['batch_size'];
 		}
 
 		$batch_index = new SolrPower_Batch_Index( $query_args );
