@@ -3,7 +3,7 @@ Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor
 Tags: search
 Requires at least: 4.6
 Tested up to: 4.8
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,6 +162,20 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 ```
 
 == Changelog ==
+
+= 1.4.1 =
+* Ensure custom taxonomies are included in widget facets
+* Mention available Docker containers in README
+* Properly handle negative integers when indexing and querying
+* Increase precision of `test_wp_query_failed_ping` to avoid racy failures
+* Catch exception when `$search->getData()` fails
+* Remove unused global imports for $current_blog
+* Properly escape dismax query strings
+* POST actions to `admin.php` in network admin
+* Define checked files in PHPCS config so `phpcs` can easily be run
+* Remove unused global imports for $current_blog
+* Define checked files in PHPCS config so `phpcs` can easily be run
+* Rename PHPCS config to correct name
 
 = 1.4.0 =
 * Bumps minimum supported version to WordPress 4.6.
