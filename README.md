@@ -164,6 +164,7 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 ## Changelog ##
 
 ### 1.4.1 ###
+* Introduce `batch_size` argument for `wp solr index`
 * Ensure custom taxonomies are included in widget facets
 * Mention available Docker containers in README
 * Properly handle negative integers when indexing and querying
