@@ -86,11 +86,11 @@
 
 <?php if ( ! is_multisite() ) : ?>
 <?php
-	$batch_index = new SolrPower_Batch_Index;
-	$current_batch = $batch_index->get_current_batch();
-	$total_batches = $batch_index->get_total_batches();
+	$batch_index     = new SolrPower_Batch_Index;
+	$current_batch   = $batch_index->get_current_batch();
+	$total_batches   = $batch_index->get_total_batches();
 	$remaining_posts = $batch_index->get_remaining_posts();
-	$total_posts = $batch_index->get_total_posts();
+	$total_posts     = $batch_index->get_total_posts();
 	?>
 <script type="text/html" id="tmpl-solr-batch-index" data-current-batch="<?php echo (int) $current_batch; ?>" data-total-batches="<?php echo (int) $total_batches; ?>" data-remaining-posts="<?php echo (int) $remaining_posts; ?>" data-total-posts="<?php echo (int) $total_posts; ?>">
 	<# if ( data.elapsedTime ) { #>
@@ -102,7 +102,7 @@
 		<# } else { #>
 		<?php
 		// translators: Displays batch index completion message.
-		echo sprintf( __( 'Completed indexing in %1$s elapsed time (%2$s indexed, %3$s failed)' ),  '{{ data.elapsedTime }}', '{{ data.successPosts }}', '{{ data.failedPosts }}' ); ?>
+		echo sprintf( __( 'Completed indexing in %1$s elapsed time (%2$s indexed, %3$s failed)' ), '{{ data.elapsedTime }}', '{{ data.successPosts }}', '{{ data.failedPosts }}' ); ?>
 		<# } #>
 		</div>
 	<# } else { #>

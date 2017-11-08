@@ -79,19 +79,19 @@ class SolrPower_Batch_Index {
 	 * @param array $query_args Override arguments passed to WP_Query.
 	 */
 	public function __construct( $query_args = array() ) {
-		$defaults = array(
-			'post_status'     => SolrPower::get_post_statuses(),
-			'post_type'       => SolrPower::get_post_types(),
-			'posts_per_page'  => 100,
+		$defaults         = array(
+			'post_status'    => SolrPower::get_post_statuses(),
+			'post_type'      => SolrPower::get_post_types(),
+			'posts_per_page' => 100,
 		);
 		$clean_query_args = array();
 		foreach ( $defaults as $key => $value ) {
 			$clean_query_args[ $key ] = isset( $query_args[ $key ] ) ? $query_args[ $key ] : $value;
 		}
 		// Always need to iterate post ids.
-		$clean_query_args['fields'] = 'ids';
+		$clean_query_args['fields']  = 'ids';
 		$clean_query_args['orderby'] = 'ID';
-		$clean_query_args['order'] = 'ASC';
+		$clean_query_args['order']   = 'ASC';
 		// Generate a cache key to store the current page.
 		$this->batch_cache_key = 'solr_power_' . md5( serialize( $clean_query_args ) );
 		// Include 'paged' always starts at that page,
@@ -105,17 +105,17 @@ class SolrPower_Batch_Index {
 		// Cache the 'paged' value for resuming.
 		delete_option( $this->batch_cache_key );
 		add_option( $this->batch_cache_key, $this->query_args['paged'], null, false );
-		$query = new WP_Query( $clean_query_args );
+		$query          = new WP_Query( $clean_query_args );
 		$this->post_ids = $query->posts;
-		$found_posts = $query->found_posts;
+		$found_posts    = $query->found_posts;
 		if ( $this->query_args['paged'] > 1 ) {
 			$found_posts = $found_posts - ( ( $this->query_args['paged'] - 1 ) * $this->query_args['posts_per_page'] );
 		}
-		$this->total_posts = $found_posts;
+		$this->total_posts     = $found_posts;
 		$this->remaining_posts = $found_posts;
-		$this->total_batches = $query->max_num_pages;
+		$this->total_batches   = $query->max_num_pages;
 		// Initialize the Solr updater.
-		$solr = get_solr();
+		$solr              = get_solr();
 		$this->solr_update = $solr->createUpdate();
 	}
 
@@ -190,7 +190,7 @@ class SolrPower_Batch_Index {
 	public function fetch_next_posts() {
 		self::clear_object_cache();
 		$this->increment_page();
-		$query = new WP_Query( $this->query_args );
+		$query          = new WP_Query( $this->query_args );
 		$this->post_ids = $query->posts;
 		if ( ! empty( $this->post_ids ) ) {
 			return true;
@@ -224,19 +224,19 @@ class SolrPower_Batch_Index {
 		if ( empty( $this->post_ids ) ) {
 			return $result;
 		}
-		$post_id = array_shift( $this->post_ids );
-		$post = get_post( $post_id );
-		$result['post_id'] = $post_id;
+		$post_id              = array_shift( $this->post_ids );
+		$post                 = get_post( $post_id );
+		$result['post_id']    = $post_id;
 		$result['post_title'] = html_entity_decode( $post->post_title );
-		$documents[] = SolrPower_Sync::get_instance()->build_document( $this->solr_update->createDocument(), $post );
-		$sync_result = SolrPower_Sync::get_instance()->post( $documents, true, false );
+		$documents[]          = SolrPower_Sync::get_instance()->build_document( $this->solr_update->createDocument(), $post );
+		$sync_result          = SolrPower_Sync::get_instance()->post( $documents, true, false );
 		if ( false !== $sync_result ) {
 			$this->success_posts++;
 			$result['status'] = 'success';
 		} else {
 			$this->failed_posts++;
 			$result['status'] = 'failed';
-			$error_msg = SolrPower_Sync::get_instance()->error_msg;
+			$error_msg        = SolrPower_Sync::get_instance()->error_msg;
 			// Pull out the document <title> when this looks like escaped HTML.
 			if ( preg_match( '#' . preg_quote( '&lt;title&gt;' ) . '(.+)' . preg_quote( '&lt;/title&gt;' ) . '#', $error_msg, $matches ) ) {
 				$error_msg = $matches[1];
@@ -262,10 +262,10 @@ class SolrPower_Batch_Index {
 			return;
 		}
 
-		$wp_object_cache->group_ops = array();
-		$wp_object_cache->stats = array();
+		$wp_object_cache->group_ops      = array();
+		$wp_object_cache->stats          = array();
 		$wp_object_cache->memcache_debug = array();
-		$wp_object_cache->cache = array();
+		$wp_object_cache->cache          = array();
 
 		if ( is_callable( $wp_object_cache, '__remoteset' ) ) {
 			$wp_object_cache->__remoteset();

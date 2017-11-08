@@ -73,11 +73,13 @@ if ( $server ) {
 
 <?php
 if ( 0 === (int) $results['hits'] ) {
-	printf( "<div class='solr_noresult'>
+	printf(
+		"<div class='solr_noresult'>
 						<h2>Sorry, no results were found.</h2>
 						<h3>Perhaps you mispelled your search query, or need to try using broader search terms.</h3>
 						<p>For example, instead of searching for 'Apple iPhone 3.0 3GS', try something simple like 'iPhone'.</p>
-					</div>\n" );
+					</div>\n"
+	);
 } else {
 	printf( "<ol>\n" );
 	foreach ( $results['results'] as $result ) {
@@ -97,7 +99,8 @@ if ( 0 === (int) $results['hits'] ) {
 
 		echo "</p>\n";
 
-		printf( "<label> By <a href='%s'>%s</a> in %s %s - <a href='%s'>%s comments</a></label>\n",
+		printf(
+			"<label> By <a href='%s'>%s</a> in %s %s - <a href='%s'>%s comments</a></label>\n",
 			$result['authorlink'],
 			$result['author'],
 			get_the_category_list( ', ', '', $result['id'] ),
@@ -113,11 +116,11 @@ if ( 0 === (int) $results['hits'] ) {
 <?php if ( $results['pager'] ) {
 	printf( '<div class="solr_pages">' );
 	$itemlinks = array();
-	$pagecnt = 0;
-	$pagemax = 10;
-	$next = '';
-	$prev = '';
-	$found = false;
+	$pagecnt   = 0;
+	$pagemax   = 10;
+	$next      = '';
+	$prev      = '';
+	$found     = false;
 	foreach ( $results['pager'] as $pageritm ) {
 		if ( $pageritm['link'] ) {
 			if ( $found && '' === $next ) {
@@ -127,7 +130,7 @@ if ( 0 === (int) $results['hits'] ) {
 			}
 			$itemlinks[] = sprintf( '<a href="%s">%s</a>', $pageritm['link'], $pageritm['page'] );
 		} else {
-			$found = true;
+			$found       = true;
 			$itemlinks[] = sprintf( '<a class="solr_pages_on" href="%s">%s</a>', $pageritm['link'], $pageritm['page'] );
 		}
 

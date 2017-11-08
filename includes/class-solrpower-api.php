@@ -173,7 +173,7 @@ class SolrPower_Api {
 		try {
 			$ping            = $solr->ping( $solr->createPing() );
 			$this->last_code = 200;
-			$this->ping = true;
+			$this->ping      = true;
 			return true;
 		} catch ( Solarium\Exception\HttpException $e ) {
 
@@ -192,7 +192,7 @@ class SolrPower_Api {
 	function get_solr() {
 
 		$plugin_s4wp_settings = solr_options();
-		$solarium_config = array(
+		$solarium_config      = array(
 			'endpoint' => array(
 				'localhost' => array(
 					'host'   => getenv( 'PANTHEON_INDEX_HOST' ),
@@ -309,14 +309,16 @@ class SolrPower_Api {
 	 * @return Solarium\QueryType\Select\Result\Result
 	 */
 	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings, $fields = null, $blogid = null, $extra = array() ) {
-		$this->add_log( array(
-			'Search Query' => $qry,
-			'Offset'       => $offset,
-			'Count'        => $count,
-			'Filter Query' => $fq,
-			'Sort By'      => $sortby,
-			'Order'        => $order,
-		) );
+		$this->add_log(
+			array(
+				'Search Query' => $qry,
+				'Offset'       => $offset,
+				'Count'        => $count,
+				'Filter Query' => $fq,
+				'Sort By'      => $sortby,
+				'Order'        => $order,
+			)
+		);
 
 		$response         = null;
 		$facet_fields     = array();
@@ -342,9 +344,11 @@ class SolrPower_Api {
 
 		$facet_on_custom_taxonomy = $plugin_s4wp_settings['s4wp_facet_on_taxonomy'];
 		if ( count( $facet_on_custom_taxonomy ) ) {
-			$taxonomies = (array) get_taxonomies( array(
-				'_builtin' => false,
-			), 'names' );
+			$taxonomies = (array) get_taxonomies(
+				array(
+					'_builtin' => false,
+				), 'names'
+			);
 			foreach ( $taxonomies as $parent ) {
 				$facet_fields[] = $parent . '_taxonomy_str';
 			}
@@ -367,7 +371,7 @@ class SolrPower_Api {
 		}
 		$count = ( $count < 1 ) ? apply_filters( 'solr_max_search_results', 50000 ) : $count;
 		if ( $solr ) {
-			$select = array(
+			$select         = array(
 				'query'      => $qry,
 				'fields'     => '*,score',
 				'start'      => $offset,
@@ -383,9 +387,9 @@ class SolrPower_Api {
 			} else {
 				$select['sort']['post_date'] = 'desc';
 			}
-			$select   = apply_filters( 'solr_select_query', $select );
-			$query    = $solr->createSelect( $select );
-			$dismax   = $query->getDisMax();
+			$select    = apply_filters( 'solr_select_query', $select );
+			$query     = $solr->createSelect( $select );
+			$dismax    = $query->getDisMax();
 			$facet_set = $query->getFacetSet();
 
 			if ( is_multisite() ) {

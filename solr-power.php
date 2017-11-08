@@ -47,15 +47,19 @@ function solr_power_php_admin_notice() {
 			if ( isset( $_GET['activate'] ) ) {
 				unset( $_GET['activate'] );
 
-				echo wp_kses_post( __(
-					'The Solr Power plugin requires PHP 5.4 to function properly and <strong>has not</strong> been activated.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
-					'solr-for-wordpress-on-pantheon'
-				) );
+				echo wp_kses_post(
+					__(
+						'The Solr Power plugin requires PHP 5.4 to function properly and <strong>has not</strong> been activated.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
+						'solr-for-wordpress-on-pantheon'
+					)
+				);
 			} else {
-				echo wp_kses_post( __(
-					'The Solr Power plugin requires PHP 5.4 to function properly and had been <strong>deactivated</strong>.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
-					'solr-for-wordpress-on-pantheon'
-				) );
+				echo wp_kses_post(
+					__(
+						'The Solr Power plugin requires PHP 5.4 to function properly and had been <strong>deactivated</strong>.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
+						'solr-for-wordpress-on-pantheon'
+					)
+				);
 			}
 			?>
 		</p>
@@ -75,7 +79,7 @@ function solr_power_env_variables_admin_notice() {
 	<div class="error">
 		<p>
 			<?php
-			$error_message = array();
+			$error_message   = array();
 			$error_message[] = __( 'The Solr Power plugin requires environment variables for <code>PANTHEON_INDEX_HOST</code> and <code>PANTHEON_INDEX_PORT</code> to function properly.', 'solr-for-wordpress-on-pantheon' );
 			if ( isset( $_GET['activate'] ) ) {
 				unset( $_GET['activate'] );

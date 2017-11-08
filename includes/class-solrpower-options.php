@@ -53,10 +53,12 @@ class SolrPower_Options {
 	 * Register the options page
 	 */
 	function add_pages() {
-		add_menu_page( 'Solr Power', 'Solr Power', 'manage_options', 'solr-power', array(
-			$this,
-			'options_page',
-		), 'dashicons-search' );
+		add_menu_page(
+			'Solr Power', 'Solr Power', 'manage_options', 'solr-power', array(
+				$this,
+				'options_page',
+			), 'dashicons-search'
+		);
 	}
 
 	/**
@@ -84,10 +86,10 @@ class SolrPower_Options {
 		$option_page = sanitize_text_field( $_POST['option_page'] );
 		check_admin_referer( $option_page . '-options' );
 		$whitelist_options = apply_filters( 'whitelist_options', array() );
-		$options = $whitelist_options[ $option_page ];
+		$options           = $whitelist_options[ $option_page ];
 		foreach ( $options as $option ) {
 			$option = trim( $option );
-			$value = null;
+			$value  = null;
 			if ( isset( $_POST[ $option ] ) ) {
 				$value = $_POST[ $option ];
 				if ( ! is_array( $value ) ) {
@@ -97,7 +99,7 @@ class SolrPower_Options {
 			}
 			update_site_option( $option, $value );
 		}
-		$goback = add_query_arg( 'settings-updated', 'true',  wp_get_referer() );
+		$goback = add_query_arg( 'settings-updated', 'true', wp_get_referer() );
 		wp_redirect( $goback );
 		exit;
 	}
@@ -116,9 +118,9 @@ class SolrPower_Options {
 			if ( 'start-index' === $method ) {
 				$query_args['batch'] = 1;
 			}
-			$batch_index = new SolrPower_Batch_Index( $query_args );
+			$batch_index   = new SolrPower_Batch_Index( $query_args );
 			$success_posts = 0;
-			$failed_posts = 0;
+			$failed_posts  = 0;
 			while ( $batch_index->have_posts() ) {
 				$result = $batch_index->index_post();
 				if ( 'success' === $result['status'] ) {
@@ -133,12 +135,14 @@ class SolrPower_Options {
 				do_action( 'solr_power_index_all_finished' );
 			}
 			header( 'Content-Type: application/json' );
-			echo json_encode( array(
-				'currentBatch'      => $batch_index->get_current_batch(),
-				'successPosts'      => $success_posts,
-				'failedPosts'       => $failed_posts,
-				'remainingPosts'    => $batch_index->get_remaining_posts(),
-			) );
+			echo json_encode(
+				array(
+					'currentBatch'   => $batch_index->get_current_batch(),
+					'successPosts'   => $success_posts,
+					'failedPosts'    => $failed_posts,
+					'remainingPosts' => $batch_index->get_remaining_posts(),
+				)
+			);
 		}
 		die();
 	}
@@ -163,8 +167,8 @@ class SolrPower_Options {
 	 * @param array $options Full options array.
 	 */
 	function update_option( $options ) {
-		$optval   = $this->sanitise_options( $options );
-		$option   = 'plugin_s4wp_settings';
+		$optval = $this->sanitise_options( $options );
+		$option = 'plugin_s4wp_settings';
 		if ( is_multisite() ) {
 			update_site_option( $option, $optval );
 		} else {
@@ -512,15 +516,19 @@ class SolrPower_Options {
 			'solr-power-index'
 		);
 
-		$this->add_field( 's4wp_default_operator', 'Default Search Operator', $page, $section, 'radio', null, array(
-			'OR',
-			'AND',
-		) );
+		$this->add_field(
+			's4wp_default_operator', 'Default Search Operator', $page, $section, 'radio', null, array(
+				'OR',
+				'AND',
+			)
+		);
 
-		$this->add_field( 's4wp_default_sort', 'Default Sort', $page, $section, 'select', null, array(
-			'score',
-			'displaydate',
-		) );
+		$this->add_field(
+			's4wp_default_sort', 'Default Sort', $page, $section, 'select', null, array(
+				'score',
+				'displaydate',
+			)
+		);
 	}
 
 	/**
@@ -568,10 +576,12 @@ class SolrPower_Options {
 			'filter'  => $filter,
 			'choices' => $choices,
 		);
-		add_settings_field( $name, $title, array(
-			$this,
-			'render_field',
-		), $page, $section, $args );
+		add_settings_field(
+			$name, $title, array(
+				$this,
+				'render_field',
+			), $page, $section, $args
+		);
 	}
 
 }
