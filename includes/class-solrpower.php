@@ -43,9 +43,11 @@ class SolrPower {
 		add_action( 'wp_enqueue_scripts', array( $this, 'add_scripts' ) );
 		add_filter( 'plugin_action_links', array( $this, 'plugin_settings_link' ), 10, 2 );
 		add_filter( 'debug_bar_panels', array( $this, 'add_panel' ) );
-		add_action( 'widgets_init', function () {
-			register_widget( 'SolrPower_Facet_Widget' );
-		} );
+		add_action(
+			'widgets_init', function () {
+				register_widget( 'SolrPower_Facet_Widget' );
+			}
+		);
 
 		add_action( 'wp_ajax_nopriv_solr_search', array( $this, 'ajax_search' ) );
 		add_action( 'wp_ajax_solr_search', array( $this, 'ajax_search' ) );
@@ -81,14 +83,16 @@ class SolrPower {
 	 */
 	public function sanity_check() {
 		$return_value = '';
-		$wp_version  = get_bloginfo( 'version' );
+		$wp_version   = get_bloginfo( 'version' );
 
 		if ( getenv( 'PANTHEON_ENVIRONMENT' ) !== false && getenv( 'PANTHEON_INDEX_HOST' ) === false ) {
-			$return_value = wp_kses( __( 'Before you can activate this plugin, you must first <a href="https://pantheon.io/docs/articles/sites/apache-solr/">activate Solr</a> in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' ), array(
-				'a' => array(
-					'href' => array(),
-				),
-			) );
+			$return_value = wp_kses(
+				__( 'Before you can activate this plugin, you must first <a href="https://pantheon.io/docs/articles/sites/apache-solr/">activate Solr</a> in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' ), array(
+					'a' => array(
+						'href' => array(),
+					),
+				)
+			);
 		} elseif ( version_compare( $wp_version, '3.0', '<' ) ) {
 			$return_value = esc_html__( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' );
 		}
@@ -107,7 +111,7 @@ class SolrPower {
 			return;
 		}
 		$style_path = 'assets/css/admin.min.css';
-		$mtime = filemtime( SOLR_POWER_PATH . '/' . $style_path );
+		$mtime      = filemtime( SOLR_POWER_PATH . '/' . $style_path );
 		wp_enqueue_style( 'solr-admin-css', add_query_arg( 'mtime', $mtime, SOLR_POWER_URL . $style_path ) );
 		if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 			$script_path = 'assets/js/src/admin.js';
@@ -123,7 +127,7 @@ class SolrPower {
 		}
 		wp_enqueue_script( 'solr-js', SOLR_POWER_URL . 'template/script.js', false );
 		$solr_js = array(
-			'ajax_url' => admin_url( 'admin-ajax.php' ),
+			'ajax_url'   => admin_url( 'admin-ajax.php' ),
 
 			/**
 			 * Filter indexed post types
@@ -153,7 +157,7 @@ class SolrPower {
 			return $links;
 		}
 
-		$base_link = is_multisite() ? network_admin_url( 'admin.php' ) : admin_url( 'admin.php' );
+		$base_link     = is_multisite() ? network_admin_url( 'admin.php' ) : admin_url( 'admin.php' );
 		$settings_link = add_query_arg( 'page', 'solr-power', $base_link );
 		array_unshift( $links, '<a href="' . esc_url( $settings_link ) . '">' . esc_html__( 'Settings', 'solr-for-wordpress-on-pantheon' ) . '</a>' );
 
@@ -273,11 +277,13 @@ class SolrPower {
 		$solr_options = solr_options();
 		$allow_ajax   = isset( $solr_options['allow_ajax'] ) ? boolval( $solr_options['allow_ajax'] ) : false;
 		$div_id       = isset( $solr_options['ajax_div_id'] ) ? esc_html( $solr_options['ajax_div_id'] ) : false;
-		wp_localize_script( 'Solr_Facet', 'solr', array(
-			'ajaxurl'           => admin_url( 'admin-ajax.php' ),
-			'allow_ajax'        => $allow_ajax,
-			'search_results_id' => $div_id,
-		) );
+		wp_localize_script(
+			'Solr_Facet', 'solr', array(
+				'ajaxurl'           => admin_url( 'admin-ajax.php' ),
+				'allow_ajax'        => $allow_ajax,
+				'search_results_id' => $div_id,
+			)
+		);
 
 		wp_enqueue_style( 'Solr_Facet', SOLR_POWER_URL . 'assets/css/facet.css' );
 	}
@@ -287,12 +293,14 @@ class SolrPower {
 	 */
 	public function ajax_search() {
 		// Strip out admin-ajax from pagination links.
-		add_filter( 'paginate_links', function ( $url ) {
-			$url = str_replace( 'wp-admin/admin-ajax.php', '', $url );
-			$url = remove_query_arg( 'action', $url );
+		add_filter(
+			'paginate_links', function ( $url ) {
+				$url = str_replace( 'wp-admin/admin-ajax.php', '', $url );
+				$url = remove_query_arg( 'action', $url );
 
-			return $url;
-		} );
+				return $url;
+			}
+		);
 
 		// Add __return_true to the admin/ajax filters so the widget can access admin ajax.
 		add_filter( 'solr_allow_ajax', '__return_true' );
@@ -365,9 +373,13 @@ class SolrPower {
 	 * @return array
 	 */
 	public static function get_post_types() {
-		return apply_filters( 'solr_post_types', get_post_types( array(
-			'exclude_from_search' => false,
-		) ) );
+		return apply_filters(
+			'solr_post_types', get_post_types(
+				array(
+					'exclude_from_search' => false,
+				)
+			)
+		);
 	}
 
 	/**

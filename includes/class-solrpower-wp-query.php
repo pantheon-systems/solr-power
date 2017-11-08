@@ -206,10 +206,12 @@ class SolrPower_WP_Query {
 		$query->found_posts   = $search['numFound'];
 		$query->max_num_pages = ceil( $search['numFound'] / $query->get( 'posts_per_page' ) );
 
-		SolrPower_Api::get_instance()->add_log( array(
-			'Results Found' => $search['numFound'],
-			'Query Time'    => $search_header['QTime'] . 'ms',
-		) );
+		SolrPower_Api::get_instance()->add_log(
+			array(
+				'Results Found' => $search['numFound'],
+				'Query Time'    => $search_header['QTime'] . 'ms',
+			)
+		);
 
 		$posts = $this->parse_results( $search );
 
@@ -448,7 +450,7 @@ class SolrPower_WP_Query {
 			'name',
 
 		);
-		$convert     = array(
+		$convert = array(
 			'p'       => 'ID',
 			'page_id' => 'ID',
 			'name'    => 'post_name',
@@ -671,7 +673,7 @@ class SolrPower_WP_Query {
 	 * @return string
 	 */
 	private function parse_meta_query( $meta_query ) {
-		$options      = solr_options();
+		$options = solr_options();
 		/**
 		 * Filter indexed custom fields
 		 *
