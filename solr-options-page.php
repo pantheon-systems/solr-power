@@ -30,21 +30,16 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 
 		<h2 class="nav-tab-wrapper" id="solr-tabs">
 
-			<a class="nav-tab <?php echo ( ! isset( $_GET['settings-updated'] ) ) ? 'nav-tab-active' : ''; ?>"
-			   id="solr_info-tab"
-			   href="#top#solr_info"><span class="dashicons dashicons-info"></span>
+			<a class="nav-tab <?php echo ( ! isset( $_GET['settings-updated'] ) ) ? 'nav-tab-active' : ''; ?>" id="solr_info-tab" href="#top#solr_info"><span class="dashicons dashicons-info"></span>
 				<?php esc_html_e( 'Info', 'solr-for-wordpress-on-pantheon' ); ?>
 			</a>
-			<a class="nav-tab" id="solr_action-tab"
-			   href="#top#solr_action"><span class="dashicons dashicons-performance"></span>
+			<a class="nav-tab" id="solr_action-tab" href="#top#solr_action"><span class="dashicons dashicons-performance"></span>
 				<?php esc_html_e( 'Actions', 'solr-for-wordpress-on-pantheon' ); ?>
 			</a>
-			<a class="nav-tab" id="solr_indexing-tab"
-			   href="#top#solr_indexing"><span class="dashicons dashicons-admin-page"></span>
+			<a class="nav-tab" id="solr_indexing-tab" href="#top#solr_indexing"><span class="dashicons dashicons-admin-page"></span>
 				<?php esc_html_e( 'Indexing Options', 'solr-for-wordpress-on-pantheon' ); ?>
 			</a>
-			<a class="nav-tab" id="solr_facet-tab"
-			   href="#top#solr_facet"><span class="dashicons dashicons-forms"></span>
+			<a class="nav-tab" id="solr_facet-tab" href="#top#solr_facet"><span class="dashicons dashicons-forms"></span>
 				<?php esc_html_e( 'Facet Options', 'solr-for-wordpress-on-pantheon' ); ?>
 			</a>
 		</h2>

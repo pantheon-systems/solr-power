@@ -15,8 +15,7 @@
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Check Server Settings', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_ping"
-						   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
+				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_ping" value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 			</tr>
 		</table>
 	</form>
@@ -26,8 +25,7 @@
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Optimize Index', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_optimize"
-						   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
+				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_optimize" value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 			</tr>
 		</table>
 	</form>
@@ -37,8 +35,7 @@
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Delete All', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_deleteall"
-						   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
+				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_deleteall" value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 			</tr>
 		</table>
 	</form>
@@ -50,8 +47,7 @@
 			<table class="form-table">
 				<tr valign="top">
 					<th scope="row"><?php esc_html_e( 'Repost schema.xml', 'solr-for-wordpress-on-pantheon' ) ?></th>
-					<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_repost_schema"
-							   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
+					<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_repost_schema" value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 				</tr>
 				<tr valign="top">
 					<td scope="row" colspan="2">To use a custom schema.xml, upload it to the
