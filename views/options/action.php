@@ -15,8 +15,7 @@
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Check Server Settings', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_ping"
-						   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
+				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_ping" value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 			</tr>
 		</table>
 	</form>
@@ -26,8 +25,7 @@
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Optimize Index', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_optimize"
-						   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
+				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_optimize" value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 			</tr>
 		</table>
 	</form>
@@ -37,8 +35,7 @@
 		<table class="form-table">
 			<tr valign="top">
 				<th scope="row"><?php esc_html_e( 'Delete All', 'solr-for-wordpress-on-pantheon' ) ?></th>
-				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_deleteall"
-						   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
+				<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_deleteall" value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 			</tr>
 		</table>
 	</form>
@@ -50,8 +47,7 @@
 			<table class="form-table">
 				<tr valign="top">
 					<th scope="row"><?php esc_html_e( 'Repost schema.xml', 'solr-for-wordpress-on-pantheon' ) ?></th>
-					<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_repost_schema"
-							   value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
+					<td><input type="submit" class="button-primary solr-admin-action" name="s4wp_repost_schema" value="<?php esc_attr_e( 'Execute', 'solr-for-wordpress-on-pantheon' ) ?>" /></td>
 				</tr>
 				<tr valign="top">
 					<td scope="row" colspan="2">To use a custom schema.xml, upload it to the
@@ -86,11 +82,11 @@
 
 <?php if ( ! is_multisite() ) : ?>
 <?php
-	$batch_index = new SolrPower_Batch_Index;
-	$current_batch = $batch_index->get_current_batch();
-	$total_batches = $batch_index->get_total_batches();
+	$batch_index     = new SolrPower_Batch_Index;
+	$current_batch   = $batch_index->get_current_batch();
+	$total_batches   = $batch_index->get_total_batches();
 	$remaining_posts = $batch_index->get_remaining_posts();
-	$total_posts = $batch_index->get_total_posts();
+	$total_posts     = $batch_index->get_total_posts();
 	?>
 <script type="text/html" id="tmpl-solr-batch-index" data-current-batch="<?php echo (int) $current_batch; ?>" data-total-batches="<?php echo (int) $total_batches; ?>" data-remaining-posts="<?php echo (int) $remaining_posts; ?>" data-total-posts="<?php echo (int) $total_posts; ?>">
 	<# if ( data.elapsedTime ) { #>
@@ -102,7 +98,7 @@
 		<# } else { #>
 		<?php
 		// translators: Displays batch index completion message.
-		echo sprintf( __( 'Completed indexing in %1$s elapsed time (%2$s indexed, %3$s failed)' ),  '{{ data.elapsedTime }}', '{{ data.successPosts }}', '{{ data.failedPosts }}' ); ?>
+		echo sprintf( __( 'Completed indexing in %1$s elapsed time (%2$s indexed, %3$s failed)' ), '{{ data.elapsedTime }}', '{{ data.successPosts }}', '{{ data.failedPosts }}' ); ?>
 		<# } #>
 		</div>
 	<# } else { #>

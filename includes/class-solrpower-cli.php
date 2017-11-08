@@ -100,23 +100,23 @@ class SolrPower_CLI extends WP_CLI_Command {
 			$query_args['posts_per_page'] = (int) $assoc_args['batch_size'];
 		}
 
-		$batch_index = new SolrPower_Batch_Index( $query_args );
+		$batch_index     = new SolrPower_Batch_Index( $query_args );
 		$displayed_batch = false;
-		$start_time = microtime( true );
+		$start_time      = microtime( true );
 		while ( $batch_index->have_posts() ) {
 			$current_batch = $batch_index->get_current_batch();
 			if ( $current_batch !== $displayed_batch ) {
 				WP_CLI::log( '' );
-				$success_posts = $batch_index->get_success_posts();
-				$failed_posts = $batch_index->get_failed_posts();
+				$success_posts   = $batch_index->get_success_posts();
+				$failed_posts    = $batch_index->get_failed_posts();
 				$remaining_posts = $batch_index->get_remaining_posts();
-				$total_batches = $batch_index->get_total_batches();
-				$log_time = self::format_log_timestamp( microtime( true ) - $start_time );
+				$total_batches   = $batch_index->get_total_batches();
+				$log_time        = self::format_log_timestamp( microtime( true ) - $start_time );
 				WP_CLI::log( "Starting batch {$current_batch} of {$total_batches} at {$log_time} elapsed time ({$success_posts} indexed, {$failed_posts} failed, {$remaining_posts} remaining)" );
 				WP_CLI::log( '' );
 				$displayed_batch = $current_batch;
 			}
-			$result = $batch_index->index_post();
+			$result       = $batch_index->index_post();
 			$post_mention = "'{$result['post_title']}' ({$result['post_id']})";
 			if ( 'success' === $result['status'] ) {
 				WP_CLI::log( "Submitted {$post_mention} to the index." );
@@ -128,7 +128,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 			}
 		}
 		$success_posts = $batch_index->get_success_posts();
-		$total_posts = $batch_index->get_total_posts();
+		$total_posts   = $batch_index->get_total_posts();
 		do_action( 'solr_power_index_all_finished' );
 		WP_CLI::success( "Indexed {$success_posts} of {$total_posts} posts." );
 	}
@@ -171,9 +171,9 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 */
 	public function info( $args, $assoc_args ) {
 
-		$server = SolrPower_Api::get_instance()->get_server_info();
+		$server                = SolrPower_Api::get_instance()->get_server_info();
 		$server['ping_status'] = ( $server['ping_status'] ) ? 'successful' : 'failed';
-		$formatter = new \WP_CLI\Formatter( $assoc_args, array( 'ping_status', 'ip_address', 'port', 'path' ) );
+		$formatter             = new \WP_CLI\Formatter( $assoc_args, array( 'ping_status', 'ip_address', 'port', 'path' ) );
 		$formatter->display_item( $server );
 	}
 
@@ -245,7 +245,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 *     1
 	 */
 	public function stats( $args, $assoc_args ) {
-		$stats = SolrPower_Api::get_instance()->index_stats();
+		$stats     = SolrPower_Api::get_instance()->index_stats();
 		$formatter = new \WP_CLI\Formatter( $assoc_args, array_keys( $stats ) );
 		$formatter->display_item( $stats );
 	}
@@ -257,9 +257,9 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 * @return string
 	 */
 	private static function format_log_timestamp( $s ) {
-		$h = floor( $s / 3600 );
+		$h  = floor( $s / 3600 );
 		$s -= $h * 3600;
-		$m = floor( $s / 60 );
+		$m  = floor( $s / 60 );
 		$s -= $m * 60;
 		return $h . ':' . sprintf( '%02d', $m ) . ':' . sprintf( '%02d', $s );
 	}

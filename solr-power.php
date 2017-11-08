@@ -12,26 +12,23 @@
 
 define( 'SOLR_POWER_VERSION', '1.4.1' );
 
-/*
-  Copyright (c) 2011-2017 Pantheon, Matt Weber, Solr Power contributors
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE.
+/**
+ * Copyright (c) 2011-2017 Pantheon, Matt Weber, Solr Power contributors
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 
 /**
@@ -47,15 +44,19 @@ function solr_power_php_admin_notice() {
 			if ( isset( $_GET['activate'] ) ) {
 				unset( $_GET['activate'] );
 
-				echo wp_kses_post( __(
-					'The Solr Power plugin requires PHP 5.4 to function properly and <strong>has not</strong> been activated.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
-					'solr-for-wordpress-on-pantheon'
-				) );
+				echo wp_kses_post(
+					__(
+						'The Solr Power plugin requires PHP 5.4 to function properly and <strong>has not</strong> been activated.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
+						'solr-for-wordpress-on-pantheon'
+					)
+				);
 			} else {
-				echo wp_kses_post( __(
-					'The Solr Power plugin requires PHP 5.4 to function properly and had been <strong>deactivated</strong>.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
-					'solr-for-wordpress-on-pantheon'
-				) );
+				echo wp_kses_post(
+					__(
+						'The Solr Power plugin requires PHP 5.4 to function properly and had been <strong>deactivated</strong>.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
+						'solr-for-wordpress-on-pantheon'
+					)
+				);
 			}
 			?>
 		</p>
@@ -75,7 +76,7 @@ function solr_power_env_variables_admin_notice() {
 	<div class="error">
 		<p>
 			<?php
-			$error_message = array();
+			$error_message   = array();
 			$error_message[] = __( 'The Solr Power plugin requires environment variables for <code>PANTHEON_INDEX_HOST</code> and <code>PANTHEON_INDEX_PORT</code> to function properly.', 'solr-for-wordpress-on-pantheon' );
 			if ( isset( $_GET['activate'] ) ) {
 				unset( $_GET['activate'] );

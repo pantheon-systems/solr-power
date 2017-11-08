@@ -40,16 +40,18 @@
 				<?php
 				$big = 999999999; // Need an unlikely integer.
 
-				echo paginate_links( array(
-					'base'               => str_replace( $big, '%#%', get_pagenum_link( $big, false ) ),
-					'format'             => '?paged=%#%',
-					'current'            => max( 1, $query->get( 'paged' ) ),
-					'total'              => $query->max_num_pages,
-					'prev_text'          => __( 'Previous page', 'solr-for-wordpress-on-pantheon' ),
-					'next_text'          => __( 'Next page', 'solr-for-wordpress-on-pantheon' ),
-					'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'solr-for-wordpress-on-pantheon' ) . ' </span>',
+				echo paginate_links(
+					array(
+						'base'               => str_replace( $big, '%#%', get_pagenum_link( $big, false ) ),
+						'format'             => '?paged=%#%',
+						'current'            => max( 1, $query->get( 'paged' ) ),
+						'total'              => $query->max_num_pages,
+						'prev_text'          => __( 'Previous page', 'solr-for-wordpress-on-pantheon' ),
+						'next_text'          => __( 'Next page', 'solr-for-wordpress-on-pantheon' ),
+						'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'solr-for-wordpress-on-pantheon' ) . ' </span>',
 
-				) );
+					)
+				);
 				wp_reset_postdata();
 				?>
 			</div>
