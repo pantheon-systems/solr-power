@@ -381,7 +381,7 @@ class SolrPower_WP_Query {
 	 *
 	 * @return mixed
 	 */
-	function the_posts( $posts, &$query ) {
+	function the_posts( $posts, $query ) {
 		if ( ! isset( $this->found_posts[ spl_object_hash( $query ) ] ) ) {
 			return $posts;
 		}
