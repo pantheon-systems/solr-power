@@ -180,7 +180,7 @@ class SolrPower_Sync {
 	 * Handle the status change event.
 	 *
 	 * @param integer $post_id   Post ID.
-	 * @param array   $post_info Array of post information.
+	 * @param WP_Post $post_info Post object.
 	 */
 	function handle_status_change( $post_id, $post_info = null ) {
 		if ( ! $post_info ) {
@@ -197,11 +197,11 @@ class SolrPower_Sync {
 	/**
 	 * Build a Solarium document
 	 *
-	 * @param Solarium\QueryType\Update\Query\Document\Document $doc       Existing Solarium doc.
-	 * @param array                                             $post_info Post information.
+	 * @param Solarium\QueryType\Update\Query\Document\Document $doc       Existing Solarium document.
+	 * @param WP_Post                                           $post_info Post object.
 	 * @param string                                            $domain    Domain context.
 	 * @param string                                            $path      Path context.
-	 * @return Document
+	 * @return Solarium\QueryType\Update\Query\Document\Document Generated Solarium document.
 	 */
 	function build_document(
 		Solarium\QueryType\Update\Query\Document\Document $doc, $post_info, $domain = null,
@@ -383,8 +383,8 @@ class SolrPower_Sync {
 		/**
 		 * Filter the generated Solr document.
 		 *
-		 * @param object $doc       Generated Solr document.
-		 * @param object $post_info Original post object.
+		 * @param Solarium\QueryType\Update\Query\Document\Document $doc       Generated Solr document.
+		 * @param WP_Post                                           $post_info Original post object.
 		 */
 		return apply_filters( 'solr_build_document', $doc, $post_info );
 	}
