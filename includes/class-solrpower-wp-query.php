@@ -552,7 +552,6 @@ class SolrPower_WP_Query {
 			switch ( $tax_value['operator'] ) {
 
 				case 'NOT IN':
-
 					$multi_query = array();
 					foreach ( $terms as $value ) {
 						$multi_query[] = '(' . $field . ':' . $value . ')';
@@ -710,7 +709,6 @@ class SolrPower_WP_Query {
 					$query[] = '(' . $meta_value['key'] . '_' . $type . ':[' . $this->set_query_value( $meta_value['value'], $type ) . ' TO *])';
 					break;
 				case '!=':
-
 					$multi_query = array();
 					$wildcard    = '(' . $meta_value['key'] . '_' . $type . ':*)';
 
@@ -740,11 +738,10 @@ class SolrPower_WP_Query {
 						$this->fq[] = $fq;
 					}
 					break;
-				case '<';
+				case '<':
 					$query[]    = '(' . $meta_value['key'] . '_' . $type . ':[* TO ' . $this->set_query_value( $meta_value['value'], $type ) . '])';
 					$this->fq[] = '!(' . $meta_value['key'] . '_' . $type . ':' . $this->set_query_value( $meta_value['value'], $type ) . ')';
 					break;
-
 				case '>':
 					$query[]    = '(' . $meta_value['key'] . '_' . $type . ':[' . $this->set_query_value( $meta_value['value'], $type ) . ' TO *])';
 					$this->fq[] = '!(' . $meta_value['key'] . '_' . $type . ':' . $this->set_query_value( $meta_value['value'], $type ) . ')';

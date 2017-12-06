@@ -21,7 +21,8 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 
 	<div class="solr1 clearfix">
 		<div class="solr_search">
-<?php if ( ! empty( $results['qtime'] ) ) {
+<?php
+if ( ! empty( $results['qtime'] ) ) {
 	printf( "<label class='solr_response'>Response time: <span id=\"qrytime\">{$results['qtime']}</span> s</label>" );
 }
 
@@ -48,13 +49,15 @@ if ( $server ) {
 		<div class="solr_results_header clearfix">
 			<div class="solr_results_headerL">
 
-<?php if ( $results['hits'] && $results['query'] && $results['qtime'] ) {
+<?php
+if ( $results['hits'] && $results['query'] && $results['qtime'] ) {
 	if ( $results['firstresult'] === $results['lastresult'] ) {
 		printf( "Displaying result %s of <span id='resultcnt'>%s</span> hits", $results['firstresult'], $results['hits'] );
 	} else {
 		printf( "Displaying results %s-%s of <span id='resultcnt'>%s</span> hits", $results['firstresult'], $results['lastresult'], $results['hits'] );
 	}
-} ?>
+}
+?>
 
 			</div>
 			<div class="solr_results_headerR">
@@ -111,9 +114,11 @@ if ( 0 === (int) $results['hits'] ) {
 		printf( "</li>\n" );
 	}
 	printf( "</ol>\n" );
-} // End if(). ?>
+} // End if().
+?>
 
-<?php if ( $results['pager'] ) {
+<?php
+if ( $results['pager'] ) {
 	printf( '<div class="solr_pages">' );
 	$itemlinks = array();
 	$pagecnt   = 0;
@@ -153,7 +158,8 @@ if ( 0 === (int) $results['hits'] ) {
 	}
 
 	printf( "</div>\n" );
-} // End if(). ?>
+} // End if().
+?>
 
 
 		</div>
@@ -164,15 +170,18 @@ if ( 0 === (int) $results['hits'] ) {
 
 			<li class="solr_active">
 				<ol>
-<?php if ( $results['facets']['selected'] ) {
+<?php
+if ( $results['facets']['selected'] ) {
 	foreach ( $results['facets']['selected'] as $selectedfacet ) {
 		printf( '<li><span></span><a href="%s">%s<b>x</b></a></li>', $selectedfacet['removelink'], $selectedfacet['name'] );
 	}
-} ?>
+}
+?>
 				</ol>
 			</li>
 
-<?php if ( $results['facets'] && 1 != $results['hits'] ) {
+<?php
+if ( $results['facets'] && 1 != $results['hits'] ) {
 	foreach ( $results['facets'] as $facet ) {
 		// don't display facets with only 1 value.
 		if ( isset( $facet['items'] ) and sizeof( $facet['items'] ) > 1 ) {
@@ -181,7 +190,8 @@ if ( 0 === (int) $results['hits'] ) {
 			printf( "</li>\n" );
 		}
 	}
-} ?>
+}
+?>
 
 		</ul>
 	</div>
