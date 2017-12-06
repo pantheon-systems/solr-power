@@ -100,7 +100,10 @@ class SolrPower_CLI extends WP_CLI_Command {
 			$query_args['posts_per_page'] = (int) $assoc_args['batch_size'];
 		}
 
-		$batch_index     = new SolrPower_Batch_Index( $query_args );
+		$batch_index = new SolrPower_Batch_Index( $query_args );
+		if ( ! $batch_index->have_posts() ) {
+			WP_CLI::error( 'No posts found.' );
+		}
 		$displayed_batch = false;
 		$start_time      = microtime( true );
 		while ( $batch_index->have_posts() ) {
