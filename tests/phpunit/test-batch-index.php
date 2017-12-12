@@ -115,4 +115,28 @@ class Test_Batch_Index extends SolrTestBase {
 		$this->assertEquals( 4, $stats['post'] );
 	}
 
+	public function test_batch_index_restart_after_delete_all() {
+		$this->__create_multiple( 5 );
+		SolrPower_Sync::get_instance()->delete_all();
+		$stats = SolrPower_Api::get_instance()->index_stats();
+		$this->assertEquals( 0, $stats['post'] );
+		// First batch
+		$batch_index = new SolrPower_Batch_Index( array( 'posts_per_page' => 2 ) );
+		while( $batch_index->have_posts() ) {
+			$batch_index->index_post();
+		}
+		$batch_index->fetch_next_posts();
+		while( $batch_index->have_posts() ) {
+			$batch_index->index_post();
+		}
+		$this->assertEquals( 4, $batch_index->get_success_posts() );
+		$this->assertEquals( 1, $batch_index->get_remaining_posts() );
+		// Delete all should reset the index.
+		SolrPower_Sync::get_instance()->delete_all();
+		$stats = SolrPower_Api::get_instance()->index_stats();
+		$this->assertEquals( 0, $stats['post'] );
+		$batch_index = new SolrPower_Batch_Index( array( 'posts_per_page' => 2 ) );
+		$this->assertEquals( 5, $batch_index->get_remaining_posts() );
+	}
+
 }
