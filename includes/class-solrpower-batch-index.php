@@ -93,7 +93,7 @@ class SolrPower_Batch_Index {
 		$clean_query_args['orderby'] = 'ID';
 		$clean_query_args['order']   = 'ASC';
 		// Generate a cache key to store the current page.
-		$this->batch_cache_key = 'solr_power_' . md5( serialize( $clean_query_args ) );
+		$this->batch_cache_key = 'solr_power_batch_' . md5( serialize( $clean_query_args ) );
 		// Include 'paged' always starts at that page,
 		// otherwise try to restore the page from cache.
 		if ( isset( $query_args['batch'] ) ) {

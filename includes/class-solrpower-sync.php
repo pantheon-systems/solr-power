@@ -464,6 +464,7 @@ class SolrPower_Sync {
 	 * Delete all documents in the index.
 	 */
 	function delete_all() {
+		global $wpdb;
 		try {
 			$solr = get_solr();
 
@@ -474,6 +475,11 @@ class SolrPower_Sync {
 				$solr->update( $update );
 			}
 			wp_cache_delete( 'solr_index_stats', 'solr' );
+
+			$option_names = $wpdb->get_col( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE 'solr_power_batch_%';" );
+			foreach ( $option_names as $option_name ) {
+				delete_option( $option_name );
+			}
 
 			return true;
 		} catch ( Exception $e ) {
