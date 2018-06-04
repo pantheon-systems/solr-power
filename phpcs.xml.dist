@@ -29,6 +29,9 @@
 		<exclude-pattern>*/template/*</exclude-pattern>
 	</rule>
 
+	<rule ref="Squiz.PHP.CommentedOutCode.Found">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
 	<rule ref="Squiz.PHP.EmbeddedPhp.NoSemicolon">
 		<exclude-pattern>*/*</exclude-pattern>
 	</rule>
