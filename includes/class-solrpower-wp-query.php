@@ -450,7 +450,7 @@ class SolrPower_WP_Query {
 			'name',
 
 		);
-		$convert = array(
+		$convert     = array(
 			'p'       => 'ID',
 			'page_id' => 'ID',
 			'name'    => 'post_name',

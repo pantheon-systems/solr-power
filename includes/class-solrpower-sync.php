@@ -538,7 +538,7 @@ class SolrPower_Sync {
 				switch_to_blog( $blog_id );
 
 				// now we actually gather the blog posts.
-				$args = array(
+				$args    = array(
 
 					/**
 					 * Filter indexed post types
@@ -602,7 +602,7 @@ class SolrPower_Sync {
 			// done importing so lets switch back to the proper blog id.
 			restore_current_blog();
 		} else {
-			$args = array(
+			$args      = array(
 
 				/**
 				 * Filter indexed post types
