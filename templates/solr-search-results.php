@@ -16,14 +16,14 @@
 	if ( $query->have_posts() ) :
 		while ( $query->have_posts() ) :
 			$query->the_post();
-		?>
+			?>
 
 			<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 				<header class="entry-header">
 					<?php
 					the_title( '<h1 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h1>' );
 					if ( in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) :
-					?>
+						?>
 						<div class="entry-meta">
 							<span class="cat-links"><?php echo get_the_category_list( _x( ', ', 'Used between list items, there is a space after the comma.', 'solr-for-wordpress-on-pantheon' ) ); ?></span>
 						</div>
