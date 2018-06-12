@@ -41,7 +41,7 @@
 	</form>
 	<?php
 	if ( false !== getenv( 'PANTHEON_ENVIRONMENT' ) ) {
-	?>
+		?>
 		<form method="post" action="<?php echo esc_url( $action ); ?>#top#solr_action">
 			<?php wp_nonce_field( 'solr_action', 'solr_repost_schema' ); ?>
 			<input type="hidden" name="action" value="repost_schema" />
@@ -82,7 +82,7 @@
 </div>
 
 <?php if ( ! is_multisite() ) : ?>
-<?php
+	<?php
 	$batch_index     = new SolrPower_Batch_Index;
 	$current_batch   = $batch_index->get_current_batch();
 	$total_batches   = $batch_index->get_total_batches();
