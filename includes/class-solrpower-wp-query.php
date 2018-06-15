@@ -115,6 +115,9 @@ class SolrPower_WP_Query {
 
 		add_filter( 'posts_request', array( $this, 'posts_request' ), 10, 2 );
 
+		// Adjusts for NOT queries
+		add_filter( 'solr_select_query', array( $this, 'solr_select_query' ), 10, 1 ); 
+
 		// Nukes the FOUND_ROWS() database query.
 		add_filter( 'found_posts_query', array( $this, 'found_posts_query' ), 5, 2 );
 
@@ -358,6 +361,19 @@ class SolrPower_WP_Query {
 	}
 
 	/**
+	 * Adjusts the solr select query syntax.
+	 * 
+	 * @param string	$select		Select query
+	 * 
+	 * @return string
+	 */
+	function solr_select_query( $select ) { 
+		$select['query'] = str_replace( '(!', '!(', $select['query'] ); 
+		
+		return $select; 
+	}
+
+	/**
 	 * Overload the found posts query.
 	 *
 	 * @param string   $sql   Original SQL string.
@@ -447,13 +463,16 @@ class SolrPower_WP_Query {
 			'page_id',
 			'post_status',
 			'post_parent',
+			'post__in',
+			'post__not_in',
 			'name',
-
 		);
 		$convert = array(
-			'p'       => 'ID',
-			'page_id' => 'ID',
-			'name'    => 'post_name',
+			'p'       	=> 'ID',
+			'page_id' 	=> 'ID',
+			'post__in'	=> 'ID',
+			'post__not_in'	=> '!ID',
+			'name'    	=> 'post_name',
 		);
 		if ( ! $query->get( 's' ) && ! $query->get( 'solr_integrate' ) ) {
 			return '';
