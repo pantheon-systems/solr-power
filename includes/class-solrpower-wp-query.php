@@ -370,6 +370,7 @@ class SolrPower_WP_Query {
 	function solr_select_query( $select ) {
 		// Correcting whitelist NOT query conversion to proper solr syntax.
 		$select['query'] = str_replace( '(!ID', '!(ID', $select['query'] );
+
 		return $select;
 	}
 
