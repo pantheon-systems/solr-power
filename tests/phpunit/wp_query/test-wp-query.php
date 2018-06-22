@@ -181,6 +181,7 @@ class SolrWPQueryTest extends SolrTestBase {
 
 	public function test_wp_query_by_post__in() {
 		$post_id = $this->__create_test_post();
+		$post_id2 = $this->__create_test_post();
 		$page_id = $this->__create_test_post( 'page' );
 		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
 		$args  = array(
