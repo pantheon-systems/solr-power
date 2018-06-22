@@ -368,8 +368,8 @@ class SolrPower_WP_Query {
 	 * @return string
 	 */
 	function solr_select_query( $select ) {
-		// Replace all occurrences of (! with !(.
-		$select['query'] = str_replace( '(!', '!(', $select['query'] );
+		// Correcting whitelist NOT query conversion to proper solr syntax.
+		$select['query'] = str_replace( '(!ID', '!(ID', $select['query'] );
 		return $select;
 	}
 

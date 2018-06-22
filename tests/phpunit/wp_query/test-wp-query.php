@@ -178,4 +178,28 @@ class SolrWPQueryTest extends SolrTestBase {
 		$this->assertEquals( 'page', $query->get('post_type') );
 		$this->assertEquals( array( $page_id ), wp_list_pluck( $query->posts, 'ID' ) );
 	}
+
+	public function test_wp_query_by_post__in() {
+		$post_id = $this->__create_test_post();
+		$page_id = $this->__create_test_post( 'page' );
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+		$args  = array(
+			'solr_integrate' => true,
+			'post__in'       => array( $post_id ),
+		);
+		$query = new WP_Query( $args );
+		$this->assertEquals( 1, $query->post_count );
+		$this->assertEquals( $post_id, $query->post->ID );
+	}
+
+	public function test_wp_query_by_post__not_in_arr() {
+		$post_id = $this->__create_test_post();
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
+		$args  = array(
+			'solr_integrate' => true,
+			'post__not_in'   => array( $post_id ),
+		);
+		$query = new WP_Query( $args );
+		$this->assertEquals( 0, $query->post_count );
+	}
 }
