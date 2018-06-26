@@ -167,6 +167,7 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 * Adds support for queries using `post__in` and `post__not_in`.
 * Clears batch cache when entire index is deleted.
 * CLI: Errors early when there are no posts to index.
+* Update Composer dependencies
 
 = 1.4.1 =
 * Introduce `batch_size` argument for `wp solr index`
