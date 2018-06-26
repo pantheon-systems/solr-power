@@ -469,11 +469,11 @@ class SolrPower_WP_Query {
 			'name',
 		);
 		$convert     = array(
-			'p'       	   => 'ID',
-			'page_id' 	   => 'ID',
-			'post__in'	   => 'ID',
+			'p'            => 'ID',
+			'page_id'      => 'ID',
+			'post__in'     => 'ID',
 			'post__not_in' => '!ID',
-			'name'    	   => 'post_name',
+			'name'         => 'post_name',
 		);
 		if ( ! $query->get( 's' ) && ! $query->get( 'solr_integrate' ) ) {
 			return '';
