@@ -202,7 +202,7 @@ class SolrWPQueryTest extends SolrTestBase {
 			'post__not_in'   => array( $post_id ),
 		);
 		$query = new WP_Query( $args );
-		$this->assertEquals( 1, $query->post_count );
+		$this->assertEquals( 1, $query->found_posts );
 		$this->assertEquals( $post_id2, $query->post->ID );
 	}
 }
