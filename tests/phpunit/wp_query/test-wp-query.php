@@ -193,7 +193,7 @@ class SolrWPQueryTest extends SolrTestBase {
 		$this->assertEquals( $post_id, $query->post->ID );
 	}
 
-	public function test_wp_query_by_post__not_in_arr() {
+	public function test_wp_query_by_post__not_in() {
 		$post_id = $this->__create_test_post();
 		$post_id2 = $this->__create_test_post();
 		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
@@ -202,7 +202,7 @@ class SolrWPQueryTest extends SolrTestBase {
 			'post__not_in'   => array( $post_id ),
 		);
 		$query = new WP_Query( $args );
-		$this->assertEquals( 1, $query->found_posts );
+		$this->assertEquals( 1, $query->post_count );
 		$this->assertEquals( $post_id2, $query->post->ID );
 	}
 }
