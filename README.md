@@ -3,7 +3,7 @@
 **Tags:** search  
 **Requires at least:** 4.6  
 **Tested up to:** 4.9  
-**Stable tag:** 1.4.1  
+**Stable tag:** 1.5.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -162,6 +162,11 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 ```
 
 ## Changelog ##
+
+### 1.5.0 ###
+* Adds support for queries using `post__in` and `post__not_in`.
+* Clears batch cache when entire index is deleted.
+* CLI: Errors early when there are no posts to index.
 
 ### 1.4.1 ###
 * Introduce `batch_size` argument for `wp solr index`
