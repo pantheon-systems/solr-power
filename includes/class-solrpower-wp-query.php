@@ -447,13 +447,16 @@ class SolrPower_WP_Query {
 			'page_id',
 			'post_status',
 			'post_parent',
+			'post__in',
+			'post__not_in',
 			'name',
-
 		);
-		$convert = array(
-			'p'       => 'ID',
-			'page_id' => 'ID',
-			'name'    => 'post_name',
+		$convert     = array(
+			'p'            => 'ID',
+			'page_id'      => 'ID',
+			'post__in'     => 'ID',
+			'post__not_in' => '-ID',
+			'name'         => 'post_name',
 		);
 		if ( ! $query->get( 's' ) && ! $query->get( 'solr_integrate' ) ) {
 			return '';
@@ -485,9 +488,14 @@ class SolrPower_WP_Query {
 				continue;
 			}
 			if ( ! empty( $var_value ) && in_array( $var_key, $whitelist ) ) {
-				$var_value    = ( is_array( $var_value ) ) ? '(' . implode( ' OR ', $var_value ) . ')' : $var_value;
-				$var_key      = ( isset( $convert[ $var_key ] ) ) ? $convert[ $var_key ] : $var_key;
-				$solr_query[] = '(' . $var_key . ':' . $var_value . ')';
+				$var_value = ( is_array( $var_value ) ) ? '(' . implode( ' OR ', $var_value ) . ')' : $var_value;
+				$var_key   = ( isset( $convert[ $var_key ] ) ) ? $convert[ $var_key ] : $var_key;
+				if ( '-ID' === $var_key ) {
+					// e.g. (-ID:(4)*).
+					$solr_query[] = '(' . $var_key . ':' . $var_value . '*)';
+				} else {
+					$solr_query[] = '(' . $var_key . ':' . $var_value . ')';
+				}
 			} elseif ( 's' === $var_key && ! empty( $var_value ) ) {
 				array_unshift( $solr_query, $query->get( 's' ) . ' ' );
 			}
