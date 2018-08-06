@@ -343,7 +343,7 @@ class SolrPower_Api {
 		}
 
 		$facet_on_custom_taxonomy = $plugin_s4wp_settings['s4wp_facet_on_taxonomy'];
-		if ( count( $facet_on_custom_taxonomy ) ) {
+		if ( $facet_on_custom_taxonomy ) {
 			$taxonomies = (array) get_taxonomies(
 				array(
 					'_builtin' => false,
