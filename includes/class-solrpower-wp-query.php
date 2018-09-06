@@ -248,6 +248,11 @@ class SolrPower_WP_Query {
 					continue;
 				}
 
+				if ( 'post_author' === $key ) {
+					$post->post_author = get_post_field( 'post_author', $post_array['ID'], 'db' );
+					continue;
+				}
+
 				if ( 'post_id' === $key ) {
 					$post->ID = $value;
 					continue;

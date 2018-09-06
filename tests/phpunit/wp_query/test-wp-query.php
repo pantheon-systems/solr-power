@@ -23,8 +23,9 @@ class SolrWPQueryTest extends SolrTestBase {
 			global $post;
 
 			$wp_post = get_post( get_the_ID() );
-			$this->assertEquals( $post->solr, true );
+			$this->assertTrue( $post->solr );
 			$this->assertEquals( $post->post_title, get_the_title() );
+			$this->assertEquals( $post->post_author, 1 );
 			$this->assertEquals( $post->post_content, get_the_content() );
 			$this->assertEquals( $post->post_date, $wp_post->post_date );
 			$this->assertEquals( $post->post_modified, $wp_post->post_modified );
