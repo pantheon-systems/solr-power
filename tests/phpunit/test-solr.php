@@ -545,4 +545,17 @@ class SolrTest extends SolrTestBase {
 		$this->assertEquals( array( $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
 	}
 
+	/**
+	 * Asserts that the post_content and post_title remain unaltered in Solr response.
+	 */
+	public function test_no_highlight_results_in_search() {
+		$p_id = $this->__create_test_post( 'post', 'Dragon breath title', 'Dragon breath content' );
+		$query = new WP_Query( array(
+			's' => 'Dragon',
+		) );
+		$this->assertTrue( $query->posts[0]->solr );
+		$this->assertEquals( 'Dragon breath title', $query->posts[0]->post_title );
+		$this->assertEquals( 'Dragon breath content', $query->posts[0]->post_content );
+	}
+
 }
