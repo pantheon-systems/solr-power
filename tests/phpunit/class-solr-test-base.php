@@ -103,6 +103,7 @@ class SolrTestBase extends WP_UnitTestCase{
 		$args = array(
 			'post_type'    => $post_type,
 			'post_status'  => 'publish',
+			'post_author'  => 1,
 			'post_title'   => ( $title ) ? $title : 'Test Post ' . time(),
 			'post_content' => ( $content ) ? $content : 'This is a solr test.',
 		);

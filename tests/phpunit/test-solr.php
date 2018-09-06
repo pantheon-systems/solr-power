@@ -48,7 +48,8 @@ class SolrTest extends SolrTestBase {
 		$search = $search->getData();
 		$search = $search['response'];
 
-		$this->assertEquals( $search['docs'][0]['ID'], $post_id );
+		$this->assertEquals( $post_id, $search['docs'][0]['ID'] );
+		$this->assertEquals( 'admin', $search['docs'][0]['post_author'] );
 	}
 
 	/**
