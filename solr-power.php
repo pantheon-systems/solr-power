@@ -46,14 +46,14 @@ function solr_power_php_admin_notice() {
 
 				echo wp_kses_post(
 					__(
-						'The Solr Power plugin requires PHP 5.4 to function properly and <strong>has not</strong> been activated.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
+						'The Solr Power plugin requires PHP 7.1 or greater to function properly and <strong>has not</strong> been activated.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
 						'solr-for-wordpress-on-pantheon'
 					)
 				);
 			} else {
 				echo wp_kses_post(
 					__(
-						'The Solr Power plugin requires PHP 5.4 to function properly and had been <strong>deactivated</strong>.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
+						'The Solr Power plugin requires PHP 7.1 to function properly and had been <strong>deactivated</strong>.<br />Please upgrade PHP and re-activate the Solr Power plugin. <a href="http://www.wpupdatephp.com/update/" target="_blank">Learn more.</a>',
 						'solr-for-wordpress-on-pantheon'
 					)
 				);
@@ -105,7 +105,7 @@ function solr_power__deactivate() {
 	deactivate_plugins( plugin_basename( __FILE__ ) );
 }
 
-if ( version_compare( PHP_VERSION, '5.4', '<' ) ) {
+if ( version_compare( PHP_VERSION, '7.1', '<' ) ) {
 	add_action( 'admin_notices', 'solr_power_php_admin_notice' );
 	add_action( 'admin_init', 'solr_power__deactivate' );
 } elseif ( false === getenv( 'PANTHEON_INDEX_HOST' ) || false === getenv( 'PANTHEON_INDEX_PORT' ) ) {
