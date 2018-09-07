@@ -166,6 +166,15 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 
 == Changelog ==
 
+= 2.0.0 =
+* Fix PHP 7 warning caused by bad conditional
+* Ensure `$post->post_author` remains user ID when processing WP_Query
+* Add a test case asserting that `post_title` and `post_content` are not bolded
+* Update Solarium to `4.1.0` and other dependencies updates as needed
+* Run automated tests against PHP `7.1`
+* Increase the minimum supported PHP version to `7.1`
+
+
 = 1.5.0 =
 * Adds support for queries using `post__in` and `post__not_in`.
 * Clears batch cache when entire index is deleted.
