@@ -15,7 +15,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "solarium/solarium": "~3.8"
+        "solarium/solarium": "~4"
     },
     "require-dev": {
         "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master"
