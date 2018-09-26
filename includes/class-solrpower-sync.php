@@ -327,7 +327,8 @@ class SolrPower_Sync {
 			$taxonomies = (array) get_taxonomies(
 				array(
 					'_builtin' => false,
-				), 'names'
+				),
+				'names'
 			);
 			foreach ( $taxonomies as $parent ) {
 				$terms = get_the_terms( $post_info->ID, $parent );
