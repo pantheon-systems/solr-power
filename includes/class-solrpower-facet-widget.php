@@ -149,7 +149,8 @@ class SolrPower_Facet_Widget extends WP_Widget {
 						array(
 							__CLASS__,
 							'htmlspecialchars_decode',
-						), $this->facets[ $facet_name ]
+						),
+						$this->facets[ $facet_name ]
 					);
 				}
 			}
