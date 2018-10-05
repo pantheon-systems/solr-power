@@ -218,7 +218,7 @@ class SolrPower_Sync {
 		 *
 		 * @param array $index_custom_fields Array of custom field slugs for indexing.
 		 */
-		$index_custom_fields = apply_filters( 'solr_index_custom_fields', $plugin_s4wp_settings['s4wp_index_custom_fields'] );
+		$index_custom_fields = apply_filters( 'solr_index_custom_fields', $plugin_s4wp_settings['s4wp_index_custom_fields'], $post_info->ID );
 
 		if ( $post_info ) {
 
