@@ -406,6 +406,7 @@ class SolrPower_WP_Query {
 	function parse_facets( $query ) {
 		$plugin_s4wp_settings = solr_options();
 		$default_operator     = ( isset( $plugin_s4wp_settings['s4wp_default_operator'] ) ) ? $plugin_s4wp_settings['s4wp_default_operator'] : 'OR';
+		$facet_operator       = apply_filters( 'solr_facet_operator', $default_operator );
 
 		$facets = $query->get( 'facet' );
 		if ( ! $facets ) {
@@ -415,7 +416,7 @@ class SolrPower_WP_Query {
 			if ( is_array( $this->fq ) && ! empty( $this->fq ) ) {
 				$return = $this->fq;
 
-				return implode( ' ' . $default_operator . ' ', $return );
+				return implode( ' ' . $facet_operator . ' ', $return );
 			}
 
 			return array();
@@ -433,7 +434,7 @@ class SolrPower_WP_Query {
 		// Additional Filter Query.
 		$return = array_merge( $return, $this->fq );
 
-		return implode( ' ' . $default_operator . ' ', $return );
+		return implode( ' ' . $facet_operator . ' ', $return );
 
 	}
 
