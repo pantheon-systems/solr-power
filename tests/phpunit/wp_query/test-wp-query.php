@@ -70,6 +70,20 @@ class SolrWPQueryTest extends SolrTestBase {
 		wp_reset_postdata();
 	}
 
+	/**
+	 * Solr Power should correctly apply filters even when search string is empty.
+	 */
+	function test_wp_query_solr_search_empty_string_applies_filters() {
+		$this->__create_test_post();
+		$this->__create_test_post( 'page' );
+		$query = new WP_Query( array(
+			'post_type' => 'post',
+			's'         => '',
+		) );
+		$this->assertTrue( $query->posts[0]->solr );
+		$this->assertCount( 1, $query->posts );
+	}
+
 	function test_wp_query_paged() {
 		$this->__create_multiple( 15 );
 		SolrPower_Sync::get_instance()->load_all_posts( 0, 'post', 100, false );
