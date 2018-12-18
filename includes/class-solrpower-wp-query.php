@@ -464,7 +464,7 @@ class SolrPower_WP_Query {
 			'post__not_in' => '-ID',
 			'name'         => 'post_name',
 		);
-		if ( ! $query->get( 's' ) && ! $query->get( 'solr_integrate' ) ) {
+		if ( ! $query->is_search() && ! $query->get( 'solr_integrate' ) ) {
 			return '';
 		}
 
