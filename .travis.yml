@@ -17,17 +17,16 @@ cache:
     - $TRAVIS_BUILD_DIR/apache-solr-3.6.2
     - $TRAVIS_BUILD_DIR/apache-solr-3.6.2.tgz
 
-php:
-  - 7.1
-
-env:
-  - WP_VERSION=latest WP_MULTISITE=0
-  - WP_VERSION=latest WP_MULTISITE=1
-  - WP_VERSION=nightly WP_MULTISITE=0
-
 matrix:
   include:
-    - env: WP_TRAVISCI=phpcs
+    - php: 7.3
+      env: WP_VERSION=latest
+    - php: 7.2
+      env: WP_VERSION=latest
+    - php: 7.2
+      env: WP_VERSION=trunk
+    - php: 7.2
+      env: WP_TRAVISCI=phpcs
 
 before_script:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
