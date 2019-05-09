@@ -41,4 +41,10 @@
 	<rule ref="WordPress.WP.CapitalPDangit.Misspelled">
 		<exclude-pattern>*/*</exclude-pattern>
 	</rule>
+	<rule ref="WordPress.PHP.StrictComparisons.LooseComparison">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.PHP.StrictInArray.MissingTrueStrict">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
 </ruleset>

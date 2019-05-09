@@ -40,11 +40,6 @@ before_script:
         composer global require "phpunit/phpunit=5.6.*"
       fi
     fi
-  - |
-    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
-      composer global require wp-coding-standards/wpcs
-      phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
-    fi
   - composer install
   - bash bin/install-solr.sh
   - npm -g install grunt-cli
@@ -58,5 +53,5 @@ script:
     fi
   - |
     if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
-      phpcs
+      composer phpcs
     fi
