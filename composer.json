@@ -18,7 +18,12 @@
         "solarium/solarium": "~4"
     },
     "require-dev": {
-        "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master"
+        "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master",
+        "wp-coding-standards/wpcs": "^2.1",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0"
+    },
+    "scripts": {
+        "phpcs": "vendor/bin/phpcs"
     },
     "autoload": {
         "classmap": [
