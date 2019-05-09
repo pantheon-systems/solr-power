@@ -41,10 +41,17 @@
 				<ul>
 					<?php
 					foreach ( SolrPower_Api::get_instance()->index_stats() as $type => $stat ) {
+						/**
+						 * Allows additional information to be included.
+						 *
+						 * @param integer $stat Stat to be displayed.
+						 * @param string  $type Type of stat.
+						 */
+						$stat = apply_filters( 'solr_index_stat', $stat, $type );
 						?>
 						<li>
 							<strong><?php echo esc_html( $type ); ?>:</strong>
-							<?php echo absint( $stat ); ?>
+							<?php echo esc_html( $stat ); ?>
 						</li>
 					<?php } ?>
 				</ul>
