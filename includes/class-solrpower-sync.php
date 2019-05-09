@@ -53,7 +53,12 @@ class SolrPower_Sync {
 			add_action( 'make_spam_blog', array( $this, 'delete_blog' ) );
 			add_action( 'unspam_blog', array( $this, 'handle_activate_blog' ) );
 			add_action( 'delete_blog', array( $this, 'delete_blog' ) );
-			add_action( 'wpmu_new_blog', array( $this, 'handle_activate_blog' ) );
+			// WP 5.1 and higher.
+			if ( function_exists( 'wp_insert_site' ) ) {
+				add_action( 'wp_insert_site', array( $this, 'handle_activate_blog' ) );
+			} else {
+				add_action( 'wpmu_new_blog', array( $this, 'handle_activate_blog' ) );
+			}
 		}
 	}
 
@@ -115,9 +120,10 @@ class SolrPower_Sync {
 	/**
 	 * Handle the blog activation event.
 	 *
-	 * @param integer $blogid ID for the blog.
+	 * @param object|integer $site Site object or simply its id.
 	 */
-	function handle_activate_blog( $blogid ) {
+	function handle_activate_blog( $site ) {
+		$blogid = is_object( $site ) ? $site->id : $site;
 		$this->load_blog_all( $blogid );
 	}
 

@@ -516,8 +516,7 @@ class SolrTest extends SolrTestBase {
 			$this->markTestSkipped( 'Multisite-only' );
 		}
 		$p_id = $this->__create_test_post( 'post', 'Best Films of 2015' );
-		// Deprecation notice needs to be squelched, see https://core.trac.wordpress.org/ticket/47195
-		$blog2 = @$this->factory->blog->create( array( 'domain' => 'example.org', 'path' => '/foo/' ) );
+		$blog2 = $this->factory->blog->create( array( 'domain' => 'example.org', 'path' => '/foo/' ) );
 		switch_to_blog( $blog2 );
 		$p_id2 = $this->__create_test_post( 'post', 'Best Films of 2015' );
 		$args  = array(
