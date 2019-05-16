@@ -190,10 +190,10 @@ class Test_Batch_Index extends SolrTestBase {
 		$batch_index = new SolrPower_Batch_Index( array( 'posts_per_page' => 2 ) );
 		$batch_index->have_posts();
 
-		MockSolariumClient::$error_msg = "<html><body>full error</body></html>";
+		MockSolariumClient::$error_msg = "full error";
 		$result = $batch_index->index_post();
 
-		$this->assertEquals( "<html><body>full error</body></html>", $result['message'] );
+		$this->assertEquals( "full error", $result['message'] );
 	}
 
 }
