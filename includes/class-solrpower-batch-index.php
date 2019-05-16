@@ -237,8 +237,12 @@ class SolrPower_Batch_Index {
 			$this->failed_posts++;
 			$result['status'] = 'failed';
 			$error_msg        = SolrPower_Sync::get_instance()->error_msg;
-			// Pull out the document <title> when this looks like escaped HTML.
-			if ( preg_match( '#' . preg_quote( '&lt;title&gt;' ) . '(.+)' . preg_quote( '&lt;/title&gt;' ) . '#', $error_msg, $matches ) ) {
+			// Error messages are html-escaped
+			if ( preg_match( '#&lt;h1&gt;(.+).&lt;/h1&gt;#is', $error_msg, $matches ) ) {
+				// Pull out contents of <h1> tags, if present.
+				$error_msg = $matches[1];
+			} else if ( preg_match( '#&lt;title&gt;(.+)&lt;/title&gt;#is', $error_msg, $matches ) ) {
+				// Otherwise, pull out contents of <title>
 				$error_msg = $matches[1];
 			}
 			$result['message'] = $error_msg;
