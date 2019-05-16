@@ -158,12 +158,42 @@ class Test_Batch_Index extends SolrTestBase {
 	}
 
 	public function test_returns_contents_of_title_tags_if_present_in_error() {
+		add_filter( 's4wp_solr', array( $this, 'mock_solarium_client' ), 1, 1 );
+
+		$this->__create_multiple( 1 );
+		$batch_index = new SolrPower_Batch_Index( array( 'posts_per_page' => 2 ) );
+		$batch_index->have_posts();
+
+		MockSolariumClient::$error_msg = "<title>vague error</title>";
+		$result = $batch_index->index_post();
+
+		$this->assertEquals( "vague error", $result['message'] );
 	}
 
 	public function test_h1_takes_precedence_over_title_in_error() {
+		add_filter( 's4wp_solr', array( $this, 'mock_solarium_client' ), 1, 1 );
+
+		$this->__create_multiple( 1 );
+		$batch_index = new SolrPower_Batch_Index( array( 'posts_per_page' => 2 ) );
+		$batch_index->have_posts();
+
+		MockSolariumClient::$error_msg = "<title>vague error</title><h1>specific error</h1>";
+		$result = $batch_index->index_post();
+
+		$this->assertEquals( "specific error", $result['message'] );
 	}
 
 	public function test_returns_full_error_message_if_no_title_or_h1_is_present() {
+		add_filter( 's4wp_solr', array( $this, 'mock_solarium_client' ), 1, 1 );
+
+		$this->__create_multiple( 1 );
+		$batch_index = new SolrPower_Batch_Index( array( 'posts_per_page' => 2 ) );
+		$batch_index->have_posts();
+
+		MockSolariumClient::$error_msg = "<html><body>full error</body></html>";
+		$result = $batch_index->index_post();
+
+		$this->assertEquals( "<html><body>full error</body></html>", $result['message'] );
 	}
 
 }
