@@ -1,10 +1,10 @@
 === Solr Search for WordPress ===
-Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor
+Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor, danielbachhuber
 Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
 Tested up to: 5.2
-Stable tag: 2.0.0
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -165,6 +165,13 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 ```
 
 == Changelog ==
+
+= 2.1.0 (May 22, 2019) =
+* Introduces `solr_index_stat` filter for allowing additional information to be included [[#396](https://github.com/pantheon-systems/solr-power/pull/396)].
+* Introduces `solr_facet_operator` filter for allowing facet operator to be overridden [[#388](https://github.com/pantheon-systems/solr-power/pull/388)].
+* Ensures warning message appears when activating across the entire network [[#399](https://github.com/pantheon-systems/solr-power/pull/399)].
+* Parses `<h1>` tags in Solr error response, in addition to `<title>` [[#407](https://github.com/pantheon-systems/solr-power/pull/407)].
+* Fixes incorrect variable name when outputting schema error message [[#404](https://github.com/pantheon-systems/solr-power/pull/404)].
 
 = 2.0.0 =
 * Fix PHP 7 warning caused by bad conditional
