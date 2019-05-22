@@ -140,18 +140,17 @@ class Test_Batch_Index extends SolrTestBase {
 	}
 
 	public function mock_solarium_client($solr) {
-		return new MockSolariumClient($solr->getOptions());
+		return new Mock_Solarium_Client_With_Error($solr->getOptions());
 	}
 
 	public function test_returns_contents_of_h1_tags_if_present_in_error() {
-		// can i create a new class, return it via s4wp_solr, and throw an exception in __construct ?
 		add_filter( 's4wp_solr', array( $this, 'mock_solarium_client' ), 1, 1 );
 
 		$this->__create_multiple( 1 );
 		$batch_index = new SolrPower_Batch_Index( array( 'posts_per_page' => 2 ) );
 		$batch_index->have_posts();
 
-		MockSolariumClient::$error_msg = "<h1>danger will robinson</h1>";
+		Mock_Solarium_Client_With_Error::$error_msg = "<h1>danger will robinson</h1>";
 		$result = $batch_index->index_post();
 
 		$this->assertEquals( "danger will robinson", $result['message'] );
@@ -164,7 +163,7 @@ class Test_Batch_Index extends SolrTestBase {
 		$batch_index = new SolrPower_Batch_Index( array( 'posts_per_page' => 2 ) );
 		$batch_index->have_posts();
 
-		MockSolariumClient::$error_msg = "<title>vague error</title>";
+		Mock_Solarium_Client_With_Error::$error_msg = "<title>vague error</title>";
 		$result = $batch_index->index_post();
 
 		$this->assertEquals( "vague error", $result['message'] );
@@ -177,7 +176,7 @@ class Test_Batch_Index extends SolrTestBase {
 		$batch_index = new SolrPower_Batch_Index( array( 'posts_per_page' => 2 ) );
 		$batch_index->have_posts();
 
-		MockSolariumClient::$error_msg = "<title>vague error</title><h1>specific error</h1>";
+		Mock_Solarium_Client_With_Error::$error_msg = "<title>vague error</title><h1>specific error</h1>";
 		$result = $batch_index->index_post();
 
 		$this->assertEquals( "specific error", $result['message'] );
@@ -190,21 +189,10 @@ class Test_Batch_Index extends SolrTestBase {
 		$batch_index = new SolrPower_Batch_Index( array( 'posts_per_page' => 2 ) );
 		$batch_index->have_posts();
 
-		MockSolariumClient::$error_msg = "full error";
+		Mock_Solarium_Client_With_Error::$error_msg = "full error";
 		$result = $batch_index->index_post();
 
 		$this->assertEquals( "full error", $result['message'] );
 	}
 
 }
-
-
-class MockSolariumClient extends Solarium\Client {
-	public static $error_msg = "";
-
-	public function update(Solarium\Core\Query\QueryInterface $update, $endpoint = null) {
-		throw new Exception(self::$error_msg);
-	}
-}
-
-
