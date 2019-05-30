@@ -573,13 +573,22 @@ class SolrPower_Api {
 	 * @return array Array of server connection information.
 	 */
 	public function get_server_info() {
+		$solr = get_solr();
+		if ( ! $solr ) {
+			$host = null;
+			$port = null;
+		} else {
+			$config = $solr->getOption('endpoint');
+			$host = isset( $config['localhost']['host'] ) ? $config['localhost']['host'] : null;
+			$port = isset( $config['localhost']['port'] ) ? $config['localhost']['port'] : null;
+		}
 
 		$ping = $this->ping_server();
 
 		return array(
 			'ping_status' => $ping,
-			'ip_address'  => getenv( 'PANTHEON_INDEX_HOST' ),
-			'port'        => getenv( 'PANTHEON_INDEX_PORT' ),
+			'ip_address'  => $host,
+			'port'        => $port,
 			'path'        => $this->compute_path(),
 		);
 
