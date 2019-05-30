@@ -577,9 +577,9 @@ class SolrPower_Api {
 			$host = null;
 			$port = null;
 		} else {
-			$config = $this->solr->getOption('endpoint');
-			$host = isset( $config['localhost']['host'] ) ? $config['localhost']['host'] : null;
-			$port = isset( $config['localhost']['port'] ) ? $config['localhost']['port'] : null;
+			$config = $this->solr->getOption( 'endpoint' );
+			$host   = isset( $config['localhost']['host'] ) ? $config['localhost']['host'] : null;
+			$port   = isset( $config['localhost']['port'] ) ? $config['localhost']['port'] : null;
 		}
 
 		$ping = $this->ping_server();
