@@ -573,12 +573,11 @@ class SolrPower_Api {
 	 * @return array Array of server connection information.
 	 */
 	public function get_server_info() {
-		$solr = get_solr();
-		if ( ! $solr ) {
+		if ( ! $this->solr ) {
 			$host = null;
 			$port = null;
 		} else {
-			$config = $solr->getOption('endpoint');
+			$config = $this->solr->getOption('endpoint');
 			$host = isset( $config['localhost']['host'] ) ? $config['localhost']['host'] : null;
 			$port = isset( $config['localhost']['port'] ) ? $config['localhost']['port'] : null;
 		}
