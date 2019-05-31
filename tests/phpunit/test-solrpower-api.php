@@ -12,8 +12,8 @@ class SolrPowerAPITest extends SolrTestBase {
 
 
 	function test_server_info_uses_actual_config() {
-		$env_host      = $_ENV['PANTHEON_INDEX_HOST'];
-		$env_port      = $_ENV['PANTHEON_INDEX_HOST'];
+		$env_host      = isset($_ENV['PANTHEON_INDEX_HOST']) ? $_ENV['PANTHEON_INDEX_HOST'] : '';
+		$env_port      = isset($_ENV['PANTHEON_INDEX_PORT']) ? $_ENV['PANTHEON_INDEX_PORT'] : '';
 		$override_host = $env_host . 'OVERRIDE';
 		$override_port = $env_host . 'OVERRIDE';
 
