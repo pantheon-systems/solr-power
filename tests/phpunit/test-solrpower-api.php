@@ -18,6 +18,8 @@ class SolrPowerAPITest extends SolrTestBase {
 		$override_port = $env_host . 'OVERRIDE';
 
 		$override_connection = function() {
+			global $override_host, $override_port;
+
 			return array(
 				'endpoint' => array(
 					'localhost' => array(
