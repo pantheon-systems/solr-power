@@ -25,7 +25,7 @@ class SolrPowerAPITest extends SolrTestBase {
 					'localhost' => array(
 						'host' => $override_host,
 						'port' => $override_port,
-						'path' => '',
+						'path' => '/some/path',
 					)
 				),
 			);
