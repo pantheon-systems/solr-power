@@ -81,7 +81,7 @@ class SolrPower_Sync {
 			return;
 		}
 		// make sure this blog is not private or a spam if indexing on a multisite install.
-		if ( is_multisite() && ! $this->is_public_blog() ) {
+		if ( is_multisite() && $this->is_private_blog() ) {
 			return;
 		}
 		$docs   = array();
@@ -145,14 +145,14 @@ class SolrPower_Sync {
 	}
 
 	/**
-	 * Check whether a blog is public and indexable
+	 * Check whether a blog is private
 	 *
 	 * @return boolean
 	 */
-	function is_public_blog() {
+	protected static function is_private_blog() {
 		global $current_blog;
 
-		return apply_filters( 'solr_is_public_blog', ( 1 != $current_blog->public || 1 == $current_blog->spam || 1 == $current_blog->archived ), $current_blog );
+		return apply_filters( 'solr_is_private_blog', ( 1 != $current_blog->public || 1 == $current_blog->spam || 1 == $current_blog->archived ), $current_blog );
 	}
 
 	/**
