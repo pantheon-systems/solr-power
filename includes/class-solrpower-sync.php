@@ -68,8 +68,6 @@ class SolrPower_Sync {
 	 * @param integer $post_id ID for the post.
 	 */
 	function handle_modified( $post_id ) {
-		global $current_blog;
-
 		$post_info  = get_post( $post_id );
 		$post_types = SolrPower::get_post_types();
 
@@ -83,7 +81,7 @@ class SolrPower_Sync {
 			return;
 		}
 		// make sure this blog is not private or a spam if indexing on a multisite install.
-		if ( is_multisite() && ( 1 != $current_blog->public || 1 == $current_blog->spam || 1 == $current_blog->archived ) ) {
+		if ( is_multisite() && $this->is_private_blog() ) {
 			return;
 		}
 		$docs   = array();
@@ -144,6 +142,17 @@ class SolrPower_Sync {
 		} catch ( Exception $e ) {
 			echo esc_html( $e->getMessage() );
 		}
+	}
+
+	/**
+	 * Check whether a blog is private
+	 *
+	 * @return boolean
+	 */
+	protected static function is_private_blog() {
+		global $current_blog;
+
+		return apply_filters( 'solr_is_private_blog', ( 1 != $current_blog->public || 1 == $current_blog->spam || 1 == $current_blog->archived ), $current_blog );
 	}
 
 	/**
