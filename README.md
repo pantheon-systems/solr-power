@@ -4,7 +4,7 @@
 **Requires at least:** 4.6  
 **Requires PHP:** 7.1  
 **Tested up to:** 5.2  
-**Stable tag:** 2.1.1  
+**Stable tag:** 2.1.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -165,6 +165,9 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 ```
 
 ## Changelog ##
+
+### 2.1.2 (August 28, 2019) ###
+* Adds `solr_is_private_blog` filter to allow control over whether a blog is indexed [[#423](https://github.com/pantheon-systems/solr-power/pull/423)].
 
 ### 2.1.1 (August 14, 2019) ###
 * Uses some fancy `composer` magic to unblock WordPress.org plugin updates [[#418](https://github.com/pantheon-systems/solr-power/pull/418)].
