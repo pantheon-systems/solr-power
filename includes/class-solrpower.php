@@ -317,13 +317,13 @@ class SolrPower {
 		$paged = filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_STRING );
 		$paged = ( false === $paged || null === $paged ) ? 1 : absint( $paged );
 
-		$args = array(
+		$args  = array(
 			's'              => filter_input( INPUT_GET, 's', FILTER_SANITIZE_STRING ),
 			'facets'         => filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY ),
 			'posts_per_page' => get_option( 'posts_per_page' ),
 			'paged'          => $paged,
 		);
-
+		$args  = apply_filters( 'solr_power_ajax_search_query_args', $args );
 		$query = new WP_Query( $args );
 		$query->get_posts();
 
