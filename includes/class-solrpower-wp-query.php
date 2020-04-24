@@ -207,9 +207,9 @@ class SolrPower_WP_Query {
 			$this->facets = $search->getFacetSet()->getFacets();
 		}
 
-    $this->highlighting = $search->getHighlighting();
-		
-    $search = $search->getData();
+		$this->highlighting = $search->getHighlighting();
+
+		$search = $search->getData();
 
 		$search_header        = $search['responseHeader'];
 		$search               = $search['response'];
@@ -268,22 +268,22 @@ class SolrPower_WP_Query {
 					continue;
 				}
 
-        if ( 'solr_id' === $key ) {
-          if ( $this->highlighting ) {
-            $highlighted_doc = $this->highlighting->getResult($value);
+				if ( 'solr_id' === $key ) {
+					if ( $this->highlighting ) {
+						$highlighted_doc = $this->highlighting->getResult( $value );
 
-            if ( $highlighted_doc ) {
-              $snippet = '';
+						if ( $highlighted_doc ) {
+								$snippet = '';
 
-              foreach ( $highlighted_doc as $field => $highlight ) {
-                $snippet .= implode(' ... ', $highlight);
-              }
+							foreach ( $highlighted_doc as $field => $highlight ) {
+								$snippet .= implode( ' ... ', $highlight );
+							}
 
-              $post->excerpt = $snippet;
-              continue;
-            }
-          }
-        }
+								$post->excerpt = $snippet;
+								continue;
+						}
+					}
+				}
 
 				$post->$key = $value;
 			}
