@@ -60,6 +60,13 @@ class SolrPower_WP_Query {
 	public $query;
 
 	/**
+	 * Highlighted field snippets
+	 *
+	 * @var array
+	 */
+	public $highlighting;
+
+	/**
 	 * Grab instance of object.
 	 *
 	 * @return SolrPower_WP_Query
@@ -199,7 +206,10 @@ class SolrPower_WP_Query {
 		if ( $search->getFacetSet() ) {
 			$this->facets = $search->getFacetSet()->getFacets();
 		}
-		$search = $search->getData();
+
+    $this->highlighting = $search->getHighlighting();
+		
+    $search = $search->getData();
 
 		$search_header        = $search['responseHeader'];
 		$search               = $search['response'];
@@ -257,6 +267,23 @@ class SolrPower_WP_Query {
 					$post->ID = $value;
 					continue;
 				}
+
+        if ( 'solr_id' === $key ) {
+          if ( $this->highlighting ) {
+            $highlighted_doc = $this->highlighting->getResult($value);
+
+            if ( $highlighted_doc ) {
+              $snippet = '';
+
+              foreach ( $highlighted_doc as $field => $highlight ) {
+                $snippet .= implode(' ... ', $highlight);
+              }
+
+              $post->excerpt = $snippet;
+              continue;
+            }
+          }
+        }
 
 				$post->$key = $value;
 			}
