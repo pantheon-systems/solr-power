@@ -4,7 +4,7 @@
 **Requires at least:** 4.6  
 **Requires PHP:** 7.1  
 **Tested up to:** 5.4  
-**Stable tag:** 2.1.3  
+**Stable tag:** 2.1.4  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -50,17 +50,15 @@ Alternatively, there are a couple of community-maintained Docker containers you 
 
 In a local development environment, you can point Solr Power to a custom Solr instance by creating a MU plugin with:
 
-```
-<?php
-/**
- * Define Solr host IP, port, scheme and path
- * Update these as necessary if your configuration differs
-*/
-putenv( 'PANTHEON_INDEX_HOST=192.168.50.4' );
-putenv( 'PANTHEON_INDEX_PORT=8983' );
-add_filter( 'solr_scheme', function(){ return 'http'; });
-define( 'SOLR_PATH', '/solr/wordpress/' );
-```
+    <?php
+    /**
+     * Define Solr host IP, port, scheme and path
+     * Update these as necessary if your configuration differs
+     */
+    putenv( 'PANTHEON_INDEX_HOST=192.168.50.4' );
+    putenv( 'PANTHEON_INDEX_PORT=8983' );
+    add_filter( 'solr_scheme', function(){ return 'http'; });
+    define( 'SOLR_PATH', '/solr/wordpress/' );
 
 ## Development ##
 
@@ -165,6 +163,9 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 ```
 
 ## Changelog ##
+
+### 2.1.4 (April 24, 2020) ###
+* Ensures highlighting is also applied to the post excerpt [[#446](https://github.com/pantheon-systems/solr-power/pull/446)].
 
 ### 2.1.3 (November 16, 2019) ###
 * Add `solr_power_ajax_search_query_args` filter to modify AJAX search query arguments [[#432](https://github.com/pantheon-systems/solr-power/pull/432)].
