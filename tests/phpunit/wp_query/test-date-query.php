@@ -272,8 +272,8 @@ class SolrDateQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p2 ), wp_list_pluck( $before_posts, 'ID' ) );
-		$this->assertEquals( array( $p1 ), wp_list_pluck( $after_posts, 'ID' ) );
+		$this->assertEquals( array( $p2 ), $before_posts );
+		$this->assertEquals( array( $p1 ), $after_posts );
 	}
 
 
@@ -305,8 +305,8 @@ class SolrDateQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $before_posts, 'ID' ) );
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $after_posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p2 ), $before_posts );
+		$this->assertEqualSets( array( $p1, $p2 ), $after_posts );
 	}
 
 
@@ -336,8 +336,8 @@ class SolrDateQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p2 ), wp_list_pluck( $before_posts, 'ID' ) );
-		$this->assertEquals( array( $p1 ), wp_list_pluck( $after_posts, 'ID' ) );
+		$this->assertEquals( array( $p2 ), $before_posts );
+		$this->assertEquals( array( $p1 ), $after_posts );
 	}
 
 	public function test_beforeafter_with_date_string_Ym_inclusive() {
@@ -368,8 +368,8 @@ class SolrDateQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $before_posts, 'ID' ) );
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $after_posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p2 ), $before_posts );
+		$this->assertEqualSets( array( $p1, $p2 ), $after_posts );
 	}
 
 	public function test_beforeafter_with_date_string_Ymd() {
@@ -398,8 +398,8 @@ class SolrDateQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p2 ), wp_list_pluck( $before_posts, 'ID' ) );
-		$this->assertEquals( array( $p1 ), wp_list_pluck( $after_posts, 'ID' ) );
+		$this->assertEquals( array( $p2 ), $before_posts );
+		$this->assertEquals( array( $p1 ), $after_posts );
 	}
 
 	public function test_beforeafter_with_date_string_Ymd_inclusive() {
@@ -430,8 +430,8 @@ class SolrDateQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $before_posts, 'ID' ) );
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $after_posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p2 ), $before_posts );
+		$this->assertEqualSets( array( $p1, $p2 ), $after_posts );
 	}
 
 	public function test_beforeafter_with_date_string_YmdHi() {
@@ -460,8 +460,8 @@ class SolrDateQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p2 ), wp_list_pluck( $before_posts, 'ID' ) );
-		$this->assertEquals( array( $p1 ), wp_list_pluck( $after_posts, 'ID' ) );
+		$this->assertEquals( array( $p2 ), $before_posts );
+		$this->assertEquals( array( $p1 ), $after_posts );
 	}
 
 	public function test_beforeafter_with_date_string_YmdHi_inclusive() {
@@ -492,8 +492,8 @@ class SolrDateQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $before_posts, 'ID' ) );
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $after_posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p2 ), $before_posts );
+		$this->assertEqualSets( array( $p1, $p2 ), $after_posts );
 	}
 
 	public function test_beforeafter_with_date_string_YmdHis() {
@@ -522,8 +522,8 @@ class SolrDateQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p2 ), wp_list_pluck( $before_posts, 'ID' ) );
-		$this->assertEquals( array( $p1 ), wp_list_pluck( $after_posts, 'ID' ) );
+		$this->assertEquals( array( $p2 ), $before_posts );
+		$this->assertEquals( array( $p1 ), $after_posts );
 	}
 
 	public function test_beforeafter_with_date_string_YmdHis_inclusive() {
@@ -554,8 +554,8 @@ class SolrDateQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $before_posts, 'ID' ) );
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $after_posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p2 ), $before_posts );
+		$this->assertEqualSets( array( $p1, $p2 ), $after_posts );
 	}
 
 	public function test_beforeafter_with_date_string_non_parseable() {
@@ -584,7 +584,7 @@ class SolrDateQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p1, $p2 ), wp_list_pluck( $before_posts, 'ID' ) );
+		$this->assertEquals( array( $p1, $p2 ), $before_posts );
 	}
 
 	public function test_date_query_year() {
@@ -938,7 +938,7 @@ class SolrDateQueryTest extends SolrTestBase {
 
 		$expected = array( $p1, $p2, );
 
-		$this->assertEqualSets( $expected, wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEqualSets( $expected, $q->posts );
 	}
 
 	public function test_date_query_nested_query_multiple_columns_mixed_relations() {
@@ -1004,6 +1004,6 @@ class SolrDateQueryTest extends SolrTestBase {
 		) );
 
 		$expected = array( $p1, $p4, $p5, );
-		$this->assertEqualSets( $expected, wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEqualSets( $expected, $q->posts );
 	}
 }

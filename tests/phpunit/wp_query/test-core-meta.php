@@ -54,12 +54,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			'meta_query'             => array(),
 		) );
 		$expected = array( $p1, $p2, $p3 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 
@@ -97,12 +92,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p1 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, wp_list_pluck( $query->posts, 'ID' ) );
 	}
 
 	public function test_meta_post_type() {
@@ -139,12 +129,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p1 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, wp_list_pluck( $query->posts, 'ID' ) );
 	}
 
 	public function test_meta_query_no_key() {
@@ -168,12 +153,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			),
 		) );
 		$expected = array( $p1, $p2 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_no_value() {
@@ -198,11 +178,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p2, $p3 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 	}
 
@@ -226,11 +202,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p1 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_single_query_compare_equals() {
@@ -254,11 +226,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p1 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_single_query_compare_not_equals() {
@@ -283,11 +251,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			),
 		) );
 		$expected = array( $p2 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_single_query_compare_arithmetic_comparisons() {
@@ -315,11 +279,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p1 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		// <=
 		$query = new WP_Query( array(
@@ -337,11 +297,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p1, $p2 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		// >=
 		$query = new WP_Query( array(
@@ -359,11 +315,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p2, $p3 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		// >
 		$query = new WP_Query( array(
@@ -381,11 +333,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p3 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_single_query_compare_like() {
@@ -408,11 +356,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			),
 		) );
 		$expected = array( $p1 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_single_query_compare_not_like() {
@@ -438,11 +382,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p2 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_single_query_compare_between_not_between() {
@@ -470,11 +410,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p2 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		$query = new WP_Query( array(
 			'solr_integrate'         => true,
@@ -494,12 +430,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		$expected = array( $p1, $p3 );
 
 
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_relation_default() {
@@ -530,12 +461,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p1 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_relation_or() {
@@ -578,12 +504,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $post_id, $post_id2, $post_id3, $post_id4 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 
@@ -634,12 +555,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $post_id7 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		$query = new WP_Query( array(
 			'meta_query'             => array(
@@ -658,12 +574,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $post_id2, $post_id6, $post_id7 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_compare_exists() {
@@ -682,12 +593,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			),
 		) );
 		$expected = array( $posts[0], $posts[2] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_compare_exists_with_value_should_convert_to_equals() {
@@ -707,12 +613,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			),
 		) );
 		$expected = array( $posts[2] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_compare_not_exists_should_ignore_value() {
@@ -733,12 +634,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[1] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 
@@ -768,12 +664,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $post_id2, $post_id3, $post_id4 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		$query = new WP_Query( array(
 			'solr_integrate'         => true,
@@ -793,12 +684,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $post_id4 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		$query = new WP_Query( array(
 			'solr_integrate'         => true,
@@ -852,12 +738,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[1], $posts[2] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 	}
 
@@ -890,12 +771,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[0], $posts[1] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_relation_or_compare_equals_and_like() {
@@ -926,12 +802,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[1], $posts[2] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_relation_or_compare_equals_and_between() {
@@ -963,12 +834,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[0], $posts[2] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_single_query_compare_not_equals_negative_integer() {
@@ -1039,12 +905,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[3] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_relation_and_compare_in_different_keys() {
@@ -1077,12 +938,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[1] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_relation_and_compare_not_equals() {
@@ -1114,12 +970,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[3] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_relation_and_compare_not_equals_different_keys() {
@@ -1158,12 +1009,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[2] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_relation_and_compare_not_equals_not_in() {
@@ -1195,12 +1041,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[3] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_relation_and_compare_not_equals_and_not_like() {
@@ -1232,12 +1073,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[3] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 
@@ -1267,12 +1103,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			'fields'                 => 'ids',
 		) );
 		$expected = array( $post_3 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		$query    = new WP_Query( array(
 			'solr_integrate'         => true,
@@ -1289,12 +1120,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			'fields'                 => 'ids',
 		) );
 		$expected = array( $post_4 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		$query = new WP_Query( array(
 			'solr_integrate'         => true,
@@ -1313,12 +1139,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 
 
 		$expected = array( $post_3, $post_4 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		$query    = new WP_Query( array(
 			'solr_integrate'         => true,
@@ -1335,12 +1156,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			'fields'                 => 'ids',
 		) );
 		$expected = array( $post_1 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		$query    = new WP_Query( array(
 			'solr_integrate'         => true,
@@ -1357,12 +1173,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			'fields'                 => 'ids',
 		) );
 		$expected = array( $post_1, $post_2, $post_3 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		$query    = new WP_Query( array(
 			'solr_integrate'         => true,
@@ -1379,12 +1190,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			'fields'                 => 'ids',
 		) );
 		$expected = array( $post_3 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		$query    = new WP_Query( array(
 			'solr_integrate'         => true,
@@ -1401,12 +1207,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			'fields'                 => 'ids',
 		) );
 		$expected = array( $post_1, $post_2, $post_4 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		$query    = new WP_Query( array(
 			'solr_integrate'         => true,
@@ -1423,12 +1224,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			'fields'                 => 'ids',
 		) );
 		$expected = array( $post_1, $post_3 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 		$query = new WP_Query( array(
 			'solr_integrate'         => true,
 			'meta_query'             => array(
@@ -1445,12 +1241,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $post_2, $post_4 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 		$query = new WP_Query( array(
 			'solr_integrate'         => true,
@@ -1464,12 +1255,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $post_4, $post_3, $post_2, $post_1 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 
@@ -1491,12 +1277,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p2, $p3 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, wp_list_pluck( $query->posts, 'ID' ) );
 	}
 
 	public function test_meta_query_with_orderby_meta_value_relation_or() {
@@ -1534,12 +1315,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[2], $posts[0], $posts[1] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_with_orderby_meta_value_relation_and() {
@@ -1580,12 +1356,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			'fields'                 => 'ids',
 		) );
 		$expected = array( $posts[2], $posts[0], $posts[1] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_nested() {
@@ -1624,12 +1395,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p1, $p3 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_nested_two_levels_deep() {
@@ -1675,12 +1441,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $p1, $p3 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_between_not_between() {
@@ -1884,7 +1645,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			'order'          => 'DESC',
 		) );
 
-		$this->assertEquals( array( $posts[1], $posts[2], $posts[0] ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $posts[1], $posts[2], $posts[0] ), $q->posts );
 	}
 
 	public function test_orderby_clause_key_as_secondary_sort() {
@@ -1917,7 +1678,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p3, $p1, $p2 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p3, $p1, $p2 ), $q->posts );
 	}
 
 	public function test_orderby_more_than_one_clause_key() {
@@ -1949,7 +1710,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $posts[2], $posts[0], $posts[1] ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $posts[2], $posts[0], $posts[1] ), $q->posts );
 	}
 
 	public function test_meta_query_compare_not_exists_with_another_condition_relation_or() {
@@ -1983,12 +1744,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		) );
 
 		$expected = array( $posts[2], $posts[3] );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 
 	}
 
@@ -2015,12 +1771,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			),
 		) );
 		$expected = array();
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_meta_query_index_custom_fields_filter() {
@@ -2052,12 +1803,7 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 			),
 		) );
 		$expected = array( $p1, $p2 );
-		$returned = array();
-		foreach ( $query->posts as $post ) {
-			$returned[] = $post->ID;
-		}
-
-		$this->assertEqualSets( $expected, $returned );
+		$this->assertEqualSets( $expected, $query->posts );
 	}
 
 	public function test_orderby_meta_value_numeric() {
