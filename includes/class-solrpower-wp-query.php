@@ -425,7 +425,7 @@ class SolrPower_WP_Query {
 	 *
 	 * @return string
 	 */
-	function found_posts( $found_posts, $query ) {
+	public function found_posts( $found_posts, $query ) {
 		if ( ! $query->is_search() || false === SolrPower_Api::get_instance()->ping ) {
 			return $found_posts;
 		}
@@ -441,7 +441,7 @@ class SolrPower_WP_Query {
 	 *
 	 * @return mixed
 	 */
-	function posts_pre_query( $posts, $query ) {
+	public function posts_pre_query( $posts, $query ) {
 		if ( ! isset( $this->found_posts[ spl_object_hash( $query ) ] ) ) {
 			return null;
 		}
