@@ -127,6 +127,8 @@ class SolrPower_WP_Query {
 			}
 		}
 
+		add_filter( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
+
 		add_filter( 'posts_request', array( $this, 'posts_request' ), 10, 2 );
 
 		// Nukes the FOUND_ROWS() database query.
@@ -146,6 +148,20 @@ class SolrPower_WP_Query {
 		$this->fq  = array();
 		$this->qry = '';
 	}
+
+	/**
+	 * Generate a unique hash for the query at the beginning of the request.
+	 * We used to used spl_object_hash(), but it turned out not to be unique.
+	 *
+	 * @param object $query Existing query object.
+	 */
+	public function pre_get_posts( $query ) {
+		if ( isset( $query->solr_query_id ) ) {
+			return;
+		}
+		$query->solr_query_id = md5( mt_rand() );
+	}
+
 
 	/**
 	 * Parse the posts request into a Solr request.
@@ -207,7 +223,7 @@ class SolrPower_WP_Query {
 		$search = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order, $fields, $extra );
 
 		if ( is_null( $search ) ) {
-			$this->found_posts[ spl_object_hash( $query ) ] = array();
+			$this->found_posts[ $query->solr_query_id ] = array();
 			$this->reset_vars();
 			return false;
 		}
@@ -235,7 +251,7 @@ class SolrPower_WP_Query {
 
 		$posts = $this->parse_results( $search );
 
-		$this->found_posts[ spl_object_hash( $query ) ] = $posts;
+		$this->found_posts[ $query->solr_query_id ] = $posts;
 		$this->reset_vars();
 		global $wpdb;
 
@@ -440,11 +456,11 @@ class SolrPower_WP_Query {
 	 * @return mixed
 	 */
 	public function posts_pre_query( $posts, $query ) {
-		if ( ! isset( $this->found_posts[ spl_object_hash( $query ) ] ) ) {
+		if ( ! isset( $this->found_posts[ $query->solr_query_id ] ) ) {
 			return null;
 		}
 
-		$new_posts = $this->found_posts[ spl_object_hash( $query ) ];
+		$new_posts = $this->found_posts[ $query->solr_query_id ];
 
 		return array_map(
 			function ( $post ) {
@@ -463,11 +479,11 @@ class SolrPower_WP_Query {
 	 * @return mixed
 	 */
 	function the_posts( $posts, $query ) {
-		if ( ! isset( $this->found_posts[ spl_object_hash( $query ) ] ) ) {
+		if ( ! isset( $this->found_posts[ $query->solr_query_id ] ) ) {
 			return $posts;
 		}
 
-		$new_posts = $this->found_posts[ spl_object_hash( $query ) ];
+		$new_posts = $this->found_posts[ $query->solr_query_id ];
 
 		return $new_posts;
 	}
