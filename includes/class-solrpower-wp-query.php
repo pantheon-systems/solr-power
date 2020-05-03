@@ -156,9 +156,7 @@ class SolrPower_WP_Query {
 	 * @return string
 	 */
 	function posts_request( $request, $query ) {
-		if ( ( ! $query->is_search() && ! $query->get( 'solr_integrate' ) )
-			|| false === SolrPower_Api::get_instance()->ping
-		) {
+		if ( ! $this->is_solr_query( $query ) || false === SolrPower_Api::get_instance()->ping ) {
 			return $request;
 		}
 		add_filter( 'solr_query', array( SolrPower_Api::get_instance(), 'dismax_query' ), 10, 2 );
@@ -410,9 +408,7 @@ class SolrPower_WP_Query {
 	 * @return string
 	 */
 	function found_posts_query( $sql, $query ) {
-		if ( ( ! $query->is_search() && ! $query->get( 'solr_integrate' ) )
-			|| false === SolrPower_Api::get_instance()->ping
-		) {
+		if ( ! $this->is_solr_query( $query ) || false === SolrPower_Api::get_instance()->ping ) {
 			return $sql;
 		}
 
@@ -428,9 +424,7 @@ class SolrPower_WP_Query {
 	 * @return string
 	 */
 	public function found_posts( $found_posts, $query ) {
-		if ( ( ! $query->is_search() && ! $query->get( 'solr_integrate' ) )
-			|| false === SolrPower_Api::get_instance()->ping
-		) {
+		if ( ! $this->is_solr_query( $query ) || false === SolrPower_Api::get_instance()->ping ) {
 			return $found_posts;
 		}
 
@@ -546,7 +540,7 @@ class SolrPower_WP_Query {
 			'post__not_in' => '-ID',
 			'name'         => 'post_name',
 		);
-		if ( ! $query->is_search() && ! $query->get( 'solr_integrate' ) ) {
+		if ( ! $this->is_solr_query( $query ) ) {
 			return '';
 		}
 
@@ -1215,6 +1209,16 @@ class SolrPower_WP_Query {
 				return '(' . $field . '_i:[* TO ' . $field_value . '])';
 				break;
 		}
+	}
+
+	/**
+	 * Whether or not the provided query should be a Solr query.
+	 *
+	 * @param object $query Query object.
+	 * @return boolean
+	 */
+	private function is_solr_query( $query ) {
+		return $query->is_search() || $query->get( 'solr_integrate' );
 	}
 
 }
