@@ -410,7 +410,9 @@ class SolrPower_WP_Query {
 	 * @return string
 	 */
 	function found_posts_query( $sql, $query ) {
-		if ( ! $query->is_search() || false === SolrPower_Api::get_instance()->ping ) {
+		if ( ( ! $query->is_search() && ! $query->get( 'solr_integrate' ) )
+			|| false === SolrPower_Api::get_instance()->ping
+		) {
 			return $sql;
 		}
 
@@ -426,7 +428,9 @@ class SolrPower_WP_Query {
 	 * @return string
 	 */
 	public function found_posts( $found_posts, $query ) {
-		if ( ! $query->is_search() || false === SolrPower_Api::get_instance()->ping ) {
+		if ( ( ! $query->is_search() && ! $query->get( 'solr_integrate' ) )
+			|| false === SolrPower_Api::get_instance()->ping
+		) {
 			return $found_posts;
 		}
 
