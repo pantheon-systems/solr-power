@@ -4,7 +4,7 @@
 **Requires at least:** 4.6  
 **Requires PHP:** 7.1  
 **Tested up to:** 5.4  
-**Stable tag:** 2.1.4  
+**Stable tag:** 2.2.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -163,6 +163,9 @@ To support searching by author name (e.g. where "Pantheon" would return posts au
 ```
 
 ## Changelog ##
+
+### 2.2.0 (May 5, 2020) ###
+* Uses `posts_pre_query` hook to support use of 'fields' in `WP_Query` [[#448](https://github.com/pantheon-systems/solr-power/pull/448)].
 
 ### 2.1.4 (April 24, 2020) ###
 * Ensures highlighting is also applied to the post excerpt [[#446](https://github.com/pantheon-systems/solr-power/pull/446)].

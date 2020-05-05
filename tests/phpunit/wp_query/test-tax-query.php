@@ -58,8 +58,8 @@ class SolrTaxQueryTest extends SolrTestBase {
 	function test_wp_query_by_tax_id() {
 		$t  = self::factory()->term->create( array(
 			'taxonomy' => 'genre',
-			'slug'     => 'horror',
-			'name'     => 'Horror',
+			'slug'     => 'biography',
+			'name'     => 'Biography',
 		) );
 		$this->__create_test_post();
 
@@ -174,7 +174,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p1 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p1 ), $q->posts );
 	}
 
 	public function test_tax_query_single_query_single_term_field_name() {
@@ -202,7 +202,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p1 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p1 ), $q->posts );
 		$facets = SolrPower_WP_Query::get_instance()->facets;
 		$this->assertEquals( 1, $facets['categories']->getValues()['Foo^^'] );
 		$this->assertCount( 0, $facets['tags']->getValues() );
@@ -234,7 +234,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p1 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p1 ), $q->posts );
 		$facets = SolrPower_WP_Query::get_instance()->facets;
 		$this->assertEquals( 1, $facets['categories']->getValues()['Uncategorized^^'] );
 		$this->assertCount( 0, $facets['tags']->getValues() );
@@ -266,7 +266,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p1 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p1 ), $q->posts );
 	}
 
 	public function test_tax_query_single_query_single_term_field_term_id() {
@@ -294,7 +294,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p1 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p1 ), $q->posts );
 	}
 
 	public function test_tax_query_single_query_single_term_operator_in() {
@@ -323,7 +323,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p1 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p1 ), $q->posts );
 	}
 
 	public function test_tax_query_single_query_single_term_operator_not_in() {
@@ -352,7 +352,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 				),
 			),
 		) );
-		$this->assertEquals( array( $p2 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p2 ), $q->posts );
 	}
 
 	public function test_tax_query_single_query_single_term_operator_and() {
@@ -380,7 +380,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 				),
 			),
 		) );
-		$this->assertEquals( array( $p1 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p1 ), $q->posts );
 	}
 
 	public function test_tax_query_single_query_multiple_terms_operator_in() {
@@ -416,7 +416,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p2 ), $q->posts );
 	}
 
 	public function test_tax_query_single_query_multiple_terms_operator_not_in() {
@@ -452,7 +452,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p3 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p3 ), $q->posts );
 	}
 
 	public function test_tax_query_single_query_multiple_queries_operator_not_in() {
@@ -495,7 +495,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p3 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p3 ), $q->posts );
 	}
 
 	public function test_tax_query_single_query_multiple_terms_operator_and() {
@@ -531,7 +531,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p2 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p2 ), $q->posts );
 	}
 
 	public function test_tax_query_operator_not_exists() {
@@ -561,7 +561,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEqualSets( array( $p1, $p3 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p3 ), $q->posts );
 	}
 
 	public function test_tax_query_operator_exists() {
@@ -591,7 +591,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEqualSets( array( $p2 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEqualSets( array( $p2 ), $q->posts );
 	}
 
 	public function test_tax_query_operator_exists_should_ignore_terms() {
@@ -622,7 +622,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEqualSets( array( $p2 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEqualSets( array( $p2 ), $q->posts );
 	}
 
 	public function test_tax_query_operator_exists_with_no_taxonomy() {
@@ -691,7 +691,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEquals( array( $p2 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEquals( array( $p2 ), $q->posts );
 	}
 
 	public function test_tax_query_multiple_queries_relation_or() {
@@ -732,7 +732,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p2 ), $q->posts );
 	}
 
 	public function test_tax_query_multiple_queries_different_taxonomies() {
@@ -773,7 +773,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		) );
 
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p2 ), $q->posts );
 	}
 
 	public function test_tax_query_two_nested_queries() {
@@ -843,7 +843,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 		_unregister_taxonomy( 'foo' );
 		_unregister_taxonomy( 'bar' );
 
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p2 ), $q->posts );
 	}
 
 	public function test_tax_query_one_nested_query_one_first_order_query() {
@@ -905,7 +905,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 		_unregister_taxonomy( 'foo' );
 		_unregister_taxonomy( 'bar' );
 
-		$this->assertEqualSets( array( $p1, $p2 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p2 ), $q->posts );
 	}
 
 
@@ -976,7 +976,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 
 		_unregister_taxonomy( 'foo' );
 		_unregister_taxonomy( 'bar' );
-		$this->assertEqualSets( array( $p1, $p2, $p3 ), wp_list_pluck( $q->posts, 'ID' ) );
+		$this->assertEqualSets( array( $p1, $p2, $p3 ), $q->posts );
 	}
 
 	public function test_tax_query_relation_or_both_clauses_empty_terms() {
@@ -1287,7 +1287,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 			$posts[0],
 			$posts[1],
 			$posts[2]
-		), wp_list_pluck( $results1, 'ID' ), 'Relation: OR; Operator: AND' );
+		), $results1, 'Relation: OR; Operator: AND' );
 
 		$results2 = $q->query( array(
 			'solr_integrate'         => true,
@@ -1316,7 +1316,7 @@ class SolrTaxQueryTest extends SolrTestBase {
 		$this->assertEquals( array(
 			$posts[0],
 			$posts[3]
-		), wp_list_pluck( $results2, 'ID' ), 'Relation: AND; Operator: IN' );
+		), $results2, 'Relation: AND; Operator: IN' );
 	}
 
 }
