@@ -559,4 +559,30 @@ class SolrTest extends SolrTestBase {
 		$this->assertEquals( 'Dragon breath content', $query->posts[0]->post_content );
 	}
 
+	/**
+	 * Asserts that block content is indexed with filter.
+	 */
+	public function test_block_attributes_are_included_in_index_with_filter() {
+		add_filter(
+			'solr_build_document',
+			function( $doc, $post_info ) {
+				$doc->setField( 'post_content', wp_filter_nohtml_kses( $post_info->post_content ) );
+				return $doc;
+			},
+			10,
+			2
+		);
+		$content = <<<EOT
+<!-- wp:acf/image-heading-description-module { "id": "block_5ed5e323607fb", "name": "acf\/image-heading-description-module", "data": { "image": "", "_image": "field_5ec33f4338407", "content": "This text has treatment keyword in ACF", "_content": "field_5ec33e5b17b45" }, "mode": "edit" } /-->
+EOT;
+		$p_id = $this->__create_test_post( 'post', 'Dragon breath title', $content );
+
+		$query = new WP_Query( array(
+			's' => 'treatment',
+		) );
+		$this->assertTrue( $query->posts[0]->solr );
+		$this->assertEquals( 'Dragon breath title', $query->posts[0]->post_title );
+		$this->assertContains( 'This text has treatment keyword in ACF', $query->posts[0]->post_content );
+	}
+
 }
