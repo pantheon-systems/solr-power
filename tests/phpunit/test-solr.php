@@ -566,7 +566,7 @@ class SolrTest extends SolrTestBase {
 		add_filter(
 			'solr_build_document',
 			function( $doc, $post_info ) {
-				$doc->setField( 'post_content', $post_info->post_content );
+				$doc->setField( 'post_content', wp_filter_nohtml_kses( $post_info->post_content ) );
 				return $doc;
 			},
 			10,
