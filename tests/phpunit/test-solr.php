@@ -13,6 +13,7 @@ class SolrTest extends SolrTestBase {
 	 * Test to see if we can ping the Solr server.
 	 */
 	function test_solr_active() {
+		$this->assertTrue( SolrPower_Api::get_instance()->ping );
 		$this->assertTrue( SolrPower_Api::get_instance()->ping_server() );
 	}
 
