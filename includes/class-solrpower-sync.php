@@ -297,6 +297,7 @@ class SolrPower_Sync {
 			$doc->setField( 'hour_i', gmdate( 'H', $post_time ) );
 			$doc->setField( 'minute_i', gmdate( 'i', $post_time ) );
 			$doc->setField( 'second_i', gmdate( 's', $post_time ) );
+			$doc->setField( 'post_date_iso', gmdate( 'c', $post_time ) . 'Z' );
 
 			$post_time = strtotime( $post_info->post_modified );
 			$doc->setField( 'post_modified_year_i', gmdate( 'Y', $post_time ) );

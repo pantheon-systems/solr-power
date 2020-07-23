@@ -12,6 +12,7 @@
         <fieldType name="sfloat" class="solr.SortableFloatField" sortMissingLast="true" omitNorms="true"/>
         <fieldType name="sdouble" class="solr.SortableDoubleField" sortMissingLast="true" omitNorms="true"/>
         <fieldType name="date" class="solr.DateField" sortMissingLast="true" omitNorms="true"/>
+		<fieldType name="tdate" class="solr.TrieDateField" omitNorms="true" precisionStep="6" positionIncrementGap="0"/>
         <fieldType name="random" class="solr.RandomSortField" indexed="true" />
 
         <fieldType name="text_ws" class="solr.TextField" positionIncrementGap="100">
@@ -77,17 +78,17 @@
             </analyzer>
         </fieldType>
 
-        <fieldtype name="ignored" stored="false" indexed="false" class="solr.StrField" /> 
+        <fieldtype name="ignored" stored="false" indexed="false" class="solr.StrField" />
     </types>
 
 
     <fields>
         <!-- http://stackoverflow.com/questions/15527380/solr-4-2-what-is-version-field -->
-        <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>	
-        <field name="solr_id" type="string" indexed="true" stored="true" required="true" /> 
-        <field name="ID" type="string" indexed="true" stored="true" required="true" /> 
+        <field name="_version_" type="long" indexed="true" stored="true" multiValued="false"/>
+        <field name="solr_id" type="string" indexed="true" stored="true" required="true" />
+        <field name="ID" type="string" indexed="true" stored="true" required="true" />
         <field name="post_author" type="string" indexed="true" stored="true"/>
-        <field name="post_name" type="string" indexed="true" stored="true"/>  
+        <field name="post_name" type="string" indexed="true" stored="true"/>
         <field name="post_type" type="string" indexed="true" stored="true"/>
         <field name="post_title" type="text_lws" indexed="true" stored="true"/>
         <field name="post_date" type="date" indexed="true" stored="true"/>
@@ -102,15 +103,15 @@
         <field name="post_modified_gmt" type="date" indexed="true" stored="true"/>
         <field name="comment_count" type="string" indexed="true" stored="true"/>
         <field name="menu_order" type="string" indexed="true" stored="true"/>
-        
+
         <field name="blogid" type="string" indexed="true" stored="true"/>
         <field name="blogdomain" type="string" indexed="true" stored="true"/>
         <field name="blogpath" type="string" indexed="true" stored="true"/>
         <field name="wp" type="string" indexed="true" stored="true"/>
-		
-        <field name="permalink" type="string" indexed="true" stored="true"/> 
-        
-        
+
+        <field name="permalink" type="string" indexed="true" stored="true"/>
+
+
         <field name="numcomments" type="integer" indexed="true" stored="true"/>
         <field name="comments" type="text" indexed="true" stored="true" multiValued="true"/>
 
@@ -119,21 +120,21 @@
         <field name="categories_id" type="string" indexed="true" stored="true" multiValued="true"/>
 
         <field name="categoriessrch" type="text_lws" indexed="true" stored="false" multiValued="true"/>
-		
+
         <field name="tags" type="string" indexed="true" stored="true" multiValued="true"/>
         <field name="tagssrch" type="text_lws" indexed="true" stored="false" multiValued="true"/>
-		
-        
-        
 
-		
+
+		<field name="post_date_iso" type="tdate" indexed="true" stored="true" required="true" />
+
+
         <!-- Fields used to display the date -->
         <field name="displaydate" type="string" indexed="true" stored="true"/>
         <field name="displaymodified" type="string" indexed="true" stored="true"/>
-		
+
         <!-- For spell checking, did you mean? -->
         <field name="spell" type="textSpell" indexed="true" stored="true" multiValued="true"/>
-		
+
         <!-- composite field -->
         <field name="text" type="text" indexed="true" stored="false" multiValued="true"/>
 
