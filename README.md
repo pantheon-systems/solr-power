@@ -175,13 +175,16 @@ Add the following to `schema.xml`:
 <fieldType name="tdate" class="solr.TrieDateField" omitNorms="true" precisionStep="6" positionIncrementGap="0"/>
 
 <!-- Add to <fields> -->
-	<field name="post_date_iso" type="tdate" indexed="true" stored="true" required="true" />
+<field name="post_date_iso" type="tdate" indexed="true" stored="true" required="true" />
 ```
 
-Add the following to your functions.php file.
+Add the following to your `functions.php` file.
 
 ```
-// Hooks into build process to add post date field
+<?php
+/**
+ * Hooks into the document build process to add post date field in proper format.
+ */
 function my_solr_build_document( $doc, $post_info ) {
 	$post_time = strtotime( $post_info->post_date );
 	// Matches format required for TrieDateField
@@ -190,8 +193,10 @@ function my_solr_build_document( $doc, $post_info ) {
 }
 add_filter( 'solr_build_document', 'my_solr_build_document', 10, 2 );
 
-// Hooks into query processor, Dismax, to add publish date boost.
-// See: https://www.metaltoad.com/blog/date-boosting-solr-drupal-search-results
+/**
+ * Hooks into query processor, Dismax, to add publish date boost.
+ * See: https://www.metaltoad.com/blog/date-boosting-solr-drupal-search-results
+ */
 function my_solr_dismax_query( $dismax ) {
 	$dismax->setQueryParser( 'edismax' );
 	$dismax->setBoostQuery( 'recip(abs(ms(NOW/HOUR,post_date_iso),3.16e-11,1,1))' );
