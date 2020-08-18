@@ -70,7 +70,7 @@ git commit -m "Include Solr Power"
 git push
 
 # Sometimes Pantheon takes a little time to refresh the filesystem
-sleep 10
+terminus build:workflow:wait $TERMINUS_SITE.$TERMINUS_ENV
 
 ###
 # Set up WordPress, theme, and plugins for the test run
