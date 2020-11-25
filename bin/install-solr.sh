@@ -43,7 +43,7 @@ download_and_run() {
 
    
     # Download from a Pantheon hosted file on CI
-    if $CONTINUOUS_INTEGRATION
+    if $CIRCLECI
     then
     	url="https://dev-solr-power.pantheonsite.io/wp-content/uploads/apache-solr-3.6.2.tgz"
     else
