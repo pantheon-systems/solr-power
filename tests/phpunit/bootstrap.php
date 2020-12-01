@@ -2,7 +2,7 @@
 
 putenv( 'PANTHEON_INDEX_HOST=localhost' );
 if ( getenv( 'CIRCLECI' ) ) {
-	putenv( 'PANTHEON_INDEX_PORT=8984' );
+	putenv( 'PANTHEON_INDEX_PORT=8983' );
 } else {
 	putenv( 'PANTHEON_INDEX_PORT=8983' );
 }
