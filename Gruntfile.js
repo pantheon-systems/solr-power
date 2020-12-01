@@ -17,16 +17,6 @@ module.exports = function( grunt ) {
 			},
 		},
 
-		phpcs: {
-			plugin: {
-				src: './'
-			},
-			options: {
-				bin: "vendor/bin/phpcs --extensions=php --ignore=\"*/vendor/*,*/node_modules/*\"",
-				standard: "phpcs.ruleset.xml"
-			}
-		},
-
       /**
        * Clean up the JavaScript
        */
@@ -164,52 +154,16 @@ module.exports = function( grunt ) {
           }
       },
 
-		pot: {
-			// generate .pot file
-			options:{
-				text_domain: 'solr-for-wordpress-on-pantheon',
-				msgid_bugs_address: 'https://github.com/pantheon-systems/solr-power/issues',
-				dest: './',
-				language: 'PHP',
-				msgmerge: true,
-				expand: true,
-				// WordPress localization functions
-				keywords: [
-					'__:1',
-					'_e:1',
-					'_x:1,2c',
-					'esc_html__:1',
-					'esc_html_e:1',
-					'esc_html_x:1,2c',
-					'esc_attr__:1',
-					'esc_attr_e:1',
-					'esc_attr_x:1,2c',
-					'_ex:1,2c',
-					'_n:1,2',
-					'_nx:1,2,4c',
-					'_n_noop:1,2',
-					'_nx_noop:1,2,3c'
-				]
-			},
-			files:{
-				//Parse all php files, ignore node_modules and vendor directories
-				src:  [ '**/*.php', '!node_modules/**/*', '!vendor/**/*' ],
-				expand: true
-			}
-		}
-
 
 	} );
 
 	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown' );
-	grunt.loadNpmTasks( 'grunt-phpcs' );
 	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-sass' );
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
 	grunt.loadNpmTasks( 'grunt-autoprefixer' );
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
-	grunt.loadNpmTasks('grunt-pot');
 	grunt.registerTask( 'readme', ['wp_readme_to_markdown']);
 	grunt.registerTask( 'default', ['jshint', 'uglify:backend','uglify:frontend', 'sass', 'autoprefixer', 'cssmin'] );
 
