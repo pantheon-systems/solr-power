@@ -4,7 +4,7 @@
 **Requires at least:** 4.6  
 **Requires PHP:** 7.1  
 **Tested up to:** 5.6  
-**Stable tag:** 2.2.1  
+**Stable tag:** 2.2.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -213,6 +213,10 @@ Add the following to your `functions.php` file.
 
 
 ## Changelog ##
+
+### 2.2.2 (December 1, 2020) ###
+* Updates various Composer dependencies [[#477](https://github.com/pantheon-systems/solr-power/pull/477)].
+* Updates README to include detail on how to use TrieDateField for publish date [[#466](https://github.com/pantheon-systems/solr-power/pull/466)].
 
 ### 2.2.1 (July 13, 2020) ###
 * Avoids pinging Solr unless we actually need, to avoid unnecessary requests [[#458](https://github.com/pantheon-systems/solr-power/pull/458)].
