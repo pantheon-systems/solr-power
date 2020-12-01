@@ -1,6 +1,6 @@
 <?php
 
-putenv( 'PANTHEON_INDEX_HOST=127.0.0.1' );
+putenv( 'PANTHEON_INDEX_HOST=localhost' );
 if ( getenv( 'CIRCLECI' ) ) {
 	putenv( 'PANTHEON_INDEX_PORT=8984' );
 } else {

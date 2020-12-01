@@ -10,7 +10,7 @@ class SolrTestBase extends WP_UnitTestCase{
 		parent::__construct();
 		// For tests, we're not using https.
 		add_filter( 'solr_scheme', function () {
-			return 'http';
+			return 'tcp';
 		} );
 		SolrPower_Options::get_instance()->initalize_options();
 		$this->__setup_taxonomy();
