@@ -195,7 +195,6 @@ class SolrPower_Api {
 		if ( ! $solr ) {
 			return false;
 		}
-		var_dump( $solr );
 
 		try {
 			$ping            = $solr->ping( $solr->createPing() );
@@ -203,7 +202,7 @@ class SolrPower_Api {
 			$this->ping      = true;
 			return true;
 		} catch ( Solarium\Exception\HttpException $e ) {
-			var_dump( $e );
+			var_dump( $e->getMessage() );
 			$this->last_code  = $e->getCode();
 			$this->last_error = $e;
 
