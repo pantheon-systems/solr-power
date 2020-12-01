@@ -1,8 +1,8 @@
 <?php
 
 putenv( 'PANTHEON_INDEX_HOST=localhost' );
-if ( getenv( 'TRAVIS' ) ) {
-	putenv( 'PANTHEON_INDEX_PORT=8983' );
+if ( getenv( 'CIRCLECI' ) ) {
+	putenv( 'PANTHEON_INDEX_PORT=8984' );
 } else {
 	putenv( 'PANTHEON_INDEX_PORT=8983' );
 }

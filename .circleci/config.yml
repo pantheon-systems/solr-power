@@ -85,6 +85,11 @@ jobs:
     docker:
       - image: circleci/php:7.4-node-browsers
       - image: circleci/mariadb:10.3
+      - image: kshaner/solr
+        ports:
+            - '8984:8983'
+        volumes:
+            - ./schema.xml:/opt/apache-solr-3.6.2/example/solr/conf/schema.xml
     environment:
       - WP_TESTS_DIR: "/tmp/wordpress-tests-lib"
       - WP_CORE_DIR: "/tmp/wordpress/"
@@ -108,10 +113,6 @@ jobs:
             sudo docker-php-ext-enable imagick
             sudo docker-php-ext-install mysqli
             sudo apt-get install mariadb-client-10.3
-      - run:
-          name: "Install Solr"
-          command: |
-            bash bin/install-solr.sh
       - run:
           name: "Run Tests"
           command: |
