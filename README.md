@@ -94,7 +94,7 @@ All Solr Power related commands are grouped into the `wp solr` command, see an e
     $ wp solr
     usage: wp solr check-server-settings
        or: wp solr delete [<id>...] [--all]
-       or: wp solr index [--page] [--post_type]
+       or: wp solr index [--batch=<batch>] [--batch_size=<size>] [--post_type=<post-type>]
        or: wp solr info [--field=<field>] [--format=<format>]
        or: wp solr optimize-index
        or: wp solr repost-schema
