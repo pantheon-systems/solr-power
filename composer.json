@@ -16,11 +16,12 @@
     "prefer-stable": true,
     "config": {
         "platform": {
-            "php": "7.0"
+            "php": "7.1"
         }
     },
     "require": {
-        "solarium/solarium": "~4"
+        "solarium/solarium": "~4",
+        "symfony/event-dispatcher": "^3.4"
     },
     "require-dev": {
         "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master",
