@@ -85,7 +85,7 @@ jobs:
     docker:
       - image: circleci/php:7.4-node-browsers
       - image: circleci/mariadb:10.3
-      - image: danielbachhuber/solr-wp
+      - image: danielbachhuber/solr-wp:0.1.0
     environment:
       - WP_TESTS_DIR: "/tmp/wordpress-tests-lib"
       - WP_CORE_DIR: "/tmp/wordpress/"
