@@ -90,6 +90,8 @@ jobs:
       - WP_CORE_DIR: "/tmp/wordpress/"
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 19.03.13
       - run:
           name: 'Install Solr'
           command: |
