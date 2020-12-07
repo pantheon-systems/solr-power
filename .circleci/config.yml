@@ -85,17 +85,16 @@ jobs:
     docker:
       - image: circleci/php:7.4-node-browsers
       - image: circleci/mariadb:10.3
+      - image: kshaner/solr
+        ports:
+            - '8984:8983'
+        volumes:
+            - ./schema.xml:/opt/apache-solr-3.6.2/example/solr/conf/schema.xml
     environment:
       - WP_TESTS_DIR: "/tmp/wordpress-tests-lib"
       - WP_CORE_DIR: "/tmp/wordpress/"
     steps:
       - checkout
-      - run:
-          name: 'Install Solr'
-          command: |
-            docker create -v /opt/apache-solr-3.6.2/example/solr/conf --name config kshaner/solr /bin/true
-            docker cp schema.xml config:/opt/apache-solr-3.6.2/example/solr/conf
-            docker run --volumes-from config kshaner/solr
       - restore_cache:
           keys:
             - test-phpunit-dependencies-{{ checksum "composer.json" }}
