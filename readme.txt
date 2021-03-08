@@ -3,8 +3,8 @@ Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor
 Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
-Tested up to: 5.6
-Stable tag: 2.2.2
+Tested up to: 5.7
+Stable tag: 2.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -213,6 +213,9 @@ Add the following to your `functions.php` file.
 
 
 == Changelog ==
+
+= 2.2.3 (March 8, 2021) =
+* Incorporates the value for `$_ENV['FILEMOUNT']` when indicating path for `schema.xml` [[#492](https://github.com/pantheon-systems/solr-power/pull/492)].
 
 = 2.2.2 (December 1, 2020) =
 * Updates various Composer dependencies [[#477](https://github.com/pantheon-systems/solr-power/pull/477)].
