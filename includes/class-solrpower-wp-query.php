@@ -205,8 +205,10 @@ class SolrPower_WP_Query {
 				$sortby = $this->parse_orderby( $orderby, $query );
 			}
 		} else {
+			//
 			// Boost partial match on post_title to simulate WordPress' use of MySQL ORDER BY CASE.
-			if ( $query->get( 's' ) ) {
+			//
+			if ( !defined('SOLRPOWER_DISABLE_QUERY_ALT') && $query->get( 's' ) ) {
 				$extra['sort_before'][ "query({!dismax qf=post_title v='\"" . addslashes( $query->get( 's' ) ) . "\"'})" ] = 'desc';
 			}
 		}
