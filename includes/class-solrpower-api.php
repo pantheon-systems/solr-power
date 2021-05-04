@@ -433,9 +433,11 @@ class SolrPower_Api {
 			 *
 			 * @param string $solr_boost_query String of items, with their boost applied.
 			 */
-			$solr_boost_query = apply_filters( 'solr_boost_query', 'post_title^2 post_content^1.2' );
-			if ( false !== $solr_boost_query ) {
-				$dismax->setBoostFunctions( $solr_boost_query );
+			if ( !defined('SOLRPOWER_DISABLE_QUERY_ALT') ) {
+				$solr_boost_query = apply_filters( 'solr_boost_query', 'post_title^2 post_content^1.2' );
+				if ( false !== $solr_boost_query ) {
+					$dismax->setBoostFunctions( $solr_boost_query );
+				}
 			}
 
 			/**
