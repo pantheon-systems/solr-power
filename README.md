@@ -4,7 +4,7 @@
 **Requires at least:** 4.6  
 **Requires PHP:** 7.1  
 **Tested up to:** 5.7  
-**Stable tag:** 2.2.3  
+**Stable tag:** 2.2.4  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -213,6 +213,9 @@ Add the following to your `functions.php` file.
 
 
 ## Changelog ##
+
+### 2.2.4 (May 5, 2021) ###
+* Introduces `SOLRPOWER_DISABLE_QUERY_ALT` constant for disabling setQueryAlternative behavior [[#495](https://github.com/pantheon-systems/solr-power/pull/495)].
 
 ### 2.2.3 (March 8, 2021) ###
 * Incorporates the value for `$_ENV['FILEMOUNT']` when indicating path for `schema.xml` [[#492](https://github.com/pantheon-systems/solr-power/pull/492)].
