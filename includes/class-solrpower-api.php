@@ -433,9 +433,11 @@ class SolrPower_Api {
 			 *
 			 * @param string $solr_boost_query String of items, with their boost applied.
 			 */
-			$solr_boost_query = apply_filters( 'solr_boost_query', 'post_title^2 post_content^1.2' );
-			if ( false !== $solr_boost_query ) {
-				$dismax->setBoostFunctions( $solr_boost_query );
+			if ( !defined('SOLRPOWER_DISABLE_QUERY_ALT') ) {
+				$solr_boost_query = apply_filters( 'solr_boost_query', 'post_title^2 post_content^1.2' );
+				if ( false !== $solr_boost_query ) {
+					$dismax->setBoostFunctions( $solr_boost_query );
+				}
 			}
 
 			/**
@@ -619,8 +621,18 @@ class SolrPower_Api {
 	 * @return Solarium\QueryType\Select\Query\Query
 	 */
 	function dismax_query( $query, $dismax ) {
-		$dismax->setQueryAlternative( $query->getQuery() );
-		$query->setQuery( '' );
+		
+		/* Query alternative seems to be the wrong approach here. Define SOLRPOWR_DISABLE_QUERY_ALT
+		 * to get proper boosting behavior.
+		 * See: https://github.com/pantheon-systems/solr-power/issues/371
+		 */
+
+		if ( !defined('SOLRPOWER_DISABLE_QUERY_ALT') ) {
+			$dismax->setQueryAlternative( $query->getQuery() );
+			$query->setQuery( '' );
+		}
+
+		
 
 		return $query;
 	}
