@@ -433,7 +433,7 @@ class SolrPower_Api {
 			 *
 			 * @param string $solr_boost_query String of items, with their boost applied.
 			 */
-			if ( ! defined( 'SOLRPOWER_DISABLE_QUERY_ALT' ) ) {
+			if ( ! defined( 'SOLRPOWER_DISABLE_QUERY_ALT' ) || ! SOLRPOWER_DISABLE_QUERY_ALT ) {
 				$solr_boost_query = apply_filters( 'solr_boost_query', 'post_title^2 post_content^1.2' );
 				if ( false !== $solr_boost_query ) {
 					$dismax->setBoostFunctions( $solr_boost_query );
@@ -628,7 +628,7 @@ class SolrPower_Api {
 		 * See: https://github.com/pantheon-systems/solr-power/issues/371
 		 */
 
-		if ( ! defined( 'SOLRPOWER_DISABLE_QUERY_ALT' ) ) {
+		if ( ! defined( 'SOLRPOWER_DISABLE_QUERY_ALT' ) || ! SOLRPOWER_DISABLE_QUERY_ALT ) {
 			$dismax->setQueryAlternative( $query->getQuery() );
 			$query->setQuery( '' );
 		}
