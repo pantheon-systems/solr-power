@@ -226,6 +226,7 @@ class SolrPower_Batch_Index {
 		}
 		$post_id              = array_shift( $this->post_ids );
 		$post                 = get_post( $post_id );
+		$post                 = apply_filters( 'solr_post_info_pre_index', $post );
 		$result['post_id']    = $post_id;
 		$result['post_title'] = html_entity_decode( $post->post_title );
 		$documents[]          = SolrPower_Sync::get_instance()->build_document( $this->solr_update->createDocument(), $post );
