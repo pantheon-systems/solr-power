@@ -60,6 +60,10 @@ In a local development environment, you can point Solr Power to a custom Solr in
     add_filter( 'solr_scheme', function(){ return 'http'; });
     define( 'SOLR_PATH', '/solr/wordpress/' );
 
+** Note for Lando users **
+
+If you are using lando for development, the MU plugin is not needed. Lando auto configures everything for your local environment to connect to the docker index it maintains and if you overrite the ENV variables it will mess with that configuration.
+
 == Development ==
 
 This plugin is under active development on GitHub:
