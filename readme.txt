@@ -4,7 +4,7 @@ Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
 Tested up to: 5.9
-Stable tag: 2.2.5
+Stable tag: 2.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -217,6 +217,9 @@ Add the following to your `functions.php` file.
 
 
 == Changelog ==
+
+= 2.2.6 (February 22, 2022) =
+* Fixes PHP 8 deprecations in `class-solrpower-options.php` [[#513](https://github.com/pantheon-systems/solr-power/pull/513)].
 
 = 2.2.5 (July 27, 2021) =
 * Switches to `wp_strip_all_tags()` to remove style and script tag content [[#500](https://github.com/pantheon-systems/solr-power/pull/500)].
