@@ -586,7 +586,7 @@ class SolrPower_Options {
 	 * @param null|string $filter  Any value typesetting that needs to be done.
 	 * @param null|string $choices Any default choices for select or radio options.
 	 */
-	private function add_field( $name, $title, $page = 'solr-power', $section, $type, $filter = null, $choices = null ) {
+	private function add_field( $name, $title, $page = 'solr-power', $section = 'default', $type = 'input', $filter = null, $choices = null ) {
 		$args = array(
 			'field'   => $name,
 			'type'    => $type,
