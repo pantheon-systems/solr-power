@@ -1,4 +1,6 @@
 # Solr Search for WordPress #
+[![Unsupported](https://img.shields.io/badge/Pantheon-Unsupported-yellow?logo=pantheon&color=FFDC28)](https://pantheon.io/docs/oss-support-levels#unsupported)
+
 **Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon), [Outlandish Josh](https://profiles.wordpress.org/Outlandish Josh), [10up](https://profiles.wordpress.org/10up), [collinsinternet](https://profiles.wordpress.org/collinsinternet), [andrew.taylor](https://profiles.wordpress.org/andrew.taylor), [danielbachhuber](https://profiles.wordpress.org/danielbachhuber), [mattleff](https://profiles.wordpress.org/mattleff), [mikengarrett](https://profiles.wordpress.org/mikengarrett)  
 **Tags:** search  
 **Requires at least:** 4.6  
