@@ -462,8 +462,26 @@ class SolrPower_WP_Query {
 		if ( ! isset( $this->found_posts[ $query->solr_query_id ] ) ) {
 			return null;
 		}
+		$posts = $this->found_posts[ $query->solr_query_id ];
+		if ( 'ids' === $query->get( 'fields' ) ) {
+			$posts = array();
+			foreach ( $this->found_posts[ $query->solr_query_id ] as $p ) {
+				if ( is_object( $p ) ) {
+					$posts[] = $p->ID;
+				} else {
+					$posts[] = $p;
+				}
+			}
+			return $posts;
+		} elseif ( 'id=>parent' === $query->get( 'fields' ) ) {
+			$posts = array();
+			foreach ( $this->found_posts[ $query->solr_query_id ] as $p ) {
+				$posts[ $p->ID ] = $p->post_parent;
+			}
+			return $posts;
+		}
 
-		return $this->found_posts[ $query->solr_query_id ];
+		return $posts;
 	}
 
 	/**
