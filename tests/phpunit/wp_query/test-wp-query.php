@@ -223,4 +223,22 @@ class SolrWPQueryTest extends SolrTestBase {
 		sort( $ids );
 		$this->assertEquals( array( $post_id2, $post_id4 ), $ids );
 	}
+
+	public function test_wp_query_fields_id_parent() {
+
+		$p1 = self::factory()->post->create( array( 'post_type' => 'page' ) );
+		$p2 = self::factory()->post->create( array( 'post_type' => 'page' ) );
+		$p3 = self::factory()->post->create( array( 'post_type' => 'page' ) );
+
+		SolrPower_Sync::get_instance()->load_all_posts( 0, 'page', 100, false );
+		$query    = new WP_Query( array(
+			'solr_integrate' => true,
+			'fields'         => 'id=>parent',
+			'post_type'      => 'page',
+		) );
+		$this->assertEqualSets(
+			array( $p1 => 0, $p2 => 0, $p3 => 0 ),
+			$query->get_posts()
+		);
+	}
 }
