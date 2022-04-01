@@ -463,7 +463,14 @@ class SolrPower_WP_Query {
 			return null;
 		}
 
-		return $this->found_posts[ $query->solr_query_id ];
+		$new_posts = $this->found_posts[ $query->solr_query_id ];
+
+		return array_map(
+			function ( $post ) {
+				return $post->ID;
+			},
+			$new_posts
+		);
 	}
 
 	/**
