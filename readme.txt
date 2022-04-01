@@ -4,7 +4,7 @@ Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
 Tested up to: 5.9
-Stable tag: 2.3.1
+Stable tag: 2.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -217,6 +217,9 @@ Add the following to your `functions.php` file.
 
 
 == Changelog ==
+
+= 2.3.2 (April 1, 2022) =
+* Fixes query filtering for `'fields' => 'id=>parent'` [[#528](https://github.com/pantheon-systems/solr-power/pull/528)].
 
 = 2.3.1 (March 29, 2022) =
 * Adapts `posts_pre_query()` return values based on 'fields' argument [[#522](https://github.com/pantheon-systems/solr-power/pull/522)].
