@@ -241,7 +241,7 @@ class SolrWPQueryTest extends SolrTestBase {
 			$query->get_posts()
 		);
 		$this->assertEqualSets(
-			array( 0 => $p1, 0 => $p2, 0 => $p3 ),
+			array( 0 => get_post( $p1 ), 0 => get_post( $p2 ), 0 => get_post( $p3 ) ),
 			$query->posts
 		);
 	}
