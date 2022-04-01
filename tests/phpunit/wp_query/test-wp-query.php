@@ -236,7 +236,13 @@ class SolrWPQueryTest extends SolrTestBase {
 			'fields'         => 'id=>parent',
 			'post_type'      => 'page',
 		) );
-		$expected = array( $p1 => 0, $p2 => 0, $p3 => 0 );
-		$this->assertEqualSets( $expected, $query->posts );
+		$this->assertEqualSets(
+			array( $p1 => 0, $p2 => 0, $p3 => 0 ),
+			$query->get_posts()
+		);
+		$this->assertEqualSets(
+			array( 0 => $p1, 0 => $p2, 0 => $p3 ),
+			$query->posts
+		);
 	}
 }
