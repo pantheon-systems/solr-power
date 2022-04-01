@@ -473,12 +473,6 @@ class SolrPower_WP_Query {
 				}
 			}
 			return $posts;
-		} elseif ( 'id=>parent' === $query->get( 'fields' ) ) {
-			$posts = array();
-			foreach ( $this->found_posts[ $query->solr_query_id ] as $p ) {
-				$posts[ $p->ID ] = $p->post_parent;
-			}
-			return $posts;
 		}
 
 		return $posts;
