@@ -57,7 +57,7 @@ class SolrPower {
 	/**
 	 * Handles actions needed on activation.
 	 */
-	public function activate( bool $networkwide ) {
+	public function activate( $networkwide ) {
 
 		// Check to see if we have  environment variables. If not, bail. If so, create the initial options.
 		$error_message = SolrPower::get_instance()->environment_check();
