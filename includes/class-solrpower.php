@@ -67,9 +67,10 @@ class SolrPower {
 
 		// Don't try to send a schema if we're not on Pantheon servers.
 		if ( ! defined( 'SOLR_PATH' ) ) {
+			$solr_path = wp_kses( __( '<code>SOLR_PATH</code> constant not found.', 'solr-power' ), 'code' );
 			$schema_message = SolrPower_Api::get_instance()->submit_schema();
 			if ( strpos( $schema_message, 'Error' ) ) {
-				wp_die( 'Submitting the schema failed with the message ' . esc_html( $schema_message ) );
+				wp_die( sprintf( wp_kses( __( "Submitting the schema failed with the message: %1\$s<br /><br />%2\$s", 'solr-power' ), [ 'br' => [] ] ), esc_html( $schema_message ), $solr_path ) );
 			}
 		}
 		SolrPower_Options::get_instance()->initalize_options();
