@@ -7,6 +7,11 @@
   },
   "main": "Gruntfile.js",
   "author": "Pantheon <noreply@pantheon.io>",
+  "scripts": {
+    "build": "grunt default",
+    "readme": "grunt readme",
+    "watch": "grunt watch"
+  },
   "devDependencies": {
     "grunt": "^1.5.2",
     "grunt-autoprefixer": "~3.0.4",
