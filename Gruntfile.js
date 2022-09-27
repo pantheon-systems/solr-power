@@ -37,9 +37,6 @@ module.exports = function( grunt ) {
               options : {
                   beautify         : false,
                   preserveComments : false,
-                  mangle           : {
-	                  except : ['jQuery']
-                  }
               },
 
               files : {
@@ -53,9 +50,6 @@ module.exports = function( grunt ) {
               options : {
                   beautify         : false,
                   preserveComments : false,
-                  mangle           : {
-                      except : ['jQuery']
-                  }
               },
 
               files : {
