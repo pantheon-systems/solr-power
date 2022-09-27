@@ -92,7 +92,7 @@ class SolrPower_Options {
 		check_admin_referer( $option_page . '-options' );
 		$whitelist_options = apply_filters( 'whitelist_options', array() );
 		$options           = $whitelist_options[ $option_page ];
-		foreach ( $options as $option ) {
+		foreach ( (array) $options as $option ) {
 			$option = trim( $option );
 			$value  = null;
 			if ( isset( $_POST[ $option ] ) ) {
