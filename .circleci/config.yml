@@ -100,6 +100,10 @@ jobs:
           paths:
             - vendor
       - run:
+        name: "Fix pubkeys"
+        command: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4EB27DB2A3B88B8B
+      - run:
           name: "Install Extras"
           command: |
             sudo apt-get update
@@ -108,6 +112,7 @@ jobs:
             yes '' | sudo pecl install imagick || true
             sudo docker-php-ext-enable imagick
             sudo docker-php-ext-install mysqli
+            sudo apt-get install mariadb-client-10.5
       - run:
           name: "Run Tests"
           command: |
