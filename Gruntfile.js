@@ -1,9 +1,8 @@
 module.exports = function( grunt ) {
-
 	'use strict';
+	const sass = require( 'node-sass' );
 	// Project configuration
 	grunt.initConfig( {
-
 		pkg:    grunt.file.readJSON( 'package.json' ),
 
 		wp_readme_to_markdown: {
@@ -101,6 +100,10 @@ module.exports = function( grunt ) {
        * Process SASS
        */
       sass : {
+		options: {
+			implementation: sass,
+			sourceMap: true
+		},
 
           dist : {
 
