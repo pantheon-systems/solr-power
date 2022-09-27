@@ -60,7 +60,7 @@ class SolrPower {
 	public function activate() {
 
 		// Check to see if we have  environment variables. If not, bail. If so, create the initial options.
-		$error_message = SolrPower::get_instance()->sanity_check();
+		$error_message = SolrPower::get_instance()->environment_check();
 		if ( $error_message ) {
 			wp_die( esc_html( $error_message ) );
 		}
@@ -82,7 +82,7 @@ class SolrPower {
 	 *
 	 * @return string
 	 */
-	public function sanity_check() {
+	public function environment_check() {
 		$return_value = '';
 		$wp_version   = get_bloginfo( 'version' );
 

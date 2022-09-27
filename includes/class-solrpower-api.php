@@ -122,7 +122,7 @@ class SolrPower_Api {
 		/*
 		 * A couple of quick checks to make sure everything seems sane
 		 */
-		$error_message = SolrPower::get_instance()->sanity_check();
+		$error_message = SolrPower::get_instance()->environment_check();
 		if ( $error_message ) {
 			return $error_message;
 		}
