@@ -54,8 +54,8 @@ class SolrPower_Options {
 	 */
 	function add_pages() {
 		add_menu_page(
-			'Solr Power',
-			'Solr Power',
+			__( 'Solr Power', 'solr-for-wordpress-on-pantheon' ),
+			__( 'Solr Power', 'solr-for-wordpress-on-pantheon' ),
 			'manage_options',
 			'solr-power',
 			array(
