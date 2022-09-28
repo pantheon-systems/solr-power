@@ -6,7 +6,7 @@
 **Tested up to:** 6.0  
 **Stable tag:** 2.3.3  
 **License:** GPLv2 or later  
-**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
 Improve your user experience with the Apache Solr search engine for your WordPress website.
 
@@ -104,25 +104,25 @@ All Solr Power related commands are grouped into the `wp solr` command, see an e
        or: wp solr optimize-index
        or: wp solr repost-schema
        or: wp solr stats [--field=<field>] [--format=<format>]
-    
+
     See 'wp help solr <command>' for more information on a specific command.
 
 You can see more details about the commands using `wp help solr`:
 
     **NAME**
-    
+
       wp solr
-    
+
     **DESCRIPTION**
-    
+
       Perform a variety of actions against your Solr instance.
-    
+
     **SYNOPSIS**
-    
+
       wp solr <command>
-    
+
     **SUBCOMMANDS**
-    
+
       check-server-settings      Check server settings.
       delete                     Remove one or more posts from the index.
       index                      Index all posts for a site.
@@ -177,8 +177,8 @@ Add the following to `schema.xml`:
 
       <!-- Add to <types> -->
       <!-- See: https://lucene.apache.org/solr/6_2_0/solr-core/org/apache/solr/schema/TrieDateField.html -->
-      <fieldType name="tdate" class="solr.TrieDateField" omitNorms="true" precisionStep="6" positionIncrementGap="0"/>	
-      
+      <fieldType name="tdate" class="solr.TrieDateField" omitNorms="true" precisionStep="6" positionIncrementGap="0"/>
+
       <!-- Add to <fields> -->
       <field name="post_date_iso" type="tdate" indexed="true" stored="true" required="true" />
 
@@ -196,7 +196,7 @@ Add the following to your `functions.php` file.
             return $doc;
       }
       add_filter( 'solr_build_document', 'my_solr_build_document', 10, 2 );
-      
+
       /**
        * Hooks into query processor, Dismax, to add publish date boost.
        * See: https://www.metaltoad.com/blog/date-boosting-solr-drupal-search-results
