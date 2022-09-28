@@ -218,6 +218,10 @@ Add the following to your `functions.php` file.
 
 == Changelog ==
 
+= 2.3.3 (September 28, 2022) =
+* Fixes issue where options could not be saved [[#541](https://github.com/pantheon-systems/solr-power/issues/541)]
+* Enforces network activation requirement for WordPress multisite [[#538](https://github.com/pantheon-systems/solr-power/issues/538)]
+
 = 2.3.2 (April 1, 2022) =
 * Fixes query filtering for `'fields' => 'id=>parent'` [[#528](https://github.com/pantheon-systems/solr-power/pull/528)].
 
