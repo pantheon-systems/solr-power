@@ -90,8 +90,9 @@ class SolrPower_Options {
 		// Mostly cribbed from wp-admin/options.php.
 		$option_page = sanitize_text_field( $_POST['option_page'] );
 		check_admin_referer( $option_page . '-options' );
-		$whitelist_options = apply_filters( 'whitelist_options', array() );
-		$options           = $whitelist_options[ $option_page ];
+		$allowed_options = apply_filters( 'allowed_options', array() );
+		$options = $allowed_options[ $option_page ];
+
 		foreach ( $options as $option ) {
 			$option = trim( $option );
 			$value  = null;
