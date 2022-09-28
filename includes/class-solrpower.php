@@ -34,7 +34,7 @@ class SolrPower {
 	 * Instantiate the Solr Power class
 	 */
 	public function __construct() {
-		$method = filter_input( INPUT_GET, 'method', FILTER_SANITIZE_STRING );
+		$method = filter_input( INPUT_GET, 'method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		if ( 'autocomplete' === $method ) {
 			add_action( 'template_redirect', array( $this, 'template_redirect' ), 1 );
 			add_action( 'wp_enqueue_scripts', array( $this, 'autosuggest_head' ) );
@@ -190,15 +190,15 @@ class SolrPower {
 
 		// not a search page; don't do anything and return
 		// thanks to the Better Search plugin for the idea:  http://wordpress.org/extend/plugins/better-search/.
-		$search = filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_STRING );
-		$method = filter_input( INPUT_GET, 'method', FILTER_SANITIZE_STRING );
+		$search = filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$method = filter_input( INPUT_GET, 'method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		if ( ( $search || $method ) === false ) {
 			return;
 		}
 
 		if ( 'autocomplete' === $method ) {
-			$q     = filter_input( INPUT_GET, 'q', FILTER_SANITIZE_STRING );
-			$limit = filter_input( INPUT_GET, 'limit', FILTER_SANITIZE_STRING );
+			$q     = filter_input( INPUT_GET, 'q', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+			$limit = filter_input( INPUT_GET, 'limit', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 			$this->autocomplete( $q, $limit );
 			exit;
@@ -320,12 +320,12 @@ class SolrPower {
 		// Ensure Solr is set to filter the query properly.
 		SolrPower_WP_Query::get_instance()->setup();
 
-		$paged = filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_STRING );
+		$paged = filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$paged = ( false === $paged || null === $paged ) ? 1 : absint( $paged );
 
 		$args  = array(
-			's'              => filter_input( INPUT_GET, 's', FILTER_SANITIZE_STRING ),
-			'facets'         => filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY ),
+			's'              => filter_input( INPUT_GET, 's', FILTER_SANITIZE_FULL_SPECIAL_CHARS ),
+			'facets'         => filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY ),
 			'posts_per_page' => get_option( 'posts_per_page' ),
 			'paged'          => $paged,
 		);

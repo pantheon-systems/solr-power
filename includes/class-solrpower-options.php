@@ -118,7 +118,7 @@ class SolrPower_Options {
 			die();
 		}
 		check_ajax_referer( 'solr_security', 'security' );
-		$method = filter_input( INPUT_POST, 'method', FILTER_SANITIZE_STRING );
+		$method = filter_input( INPUT_POST, 'method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		if ( in_array( $method, array( 'start-index', 'resume-index' ), true ) ) {
 			$query_args = array();
 			if ( 'start-index' === $method ) {
@@ -323,7 +323,6 @@ class SolrPower_Options {
 	 * Checks to see if any actions were taken on the settings page.
 	 */
 	function check_for_actions() {
-
 		if ( ! isset( $_POST['action'] ) || ! current_user_can( 'manage_options' ) ) {
 			return;
 		}

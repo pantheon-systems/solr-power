@@ -510,7 +510,7 @@ class SolrPower_WP_Query {
 
 		$facets = $query->get( 'facet' );
 		if ( ! $facets ) {
-			$facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
+			$facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
 		}
 		if ( ! $facets ) {
 			if ( is_array( $this->fq ) && ! empty( $this->fq ) ) {
