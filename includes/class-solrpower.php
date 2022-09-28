@@ -56,9 +56,10 @@ class SolrPower {
 
 	/**
 	 * Handles actions needed on activation.
+	 *
+	 * @param bool $networkwide Whether the plugin is being activated network-wide.
 	 */
 	public function activate( $networkwide ) {
-
 		// Check to see if we have  environment variables. If not, bail. If so, create the initial options.
 		$error_message = SolrPower::get_instance()->environment_check();
 		if ( $error_message ) {
@@ -70,12 +71,16 @@ class SolrPower {
 			$solr_path = wp_kses( __( '<code>SOLR_PATH</code> constant not found.', 'solr-for-wordpress-on-pantheon' ), 'code' );
 			$schema_message = SolrPower_Api::get_instance()->submit_schema();
 			if ( strpos( $schema_message, 'Error' ) ) {
-				wp_die( sprintf( wp_kses( __( "Submitting the schema failed with the message: %1\$s<br /><br />%2\$s", 'solr-for-wordpress-on-pantheon' ), [ 'br' => [] ] ), esc_html( $schema_message ), $solr_path ) );
+				// Translators: 1 The error message, 2: The SOLR_PATH constant.
+				$message = wp_kses( __( 'Submitting the schema failed with the message: %1$s<br /><br />%2$s', 'solr-for-wordpress-on-pantheon' ), [ 'br' => [] ] );
+				wp_die( sprintf( $message, esc_html( $schema_message ), $solr_path ) );
 			}
 		}
 
 		if ( is_multisite() && ! $networkwide ) {
-			wp_die( sprintf( wp_kses_post( __( 'You are attempting to activate the plugin on a multisite as a single-site plugin. For WordPress multisites, you need to activate network-wide. Go to your <a href="%s">your Network Admin Plugins page</a> and click the Network Activate link there.', 'solr-for-wordpress-on-pantheon' ) ), get_admin_url( 1,'network/plugins.php' ) ) );
+			// Translators: 1: The URL to the network admin plugins page.
+			$message = wp_kses_post( __( 'You are attempting to activate the plugin on a multisite as a single-site plugin. For WordPress multisites, you need to activate network-wide. Go to your <a href="%s">your Network Admin Plugins page</a> and click the Network Activate link there.', 'solr-for-wordpress-on-pantheon' ) );
+			wp_die( sprintf( $message, get_admin_url( 1, 'network/plugins.php' ) ) );
 		}
 
 		SolrPower_Options::get_instance()->initalize_options();
