@@ -67,15 +67,15 @@ class SolrPower {
 
 		// Don't try to send a schema if we're not on Pantheon servers.
 		if ( ! defined( 'SOLR_PATH' ) ) {
-			$solr_path = wp_kses( __( '<code>SOLR_PATH</code> constant not found.', 'solr-power' ), 'code' );
+			$solr_path = wp_kses( __( '<code>SOLR_PATH</code> constant not found.', 'solr-for-wordpress-on-pantheon' ), 'code' );
 			$schema_message = SolrPower_Api::get_instance()->submit_schema();
 			if ( strpos( $schema_message, 'Error' ) ) {
-				wp_die( sprintf( wp_kses( __( "Submitting the schema failed with the message: %1\$s<br /><br />%2\$s", 'solr-power' ), [ 'br' => [] ] ), esc_html( $schema_message ), $solr_path ) );
+				wp_die( sprintf( wp_kses( __( "Submitting the schema failed with the message: %1\$s<br /><br />%2\$s", 'solr-for-wordpress-on-pantheon' ), [ 'br' => [] ] ), esc_html( $schema_message ), $solr_path ) );
 			}
 		}
 
 		if ( is_multisite() && ! $networkwide ) {
-			wp_die( sprintf( wp_kses_post( __( 'You are attempting to activate the plugin on a multisite as a single-site plugin. For WordPress multisites, you need to activate network-wide. Go to your <a href="%s">your Network Admin Plugins page</a> and click the Network Activate link there.', 'solr-power' ) ), get_admin_url( 1,'network/plugins.php' ) ) );
+			wp_die( sprintf( wp_kses_post( __( 'You are attempting to activate the plugin on a multisite as a single-site plugin. For WordPress multisites, you need to activate network-wide. Go to your <a href="%s">your Network Admin Plugins page</a> and click the Network Activate link there.', 'solr-for-wordpress-on-pantheon' ) ), get_admin_url( 1,'network/plugins.php' ) ) );
 		}
 
 		SolrPower_Options::get_instance()->initalize_options();
