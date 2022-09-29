@@ -34,7 +34,7 @@ class SolrPower {
 	 * Instantiate the Solr Power class
 	 */
 	public function __construct() {
-		$method = filter_input( INPUT_GET, 'method', FILTER_SANITIZE_STRING );
+		$method = filter_input( INPUT_GET, 'method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		if ( 'autocomplete' === $method ) {
 			add_action( 'template_redirect', array( $this, 'template_redirect' ), 1 );
 			add_action( 'wp_enqueue_scripts', array( $this, 'autosuggest_head' ) );
@@ -56,22 +56,33 @@ class SolrPower {
 
 	/**
 	 * Handles actions needed on activation.
+	 *
+	 * @param bool $networkwide Whether the plugin is being activated network-wide.
 	 */
-	public function activate() {
-
+	public function activate( $networkwide ) {
 		// Check to see if we have  environment variables. If not, bail. If so, create the initial options.
-		$error_message = SolrPower::get_instance()->sanity_check();
+		$error_message = SolrPower::get_instance()->environment_check();
 		if ( $error_message ) {
 			wp_die( esc_html( $error_message ) );
 		}
 
 		// Don't try to send a schema if we're not on Pantheon servers.
 		if ( ! defined( 'SOLR_PATH' ) ) {
+			$solr_path = wp_kses( __( '<code>SOLR_PATH</code> constant not found.', 'solr-for-wordpress-on-pantheon' ), 'code' );
 			$schema_message = SolrPower_Api::get_instance()->submit_schema();
 			if ( strpos( $schema_message, 'Error' ) ) {
-				wp_die( 'Submitting the schema failed with the message ' . esc_html( $schema_message ) );
+				// Translators: 1 The error message, 2: The SOLR_PATH constant.
+				$message = wp_kses( __( 'Submitting the schema failed with the message: %1$s<br /><br />%2$s', 'solr-for-wordpress-on-pantheon' ), [ 'br' => [] ] );
+				wp_die( sprintf( $message, esc_html( $schema_message ), $solr_path ) );
 			}
 		}
+
+		if ( is_multisite() && ! $networkwide ) {
+			// Translators: 1: The URL to the network admin plugins page.
+			$message = wp_kses_post( __( 'You are attempting to activate the plugin on a multisite as a single-site plugin. For WordPress multisites, you need to activate network-wide. Go to your <a href="%s">your Network Admin Plugins page</a> and click the Network Activate link there.', 'solr-for-wordpress-on-pantheon' ) );
+			wp_die( sprintf( $message, get_admin_url( 1, 'network/plugins.php' ) ) );
+		}
+
 		SolrPower_Options::get_instance()->initalize_options();
 
 		return;
@@ -82,7 +93,7 @@ class SolrPower {
 	 *
 	 * @return string
 	 */
-	public function sanity_check() {
+	public function environment_check() {
 		$return_value = '';
 		$wp_version   = get_bloginfo( 'version' );
 
@@ -184,15 +195,15 @@ class SolrPower {
 
 		// not a search page; don't do anything and return
 		// thanks to the Better Search plugin for the idea:  http://wordpress.org/extend/plugins/better-search/.
-		$search = filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_STRING );
-		$method = filter_input( INPUT_GET, 'method', FILTER_SANITIZE_STRING );
+		$search = filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+		$method = filter_input( INPUT_GET, 'method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		if ( ( $search || $method ) === false ) {
 			return;
 		}
 
 		if ( 'autocomplete' === $method ) {
-			$q     = filter_input( INPUT_GET, 'q', FILTER_SANITIZE_STRING );
-			$limit = filter_input( INPUT_GET, 'limit', FILTER_SANITIZE_STRING );
+			$q     = filter_input( INPUT_GET, 'q', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+			$limit = filter_input( INPUT_GET, 'limit', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 			$this->autocomplete( $q, $limit );
 			exit;
@@ -314,12 +325,12 @@ class SolrPower {
 		// Ensure Solr is set to filter the query properly.
 		SolrPower_WP_Query::get_instance()->setup();
 
-		$paged = filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_STRING );
+		$paged = filter_input( INPUT_GET, 'paged', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		$paged = ( false === $paged || null === $paged ) ? 1 : absint( $paged );
 
 		$args  = array(
-			's'              => filter_input( INPUT_GET, 's', FILTER_SANITIZE_STRING ),
-			'facets'         => filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY ),
+			's'              => filter_input( INPUT_GET, 's', FILTER_SANITIZE_FULL_SPECIAL_CHARS ),
+			'facets'         => filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY ),
 			'posts_per_page' => get_option( 'posts_per_page' ),
 			'paged'          => $paged,
 		);

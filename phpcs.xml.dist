@@ -52,4 +52,10 @@
 	<rule ref="WordPress.PHP.StrictInArray.MissingTrueStrict">
 		<exclude-pattern>*/*</exclude-pattern>
 	</rule>
+	<rule ref="Generic.Formatting.MultipleStatementAlignment.NotSameWarning">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="Generic.Arrays.DisallowShortArraySyntax.Found">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
 </ruleset>

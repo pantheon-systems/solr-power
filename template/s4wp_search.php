@@ -27,7 +27,7 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 	}
 
 	// if server id has been defined keep hold of it.
-	$server = filter_input( INPUT_GET, 'server', FILTER_SANITIZE_STRING );
+	$server = filter_input( INPUT_GET, 'server', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 	if ( $server ) {
 		$serverval = '<input name="server" type="hidden" value="' . esc_attr( $server ) . '" />';
 	} else {

@@ -54,8 +54,8 @@ class SolrPower_Options {
 	 */
 	function add_pages() {
 		add_menu_page(
-			'Solr Power',
-			'Solr Power',
+			__( 'Solr Power', 'solr-for-wordpress-on-pantheon' ),
+			__( 'Solr Power', 'solr-for-wordpress-on-pantheon' ),
 			'manage_options',
 			'solr-power',
 			array(
@@ -90,8 +90,9 @@ class SolrPower_Options {
 		// Mostly cribbed from wp-admin/options.php.
 		$option_page = sanitize_text_field( $_POST['option_page'] );
 		check_admin_referer( $option_page . '-options' );
-		$whitelist_options = apply_filters( 'whitelist_options', array() );
-		$options           = $whitelist_options[ $option_page ];
+		$allowed_options = apply_filters( 'allowed_options', array() );
+		$options = $allowed_options[ $option_page ];
+
 		foreach ( $options as $option ) {
 			$option = trim( $option );
 			$value  = null;
@@ -117,7 +118,7 @@ class SolrPower_Options {
 			die();
 		}
 		check_ajax_referer( 'solr_security', 'security' );
-		$method = filter_input( INPUT_POST, 'method', FILTER_SANITIZE_STRING );
+		$method = filter_input( INPUT_POST, 'method', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 		if ( in_array( $method, array( 'start-index', 'resume-index' ), true ) ) {
 			$query_args = array();
 			if ( 'start-index' === $method ) {
@@ -322,7 +323,6 @@ class SolrPower_Options {
 	 * Checks to see if any actions were taken on the settings page.
 	 */
 	function check_for_actions() {
-
 		if ( ! isset( $_POST['action'] ) || ! current_user_can( 'manage_options' ) ) {
 			return;
 		}

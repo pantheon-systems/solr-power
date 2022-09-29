@@ -9,9 +9,9 @@
  * Render the Solr search form
  */
 function s4wp_search_form() {
-	$sort   = filter_input( INPUT_GET, 'sort', FILTER_SANITIZE_STRING );
-	$order  = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
-	$server = filter_input( INPUT_GET, 'server', FILTER_SANITIZE_STRING );
+	$sort   = filter_input( INPUT_GET, 'sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+	$order  = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+	$server = filter_input( INPUT_GET, 'server', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 	$score_str         = esc_html__( 'Score', 'solr-for-wordpress-on-pantheon' );
 	$date_str          = esc_html__( 'Date', 'solr-for-wordpress-on-pantheon' );
@@ -39,21 +39,21 @@ function s4wp_search_form() {
 	}
 	$form = '<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="ssearch" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">' . esc_html__( 'Sort By:', 'solr-for-wordpress-on-pantheon' ) . '</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">' . __( 'Order By:', 'solr-for-wordpress-on-pantheon' ) . '</label><select name="order" id="orderselect">%s</select>%s</form>';
 
-	printf( $form, filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_STRING ), $sortval, $orderval, $serverval );
+	printf( $form, filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_FULL_SPECIAL_CHARS ), $sortval, $orderval, $serverval );
 }
 
 /**
  * Render Solr search results
  */
 function s4wp_search_results() {
-	$qry    = filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_STRING );
-	$offset = filter_input( INPUT_GET, 'offset', FILTER_SANITIZE_STRING );
-	$count  = filter_input( INPUT_GET, 'count', FILTER_SANITIZE_STRING );
-	$fq     = filter_input( INPUT_GET, 'fq', FILTER_SANITIZE_STRING );
-	$sort   = filter_input( INPUT_GET, 'sort', FILTER_SANITIZE_STRING );
-	$order  = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_STRING );
-	$isdym  = filter_input( INPUT_GET, 'isdym', FILTER_SANITIZE_STRING );
-	$server = filter_input( INPUT_GET, 'server', FILTER_SANITIZE_STRING );
+	$qry    = filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+	$offset = filter_input( INPUT_GET, 'offset', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+	$count  = filter_input( INPUT_GET, 'count', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+	$fq     = filter_input( INPUT_GET, 'fq', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+	$sort   = filter_input( INPUT_GET, 'sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+	$order  = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+	$isdym  = filter_input( INPUT_GET, 'isdym', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+	$server = filter_input( INPUT_GET, 'server', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 	$plugin_s4wp_settings = s4wp_get_option();
 	$output_info          = $plugin_s4wp_settings['s4wp_output_info'];
@@ -342,7 +342,7 @@ function s4wp_print_facet_items( $items, $pre = '<ul>', $post = '</ul>', $before
  * @return array
  */
 function s4wp_get_output_taxo( $facet, $taxo, $prefix, $fqstr, $field ) {
-	$qry = filter_input( INPUT_GET, 's', FILTER_SANITIZE_STRING );
+	$qry = filter_input( INPUT_GET, 's', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
 	if ( count( $taxo ) == 0 ) {
 		return;

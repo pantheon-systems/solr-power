@@ -40,7 +40,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . $instance['title'] . $args['after_title'];
 		}
-		$this->facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
+		$this->facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
 		echo '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="solr_facet">';
 		$this->render_searchbox();
 		echo '<div id="solr_facets">';
@@ -95,7 +95,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 
 		$facets       = SolrPower_WP_Query::get_instance()->facets;
 		$this->facets = $facets;
-		$sent_facets  = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
+		$sent_facets  = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
 
 		$output = ''; // HTML Output.
 
@@ -306,7 +306,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 function solr_facet_search() {
 	$facet = new SolrPower_Facet_Widget();
 	$facet->dummy_query();
-	$facet->facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY );
+	$facet->facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
 	echo '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="solr_facet">';
 	$facet->render_searchbox();
 	$facet->fetch_facets();
