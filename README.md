@@ -1,11 +1,11 @@
 # Solr Search for WordPress #
-**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon), [Outlandish Josh](https://profiles.wordpress.org/outlandish-josh), [10up](https://profiles.wordpress.org/10up), [collinsinternet](https://profiles.wordpress.org/collinsinternet), [andrew.taylor](https://profiles.wordpress.org/andrew.taylor), [danielbachhuber](https://profiles.wordpress.org/danielbachhuber), [mattleff](https://profiles.wordpress.org/mattleff), [mikengarrett](https://profiles.wordpress.org/mikengarrett), [jazzsequence](https://profiles.wordpress.org/jazzs3quence)  
-**Tags:** search  
-**Requires at least:** 4.6  
-**Requires PHP:** 7.1  
-**Tested up to:** 6.0  
-**Stable tag:** 2.3.3  
-**License:** GPLv2 or later  
+**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon), [Outlandish Josh](https://profiles.wordpress.org/outlandish-josh), [10up](https://profiles.wordpress.org/10up), [collinsinternet](https://profiles.wordpress.org/collinsinternet), [andrew.taylor](https://profiles.wordpress.org/andrew.taylor), [danielbachhuber](https://profiles.wordpress.org/danielbachhuber), [mattleff](https://profiles.wordpress.org/mattleff), [mikengarrett](https://profiles.wordpress.org/mikengarrett), [jazzsequence](https://profiles.wordpress.org/jazzs3quence)
+**Tags:** search
+**Requires at least:** 4.6
+**Requires PHP:** 7.1
+**Tested up to:** 6.0
+**Stable tag:** 2.3.3
+**License:** GPLv2 or later
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
 Improve your user experience with the Apache Solr search engine for your WordPress website.
@@ -66,6 +66,8 @@ In a local development environment, you can point Solr Power to a custom Solr in
 If you are using lando for development, the MU plugin is not needed. Lando auto configures everything for your local environment to connect to the docker index it maintains and if you overrite the ENV variables it will mess with that configuration.
 
 ## Development ##
+
+**Contributors note:** Since 2.3.3 the default branch is `main`. Please make sure you are working against the correct branch. The `master` branch will no longer be accepting pull requests.
 
 This plugin is under active development on GitHub:
 
