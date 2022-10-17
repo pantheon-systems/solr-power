@@ -134,9 +134,11 @@ class SolrPower_Sync {
 		try {
 			$solr = get_solr();
 			if ( null !== $solr ) {
+				$soft_commit = $this->should_soft_commit();
+
 				$update = $solr->createUpdate();
 				$update->addDeleteQuery( "blogid:{$blogid}" );
-				$update->addCommit();
+				$update->addCommit( $soft_commit );
 				$solr->update( $update );
 			}
 		} catch ( Exception $e ) {
@@ -427,8 +429,10 @@ class SolrPower_Sync {
 				}
 
 				if ( $commit ) {
+					$soft_commit = $this->should_soft_commit();
+
 					syslog( LOG_INFO, 'telling Solr to commit' );
-					$update->addCommit();
+					$update->addCommit( $soft_commit );
 					$solr->update( $update );
 				}
 
@@ -461,9 +465,11 @@ class SolrPower_Sync {
 		try {
 			$solr = get_solr();
 			if ( null !== $solr ) {
+				$soft_commit = $this->should_soft_commit();
+
 				$update = $solr->createUpdate();
 				$update->addDeleteById( $doc_id );
-				$update->addCommit();
+				$update->addCommit( $soft_commit );
 				$solr->update( $update );
 			}
 
@@ -485,9 +491,11 @@ class SolrPower_Sync {
 			$solr = get_solr();
 
 			if ( null !== $solr ) {
+				$soft_commit = $this->should_soft_commit();
+
 				$update = $solr->createUpdate();
 				$update->addDeleteQuery( '*:*' );
-				$update->addCommit();
+				$update->addCommit( $soft_commit );
 				$solr->update( $update );
 			}
 			wp_cache_delete( 'solr_index_stats', 'solr' );
@@ -715,4 +723,16 @@ class SolrPower_Sync {
 		restore_current_blog();
 	}
 
+	/**
+	 * Determine whether to "soft commit" data to Solr.
+	 * Soft commiting is faster than hard commiting, but your Solr
+	 * instance will need to have a cron job enabled that does a
+	 * hard commit on a regular basis.
+	 *
+	 * @see https://cwiki.apache.org/confluence/display/solr/UpdateXmlMessages#UpdateXmlMessages-%22commit%22and%22optimize%22
+	 * @return bool Whether to soft commit when writing to Solr.
+	 */
+	function should_soft_commit() {
+		return defined( 'SOLRPOWER_ENABLE_SOFT_COMMIT' ) && SOLRPOWER_ENABLE_SOFT_COMMIT;
+	}
 }
