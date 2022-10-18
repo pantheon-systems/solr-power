@@ -134,11 +134,13 @@ class SolrPower_Sync {
 		try {
 			$solr = get_solr();
 			if ( null !== $solr ) {
-				$soft_commit = $this->should_soft_commit();
-
 				$update = $solr->createUpdate();
 				$update->addDeleteQuery( "blogid:{$blogid}" );
-				$update->addCommit( $soft_commit );
+
+				if ( $this->should_commit() ) {
+					$update->addCommit();
+				}
+
 				$solr->update( $update );
 			}
 		} catch ( Exception $e ) {
@@ -428,11 +430,9 @@ class SolrPower_Sync {
 					syslog( LOG_INFO, 'posting failed documents for blog:' . get_bloginfo( 'wpurl' ) );
 				}
 
-				if ( $commit ) {
-					$soft_commit = $this->should_soft_commit();
-
+				if ( $commit && $this->should_commit() ) {
 					syslog( LOG_INFO, 'telling Solr to commit' );
-					$update->addCommit( $soft_commit );
+					$update->addCommit();
 					$solr->update( $update );
 				}
 
@@ -465,12 +465,13 @@ class SolrPower_Sync {
 		try {
 			$solr = get_solr();
 			if ( null !== $solr ) {
-				$soft_commit = $this->should_soft_commit();
-
 				$update = $solr->createUpdate();
 				$update->addDeleteById( $doc_id );
-				$update->addCommit( $soft_commit );
-				$solr->update( $update );
+
+				if ( $this->should_commit() ) {
+					$update->addCommit();
+					$solr->update( $update );
+				}
 			}
 
 			return true;
@@ -491,11 +492,13 @@ class SolrPower_Sync {
 			$solr = get_solr();
 
 			if ( null !== $solr ) {
-				$soft_commit = $this->should_soft_commit();
-
 				$update = $solr->createUpdate();
 				$update->addDeleteQuery( '*:*' );
-				$update->addCommit( $soft_commit );
+
+				if ( $this->should_commit() ) {
+					$update->addCommit();
+				}
+
 				$solr->update( $update );
 			}
 			wp_cache_delete( 'solr_index_stats', 'solr' );
@@ -724,15 +727,23 @@ class SolrPower_Sync {
 	}
 
 	/**
-	 * Determine whether to "soft commit" data to Solr.
-	 * Soft commiting is faster than hard commiting, but your Solr
-	 * instance will need to have a cron job enabled that does a
-	 * hard commit on a regular basis.
+	 * Determine whether to "commit" data to Solr.
+	 *
+	 * Commiting when writing to Solr will save data to disk, but can be
+	 * time-intensive on large or active sites. You can disable commiting
+	 * when the plugin posts data to Solr, but your Solr instance will need
+	 * to have a cron job enabled that does a hard commit on a regular basis.
+	 *
+	 * To disable commiting to Solr, add the following to your wp-config.php
+	 *
+	 * <code>
+	 * define( 'SOLRPOWER_DISABLE_COMMIT', true );
+	 * </code>
 	 *
 	 * @see https://cwiki.apache.org/confluence/display/solr/UpdateXmlMessages#UpdateXmlMessages-%22commit%22and%22optimize%22
-	 * @return bool Whether to soft commit when writing to Solr.
+	 * @return bool Whether to commit when writing to Solr.
 	 */
-	function should_soft_commit() {
-		return defined( 'SOLRPOWER_ENABLE_SOFT_COMMIT' ) && SOLRPOWER_ENABLE_SOFT_COMMIT;
+	function should_commit() {
+		return ! ( defined( 'SOLRPOWER_DISABLE_COMMIT' ) && SOLRPOWER_DISABLE_COMMIT );
 	}
 }
