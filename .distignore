@@ -6,6 +6,7 @@
 .eslintignore
 .eslintrc
 .git
+.github
 .gitignore
 .gitlab-ci.yml
 .travis.yml
@@ -15,6 +16,7 @@ behat.yml
 bitbucket-pipelines.yml
 bin
 .circleci/config.yml
+CODEOWNERS
 composer.json
 composer.lock
 dependencies.yml
@@ -30,11 +32,11 @@ phpcs.xml
 .phpcs.xml.dist
 phpcs.xml.dist
 README.md
+schema.xml
 webpack.config.js
 wp-cli.local.yml
 yarn.lock
 tests
-vendor
 node_modules
 *.sql
 *.tar.gz
