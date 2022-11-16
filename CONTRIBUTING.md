@@ -20,8 +20,9 @@ Note that dependencies are installed via Composer and the `vendor` directory is 
 ## Release Process
 
 1. Update plugin version in `package.json`, `README.md`, `readme.txt`, and `solr-power.php`.
-2. Create a PR against the `main` branch.
-3. After all tests pass and you have received approval from a CODEOWNER (including resolving any merge conflicts), merge the PR into `main`.
-4. Wait for CI to build and push a new tag.
-5. Confirm that the necessary assets are present in the newly created tag, and test on a WP install if desired.
-6. Publish a new release using the latest tag. Publishing a release will kick off `wordpress-plugin-deploy.yml` and release the plugin to wp.org. If you do not want a tag to be publised to wp.org, do not publish a release from it.
+2. Update the Changelog with the latest changes.
+3. Create a PR against the `main` branch.
+4. After all tests pass and you have received approval from a CODEOWNER (including resolving any merge conflicts), merge the PR into `main`.
+5. Wait for CI to build and push a new tag.
+6. Confirm that the necessary assets are present in the newly created tag, and test on a WP install if desired.
+7. Publish a new release using the latest tag. Publishing a release will kick off `wordpress-plugin-deploy.yml` and release the plugin to wp.org. If you do not want a tag to be publised to wp.org, do not publish a release from it.
