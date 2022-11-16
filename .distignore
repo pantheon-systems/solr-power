@@ -12,6 +12,7 @@ bin
 CODEOWNERS
 composer.json
 composer.lock
+CONTRIBUTING.md
 Gruntfile.js
 package.json
 package-lock.json
