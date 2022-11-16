@@ -67,8 +67,6 @@ If you are using lando for development, the MU plugin is not needed. Lando auto 
 
 ## Development ##
 
-**Contributors note:** Since 2.3.3 the default branch is `main`. Please make sure you are working against the correct branch. The `master` branch will no longer be accepting pull requests.
-
 This plugin is under active development on GitHub:
 
 [https://github.com/pantheon-systems/solr-power](https://github.com/pantheon-systems/solr-power)
@@ -78,19 +76,6 @@ Please feel free to file issues there. Pull requests are also welcome!
 For further documentation, such as available filters and working with the `SolrPower_Api` class directly, please see the project wiki:
 
 [https://github.com/pantheon-systems/solr-power/wiki](https://github.com/pantheon-systems/solr-power/wiki)
-
-You may notice there are two sets of tests running, on two different services:
-
-* Travis CI runs the [PHPUnit](https://phpunit.de/) test suite against a Solr instance.
-* Circle CI runs the [Behat](http://behat.org/) test suite against a Pantheon site, to ensure the plugin's compatibility with the Pantheon platform.
-
-Both of these test suites can be run locally, with a varying amount of setup.
-
-PHPUnit requires the [WordPress PHPUnit test suite](https://make.wordpress.org/core/handbook/testing/automated-testing/phpunit/), and access to a database with name `wordpress_test`. If you haven't already configured the test suite locally, you can run `bash bin/install-wp-tests.sh wordpress_test root '' localhost`. You'll also need access to a running Solr instance, in order to run the unit tests against Solr.
-
-Behat requires a Pantheon site with Solr enabled. Once you've created the site, you'll need [install Terminus](https://github.com/pantheon-systems/terminus#installation), and set the `TERMINUS_TOKEN`, `TERMINUS_SITE`, and `TERMINUS_ENV` environment variables. Then, you can run `./bin/behat-prepare.sh` to prepare the site for the test suite.
-
-Note that dependencies are installed via Composer and the `vendor` directory is not committed to the repository. You will need to run `composer install` locally for the plugin to function. You can read more about Composer [here](https://getcomposer.org)
 
 ## WP-CLI Support ##
 
@@ -220,6 +205,9 @@ Add the following to your `functions.php` file.
 
 
 ## Changelog ##
+
+## 2.3.4 (November XX, 2022) ##
+* Adds Github Actions for building tag and deploying to wp.org. Add CONTRIBUTING.md.
 
 ## 2.3.3 (September 28, 2022) ##
 * Fixes issue where options could not be saved [[#541](https://github.com/pantheon-systems/solr-power/issues/541)]
