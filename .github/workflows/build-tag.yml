@@ -23,7 +23,7 @@ jobs:
         npm run build
         composer install --no-dev -o
     - name: Setup
-      run: 'echo "VERSION=$(grep -Po ''\"version\": \"[0-9\\.]+\"'' package.json | grep -Po ''[0-9\\.]+'')" >> $GITHUB_ENV'
+      run: 'echo "VERSION=$(cat ./package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')" >> $GITHUB_ENV'
 
     - name: Tag
       run: |
