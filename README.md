@@ -4,7 +4,7 @@
 **Requires at least:** 4.6
 **Requires PHP:** 7.1
 **Tested up to:** 6.0
-**Stable tag:** 2.3.4
+**Stable tag:** 2.3.3
 **License:** GPLv2 or later
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -206,8 +206,8 @@ Add the following to your `functions.php` file.
 
 ## Changelog ##
 
-## 2.3.4 (November XX, 2022) ##
-* Adds Github Actions for building tag and deploying to wp.org. Add CONTRIBUTING.md.
+## 2.3.4-dev (November 17, 2022) ##
+* Adds Github Actions for building tag and deploying to wp.org. Add CONTRIBUTING.md. [[#551](https://github.com/pantheon-systems/solr-power/issues/551)]
 
 ## 2.3.3 (September 28, 2022) ##
 * Fixes issue where options could not be saved [[#541](https://github.com/pantheon-systems/solr-power/issues/541)]
