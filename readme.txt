@@ -218,6 +218,9 @@ Add the following to your `functions.php` file.
 
 == Changelog ==
 
+= 2.3.4-dev (November 17, 2022) =
+* Adds Github Actions for building tag and deploying to wp.org. Add CONTRIBUTING.md. [[#551](https://github.com/pantheon-systems/solr-power/issues/551)]
+
 = 2.3.3 (September 28, 2022) =
 * Fixes issue where options could not be saved [[#541](https://github.com/pantheon-systems/solr-power/issues/541)]
 * Enforces network activation requirement for WordPress multisite [[#538](https://github.com/pantheon-systems/solr-power/issues/538)]

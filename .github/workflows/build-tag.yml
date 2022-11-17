@@ -1,0 +1,39 @@
+name: Build and Tag
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  wordpress:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: install node v12
+      uses: actions/setup-node@v3
+      with:
+        node-version: 12
+
+    - name: Build
+      run: |
+        npm ci
+        npm run build
+        composer install --no-dev -o
+    - name: Setup
+      run: 'echo "VERSION=$(cat ./package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[",]//g' | tr -d '[[:space:]]')" >> $GITHUB_ENV'
+
+    - name: Tag
+      run: |
+        echo "Releasing version $VERSION ..."
+        git config user.name Pantheon Automation
+        git config user.email bot@getpantheon.com
+        git checkout -b "release-$VERSION"
+        git add -f assets/* vendor/
+        git commit -m "Release $VERSION"
+        git tag "$VERSION"
+        git push --tags
+      env:
+        TOKEN: ${{ secrets.GITHUB_TOKEN }}
