@@ -4,10 +4,10 @@ Since 2.3.3 the default branch is `main`. Please make sure you are working again
 
 ## Testing
 
-You may notice there are two sets of tests running, on two different services:
+You may notice there are two sets of tests running:
 
-* Travis CI runs the [PHPUnit](https://phpunit.de/) test suite against a Solr instance.
-* Circle CI runs the [Behat](http://behat.org/) test suite against a Pantheon site, to ensure the plugin's compatibility with the Pantheon platform.
+* The [PHPUnit](https://phpunit.de/) test suite runs against a Solr instance.
+* The [Behat](http://behat.org/) test suite runs against a Pantheon site, to ensure the plugin's compatibility with the Pantheon platform.
 
 Both of these test suites can be run locally, with a varying amount of setup.
 
