@@ -386,7 +386,15 @@ class SolrPower_Sync {
 									$doc->addField( $field_name . '_d', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
 									$doc->addField( $field_name . '_f', floatval( preg_replace( '/[^-0-9\.]/', '', $value ) ) );
 								}
-								$doc->addField( $field_name . '_s', $value );
+								if( is_serialized( $value ) ) {
+								    // If the value is an array, recursively "implode" all values with a linebreak character
+                                    $imploded_string = '';
+                                    array_walk_recursive( unserialize($value), function ( $val, $key ) use ( &$imploded_string ) {
+                                        $imploded_string .= $val . "\n";
+                                    } );
+                                    $value = $imploded_string;
+                                }
+                                $doc->addField( $field_name . '_s', $value );
 							}
 							$doc->addField( $field_name . '_srch', $value );
 							$used[] = $field_name;
