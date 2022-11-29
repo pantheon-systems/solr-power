@@ -741,9 +741,9 @@ class SolrPower_Sync {
 	 * </code>
 	 *
 	 * @see https://cwiki.apache.org/confluence/display/solr/UpdateXmlMessages#UpdateXmlMessages-%22commit%22and%22optimize%22
-	 * @return bool Whether to commit when writing to Solr.
+	 * @return bool Whether to commit immediately when writing site data to Solr.
 	 */
 	function should_commit() {
-		return ! ( defined( 'SOLRPOWER_DISABLE_COMMIT' ) && SOLRPOWER_DISABLE_COMMIT );
+		return ! ( defined( 'SOLRPOWER_DISABLE_AUTOCOMMIT' ) && SOLRPOWER_DISABLE_AUTOCOMMIT );
 	}
 }
