@@ -71,7 +71,7 @@ This plugin is under active development on GitHub:
 
 [https://github.com/pantheon-systems/solr-power](https://github.com/pantheon-systems/solr-power)
 
-Please feel free to file issues there. Pull requests are also welcome!
+Please feel free to file issues there. Pull requests are also welcome! See [CONTRIBUTING.md](https://github.com/pantheon-systems/solr-power/blob/main/CONTRIBUTING.md) for information on contributing.
 
 For further documentation, such as available filters and working with the `SolrPower_Api` class directly, please see the project wiki:
 
