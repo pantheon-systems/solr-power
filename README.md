@@ -212,7 +212,7 @@ relevancy ratings accordingly before that data can appear in search results. By 
 define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', true );
 ```
 
-When this variable is defined, Solr Search for WordPress will not commit the index until the cron runs. By default, the cron runs on the pantheon platform every hour.
+When this variable is defined, Solr Search for WordPress will not commit the index until the cron runs. By default, the cron runs on the Pantheon platform every hour.
 
 To force-commit data when this variable is defined outside of a normal cron run, from the command line, you can run the command below or simply force a cron-run.
 
