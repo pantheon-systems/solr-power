@@ -254,9 +254,11 @@ class SolrPower_CLI extends WP_CLI_Command {
 	}
 
 	/**
-	 * Commit all documents to the index manually.
+	 * Commit all documents sent to the solr server to the solr index manually.
+	 *
+	 * @subcommand commit
 	 */
-	public function commit_index() {
+	public function commit() {
 			$output = SolrPower_Api::get_instance()->commit_index();
 			WP_CLI::success( "Index committed: {$output}" );
 	}

@@ -737,7 +737,7 @@ class SolrPower_Sync {
 	 * To disable commiting to Solr, add the following to your wp-config.php
 	 *
 	 * <code>
-	 * define( 'SOLRPOWER_DISABLE_COMMIT', true );
+	 * define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', true );
 	 * </code>
 	 *
 	 * @see https://cwiki.apache.org/confluence/display/solr/UpdateXmlMessages#UpdateXmlMessages-%22commit%22and%22optimize%22
