@@ -273,7 +273,10 @@ class SolrPower_WP_Query {
 
 		foreach ( $search['docs'] as $post_array ) {
 			$post = new stdClass();
-
+			// Add Search relevancy to each search result.
+			// You can display the relevancy score by echo-ing
+			// $post->score.
+			$post->score = $post_array['score'];
 			foreach ( $post_array as $key => $value ) {
 				if ( 'displaydate' === $key ) {
 					$post->post_date = $value;
