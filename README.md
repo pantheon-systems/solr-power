@@ -21,7 +21,7 @@ Search is critical for your site, but the default search for WordPress leaves a 
 * Fast results, with better accuracy.
 * Enables faceting on fields such as tags, categories, author, and page type.
 * Indexing and faceting on custom fields.
-* Drop-in support for [WP_Query](https://codex.wordpress.org/Class_Reference/WP_Query) with the "solr-integrate" parameter set to true.
+* Drop-in support for [WP_Query](https://codex.wordpress.org/Class_Reference/WP_Query) with the `solr_integrate` parameter set to true.
 * Completely replaces default WordPress search, just install and configure.
 * Completely integrated into default WordPress theme and search widget.
 * Very developer-friendly: uses the modern [Solarium](http://www.solarium-project.org/) library
