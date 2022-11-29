@@ -35,7 +35,13 @@
         "yoast/phpunit-polyfills": "^1.0"
     },
     "scripts": {
-        "lint": "@phpcs",
+        "lint": [
+            "@phpcbf",
+            "@phpcs"
+        ],
+        "fix": [
+            "@phpcbf"
+        ],
         "phpcs": "vendor/bin/phpcs",
         "phpcbf": "vendor/bin/phpcbf",
         "phpunit": "vendor/bin/phpunit",
