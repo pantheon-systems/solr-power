@@ -208,14 +208,14 @@ Add the following to your `functions.php` file.
       add_filter( 'solr_dismax_query', 'my_solr_dismax_query' );
 
 
-**Common issues**
+= Common issues =
 
 * Failing to post the schema.xml will result in an error during indexing, "Missing `post_date_iso` field."
 * If you have the field and type in the schema, but don't add the `solr_build_document` filter, you will get a similar error.
 * If the `post_date_iso` field is missing from the index, Solr will ignore this boost and return regular results.
 * Trying to use a regular date field for the boost query will result in an error in the request instead of results.
 
-**Explicit Commit VS Autocommit**
+= Explicit Commit vs Autocommit =
 
 Once solr has sent the data to the solr server, solr must COMMIT the data to the index and adjust the index and
 relevancy ratings accordingly before that data can appear in search results. By default, Solr Search for WordPress does this when it sends every post. It may be necessary on occasion to disable this behavior (e.g. when importing a lot of posts via CSV). To do this, you need add the following code to your index.php in the root of your site install:
@@ -224,7 +224,7 @@ relevancy ratings accordingly before that data can appear in search results. By 
 define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', true );
 ```
 
-When this variable is defined, Solr Search for WordPress will not commit the index until the cron runs. By default, the cron runs on the Pantheon platform every hour.
+When this variable is defined, Solr Search for WordPress will not commit the index until the uncommitted item is two minutes old or the cron runs. By default, the cron runs on the Pantheon platform every hour.
 
 To force-commit data when this variable is defined outside of a normal cron run, from the command line, you can run the command below or simply force a cron-run.
 
