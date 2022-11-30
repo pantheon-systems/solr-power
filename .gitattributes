@@ -14,6 +14,7 @@
 /.gitattributes export-ignore
 /.gitignore export-ignore
 /behat.yml export-ignore
+/CHANGELOG.md export-ignore
 /CODEOWNERS export-ignore
 /composer.json export-ignore
 /composer.lock export-ignore
