@@ -16,7 +16,7 @@
     "grunt": "^1.5.2",
     "grunt-autoprefixer": "~3.0.4",
     "grunt-contrib-cssmin": "^4.0.0",
-    "grunt-contrib-jshint": "^3.1.1",
+    "grunt-contrib-jshint": "^3.2.0",
     "grunt-contrib-uglify": "~5.2.1",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-sass": "~3.1.0",
