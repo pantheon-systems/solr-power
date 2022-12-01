@@ -1,4 +1,6 @@
 ## Changelog ##
+## 2.4.1 (December 1, 2022) ##
+* Fixes the WordPress `readme.txt` [[#562](https://github.com/pantheon-systems/solr-power/pull/562/)]
 
 ## 2.4.0 (November 30, 2022) ##
 * Adds Github Actions for building tag and deploying to wp.org. Add CONTRIBUTING.md. [[#551](https://github.com/pantheon-systems/solr-power/issues/551)]
