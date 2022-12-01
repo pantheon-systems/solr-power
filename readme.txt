@@ -226,8 +226,6 @@ To force-commit data when this variable is defined outside of a normal cron run,
 
       wp solr commit
 
-== Changelog ==
-
 = 2.4.1 (December 1, 2022) =
 * Fixes the WordPress `readme.txt` [[#562](https://github.com/pantheon-systems/solr-power/pull/562/)]
 
@@ -414,4 +412,3 @@ To force-commit data when this variable is defined outside of a normal cron run,
 
 = 0.0 =
 * Note this started as a fork of this wonderful project: https://github.com/mattweber/solr-for-wordpress
-
