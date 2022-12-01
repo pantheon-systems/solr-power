@@ -4,7 +4,7 @@ Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
 Tested up to: 6.0
-Stable tag: 2.3.3
+Stable tag: 2.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ Search is critical for your site, but the default search for WordPress leaves a 
 * Fast results, with better accuracy.
 * Enables faceting on fields such as tags, categories, author, and page type.
 * Indexing and faceting on custom fields.
-* Drop-in support for [WP_Query](https://codex.wordpress.org/Class_Reference/WP_Query) with the "solr-integrate" parameter set to true.
+* Drop-in support for [WP_Query](https://codex.wordpress.org/Class_Reference/WP_Query) with the `solr_integrate` parameter set to true.
 * Completely replaces default WordPress search, just install and configure.
 * Completely integrated into default WordPress theme and search widget.
 * Very developer-friendly: uses the modern [Solarium](http://www.solarium-project.org/) library
@@ -70,7 +70,7 @@ This plugin is under active development on GitHub:
 
 [https://github.com/pantheon-systems/solr-power](https://github.com/pantheon-systems/solr-power)
 
-Please feel free to file issues there. Pull requests are also welcome!
+Please feel free to file issues there. Pull requests are also welcome! See [CONTRIBUTING.md](https://github.com/pantheon-systems/solr-power/blob/main/CONTRIBUTING.md) for information on contributing.
 
 For further documentation, such as available filters and working with the `SolrPower_Api` class directly, please see the project wiki:
 
@@ -162,9 +162,7 @@ A meta_query can use the following compare operators:
 
 To support searching by author name (e.g. where "Pantheon" would return posts authored by the "Pantheon" user), add the following to your custom `schema.xml`:
 
-```
-<copyField source="post_author" dest="text"/>
-```
+      <copyField source="post_author" dest="text"/>
 
 = Boosting relevancy score by publish date =
 
@@ -208,18 +206,34 @@ Add the following to your `functions.php` file.
       add_filter( 'solr_dismax_query', 'my_solr_dismax_query' );
 
 
-**Common issues**
+= Common issues =
 
 * Failing to post the schema.xml will result in an error during indexing, "Missing `post_date_iso` field."
 * If you have the field and type in the schema, but don't add the `solr_build_document` filter, you will get a similar error.
 * If the `post_date_iso` field is missing from the index, Solr will ignore this boost and return regular results.
 * Trying to use a regular date field for the boost query will result in an error in the request instead of results.
 
+= Explicit Commit vs Autocommit =
+
+Once solr has sent the data to the solr server, solr must COMMIT the data to the index and adjust the index and
+relevancy ratings accordingly before that data can appear in search results. By default, Solr Search for WordPress does this when it sends every post. It may be necessary on occasion to disable this behavior (e.g. when importing a lot of posts via CSV). To do this, you need add the following code to your index.php in the root of your site install:
+
+      define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', true );
+
+When this variable is defined, Solr Search for WordPress will not commit the index until the uncommitted item is two minutes old or the cron runs. By default, the cron runs on the Pantheon platform every hour.
+
+To force-commit data when this variable is defined outside of a normal cron run, from the command line, you can run the command below or simply force a cron-run.
+
+      wp solr commit
 
 == Changelog ==
 
-= 2.3.4-dev (November 17, 2022) =
+= 2.4.1 (December 1, 2022) =
+* Fixes the WordPress `readme.txt` [[#562](https://github.com/pantheon-systems/solr-power/pull/562/)]
+
+= 2.4.0 (November 30, 2022) =
 * Adds Github Actions for building tag and deploying to wp.org. Add CONTRIBUTING.md. [[#551](https://github.com/pantheon-systems/solr-power/issues/551)]
+* Added SOLRPOWER_DISABLE_AUTOCOMMIT to disable autocommitting of posts, moved CHANGELOG to it's own file, added `$post->score` value to parsed search results [[#559](https://github.com/pantheon-systems/solr-power/pull/559)]
 
 = 2.3.3 (September 28, 2022) =
 * Fixes issue where options could not be saved [[#541](https://github.com/pantheon-systems/solr-power/issues/541)]
@@ -400,3 +414,4 @@ Add the following to your `functions.php` file.
 
 = 0.0 =
 * Note this started as a fork of this wonderful project: https://github.com/mattweber/solr-for-wordpress
+
