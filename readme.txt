@@ -162,9 +162,7 @@ A meta_query can use the following compare operators:
 
 To support searching by author name (e.g. where "Pantheon" would return posts authored by the "Pantheon" user), add the following to your custom `schema.xml`:
 
-```
-<copyField source="post_author" dest="text"/>
-```
+      <copyField source="post_author" dest="text"/>
 
 = Boosting relevancy score by publish date =
 
@@ -220,14 +218,11 @@ Add the following to your `functions.php` file.
 Once solr has sent the data to the solr server, solr must COMMIT the data to the index and adjust the index and
 relevancy ratings accordingly before that data can appear in search results. By default, Solr Search for WordPress does this when it sends every post. It may be necessary on occasion to disable this behavior (e.g. when importing a lot of posts via CSV). To do this, you need add the following code to your index.php in the root of your site install:
 
-```
-define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', true );
-```
+      define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', true );
 
 When this variable is defined, Solr Search for WordPress will not commit the index until the uncommitted item is two minutes old or the cron runs. By default, the cron runs on the Pantheon platform every hour.
 
 To force-commit data when this variable is defined outside of a normal cron run, from the command line, you can run the command below or simply force a cron-run.
 
-```
-wp solr commit
-```
+      wp solr commit
+
