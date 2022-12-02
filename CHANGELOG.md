@@ -1,4 +1,8 @@
 ## Changelog ##
+
+## 2.4.2 (December 2, 2022) ##
+* Re-add changelog heading to readme.txt [[#]()]
+
 ## 2.4.1 (December 1, 2022) ##
 * Fixes the WordPress `readme.txt` [[#562](https://github.com/pantheon-systems/solr-power/pull/562/)]
 
