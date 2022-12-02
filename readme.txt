@@ -229,7 +229,7 @@ To force-commit data when this variable is defined outside of a normal cron run,
 == Changelog ==
 
 = 2.4.2 (December 2, 2022) =
-* Re-add changelog heading to readme.txt [[#](https://github.com/pantheon-systems/solr-power/pull/564)]
+* Re-add changelog heading to readme.txt [[#564](https://github.com/pantheon-systems/solr-power/pull/564)]
 
 = 2.4.1 (December 1, 2022) =
 * Fixes the WordPress `readme.txt` [[#562](https://github.com/pantheon-systems/solr-power/pull/562/)]
