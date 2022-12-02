@@ -4,7 +4,7 @@ Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
 Tested up to: 6.0
-Stable tag: 2.4.1
+Stable tag: 2.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -225,6 +225,11 @@ When this variable is defined, Solr Search for WordPress will not commit the ind
 To force-commit data when this variable is defined outside of a normal cron run, from the command line, you can run the command below or simply force a cron-run.
 
       wp solr commit
+
+== Changelog ==
+
+= 2.4.2 (December 2, 2022) =
+* Re-add changelog heading to readme.txt [[#564](https://github.com/pantheon-systems/solr-power/pull/564)]
 
 = 2.4.1 (December 1, 2022) =
 * Fixes the WordPress `readme.txt` [[#562](https://github.com/pantheon-systems/solr-power/pull/562/)]
