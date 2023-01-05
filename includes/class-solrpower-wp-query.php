@@ -174,23 +174,27 @@ class SolrPower_WP_Query {
 	function posts_request( $request, $query ) {
 		if ( ! $this->is_solr_query( $query ) || false === SolrPower_Api::get_instance()->ping ) {
 			return $request;
-		}
-		add_filter( 'solr_query', array( SolrPower_Api::get_instance(), 'dismax_query' ), 10, 2 );
+    }
+
+    add_filter( 'solr_query', array( SolrPower_Api::get_instance(), 'dismax_query' ), 10, 2 );
+
 		$solr_options = SolrPower_Options::get_instance()->get_option();
-
 		$the_page = ( ! $query->get( 'paged' ) ) ? 1 : $query->get( 'paged' );
+    $qry = $this->build_query( $query );
 
-		$qry = $this->build_query( $query );
 		if ( '' === $qry ) { // If we don't have anything to query, let's do a wildcard.
 			$qry = '*';
-		}
-		$this->qry = $qry;
-		$offset    = $query->get( 'posts_per_page' ) * ( $the_page - 1 );
-		$count     = $query->get( 'posts_per_page' );
-		$fq        = $this->parse_facets( $query );
-		$sortby    = ( isset( $solr_options['s4wp_default_sort'] ) && ! empty( $solr_options['s4wp_default_sort'] ) ) ? $solr_options['s4wp_default_sort'] : 'score';
-		$order     = ( $query->get( 'order', false ) ) ? strtolower( $query->get( 'order' ) ) : 'desc';
-		$extra     = array();
+    }
+
+		$posts_per_page = ( ! $query->get( 'posts_per_page' ) ) ? 1 : $query->get( 'posts_per_page' );
+		$this->qry      = $qry;
+		$offset         = $posts_per_page * ( $the_page - 1 );
+		$count          = $posts_per_page;
+		$fq             = $this->parse_facets( $query );
+		$sortby         = ( isset( $solr_options['s4wp_default_sort'] ) && ! empty( $solr_options['s4wp_default_sort'] ) ) ? $solr_options['s4wp_default_sort'] : 'score';
+		$order          = ( $query->get( 'order', false ) ) ? strtolower( $query->get( 'order' ) ) : 'desc';
+		$extra          = array();
+
 		if ( $query->get( 'orderby', false ) ) {
 			$orderby = $query->get( 'orderby' );
 
@@ -215,6 +219,7 @@ class SolrPower_WP_Query {
 		}
 
 		$fields = null;
+
 		switch ( $query->get( 'fields' ) ) {
 			case 'ids':
 				$fields = 'ID';
@@ -223,27 +228,28 @@ class SolrPower_WP_Query {
 				$fields = null;
 				break;
 		}
+
 		$search = SolrPower_Api::get_instance()->query( $qry, $offset, $count, $fq, $sortby, $order, $fields, $extra );
 
 		if ( is_null( $search ) ) {
 			$this->found_posts[ $query->solr_query_id ] = array();
 			$this->reset_vars();
 			return false;
-		}
-		$this->search = $search;
+    }
+
+    $this->search = $search;
+
 		if ( $search->getFacetSet() ) {
 			$this->facets = $search->getFacetSet()->getFacets();
 		}
 
-		$this->highlighting = $search->getHighlighting();
-
-		$search = $search->getData();
-
-		$search_header      = $search['responseHeader'];
-		$search             = $search['response'];
-		$query->found_posts = $search['numFound'];
+		$this->highlighting                               = $search->getHighlighting();
+		$search                                           = $search->getData();
+		$search_header                                    = $search['responseHeader'];
+		$search                                           = $search['response'];
+		$query->found_posts                               = $search['numFound'];
 		$this->found_posts_count[ $query->solr_query_id ] = $search['numFound'];
-		$query->max_num_pages                             = ceil( $search['numFound'] / $query->get( 'posts_per_page' ) );
+		$query->max_num_pages                             = ceil( $search['numFound'] / $posts_per_page );
 
 		SolrPower_Api::get_instance()->add_log(
 			array(
