@@ -228,7 +228,7 @@ To force-commit data when this variable is defined outside of a normal cron run,
 
 == Changelog ==
 
-= 2.4.3 (January 10, 2022) =
+= 2.4.3 (January 11, 2022) =
 * Include schema.xml in release distribution [[#568](https://github.com/pantheon-systems/solr-power/pull/568)]
 
 = 2.4.2 (December 2, 2022) =
