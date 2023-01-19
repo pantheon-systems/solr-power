@@ -33,6 +33,8 @@ jobs:
       image: quay.io/pantheon-public/build-tools-ci:6.x
       options: --user root
     env:
+      TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       TERMINUS_ENV: ci-${{github.run_number}}
       TERMINUS_SITE: solr-power
       SITE_ENV: solr-power.ci-${{github.run_number}}
