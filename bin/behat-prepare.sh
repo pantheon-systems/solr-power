@@ -24,9 +24,7 @@ fi
 
 set -ex
 
-mkdir -p $HOME/.ssh/
-touch $HOME/.ssh/config
-echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
+ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
 
 ###
 # Create a new environment for this particular test run.
