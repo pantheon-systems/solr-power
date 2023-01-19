@@ -24,8 +24,6 @@ fi
 
 set -ex
 
-ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-
 ###
 # Create a new environment for this particular test run.
 ###
