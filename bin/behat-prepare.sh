@@ -43,7 +43,7 @@ BASH_DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ###
 terminus connection:set $SITE_ENV git
 rm -rf $PREPARE_DIR
-git clone -b $TERMINUS_ENV $PANTHEON_GIT_URL $PREPARE_DIR
+git clone -b $TERMINUS_ENV $PANTHEON_GIT_URL -o StrictHostKeyChecking=no $PREPARE_DIR
 
 ###
 # Add the copy of this plugin itself to the environment
