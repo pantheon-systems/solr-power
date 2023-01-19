@@ -6,6 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
+      options: --user root
     name: Lint
 
     steps:
@@ -29,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: quay.io/pantheon-public/build-tools-ci:6.x
+      options: --user root
     name: Behat tests
 
     steps:
