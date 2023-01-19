@@ -24,6 +24,7 @@ fi
 
 set -ex
 
+mkdir -p $HOME/.ssh/
 touch $HOME/.ssh/config
 echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
 
