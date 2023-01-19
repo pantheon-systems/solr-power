@@ -56,7 +56,7 @@ jobs:
 
     - name: SSH Config
       run: |
-        mkdir ~/.ssh/config
+        sudo mkdir ~/.ssh/config
         echo "StrictHostKeyChecking no" >> "~/.ssh/config"
 
     - name: Check for $GITHUB_TOKEN
