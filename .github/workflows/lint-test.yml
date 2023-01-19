@@ -52,12 +52,6 @@ jobs:
         key: test-behat-dependencies-{{ checksum "composer.json" }}
         restore-keys: test-behat-dependencies-{{ checksum "composer.json" }}
 
-    - name: Temp admin password
-      run: echo $(openssl rand -hex 8) > /tmp/WORDPRESS_ADMIN_PASSWORD
-
-    - name: SSH Config
-      run: echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
-
     - name: Check for $GITHUB_TOKEN
       run: |
         if [ -z "$GITHUB_TOKEN" ]; then
