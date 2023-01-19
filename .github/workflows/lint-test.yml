@@ -48,15 +48,15 @@ jobs:
     - name: Temp admin password
       run: echo $(openssl rand -hex 8) > /tmp/WORDPRESS_ADMIN_PASSWORD
 
-    - name: Setup $BASH_ENV
+    - name: Setup $GITHUB_ENV
       run: |
-        echo 'export TERMINUS_ENV=ci-$CIRCLE_BUILD_NUM' >> $BASH_ENV
-        echo 'export TERMINUS_SITE=solr-power' >> $BASH_ENV
-        echo 'export SITE_ENV=solr-power.ci-$CIRCLE_BUILD_NUM' >> $BASH_ENV
-        echo 'export WORDPRESS_ADMIN_USERNAME=pantheon' >> $BASH_ENV
-        echo 'export WORDPRESS_ADMIN_EMAIL=no-reply@getpantheon.com' >> $BASH_ENV
-        echo 'export WORDPRESS_ADMIN_PASSWORD=$(cat /tmp/WORDPRESS_ADMIN_PASSWORD)' >> $BASH_ENV
-        source $BASH_ENV
+        echo 'export TERMINUS_ENV=ci-$CIRCLE_BUILD_NUM' >> $GITHUB_ENV
+        echo 'export TERMINUS_SITE=solr-power' >> $GITHUB_ENV
+        echo 'export SITE_ENV=solr-power.ci-$CIRCLE_BUILD_NUM' >> $GITHUB_ENV
+        echo 'export WORDPRESS_ADMIN_USERNAME=pantheon' >> $GITHUB_ENV
+        echo 'export WORDPRESS_ADMIN_EMAIL=no-reply@getpantheon.com' >> $GITHUB_ENV
+        echo 'export WORDPRESS_ADMIN_PASSWORD=$(cat /tmp/WORDPRESS_ADMIN_PASSWORD)' >> $GITHUB_ENV
+        source $GITHUB_ENV
 
     - name: SSH Config
       run: echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
