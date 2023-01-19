@@ -77,10 +77,10 @@ jobs:
       run: ./bin/behat-prepare.sh
 
     - name: Execute Behat tests
-    - run: ./bin/behat-test.sh --strict
+      run: ./bin/behat-test.sh --strict
 
     - name: Clean up Behat tests
-    - run: ./bin/behat-cleanup.sh
+      run: ./bin/behat-cleanup.sh
 
   test-phpunit:
     container: danielbachhuber/solr-wp:0.1.0
