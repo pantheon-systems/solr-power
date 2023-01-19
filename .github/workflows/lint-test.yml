@@ -27,7 +27,7 @@ jobs:
       run: composer phpcs
 
   test-behat:
-    needs: lint
+    # needs: lint
     runs-on: ubuntu-latest
     container:
       image: quay.io/pantheon-public/build-tools-ci:6.x
