@@ -3,8 +3,9 @@ on: [push]
 
 jobs:
   lint:
-    - name: Begin Lint job
+    name: Begin Lint job
     uses: docker://quay.io/pantheon-public/build-tools-ci:8.x-php7.4
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -23,8 +24,9 @@ jobs:
       run: composer phpcs
 
   test-behat:
-    - name: Begin Behat job
+    name: Begin Behat job
     uses: docker://quay.io/pantheon-public/build-tools-ci:6.x
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
@@ -81,7 +83,7 @@ jobs:
     - run: ./bin/behat-cleanup.sh
 
   test-phpunit:
-    - name: Begin PHP Unit job
+    name: Begin PHP Unit job
     container: danielbachhuber/solr-wp:0.1.0
     services:
       mariadb:
