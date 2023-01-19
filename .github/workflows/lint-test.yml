@@ -54,6 +54,11 @@ jobs:
         key: test-behat-dependencies-{{ checksum "composer.json" }}
         restore-keys: test-behat-dependencies-{{ checksum "composer.json" }}
 
+    - name: SSH Config
+      run: |
+        mkdir ~/.ssh/config
+        echo "StrictHostKeyChecking no" >> "~/.ssh/config"
+
     - name: Check for $GITHUB_TOKEN
       run: |
         if [ -z "$GITHUB_TOKEN" ]; then
