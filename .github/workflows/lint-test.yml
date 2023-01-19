@@ -26,7 +26,7 @@ jobs:
     - name: Run PHP Lint
       run: composer phpcs
 
-  test-phpunit:
+  phpunit:
     runs-on: ubuntu-latest
     container:
       image: danielbachhuber/solr-wp:0.1.0
