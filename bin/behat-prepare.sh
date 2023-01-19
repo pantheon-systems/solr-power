@@ -43,6 +43,7 @@ BASH_DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ###
 terminus connection:set $SITE_ENV git
 rm -rf $PREPARE_DIR
+sftp -o StrictHostKeyChecking=no $PANTHEON_GIT_URL
 git clone -b $TERMINUS_ENV $PANTHEON_GIT_URL $PREPARE_DIR
 
 ###
