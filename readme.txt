@@ -4,7 +4,7 @@ Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
 Tested up to: 6.0
-Stable tag: 2.4.2
+Stable tag: 2.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -227,6 +227,9 @@ To force-commit data when this variable is defined outside of a normal cron run,
       wp solr commit
 
 == Changelog ==
+
+= 2.4.3 (January 19, 2022) =
+* Include schema.xml in release distribution [[#568](https://github.com/pantheon-systems/solr-power/pull/568)]
 
 = 2.4.2 (December 2, 2022) =
 * Re-add changelog heading to readme.txt [[#564](https://github.com/pantheon-systems/solr-power/pull/564)]
