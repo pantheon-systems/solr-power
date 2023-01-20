@@ -35,6 +35,8 @@ ssh-keyscan codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb.drush.in >> $HOM
 
 cat $HOME/.ssh/known_hosts
 
+ssh -v -T -p 2222 codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb@codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb.drush.in
+
 ###
 # Create a new environment for this particular test run.
 ###
