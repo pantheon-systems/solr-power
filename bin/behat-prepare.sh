@@ -24,19 +24,21 @@ fi
 
 set -ex
 
-mkdir -p $HOME/.ssh/
-touch $HOME/.ssh/config
-touch $HOME/.ssh/known_hosts
+# mkdir -p $HOME/.ssh/
+# touch $HOME/.ssh/config
+# touch $HOME/.ssh/known_hosts
 #echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
 echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 
 cat /etc/ssh/ssh_config
 
-ssh-keyscan codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb.drush.in >> $HOME/.ssh/known_hosts
+# ssh-keyscan codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb.drush.in >> $HOME/.ssh/known_hosts
+# cat $HOME/.ssh/known_hosts
 
-cat $HOME/.ssh/known_hosts
+# ssh -v -T -p 2222 codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb@codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb.drush.in
 
-ssh -v -T -p 2222 codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb@codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb.drush.in
+# try the clone early so we don't have to wait for multidev creation
+git clone -v ssh://codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb@codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb.drush.in:2222/~/repository.git /tmp/asdf
 
 ###
 # Create a new environment for this particular test run.
