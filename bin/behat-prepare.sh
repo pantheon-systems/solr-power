@@ -74,9 +74,6 @@ unzip $PREPARE_DIR/classic-editor.zip -d $PREPARE_DIR
 mv $PREPARE_DIR/classic-editor $PREPARE_DIR/wp-content/plugins/
 rm $PREPARE_DIR/classic-editor.zip
 
-
-cd $PREPARE_DIR/wp-content/plugins/solr-power
-
 ###
 # Push files to the environment
 ###
