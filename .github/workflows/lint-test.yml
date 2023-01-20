@@ -98,9 +98,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       
-    - uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    - name: Configure Git for private codebase
+      env:
+        ACCOUNT: ${{ secrets.GITHUB_ACCOUNT_USER }}
+        TOKEN: ${{ secrets.GITHUB_ACCOUNT_TOKEN }}
+      run: git config --global url."https://${ACCOUNT}:${TOKEN}@github.com".insteadOf "https://github.com"
 
     - name: Cache dependencies
       uses: actions/cache@v2
