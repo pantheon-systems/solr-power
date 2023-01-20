@@ -79,9 +79,7 @@ terminus build:workflow:wait $TERMINUS_SITE.$TERMINUS_ENV
 ###
 # Set up WordPress, theme, and plugins for the test run
 ###
-{
-  terminus wp $SITE_ENV -- core install --title=$TERMINUS_ENV-$TERMINUS_SITE --url=$PANTHEON_SITE_URL --admin_user=$WORDPRESS_ADMIN_USERNAME --admin_email=$WORDPRESS_ADMIN_EMAIL --admin_password=$WORDPRESS_ADMIN_PASSWORD
-} &> /dev/null
+terminus wp $SITE_ENV -- core install --title=$TERMINUS_ENV-$TERMINUS_SITE --url=$PANTHEON_SITE_URL --admin_user=$WORDPRESS_ADMIN_USERNAME --admin_email=$WORDPRESS_ADMIN_EMAIL --admin_password=$WORDPRESS_ADMIN_PASSWORD
 terminus wp $SITE_ENV -- plugin activate solr-power classic-editor
 terminus wp $SITE_ENV -- theme activate twentyseventeen
 terminus wp $SITE_ENV -- rewrite structure '/%year%/%monthnum%/%day%/%postname%/'
