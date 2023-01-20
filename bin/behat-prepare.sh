@@ -61,7 +61,7 @@ cd $PREPARE_DIR/wp-content/plugins/solr-power
 # Build plugin
 npm ci
 npm run build
-composer install --no-dev -o
+composer install
 # Remove unneeded stuff
 rm -rf $PREPARE_DIR/wp-content/plugins/solr-power/.git
 rm -rf $PREPARE_DIR/wp-content/plugins/solr-power/node_modules/
