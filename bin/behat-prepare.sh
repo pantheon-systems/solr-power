@@ -31,7 +31,7 @@ echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
 
 cat $HOME/.ssh/config
 
-ssh-keyscan $PANTHEON_GIT_URL >> $HOME/.ssh/known_hosts
+ssh-keyscan codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb@codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb.drush.in >> $HOME/.ssh/known_hosts
 
 cat $HOME/.ssh/known_hosts
 
