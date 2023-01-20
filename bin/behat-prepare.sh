@@ -24,6 +24,17 @@ fi
 
 set -ex
 
+mkdir -p $HOME/.ssh/
+touch $HOME/.ssh/config
+touch $HOME/.ssh/known_hosts
+echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
+
+cat $HOME/.ssh/config
+
+ssh-keyscan $PANTHEON_GIT_URL >> $HOME/.ssh/known_hosts
+
+cat $HOME/.ssh/known_hosts
+
 ###
 # Create a new environment for this particular test run.
 ###
@@ -43,7 +54,7 @@ BASH_DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ###
 terminus connection:set $SITE_ENV git
 rm -rf $PREPARE_DIR
-git clone -b $TERMINUS_ENV $PANTHEON_GIT_URL $PREPARE_DIR
+git clone -b $TERMINUS_ENV $PANTHEON_GIT_URL $PREPARE_DIR -v
 
 ###
 # Add the copy of this plugin itself to the environment
