@@ -27,9 +27,10 @@ set -ex
 mkdir -p $HOME/.ssh/
 touch $HOME/.ssh/config
 touch $HOME/.ssh/known_hosts
-echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
+#echo "StrictHostKeyChecking no" >> "$HOME/.ssh/config"
+echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 
-cat $HOME/.ssh/config
+cat /etc/ssh/ssh_config
 
 ssh-keyscan codeserver.dev.6a8d7840-0f5c-41e7-8eb6-999f541d51cb.drush.in >> $HOME/.ssh/known_hosts
 
