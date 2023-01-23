@@ -129,12 +129,10 @@ jobs:
         fi
         terminus auth:login --machine-token=$TERMINUS_TOKEN
 
-    - name: Prepare for Behat tests
-      working-directory: ~/pantheon-systems/solr-power  
+    - name: Prepare for Behat tests  
       run: ./bin/behat-prepare.sh
 
     - name: Execute Behat tests
-      working-directory: ~/pantheon-systems/solr-power
       run: ./bin/behat-test.sh --strict
 
     - name: Clean up Behat tests
