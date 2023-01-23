@@ -80,9 +80,6 @@ jobs:
   test-behat:
     # needs: lint
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ~/pantheon-systems/solr-power
     container:
       image: quay.io/pantheon-public/build-tools-ci:6.x
       options: --user root
@@ -132,10 +129,12 @@ jobs:
         fi
         terminus auth:login --machine-token=$TERMINUS_TOKEN
 
-    - name: Prepare for Behat tests  
+    - name: Prepare for Behat tests
+      working-directory: ~/pantheon-systems/solr-power  
       run: ./bin/behat-prepare.sh
 
     - name: Execute Behat tests
+      working-directory: ~/pantheon-systems/solr-power
       run: ./bin/behat-test.sh --strict
 
     - name: Clean up Behat tests
