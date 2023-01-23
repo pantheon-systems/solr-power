@@ -80,6 +80,9 @@ jobs:
   test-behat:
     # needs: lint
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ~/pantheon-systems/solr-power
     container:
       image: quay.io/pantheon-public/build-tools-ci:6.x
       options: --user root
