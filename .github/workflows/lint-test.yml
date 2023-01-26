@@ -3,6 +3,7 @@ on: [push]
 
 jobs:
   lint:
+    needs: test-phpunit
     runs-on: ubuntu-latest
     container:
       image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
@@ -56,6 +57,10 @@ jobs:
     - name: Install Extras 
       run: |
         apt-get install subversion
+        apt-get install -y libmagickwand-dev --no-install-recommends
+        yes '' | pecl install imagick || true
+        docker-php-ext-enable imagick
+        docker-php-ext-install mysqli
     
     - name: "Run Tests"
       run: |
