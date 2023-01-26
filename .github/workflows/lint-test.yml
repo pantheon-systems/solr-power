@@ -46,8 +46,7 @@ jobs:
 
     - name: Start MySQL
       run: |
-        sudo systemctl enable mysql.service
-        sudo systemctl start mysql.service
+        sudo systemctl start mysql
 
     - name: Cache dependencies
       uses: actions/cache@v2
