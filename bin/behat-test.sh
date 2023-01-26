@@ -27,7 +27,7 @@ export BEHAT_PARAMS='{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "ht
 
 composer install
 ls -la
-ls -la /vendor
-ls -la /vendor/bin
+ls -la vendor
+ls -la vendor/bin
 
 ./vendor/bin/behat "$@"
