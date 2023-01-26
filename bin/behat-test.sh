@@ -24,4 +24,4 @@ set -ex
 
 export BEHAT_PARAMS='{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "http://'$TERMINUS_ENV'-'$TERMINUS_SITE'.pantheonsite.io"} }}'
 
-http://$TERMINUS_ENV-$TERMINUS_SITE.pantheonsite.io/wp-content/plugins/solr-power/vendor/bin/behat "$@"
+./vendor/bin/behat http://$TERMINUS_ENV-$TERMINUS_SITE.pantheonsite.io/wp-content/plugins/solr-power/vendor/bin/behat "$@"
