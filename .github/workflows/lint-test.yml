@@ -29,9 +29,9 @@ jobs:
 
   test-phpunit:
     runs-on: ubuntu-latest
-    container:
-      image: danielbachhuber/solr-wp:0.1.0
-      options: --user root
+#    container:
+#      image: danielbachhuber/solr-wp:0.1.0
+#      options: --user root
     services:
       mariadb:
         image: mariadb:10.3
@@ -46,7 +46,7 @@ jobs:
 
     - name: Start MySQL
       run: |
-       systemctl start mysql
+        sudo systemctl start mysql
 
     - name: Cache dependencies
       uses: actions/cache@v2
