@@ -45,7 +45,7 @@ jobs:
 
 
     - name: Check location
-      run: ls -la
+      run: ls -la ./
 
     - name: Run composer
       uses: nick-zh/composer-php@master
