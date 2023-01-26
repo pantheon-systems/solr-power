@@ -29,6 +29,9 @@ jobs:
 
   test-phpunit:
     runs-on: ubuntu-latest
+    container:
+      image: danielbachhuber/solr-wp:0.1.0
+      options: --user root
     services:
       mariadb:
         image: mariadb:10.3
