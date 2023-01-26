@@ -40,14 +40,14 @@ jobs:
     name: PHP Unit tests
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
         ini-file: none
-
-    - name: Checkout code
-      uses: actions/checkout@v2
 
     - name: Cache dependencies
       uses: actions/cache@v2
