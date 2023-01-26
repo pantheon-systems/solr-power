@@ -58,9 +58,11 @@ rm -rf $PREPARE_DIR/wp-content/plugins/solr-power
 cd $BASH_DIR/..
 rsync -av --exclude='node_modules/' --exclude='tests/' ./* $PREPARE_DIR/wp-content/plugins/solr-power
 cd $PREPARE_DIR/wp-content/plugins/solr-power
+
 # Build plugin
 npm ci
 npm run build
+composer install --no-dev -o
 
 # Remove unneeded stuff
 rm -rf $PREPARE_DIR/wp-content/plugins/solr-power/.git
