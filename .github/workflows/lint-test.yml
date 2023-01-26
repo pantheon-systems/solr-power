@@ -57,10 +57,10 @@ jobs:
 
     - name: Install Extras 
       run: |
-        apt-get update
-        apt-get install subversion
-        docker-php-ext-install mysqli
-        apt-get install mariadb-client-10.5
+        sudo apt-get update
+        sudo apt-get install subversion
+        sudo docker-php-ext-install mysqli
+        sudo apt-get install mariadb-client-10.5
     
     - name: "Run Tests"
       run: |
