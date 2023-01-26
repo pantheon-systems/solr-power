@@ -42,10 +42,11 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    
-    - name: Install dependencies
-      uses: php-actions/composer@v6
 
+    - name: Run composer
+      uses: nick-zh/composer-php@master
+      with:
+        action: 'install'
     
 
     - name: Cache dependencies
@@ -64,7 +65,6 @@ jobs:
     
     - name: "Run Tests"
       run: |
-        composer install
         composer phpunit
         rm -rf $WP_TESTS_DIR $WP_CORE_DIR
         WP_MULTISITE=1 composer phpunit
