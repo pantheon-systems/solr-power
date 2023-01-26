@@ -57,10 +57,12 @@ jobs:
     - name: Install Extras 
       run: |
         apt-get install subversion
-        apt-get install -y libmagickwand-dev --no-install-recommends
-        yes '' | pecl install imagick || true
-        docker-php-ext-enable imagick
         docker-php-ext-install mysqli
+
+    - name: Set up MySQL
+    run: |
+      sudo /etc/init.d/mysql start
+      mysql -e 'CREATE DATABASE solr-power' -uroot -proot
     
     - name: "Run Tests"
       run: |
