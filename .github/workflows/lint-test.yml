@@ -53,17 +53,17 @@ jobs:
         restore-keys: test-phpunit-dependencies-{{ checksum "composer.json" }}
 
     - name: Add PUBKEYs
-      run: sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4EB27DB2A3B88B8B
+      run: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4EB27DB2A3B88B8B
 
     - name: Install Extras 
       run: |
-        sudo apt-get update
-        sudo apt-get install subversion
-        sudo apt-get install -y libmagickwand-dev --no-install-recommends
-        yes '' | sudo pecl install imagick || true
-        sudo docker-php-ext-enable imagick
-        sudo docker-php-ext-install mysqli
-        sudo apt-get install mariadb-client-10.5
+        apt-get update
+        apt-get install subversion
+        apt-get install -y libmagickwand-dev --no-install-recommends
+        yes '' | pecl install imagick || true
+        docker-php-ext-enable imagick
+        docker-php-ext-install mysqli
+        apt-get install mariadb-client-10.5
     
     - name: "Run Tests"
       run: |
