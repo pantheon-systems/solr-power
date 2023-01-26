@@ -46,7 +46,7 @@ jobs:
 
     - name: Start MySQL
       run: |
-        sudo systemctl start mysql
+       systemctl start mysql
 
     - name: Cache dependencies
       uses: actions/cache@v2
@@ -68,6 +68,7 @@ jobs:
       with:
         php-version: '8.0'
         coverage: none
+
     - name: Install dependencies
       run: composer install
     
