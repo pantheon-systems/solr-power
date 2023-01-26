@@ -44,6 +44,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Start MySQL
+      run: sudo systemctl start mysql.service
+
     - name: Cache dependencies
       uses: actions/cache@v2
       with:
