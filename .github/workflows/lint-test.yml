@@ -60,6 +60,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install subversion
 
+    - name: Set PHP version
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
+        coverage: none
     - name: Install dependencies
       run: composer install
     
