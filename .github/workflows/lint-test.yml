@@ -58,11 +58,6 @@ jobs:
       run: |
         apt-get install subversion
         docker-php-ext-install mysqli
-
-    - name: Set up MySQL
-      run: |
-        sudo /etc/init.d/mysql start
-        mysql -e 'CREATE DATABASE solr-power' -uroot -proot
     
     - name: "Run Tests"
       run: |
