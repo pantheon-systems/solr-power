@@ -34,9 +34,9 @@ jobs:
     services:
       mariadb:
         image: mariadb:10.3
-    env:
-      WP_TESTS_DIR: /tmp/wordpress-tests-lib
-      WP_CORE_DIR: /tmp/wordpress/
+    #env:
+    #  WP_TESTS_DIR: /tmp/wordpress-tests-lib
+    #  WP_CORE_DIR: /tmp/wordpress/
     name: PHP Unit tests
 
     steps:
