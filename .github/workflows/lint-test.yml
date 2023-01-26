@@ -34,9 +34,9 @@ jobs:
     services:
       mariadb:
         image: mariadb:10.3
-    #env:
-    #  WP_TESTS_DIR: /tmp/wordpress-tests-lib
-    #  WP_CORE_DIR: /tmp/wordpress/
+    env:
+      WP_TESTS_DIR: /tmp/wordpress-tests-lib
+      WP_CORE_DIR: /tmp/wordpress/
     name: PHP Unit tests
 
     steps:
@@ -57,13 +57,7 @@ jobs:
 
     - name: Install Extras 
       run: |
-        apt-get update
         apt-get install subversion
-        apt-get install -y libmagickwand-dev --no-install-recommends
-        yes '' | pecl install imagick || true
-        docker-php-ext-enable imagick
-        docker-php-ext-install mysqli
-        apt-get install mariadb-client-10.5
     
     - name: "Run Tests"
       run: |
