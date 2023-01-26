@@ -74,7 +74,6 @@ jobs:
         WP_MULTISITE=1 composer phpunit
 
   test-behat:
-    needs: test-phpunit
     runs-on: ubuntu-latest
     container:
       image: quay.io/pantheon-public/build-tools-ci:6.x
@@ -93,6 +92,10 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+
+    - name: Check location
+      run: ls -la ./
       
     - name: Install SSH key
       uses: webfactory/ssh-agent@v0.7.0
