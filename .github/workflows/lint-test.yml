@@ -45,11 +45,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Start MySQL
-      run: |
-        sudo /lib/systemd/systemd-sysv-install enable mysql
-        sudo systemctl enable mysql.service
-        sudo systemctl start mysql.service
-        sudo systemctl status mysql.service
+      run: sudo systemctl start mysql
 
     - name: Cache dependencies
       uses: actions/cache@v2
