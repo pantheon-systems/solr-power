@@ -58,6 +58,7 @@ jobs:
       run: |
         apt-get install subversion
         docker-php-ext-install mysqli
+        apt-get install mariadb-client-10.5
     
     - name: "Run Tests"
       run: |
