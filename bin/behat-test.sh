@@ -25,4 +25,6 @@ set -ex
 export BEHAT_PARAMS='{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "http://'$TERMINUS_ENV'-'$TERMINUS_SITE'.pantheonsite.io"} }}'
 # where are we
 ls -la
+ls -la vendor/bin
+
 ./vendor/bin/behat "$@"
