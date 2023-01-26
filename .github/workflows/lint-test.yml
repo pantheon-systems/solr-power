@@ -30,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: danielbachhuber/solr-wp:0.1.0
+      image: quay.io/pantheon-public/build-tools-ci:6.x
       options: --user root
     services:
       mariadb:
