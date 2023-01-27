@@ -29,15 +29,12 @@ jobs:
 
   test-phpunit:
     runs-on: ubuntu-latest
-#    container:
-#      image: danielbachhuber/solr-wp:0.1.0
-#      options: --user root
+    container:
+      image: danielbachhuber/solr-wp:0.1.0
+      options: --user root
     services:
       mariadb:
         image: mariadb:10.3
-      solr:
-        image: danielbachhuber/solr-wp:0.1.0
-        options: --user root
     #env:
     #  WP_TESTS_DIR: /tmp/wordpress-tests-lib
     #  WP_CORE_DIR: /tmp/wordpress/
@@ -50,6 +47,14 @@ jobs:
     - name: Start MySQL
       run: |
         sudo systemctl start mysql
+    
+    - name: Set up MySQL
+      uses: mirromutth/mysql-action@v1.1
+      with:
+        mysql database: 'solr-power'
+        mysql root password: root
+        mysql user: root
+        mysql password: root
 
     - name: Cache dependencies
       uses: actions/cache@v2
