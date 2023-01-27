@@ -35,6 +35,9 @@ jobs:
     services:
       mariadb:
         image: mariadb:10.3
+      solr:
+        image: danielbachhuber/solr-wp:0.1.0
+        options: --user root
     #env:
     #  WP_TESTS_DIR: /tmp/wordpress-tests-lib
     #  WP_CORE_DIR: /tmp/wordpress/
