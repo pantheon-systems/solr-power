@@ -44,9 +44,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Start MySQL
-      run: |
-        sudo systemctl start mysql
+#    - name: Start MySQL
+#      run: |
+#        sudo systemctl start mysql
     
     - name: Set up MySQL
       uses: mirromutth/mysql-action@v1.1
