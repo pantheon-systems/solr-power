@@ -68,7 +68,6 @@ jobs:
 
     - name: Install Extras 
       run: |
-        apt-get update
         apt-get install subversion
 
     - name: Set PHP version
