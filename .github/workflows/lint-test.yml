@@ -68,8 +68,8 @@ jobs:
 
     - name: Install Extras 
       run: |
-        sudo apt-get update
-        sudo apt-get install subversion
+        apt-get update
+        apt-get install subversion
 
     - name: Set PHP version
       uses: shivammathur/setup-php@v2
