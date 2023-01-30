@@ -64,10 +64,10 @@ jobs:
 
     - name: Install Extras 
       run: |
-        sudo apt-get update
-        sudo apt-get install subversion
-        sudo apt-get install php
-        sudo docker-php-ext-install mysqli
+        apt-get update
+        apt-get install subversion
+        apt-get install php
+        docker-php-ext-install mysqli
 
 #    - name: Set PHP version
 #      uses: shivammathur/setup-php@v2
