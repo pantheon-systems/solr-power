@@ -29,9 +29,9 @@ jobs:
 
   test-phpunit:
     runs-on: ubuntu-latest
-    container:
-      image: danielbachhuber/solr-wp:0.1.0
-      options: --user root
+#    container:
+#      image: danielbachhuber/solr-wp:0.1.0
+#      options: --user root
     services:
       mariadb:
         image: mariadb:10.3
@@ -48,9 +48,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-#    - name: Start MySQL
-#      run: |
-#        sudo systemctl start mysql
+    - name: Start MySQL
+      run: |
+        sudo systemctl start mysql
 
     - name: Cache dependencies
       uses: actions/cache@v2
@@ -64,16 +64,17 @@ jobs:
 
     - name: Install Extras 
       run: |
-        apt-get update
-        apt-get install subversion
-        apt-get install php
-        docker-php-ext-install mysqli
+        sudo apt-get update
+        sudo apt-get install subversion
 
-#    - name: Set PHP version
-#      uses: shivammathur/setup-php@v2
-#      with:
-#        php-version: '8.0'
-#        coverage: none
+    - name: Run install-solr.sh 
+      run: bash bin/install-solr.sh
+
+    - name: Set PHP version
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
+        coverage: none
 
     - name: Install dependencies
       run: composer install
