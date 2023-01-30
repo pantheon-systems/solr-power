@@ -48,9 +48,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Start MySQL
-      run: |
-        sudo systemctl start mysql
+#    - name: Start MySQL
+#      run: |
+#        sudo systemctl start mysql
 
     - name: Cache dependencies
       uses: actions/cache@v2
@@ -67,6 +67,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install subversion
         sudo apt-get install php
+        sudo docker-php-ext-install mysqli
 
 #    - name: Set PHP version
 #      uses: shivammathur/setup-php@v2
