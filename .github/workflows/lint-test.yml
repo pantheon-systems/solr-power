@@ -35,6 +35,10 @@ jobs:
     services:
       mariadb:
         image: mariadb:10.3
+      solr:
+        image: solr:8.3.1
+        ports:
+          - 2010:8983
     #env:
     #  WP_TESTS_DIR: /tmp/wordpress-tests-lib
     #  WP_CORE_DIR: /tmp/wordpress/
