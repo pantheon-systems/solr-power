@@ -48,6 +48,9 @@ jobs:
       run: |
         sudo systemctl start mysql
 
+    - name: Setup Solr
+      uses: danielbachhuber/solr-wp:0.1.0
+
     - name: Cache dependencies
       uses: actions/cache@v2
       with:
