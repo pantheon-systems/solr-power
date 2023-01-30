@@ -29,9 +29,9 @@ jobs:
 
   test-phpunit:
     runs-on: ubuntu-latest
-#    container:
-#      image: danielbachhuber/solr-wp:0.1.0
-#      options: --user root
+    container:
+      image: danielbachhuber/solr-wp:0.1.0
+      options: --user root
     services:
       mariadb:
         image: mariadb:10.3
@@ -66,12 +66,13 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install subversion
+        sudo apt-get install php
 
-    - name: Set PHP version
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.0'
-        coverage: none
+#    - name: Set PHP version
+#      uses: shivammathur/setup-php@v2
+#      with:
+#        php-version: '8.0'
+#        coverage: none
 
     - name: Install dependencies
       run: composer install
