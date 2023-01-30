@@ -1,5 +1,10 @@
 name: Lint and Test
-on: [push]
+on:
+  push:
+    branches:
+      - *
+  schedule:
+    - cron: "0 0 * * *"
 
 jobs:
   lint:

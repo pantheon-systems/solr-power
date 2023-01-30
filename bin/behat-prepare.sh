@@ -6,8 +6,6 @@
 # such that it can be run a second time if a step fails.
 ###
 
-echo $WORDPRESS_ADMIN_PASSWORD
-
 TERMINUS_USER_ID=$(terminus auth:whoami --field=id 2>&1)
 if [[ ! $TERMINUS_USER_ID =~ ^[A-Za-z0-9-]{36}$ ]]; then
 	echo "Terminus unauthenticated; assuming unauthenticated build"
