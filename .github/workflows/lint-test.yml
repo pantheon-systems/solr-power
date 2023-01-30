@@ -3,7 +3,6 @@ on: [push]
 
 jobs:
   lint:
-    needs: test-phpunit
     runs-on: ubuntu-latest
     container:
       image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
@@ -28,10 +27,8 @@ jobs:
       run: composer phpcs
 
   test-phpunit:
+    needs: lint
     runs-on: ubuntu-latest
-#    container:
-#      image: danielbachhuber/solr-wp:0.1.0
-#      options: --user root
     services:
       mariadb:
         image: mariadb:10.3
@@ -39,9 +36,6 @@ jobs:
         image: solr:8.3.1
         ports:
           - 2010:8983
-    #env:
-    #  WP_TESTS_DIR: /tmp/wordpress-tests-lib
-    #  WP_CORE_DIR: /tmp/wordpress/
     name: PHP Unit tests
 
     steps:
