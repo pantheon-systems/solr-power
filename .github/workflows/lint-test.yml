@@ -86,7 +86,7 @@ jobs:
     needs: test-phpunit
     runs-on: ubuntu-latest
     container:
-      image: quay.io/pantheon-public/build-tools-ci:6.x
+      image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
       options: --user root
     env:
       TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
