@@ -37,10 +37,6 @@ jobs:
     services:
       mariadb:
         image: mariadb:10.3
-      solr:
-        image: solr:8.3.1
-        ports:
-          - 2010:8983
     name: PHP Unit tests
 
     steps:
