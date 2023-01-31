@@ -1,0 +1,144 @@
+name: Lint and Test
+on:
+  push:
+    branches:
+      - '**'
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
+      options: --user root
+    name: Lint
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/vendor
+        key: test-lint-dependencies-{{ checksum "composer.json" }}
+        restore-keys: test-lint-dependencies-{{ checksum "composer.json" }}
+
+    - name: Install dependencies
+      run: composer install -n --prefer-dist
+
+    - name: Run PHP Lint
+      run: composer phpcs
+
+  test-phpunit:
+    needs: lint
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10.3
+    name: PHP Unit tests
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Start MySQL
+      run: |
+        sudo systemctl start mysql
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/vendor
+        key: test-phpunit-dependencies-{{ checksum "composer.json" }}
+        restore-keys: test-phpunit-dependencies-{{ checksum "composer.json" }}
+
+    - name: Add PUBKEYs
+      run: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4EB27DB2A3B88B8B
+
+    - name: Install Extras 
+      run: |
+        sudo apt-get update
+        sudo apt-get install subversion
+
+    - name: Run install-solr.sh 
+      run: bash bin/install-solr.sh
+
+    - name: Set PHP version
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
+        coverage: none
+
+    - name: Install dependencies
+      run: composer install
+    
+    - name: "Run Tests"
+      run: |
+        bash bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1 latest
+        composer phpunit
+        rm -rf $WP_TESTS_DIR $WP_CORE_DIR
+        bash bin/install-wp-tests.sh wordpress_test root '' 127.0.0.1 nightly true
+        WP_MULTISITE=1 composer phpunit
+
+  test-behat:
+    needs: test-phpunit
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
+      options: --user root
+    env:
+      TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TERMINUS_ENV: ci-${{github.run_number}}
+      TERMINUS_SITE: solr-power
+      SITE_ENV: solr-power.ci-${{github.run_number}}
+      WORDPRESS_ADMIN_USERNAME: pantheon
+      WORDPRESS_ADMIN_EMAIL: no-reply@getpantheon.com
+      WORDPRESS_ADMIN_PASSWORD: solr-power.ci-${{github.run_number}}
+    name: Behat tests
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Install SSH key
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.SITE_OWNER_SSH_PRIVATE_KEY }}
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/vendor
+        key: test-behat-dependencies-{{ checksum "composer.json" }}
+        restore-keys: test-behat-dependencies-{{ checksum "composer.json" }}
+
+    - name: Check for $GITHUB_TOKEN
+      run: |
+        if [ -z "$GITHUB_TOKEN" ]; then
+          echo "GITHUB_TOKEN environment variables missing; assuming unauthenticated build"
+          exit 0
+        fi
+        echo "Setting GitHub OAuth token with suppressed ouput"
+        {
+          composer config -g github-oauth.github.com $GITHUB_TOKEN
+        } &> /dev/null
+
+    - name: Check for $TERMINUS_TOKEN
+      run: |
+        if [ -z "$TERMINUS_TOKEN" ]; then
+          echo "TERMINUS_TOKEN environment variables missing; assuming unauthenticated build"
+          exit 0
+        fi
+        terminus auth:login --machine-token=$TERMINUS_TOKEN
+
+    - name: Prepare for Behat tests  
+      run: ./bin/behat-prepare.sh
+
+    - name: Execute Behat tests
+      run: ./bin/behat-test.sh --strict
+
+    - name: Clean up Behat tests
+      run: ./bin/behat-cleanup.sh
