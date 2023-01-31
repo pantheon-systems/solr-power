@@ -16,10 +16,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Cache dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/vendor
         key: test-lint-dependencies-{{ checksum "composer.json" }}
@@ -45,14 +45,14 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Start MySQL
       run: |
         sudo systemctl start mysql
 
     - name: Cache dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/vendor
         key: test-phpunit-dependencies-{{ checksum "composer.json" }}
@@ -105,7 +105,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       
     - name: Install SSH key
       uses: webfactory/ssh-agent@v0.7.0
@@ -113,7 +113,7 @@ jobs:
         ssh-private-key: ${{ secrets.SITE_OWNER_SSH_PRIVATE_KEY }}
 
     - name: Cache dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/vendor
         key: test-behat-dependencies-{{ checksum "composer.json" }}
