@@ -10,7 +10,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     container:
-      image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
+      image: quay.io/pantheon-public/build-tools-ci:8.x-php8.2
       options: --user root
     name: Lint
 
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mariadb:
-        image: mariadb:10.3
+        image: mariadb:10.4
     name: PHP Unit tests
 
     steps:
@@ -68,7 +68,7 @@ jobs:
     - name: Set PHP version
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.0'
+        php-version: '8.2'
         coverage: none
 
     - name: Install dependencies
@@ -86,7 +86,7 @@ jobs:
     needs: test-phpunit
     runs-on: ubuntu-latest
     container:
-      image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
+      image: quay.io/pantheon-public/build-tools-ci:8.x-php8.2
       options: --user root
     env:
       TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
