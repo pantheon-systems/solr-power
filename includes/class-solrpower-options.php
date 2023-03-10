@@ -40,7 +40,7 @@ class SolrPower_Options {
 	/**
 	 * Instantiate the options object
 	 */
-	function __construct() {
+	public function __construct() {
 		$menu_action = is_multisite() ? 'network_admin_menu' : 'admin_menu';
 		add_action( $menu_action, array( $this, 'add_pages' ) );
 		add_action( 'wp_ajax_solr_options', array( $this, 'options_load' ) );
@@ -52,7 +52,7 @@ class SolrPower_Options {
 	/**
 	 * Register the options page
 	 */
-	function add_pages() {
+	public function add_pages() {
 		add_menu_page(
 			__( 'Solr Power', 'solr-for-wordpress-on-pantheon' ),
 			__( 'Solr Power', 'solr-for-wordpress-on-pantheon' ),
@@ -69,9 +69,9 @@ class SolrPower_Options {
 	/**
 	 * Render the options page
 	 */
-	function options_page() {
+	public function options_page() {
 		if ( file_exists( SOLR_POWER_PATH . '/solr-options-page.php' ) ) {
-			include( SOLR_POWER_PATH . '/solr-options-page.php' );
+			include SOLR_POWER_PATH . '/solr-options-page.php';
 		} else {
 			esc_html_e( "Couldn't locate the options page.", 'solr-for-wordpress-on-pantheon' );
 		}
@@ -113,7 +113,7 @@ class SolrPower_Options {
 	/**
 	 * AJAX Callback
 	 */
-	function options_load() {
+	public function options_load() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			die();
 		}
@@ -130,14 +130,14 @@ class SolrPower_Options {
 			while ( $batch_index->have_posts() ) {
 				$result = $batch_index->index_post();
 				if ( 'success' === $result['status'] ) {
-					$success_posts++;
+					++$success_posts;
 				} elseif ( 'failed' === $result['status'] ) {
-					$failed_posts++;
+					++$failed_posts;
 				}
 			}
 			// Iterate to the next set, but don't start it.
 			$batch_index->fetch_next_posts();
-			if ( 0 == $batch_index->get_remaining_posts() ) {
+			if ( 0 === $batch_index->get_remaining_posts() ) {
 				do_action( 'solr_power_index_all_finished' );
 			}
 			header( 'Content-Type: application/json' );
@@ -158,7 +158,7 @@ class SolrPower_Options {
 	 *
 	 * @return array
 	 */
-	function get_option() {
+	public function get_option() {
 		$option = 'plugin_s4wp_settings';
 		if ( is_multisite() ) {
 			return get_site_option( $option );
@@ -172,7 +172,7 @@ class SolrPower_Options {
 	 *
 	 * @param array $options Full options array.
 	 */
-	function update_option( $options ) {
+	public function update_option( $options ) {
 		$optval = $this->sanitise_options( $options );
 		$option = 'plugin_s4wp_settings';
 		if ( is_multisite() ) {
@@ -190,7 +190,7 @@ class SolrPower_Options {
 	 *
 	 * @return array $options sanitised values
 	 */
-	function sanitise_options( $options ) {
+	public function sanitise_options( $options ) {
 		$clean = array();
 
 		$clean['s4wp_index_pages']         = 1;
@@ -232,7 +232,7 @@ class SolrPower_Options {
 	 *
 	 * @return array
 	 */
-	function filter_str2list_numeric( $input ) {
+	public function filter_str2list_numeric( $input ) {
 		$final = array();
 		if ( '' !== $input ) {
 			foreach ( explode( ',', $input ) as $val ) {
@@ -253,7 +253,7 @@ class SolrPower_Options {
 	 *
 	 * @return array
 	 */
-	function filter_str2list( $input ) {
+	public function filter_str2list( $input ) {
 		$final = array();
 		if ( '' !== $input ) {
 			foreach ( explode( ',', $input ) as $val ) {
@@ -270,7 +270,7 @@ class SolrPower_Options {
 	 * @param array $input Array to convert.
 	 * @return string
 	 */
-	function filter_list2str( $input ) {
+	public function filter_list2str( $input ) {
 		if ( ! is_array( $input ) ) {
 			return '';
 		}
@@ -286,7 +286,7 @@ class SolrPower_Options {
 	/**
 	 * Sets the default options.
 	 */
-	function initalize_options() {
+	public function initalize_options() {
 		$options = array();
 
 		$options['s4wp_index_pages']            = 1;
@@ -322,7 +322,7 @@ class SolrPower_Options {
 	/**
 	 * Checks to see if any actions were taken on the settings page.
 	 */
-	function check_for_actions() {
+	public function check_for_actions() {
 		if ( ! isset( $_POST['action'] ) || ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
@@ -372,7 +372,6 @@ class SolrPower_Options {
 				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' ) . '<br />' . esc_html( $output );
 				break;
 		} // End switch().
-
 	}
 
 	/**
@@ -397,7 +396,7 @@ class SolrPower_Options {
 	/**
 	 * Register setting and sections for Settings API.
 	 */
-	function settings_api() {
+	public function settings_api() {
 		register_setting( 'solr-power-index', 'plugin_s4wp_settings', array( $this, 'sanitise_options' ) );
 		register_setting( 'solr-power-facet', 'plugin_s4wp_settings', array( $this, 'sanitise_options' ) );
 		$this->indexing_section();
@@ -410,7 +409,7 @@ class SolrPower_Options {
 	 *
 	 * @param array $args Arguments for rendering the field.
 	 */
-	function render_field( $args ) {
+	public function render_field( $args ) {
 
 		$field_name    = $args['field'];
 		$s4wp_settings = solr_options();
@@ -503,7 +502,6 @@ class SolrPower_Options {
 		$this->add_field( 's4wp_index_comments', 'Index Comments', $page, $section, 'checkbox', 'bool' );
 		$this->add_field( 's4wp_index_custom_fields', 'Index custom fields (comma separated names list)', $page, $section, 'input', 'list2str' );
 		$this->add_field( 's4wp_exclude_pages', 'Excludes Posts or Pages (comma separated ids list)', $page, $section, 'input', 'list2str' );
-
 	}
 
 	/**
@@ -572,7 +570,6 @@ class SolrPower_Options {
 		$this->add_field( 's4wp_facet_on_type', 'Post Type as Facet', $page, $section, 'checkbox', 'bool' );
 		$this->add_field( 's4wp_facet_on_taxonomy', 'Taxonomy as Facet', $page, $section, 'checkbox', 'bool' );
 		$this->add_field( 's4wp_facet_on_custom_fields', 'Custom fields as Facet (comma separated ordered names list)', $page, $section, 'input', 'list2str' );
-
 	}
 
 	/**

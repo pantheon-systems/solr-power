@@ -13,14 +13,14 @@ class SolrPower_Debug extends Debug_Bar_Panel {
 	/**
 	 * Initialize the panel
 	 */
-	function init() {
+	public function init() {
 		$this->title( 'Solr' );
 	}
 
 	/**
 	 * Pre-render the panel
 	 */
-	function prerender() {
+	public function prerender() {
 		$log = SolrPower_Api::get_instance()->log;
 		$this->set_visible( ! empty( $log ) );
 	}
@@ -28,7 +28,7 @@ class SolrPower_Debug extends Debug_Bar_Panel {
 	/**
 	 * Render the full panel
 	 */
-	function render() {
+	public function render() {
 
 		echo '<h2>Solr Information</h2>';
 

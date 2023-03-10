@@ -69,7 +69,6 @@ class SolrPower_CLI extends WP_CLI_Command {
 		} else {
 			WP_CLI::error( 'Please specify one or more post ids, or use the --all flag.' );
 		}
-
 	}
 
 	/**

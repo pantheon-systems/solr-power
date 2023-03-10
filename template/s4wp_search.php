@@ -181,7 +181,7 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 			</li>
 
 	<?php
-	if ( $results['facets'] && 1 != $results['hits'] ) {
+	if ( $results['facets'] && 1 !== $results['hits'] ) {
 		foreach ( $results['facets'] as $facet ) {
 			// don't display facets with only 1 value.
 			if ( isset( $facet['items'] ) and sizeof( $facet['items'] ) > 1 ) {

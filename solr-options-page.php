@@ -47,15 +47,15 @@ if ( ! is_null( SolrPower_Options::get_instance()->msg ) ) {
 
 		<?php
 		$action = self_admin_url( 'admin.php?page=solr-power' );
-		include 'views/options/info.php';
-		include 'views/options/action.php';
+		require 'views/options/info.php';
+		require 'views/options/action.php';
 
 		$options_action = is_multisite() ? network_admin_url( 'settings.php' ) : admin_url( 'options.php' );
 		?>
 		<form method="post" action="<?php echo esc_url( $options_action ); ?>">
 		<?php
-		include 'views/options/indexing.php';
-		include 'views/options/facet.php';
+		require 'views/options/indexing.php';
+		require 'views/options/facet.php';
 		?>
 		</form>
 	</div>

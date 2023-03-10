@@ -118,8 +118,8 @@ if ( version_compare( PHP_VERSION, '7.1', '<' ) ) {
 	define( 'SOLR_POWER_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 	define( 'SOLR_POWER_URL', plugin_dir_url( __FILE__ ) );
 
-	require_once( SOLR_POWER_PATH . '/vendor/autoload.php' );
-	require_once( SOLR_POWER_PATH . '/includes/legacy-functions.php' );
+	require_once SOLR_POWER_PATH . '/vendor/autoload.php';
+	require_once SOLR_POWER_PATH . '/includes/legacy-functions.php';
 
 	SolrPower::get_instance();
 	SolrPower_Api::get_instance();

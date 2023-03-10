@@ -204,7 +204,7 @@ class SolrPower_Batch_Index {
 	 * Increment value for 'paged', and update its value in the cache
 	 */
 	public function increment_page() {
-		$this->query_args['paged']++;
+		++$this->query_args['paged'];
 		delete_option( $this->batch_cache_key );
 		add_option( $this->batch_cache_key, $this->query_args['paged'], null, false );
 	}
@@ -231,10 +231,10 @@ class SolrPower_Batch_Index {
 		$documents[]          = SolrPower_Sync::get_instance()->build_document( $this->solr_update->createDocument(), $post );
 		$sync_result          = SolrPower_Sync::get_instance()->post( $documents, true, false );
 		if ( false !== $sync_result ) {
-			$this->success_posts++;
+			++$this->success_posts;
 			$result['status'] = 'success';
 		} else {
-			$this->failed_posts++;
+			++$this->failed_posts;
 			$result['status'] = 'failed';
 			$error_msg        = SolrPower_Sync::get_instance()->error_msg;
 			// Error messages are html-escaped.
@@ -247,7 +247,7 @@ class SolrPower_Batch_Index {
 			}
 			$result['message'] = $error_msg;
 		}
-		$this->remaining_posts--;
+		--$this->remaining_posts;
 		return $result;
 	}
 
