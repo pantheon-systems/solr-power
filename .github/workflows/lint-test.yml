@@ -55,7 +55,7 @@ jobs:
         restore-keys: test-phpunit-dependencies-{{ checksum "composer.json" }}
 
     - name: Add PUBKEYs
-      run: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4EB27DB2A3B88B8B
+      run: curl -sS https://keyserver.ubuntu.com/debian/pubkey_4EB27DB2A3B88B8B.gpg | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/ubuntu.gpg
 
     - name: Install Extras 
       run: |
