@@ -96,7 +96,7 @@ class SolrPower_WP_Query {
 	/**
 	 * SolrPower_WP_Query instance initial setup method.
 	 */
-	public function setup() {
+	public function setup(): void {
 		// We don't want to do a Solr query if we're doing AJAX.
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 
