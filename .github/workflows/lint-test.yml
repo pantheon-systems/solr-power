@@ -32,7 +32,7 @@ jobs:
       run: composer phpcs
 
   test-phpunit:
-    needs: lint
+    # needs: lint
     runs-on: ubuntu-latest
     services:
       mariadb:
