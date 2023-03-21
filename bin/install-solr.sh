@@ -29,6 +29,7 @@ run() {
     else
         java -Djetty.port=$SOLR_PORT -jar start.jar > /dev/null 2>&1 &
     fi
+    is_solr_up
     wait_for_solr
     cd ../../
     echo "Started"
@@ -60,7 +61,6 @@ download_and_run() {
     # Run solr
     run $dir_name $SOLR_PORT
 
-    is_solr_up
 
 }
 
