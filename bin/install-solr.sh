@@ -60,8 +60,8 @@ download_and_run() {
     # Run solr
     run $dir_name $SOLR_PORT
 
+    is_solr_up
 
 }
 
 download_and_run $SOLR_VERSION
-is_solr_up
