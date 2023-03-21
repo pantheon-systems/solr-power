@@ -64,3 +64,4 @@ download_and_run() {
 }
 
 download_and_run $SOLR_VERSION
+is_solr_up
