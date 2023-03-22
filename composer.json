@@ -23,14 +23,14 @@
         }
     },
     "require": {
-        "solarium/solarium": "~5",
+        "solarium/solarium": "~4",
         "symfony/event-dispatcher": "^3.4"
     },
     "require-dev": {
         "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master",
         "wp-coding-standards/wpcs": "dev-develop as 2.3.1",
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
-        "phpunit/phpunit": "^6 || ^7",
+        "phpunit/phpunit": "^9",
         "phpcompatibility/php-compatibility": "^9.3",
         "yoast/phpunit-polyfills": "^1.0"
     },

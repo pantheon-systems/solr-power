@@ -25,4 +25,4 @@ tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
 require $_tests_dir . '/includes/bootstrap.php';
 require 'class-solr-test-base.php';
-// require 'class-mock-solarium-client-with-error.php';
+require 'class-mock-solarium-client-with-error.php';
