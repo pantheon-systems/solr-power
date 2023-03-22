@@ -16,19 +16,19 @@
     "prefer-stable": true,
     "config": {
         "platform": {
-            "php": "7.1"
+            "php": "7.4"
         },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
     "require": {
-        "solarium/solarium": "~4",
+        "solarium/solarium": "~5",
         "symfony/event-dispatcher": "^3.4"
     },
     "require-dev": {
         "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master",
-        "wp-coding-standards/wpcs": "^2.1",
+        "wp-coding-standards/wpcs": "dev-develop as 2.3.1",
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
         "phpunit/phpunit": "^6 || ^7",
         "phpcompatibility/php-compatibility": "^9.3",
