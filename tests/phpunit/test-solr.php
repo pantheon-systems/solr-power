@@ -165,7 +165,7 @@ class SolrTest extends SolrTestBase {
 		SolrPower_Sync::get_instance()->delete( $delete_id );
 
 		$stats = SolrPower_Api::get_instance()->index_stats();
-		// $this->assertEquals( 1, $stats['page'] );
+		$this->assertEquals( 3, $stats['page'] );
 		$this->assertEquals( 5, $stats['post'] );
 	}
 
