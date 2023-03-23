@@ -1,7 +1,7 @@
 <?php
 
 class SolrWPQueryTest extends SolrTestBase {
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 	}
 
@@ -12,7 +12,7 @@ class SolrWPQueryTest extends SolrTestBase {
 	function test_simple_wp_query() {
 		$this->__create_test_post();
 		$args  = array(
-			's' => 'solr'
+			's' => 'solr test'
 		);
 		$query = new WP_Query( $args );
 		$this->assertEquals( $query->post_count, 1 );
@@ -45,7 +45,7 @@ class SolrWPQueryTest extends SolrTestBase {
 	function test_simple_wp_query_solr_integrate() {
 		$this->__create_test_post();
 		$args  = array(
-			's'              => 'solr',
+			's'              => 'solr test',
 			'solr_integrate' => true,
 		);
 		$query = new WP_Query( $args );

@@ -19,7 +19,7 @@ class SolrTestBase extends WP_UnitTestCase{
 	/**
 	 * Setup for every test.
 	 */
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 
 		if ( ! SolrPower_API::get_instance()->ping_server() ) {
@@ -43,7 +43,7 @@ class SolrTestBase extends WP_UnitTestCase{
 
 	}
 
-	function tearDown() {
+	function tearDown(): void {
 
 		parent::tearDown();
 		global $wpdb;

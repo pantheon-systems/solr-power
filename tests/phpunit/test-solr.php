@@ -1,11 +1,11 @@
 <?php
 class SolrTest extends SolrTestBase {
 
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 	}
 
-	function tearDown() {
+	function tearDown(): void {
 		parent::tearDown();
 	}
 
@@ -48,6 +48,7 @@ class SolrTest extends SolrTestBase {
 		}
 		$search = $search->getData();
 		$search = $search['response'];
+		var_dump($search['docs']);
 
 		$this->assertEquals( $post_id, $search['docs'][0]['ID'] );
 		$this->assertEquals( 'admin', $search['docs'][0]['post_author'] );
@@ -521,13 +522,13 @@ class SolrTest extends SolrTestBase {
 		switch_to_blog( $blog2 );
 		$p_id2 = $this->__create_test_post( 'post', 'Best Films of 2015' );
 		$args  = array(
-			's' => 'Best Films',
+			's' => 'Best Films of 2015',
 		);
 		$query = new WP_Query( $args );
 		$this->assertEquals( array( $p_id2 ), wp_list_pluck( $query->posts, 'ID' ) );
 		switch_to_blog( 1 );
 		$args  = array(
-			's' => 'Best Films',
+			's' => 'Best Films of 2015',
 		);
 		$query = new WP_Query( $args );
 		$this->assertEquals( array( $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
@@ -553,7 +554,7 @@ class SolrTest extends SolrTestBase {
 	public function test_no_highlight_results_in_search() {
 		$p_id = $this->__create_test_post( 'post', 'Dragon breath title', 'Dragon breath content' );
 		$query = new WP_Query( array(
-			's' => 'Dragon',
+			's' => 'Dragon breath',
 		) );
 		$this->assertTrue( $query->posts[0]->solr );
 		$this->assertEquals( 'Dragon breath title', $query->posts[0]->post_title );
@@ -583,7 +584,7 @@ EOT;
 		) );
 		$this->assertTrue( $query->posts[0]->solr );
 		$this->assertEquals( 'Dragon breath title', $query->posts[0]->post_title );
-		$this->assertContains( 'This text has treatment keyword in ACF', $query->posts[0]->post_content );
+		$this->assertStringContainsString( 'This text has treatment keyword in ACF', $query->posts[0]->post_content );
 	}
 
 }

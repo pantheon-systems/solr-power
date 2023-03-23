@@ -84,10 +84,10 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	/**
 	 * Fetches and displays returned facets.
 	 *
-	 * @param bool $echo Whether or not the facets should be echoed.
+	 * @param bool $display Whether or not the facets should be echoed.
 	 * @return bool|string
 	 */
-	function fetch_facets( $echo = true ) {
+	public function fetch_facets( $display = true ) {
 		$solr_options = solr_options();
 		if ( ! $solr_options['s4wp_output_facets'] ) {
 			return false;
@@ -189,12 +189,11 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			$output .= '</ul>';
 
 		} // End foreach().
-		if ( $echo ) {
+		if ( $display ) {
 			echo $output;
 		} else {
 			return $output;
 		}
-
 	}
 
 	/**
@@ -279,14 +278,13 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	/**
 	 * Mock a dummy WP_Query
 	 */
-	function dummy_query() {
+	public function dummy_query() {
 		global $wp_query;
 		$query = new WP_Query();
 		if ( ! $wp_query->get( 's' ) ) {
 			$query->set( 's', '*:*' );
 			$query->get_posts();
 		}
-
 	}
 
 	/**
@@ -295,7 +293,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	 * @param string $facet Facet to decode.
 	 * @return string
 	 */
-	function htmlspecialchars_decode( $facet ) {
+	public function htmlspecialchars_decode( $facet ) {
 		return htmlspecialchars_decode( $facet, ENT_QUOTES );
 	}
 }

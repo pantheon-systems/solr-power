@@ -68,7 +68,7 @@ class SolrPower_Api {
 	/**
 	 * Instantiate the API object.
 	 */
-	function __construct() {
+	public function __construct() {
 		add_action( 'admin_notices', array( $this, 'check_for_schema' ) );
 	}
 
@@ -102,7 +102,7 @@ class SolrPower_Api {
 	/**
 	 * Submit the schema to Solr.
 	 */
-	function submit_schema() {
+	public function submit_schema() {
 		/*
 		 * Solarium does not currently support submitting schemas to the server.
 		 * So we'll do it ourselves.
@@ -173,7 +173,7 @@ class SolrPower_Api {
 	 *
 	 * @return string
 	 */
-	function compute_path() {
+	public function compute_path() {
 		if ( ! defined( 'SOLR_PATH' ) && getenv( 'SOLR_PATH' ) ) {
 			define( 'SOLR_PATH', getenv( 'SOLR_PATH' ) );
 		}
@@ -189,7 +189,7 @@ class SolrPower_Api {
 	 *
 	 * @return boolean
 	 */
-	function ping_server() {
+	public function ping_server() {
 		$solr = get_solr();
 
 		if ( ! $solr ) {
@@ -214,7 +214,7 @@ class SolrPower_Api {
 	 *
 	 * @return Solarium\Client Solr service object
 	 */
-	function get_solr() {
+	public function get_solr() {
 
 		$plugin_s4wp_settings = solr_options();
 		$solarium_config      = array(
@@ -257,7 +257,10 @@ class SolrPower_Api {
 			return null;
 		}
 
-		$solr = new Solarium\Client( $solarium_config );
+		$adapter = new Solarium\Core\Client\Adapter\Curl();
+		$event_dispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();
+
+		$solr = new Solarium\Client( $adapter, $event_dispatcher, $solarium_config );
 
 		/**
 		 * Filter solarium client
@@ -270,7 +273,8 @@ class SolrPower_Api {
 		$this->solr = $solr;
 
 		// Use the PantheonCurl adapter to get https.
-		$this->solr->setAdapter( '\PantheonCurl' );
+		$curl = new PantheonCurl();
+		$this->solr->setAdapter( $curl );
 
 		return $solr;
 	}
@@ -278,7 +282,7 @@ class SolrPower_Api {
 	/**
 	 * Trigger Solr indexing process.
 	 */
-	function optimize() {
+	public function optimize() {
 		try {
 			$solr = get_solr();
 			if ( null !== $solr ) {
@@ -307,7 +311,7 @@ class SolrPower_Api {
 	 *
 	 * @return Solarium\QueryType\Select\Result\Result
 	 */
-	function query( $qry, $offset, $count, $fq, $sortby, $order, $fields = null, $extra = array() ) {
+	public function query( $qry, $offset, $count, $fq, $sortby, $order, $fields = null, $extra = array() ) {
 		// NOTICE: does this needs to be cached to stop the db being hit to grab the options everytime search is being done.
 		$plugin_s4wp_settings = solr_options();
 
@@ -333,7 +337,7 @@ class SolrPower_Api {
 	 *
 	 * @return Solarium\QueryType\Select\Result\Result
 	 */
-	function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings, $fields = null, $blogid = null, $extra = array() ) {
+	public function master_query( $solr, $qry, $offset, $count, $fq, $sortby, $order, &$plugin_s4wp_settings, $fields = null, $blogid = null, $extra = array() ) {
 		$this->add_log(
 			array(
 				'Search Query' => $qry,
@@ -506,7 +510,7 @@ class SolrPower_Api {
 	 *
 	 * @param array $item Array of items.
 	 */
-	function add_log( $item ) {
+	public function add_log( $item ) {
 		$this->log = array_merge( $this->log, $item );
 	}
 
@@ -515,7 +519,7 @@ class SolrPower_Api {
 	 *
 	 * @return array
 	 */
-	function index_stats() {
+	public function index_stats() {
 		$cache_key = 'solr_index_stats';
 		$stats     = wp_cache_get( $cache_key, 'solr' );
 		if ( false === $stats ) {
@@ -569,7 +573,7 @@ class SolrPower_Api {
 	 * Pings Solr, checks exception code, and then submits schema.
 	 * Displays error if schema submission fails.
 	 */
-	function check_for_schema() {
+	public function check_for_schema() {
 		$last_check = get_transient( 'schema_check' );
 		if ( false === $last_check ) {
 
@@ -609,7 +613,6 @@ class SolrPower_Api {
 			'port'        => getenv( 'PANTHEON_INDEX_PORT' ),
 			'path'        => $this->compute_path(),
 		);
-
 	}
 
 	/**
@@ -620,7 +623,7 @@ class SolrPower_Api {
 	 *
 	 * @return Solarium\QueryType\Select\Query\Query
 	 */
-	function dismax_query( $query, $dismax ) {
+	public function dismax_query( $query, $dismax ) {
 
 		/**
 		 * Query alternative seems to be the wrong approach here. Define SOLRPOWR_DISABLE_QUERY_ALT

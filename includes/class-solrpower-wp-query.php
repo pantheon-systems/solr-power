@@ -90,14 +90,13 @@ class SolrPower_WP_Query {
 	/**
 	 * SolrPower_WP_Query constructor.
 	 */
-	function __construct() {
-
+	public function __construct() {
 	}
 
 	/**
 	 * SolrPower_WP_Query instance initial setup method.
 	 */
-	function setup() {
+	public function setup(): void {
 		// We don't want to do a Solr query if we're doing AJAX.
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
 
@@ -144,7 +143,7 @@ class SolrPower_WP_Query {
 	/**
 	 * Reset the variables in the object to avoid issues with future queries.
 	 */
-	function reset_vars() {
+	public function reset_vars() {
 		$this->fq  = array();
 		$this->qry = '';
 	}
@@ -171,7 +170,7 @@ class SolrPower_WP_Query {
 	 *
 	 * @return string
 	 */
-	function posts_request( $request, $query ) {
+	public function posts_request( $request, $query ) {
 		if ( ! $this->is_solr_query( $query ) || false === SolrPower_Api::get_instance()->ping ) {
 			return $request;
 		}
@@ -324,7 +323,6 @@ class SolrPower_WP_Query {
 		}
 
 		return $posts;
-
 	}
 
 	/**
@@ -429,7 +427,7 @@ class SolrPower_WP_Query {
 	 *
 	 * @return string
 	 */
-	function found_posts_query( $sql, $query ) {
+	public function found_posts_query( $sql, $query ) {
 		if ( ! $this->is_solr_query( $query ) || false === SolrPower_Api::get_instance()->ping ) {
 			return $sql;
 		}
@@ -489,7 +487,7 @@ class SolrPower_WP_Query {
 	 *
 	 * @return mixed
 	 */
-	function the_posts( $posts, $query ) {
+	public function the_posts( $posts, $query ) {
 		if ( ! isset( $this->found_posts[ $query->solr_query_id ] ) ) {
 			return $posts;
 		}
@@ -506,7 +504,7 @@ class SolrPower_WP_Query {
 	 *
 	 * @return array
 	 */
-	function parse_facets( $query ) {
+	public function parse_facets( $query ) {
 		$plugin_s4wp_settings = solr_options();
 		$default_operator     = ( isset( $plugin_s4wp_settings['s4wp_default_operator'] ) ) ? $plugin_s4wp_settings['s4wp_default_operator'] : 'OR';
 		$facet_operator       = apply_filters( 'solr_facet_operator', $default_operator );
@@ -538,7 +536,6 @@ class SolrPower_WP_Query {
 		$return = array_merge( $return, $this->fq );
 
 		return implode( ' ' . $facet_operator . ' ', $return );
-
 	}
 
 	/**
@@ -745,7 +742,6 @@ class SolrPower_WP_Query {
 		}
 
 		return '(' . implode( $relation, $query ) . ')';
-
 	}
 
 	/**
@@ -940,7 +936,6 @@ class SolrPower_WP_Query {
 		} // End foreach().
 
 		return '(' . implode( $relation, $query ) . ')';
-
 	}
 
 	/**
@@ -1007,7 +1002,6 @@ class SolrPower_WP_Query {
 				return '"' . $value . '"';
 				break;
 		}
-
 	}
 
 	/**
@@ -1017,7 +1011,7 @@ class SolrPower_WP_Query {
 	 *
 	 * @return string
 	 */
-	function parse_date_query( $date_query ) {
+	public function parse_date_query( $date_query ) {
 
 		$query    = array();
 		$relation = ( isset( $date_query['relation'] ) ) ? $date_query['relation'] : 'OR';
@@ -1093,7 +1087,7 @@ class SolrPower_WP_Query {
 	 *
 	 * @return string
 	 */
-	function date_query( $dq, $inclusive = false, $type = false ) {
+	public function date_query( $dq, $inclusive = false, $type = false ) {
 		$column = ( isset( $dq['column'] ) ) ? $dq['column'] : 'post_date';
 
 		// If year, month, and day are specified, we can do a range query.
@@ -1214,7 +1208,7 @@ class SolrPower_WP_Query {
 	 *
 	 * @return bool|string
 	 */
-	function compare_date( $field, $field_value, $compare = '=' ) {
+	public function compare_date( $field, $field_value, $compare = '=' ) {
 		switch ( $compare ) {
 			case '=':
 				return $field . '_i:' . $field_value;

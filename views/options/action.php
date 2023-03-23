@@ -93,7 +93,7 @@
 
 <?php if ( ! is_multisite() ) : ?>
 	<?php
-	$batch_index     = new SolrPower_Batch_Index;
+	$batch_index     = new SolrPower_Batch_Index();
 	$current_batch   = $batch_index->get_current_batch();
 	$total_batches   = $batch_index->get_total_batches();
 	$remaining_posts = $batch_index->get_remaining_posts();

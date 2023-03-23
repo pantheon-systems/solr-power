@@ -153,25 +153,25 @@ function s4wp_search_results() {
 
 			if ( $output_pager ) {
 				// calculate the number of pages.
-				$numpages	 = ceil( $response['numFound'] / $count );
+				$numpages    = ceil( $response['numFound'] / $count );
 				$currentpage = ceil( $offset / $count ) + 1;
-				$pagerout	 = array();
+				$pagerout    = array();
 
-				if ( 0 == $numpages ) {
+				if ( 0 === $numpages ) {
 					$numpages = 1;
 				}
 
 				foreach ( range( 1, $numpages ) as $pagenum ) {
-					if ( $pagenum != $currentpage ) {
+					if ( $pagenum !== $currentpage ) {
 						$offsetnum        = ( $pagenum - 1 ) * $count;
 						$pageritm         = array();
 						$pageritm['page'] = sprintf( '%d', $pagenum );
 						if ( ! isset( $sortby ) || ! $sortby ) {
 							$pagersortby = 'date';
-							$pagerorder	 = 'desc';
+							$pagerorder  = 'desc';
 						} else {
 							$pagersortby = $sortby;
-							$pagerorder	 = $order;
+							$pagerorder  = $order;
 						}
 						$pagerlink = sprintf( '?ssearch=%s&offset=%d&count=%d&sort=%s&order=%s', urlencode( $qry ), $offsetnum, $count, $pagersortby, $pagerorder );
 						if ( $fqstr ) {
@@ -235,7 +235,7 @@ function s4wp_search_results() {
 
 			$resultout = array();
 
-			if ( 0 != $response['numFound'] ) {
+			if ( 0 !== $response['numFound'] ) {
 				foreach ( $response['docs'] as $doc ) {
 
 					$resultinfo              = array();
@@ -344,7 +344,7 @@ function s4wp_print_facet_items( $items, $pre = '<ul>', $post = '</ul>', $before
 function s4wp_get_output_taxo( $facet, $taxo, $prefix, $fqstr, $field ) {
 	$qry = filter_input( INPUT_GET, 's', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
-	if ( count( $taxo ) == 0 ) {
+	if ( count( $taxo ) === 0 ) {
 		return;
 	} else {
 		$facetitms = array();
@@ -375,7 +375,7 @@ function s4wp_get_output_taxo( $facet, $taxo, $prefix, $fqstr, $field ) {
  */
 function s4wp_gen_taxo_array( $in, $vals ) {
 
-	if ( count( $vals ) == 1 ) {
+	if ( count( $vals ) === 1 ) {
 		if ( isset( $in[ $vals[0] ] ) && ! $in[ $vals[0] ] ) {
 			$in[ $vals[0] ] = array();
 		}

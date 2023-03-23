@@ -10,7 +10,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     container:
-      image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
+      image: quay.io/pantheon-public/build-tools-ci:8.x-php8.2
       options: --user root
     name: Lint
 
@@ -32,11 +32,11 @@ jobs:
       run: composer phpcs
 
   test-phpunit:
-    needs: lint
+    # needs: lint
     runs-on: ubuntu-latest
     services:
       mariadb:
-        image: mariadb:10.3
+        image: mariadb:10.4
     name: PHP Unit tests
 
     steps:
@@ -55,7 +55,7 @@ jobs:
         restore-keys: test-phpunit-dependencies-{{ checksum "composer.json" }}
 
     - name: Add PUBKEYs
-      run: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4EB27DB2A3B88B8B
+      run: sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4EB27DB2A3B88B8B
 
     - name: Install Extras 
       run: |
@@ -68,7 +68,7 @@ jobs:
     - name: Set PHP version
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.0'
+        php-version: '8.2'
         coverage: none
 
     - name: Install dependencies
@@ -86,7 +86,7 @@ jobs:
     needs: test-phpunit
     runs-on: ubuntu-latest
     container:
-      image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
+      image: quay.io/pantheon-public/build-tools-ci:8.x-php8.2
       options: --user root
     env:
       TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}

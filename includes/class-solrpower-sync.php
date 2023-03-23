@@ -22,7 +22,7 @@ class SolrPower_Sync {
 	 *
 	 * @var string
 	 */
-	var $error_msg;
+	public $error_msg;
 
 	/**
 	 * Grab instance of object.
@@ -40,7 +40,7 @@ class SolrPower_Sync {
 	/**
 	 * Instantiate the object.
 	 */
-	function __construct() {
+	public function __construct() {
 		add_action( 'publish_post', array( $this, 'handle_modified' ) );
 		add_action( 'publish_page', array( $this, 'handle_modified' ) );
 		add_action( 'save_post', array( $this, 'handle_modified' ) );
@@ -67,7 +67,7 @@ class SolrPower_Sync {
 	 *
 	 * @param integer $post_id ID for the post.
 	 */
-	function handle_modified( $post_id ) {
+	public function handle_modified( $post_id ) {
 		$post_info  = get_post( $post_id );
 		$post_types = SolrPower::get_post_types();
 
@@ -102,7 +102,7 @@ class SolrPower_Sync {
 	 *
 	 * @param integer $post_id ID for the post.
 	 */
-	function handle_delete( $post_id ) {
+	public function handle_delete( $post_id ) {
 		$post_info            = get_post( $post_id );
 		$plugin_s4wp_settings = solr_options();
 		$delete_page          = $plugin_s4wp_settings['s4wp_delete_page'];
@@ -120,7 +120,7 @@ class SolrPower_Sync {
 	 *
 	 * @param object|integer $site Site object or simply its id.
 	 */
-	function handle_activate_blog( $site ) {
+	public function handle_activate_blog( $site ) {
 		$blogid = is_object( $site ) ? $site->id : $site;
 		$this->load_blog_all( $blogid );
 	}
@@ -130,7 +130,7 @@ class SolrPower_Sync {
 	 *
 	 * @param integer $blogid ID for the blog.
 	 */
-	function delete_blog( $blogid ) {
+	public function delete_blog( $blogid ) {
 		try {
 			$solr = get_solr();
 			if ( null !== $solr ) {
@@ -156,7 +156,7 @@ class SolrPower_Sync {
 	protected static function is_private_blog() {
 		global $current_blog;
 
-		return apply_filters( 'solr_is_private_blog', ( 1 != $current_blog->public || 1 == $current_blog->spam || 1 == $current_blog->archived ), $current_blog );
+		return apply_filters( 'solr_is_private_blog', ( 1 !== $current_blog->public || 1 === $current_blog->spam || 1 === $current_blog->archived ), $current_blog );
 	}
 
 	/**
@@ -164,7 +164,7 @@ class SolrPower_Sync {
 	 *
 	 * @param integer $blogid ID for the blog.
 	 */
-	function load_blog_all( $blogid ) {
+	public function load_blog_all( $blogid ) {
 		global $wpdb;
 		$documents = array();
 		$cnt       = 0;
@@ -178,11 +178,11 @@ class SolrPower_Sync {
 			$solr   = get_solr();
 			$update = $solr->createUpdate();
 
-			for ( $idx = 0; $idx < count( $postids ); $idx ++ ) {
+			for ( $idx = 0; $idx < count( $postids ); $idx++ ) {
 				$postid      = $ids[ $idx ];
 				$documents[] = $this->build_document( $update->createDocument(), get_blog_post( $blogid, $postid->ID ), $bloginfo->domain, $bloginfo->path );
-				$cnt ++;
-				if ( $cnt == $batchsize ) {
+				++$cnt;
+				if ( $cnt === $batchsize ) {
 					$this->post( $documents );
 					$cnt       = 0;
 					$documents = array();
@@ -201,7 +201,7 @@ class SolrPower_Sync {
 	 * @param integer $post_id   Post ID.
 	 * @param WP_Post $post_info Post object.
 	 */
-	function handle_status_change( $post_id, $post_info = null ) {
+	public function handle_status_change( $post_id, $post_info = null ) {
 		if ( ! $post_info ) {
 			$post_info = get_post( $post_id );
 		}
@@ -222,7 +222,7 @@ class SolrPower_Sync {
 	 * @param string                                            $path      Path context.
 	 * @return Solarium\QueryType\Update\Query\Document\Document Generated Solarium document.
 	 */
-	function build_document(
+	public function build_document(
 		Solarium\QueryType\Update\Query\Document\Document $doc, $post_info, $domain = null,
 		$path = null
 	) {
@@ -416,7 +416,7 @@ class SolrPower_Sync {
 	 * @param boolean $commit    Whether or not to commit the documents.
 	 * @param boolean $optimize  Whether or not to optimize the index.
 	 */
-	function post( $documents, $commit = true, $optimize = false ) {
+	public function post( $documents, $commit = true, $optimize = false ) {
 		try {
 			$solr = get_solr();
 			if ( null !== $solr ) {
@@ -461,7 +461,7 @@ class SolrPower_Sync {
 	 *
 	 * @param integer $doc_id Document id.
 	 */
-	function delete( $doc_id ) {
+	public function delete( $doc_id ) {
 		try {
 			$solr = get_solr();
 			if ( null !== $solr ) {
@@ -480,13 +480,12 @@ class SolrPower_Sync {
 
 			return false;
 		}
-
 	}
 
 	/**
 	 * Delete all documents in the index.
 	 */
-	function delete_all() {
+	public function delete_all() {
 		global $wpdb;
 		try {
 			$solr = get_solr();
@@ -522,9 +521,9 @@ class SolrPower_Sync {
 	 * @param integer $prev      Offset to begin at.
 	 * @param string  $post_type Post type to index.
 	 * @param integer $limit     Number of posts to index.
-	 * @param boolean $echo      Whether or not to echo output.
+	 * @param boolean $display   Whether or not to echo output.
 	 */
-	function load_all_posts( $prev, $post_type = 'post', $limit = 5, $echo = true ) {
+	public function load_all_posts( $prev, $post_type = 'post', $limit = 5, $display = true ) {
 		global $wpdb, $current_site;
 
 		$documents = array();
@@ -585,7 +584,7 @@ class SolrPower_Sync {
 
 				$postcount = count( $postids );
 				syslog( LOG_INFO, "building $postcount documents for " . substr( get_bloginfo( 'wpurl' ), 7 ) );
-				for ( $idx = 0; $idx < $postcount; $idx ++ ) {
+				for ( $idx = 0; $idx < $postcount; $idx++ ) {
 
 					$postid  = $postids[ $idx ];
 					$last    = $postid;
@@ -607,8 +606,8 @@ class SolrPower_Sync {
 					$solr        = get_solr();
 					$update      = $solr->createUpdate();
 					$documents[] = $this->build_document( $update->createDocument(), get_blog_post( $blog_id, $postid ), substr( get_bloginfo( 'wpurl' ), 7 ), $current_site->path );
-					$cnt ++;
-					if ( $cnt == $batchsize ) {
+					++$cnt;
+					if ( $cnt === $batchsize ) {
 						$this->post( $documents, true, false );
 						$this->post( false, true, false );
 						wp_cache_flush();
@@ -647,24 +646,24 @@ class SolrPower_Sync {
 			$query     = new WP_Query( $args );
 			$posts     = $query->posts;
 			$postcount = count( $posts );
-			if ( 0 == $postcount ) {
+			if ( 0 === $postcount ) {
 				$end     = true;
 				$results = sprintf( '{"type": "' . $post_type . '", "last": "%s", "end": true, "percent": "%.2f"}', $last, 100 );
-				if ( $echo ) {
+				if ( $display ) {
 					echo $results;
 				}
 				die();
 			}
 			$last    = absint( $prev ) + 5;
 			$percent = absint( ( floatval( $last ) / floatval( $query->found_posts ) ) * 100 );
-			for ( $idx = 0; $idx < $postcount; $idx ++ ) {
+			for ( $idx = 0; $idx < $postcount; $idx++ ) {
 				$postid = $posts[ $idx ];
 
 				$solr        = get_solr();
 				$update      = $solr->createUpdate();
 				$documents[] = $this->build_document( $update->createDocument(), get_post( $postid ) );
-				$cnt ++;
-				if ( $cnt == $batchsize ) {
+				++$cnt;
+				if ( $cnt === $batchsize ) {
 					$this->post( $documents, true, false );
 					$cnt       = 0;
 					$documents = array();
@@ -684,7 +683,7 @@ class SolrPower_Sync {
 		} else {
 			$results = sprintf( '{"type\": "' . $post_type . '", "last": "%s", "end": false, "percent": "%.2f"}', $last, $percent );
 		}
-		if ( $echo ) {
+		if ( $display ) {
 			echo $results;
 
 			return;
@@ -699,7 +698,7 @@ class SolrPower_Sync {
 	 * @param string $thedate Date string.
 	 * @return string
 	 */
-	function format_date( $thedate ) {
+	public function format_date( $thedate ) {
 		$datere  = '/(\d{4}-\d{2}-\d{2})\s(\d{2}:\d{2}:\d{2})/';
 		$replstr = '${1}T${2}Z';
 
@@ -709,7 +708,7 @@ class SolrPower_Sync {
 	/**
 	 * Copy config settings from the main blog to all other blogs
 	 */
-	function copy_config_to_all_blogs() {
+	public function copy_config_to_all_blogs() {
 		global $wpdb;
 
 		$blogs = $wpdb->get_results( "SELECT blog_id FROM $wpdb->blogs WHERE spam = 0 AND deleted = 0" );
@@ -743,7 +742,7 @@ class SolrPower_Sync {
 	 * @see https://cwiki.apache.org/confluence/display/solr/UpdateXmlMessages#UpdateXmlMessages-%22commit%22and%22optimize%22
 	 * @return bool Whether to commit immediately when writing site data to Solr.
 	 */
-	function should_commit() {
+	public function should_commit() {
 		return ! ( defined( 'SOLRPOWER_DISABLE_AUTOCOMMIT' ) && SOLRPOWER_DISABLE_AUTOCOMMIT );
 	}
 }
