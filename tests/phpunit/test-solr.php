@@ -521,13 +521,13 @@ class SolrTest extends SolrTestBase {
 		switch_to_blog( $blog2 );
 		$p_id2 = $this->__create_test_post( 'post', 'Best Films of 2015' );
 		$args  = array(
-			's' => 'Best Films',
+			's' => 'Best Films of 2015',
 		);
 		$query = new WP_Query( $args );
 		$this->assertEquals( array( $p_id2 ), wp_list_pluck( $query->posts, 'ID' ) );
 		switch_to_blog( 1 );
 		$args  = array(
-			's' => 'Best Films',
+			's' => 'Best Films of 2015',
 		);
 		$query = new WP_Query( $args );
 		$this->assertEquals( array( $p_id ), wp_list_pluck( $query->posts, 'ID' ) );
