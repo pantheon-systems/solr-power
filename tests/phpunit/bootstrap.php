@@ -6,7 +6,7 @@ if ( getenv( 'CIRCLECI' ) ) {
 } else {
 	putenv( 'PANTHEON_INDEX_PORT=8983' );
 }
-define( 'SOLR_PATH', '/' );
+define( 'SOLR_PATH', '/solr/' );
 
 $_tests_dir = getenv( 'WP_TESTS_DIR' );
 if ( !$_tests_dir ) {
