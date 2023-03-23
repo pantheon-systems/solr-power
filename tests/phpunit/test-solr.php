@@ -554,7 +554,7 @@ class SolrTest extends SolrTestBase {
 	public function test_no_highlight_results_in_search() {
 		$p_id = $this->__create_test_post( 'post', 'Dragon breath title', 'Dragon breath content' );
 		$query = new WP_Query( array(
-			's' => 'Dragon breath title',
+			's' => 'Dragon breath',
 		) );
 		$this->assertTrue( $query->posts[0]->solr );
 		$this->assertEquals( 'Dragon breath title', $query->posts[0]->post_title );
