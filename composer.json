@@ -23,7 +23,7 @@
         }
     },
     "require": {
-        "solarium/solarium": "~5",
+        "solarium/solarium": "~6",
         "symfony/event-dispatcher": "^4.3 || ^5.0 || ^6.0"
     },
     "require-dev": {

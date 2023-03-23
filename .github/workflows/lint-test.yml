@@ -83,7 +83,7 @@ jobs:
         WP_MULTISITE=1 composer phpunit
 
   test-behat:
-    needs: test-phpunit
+    needs: lint
     runs-on: ubuntu-latest
     container:
       image: quay.io/pantheon-public/build-tools-ci:8.x-php8.2
