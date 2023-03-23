@@ -16,7 +16,7 @@
     "prefer-stable": true,
     "config": {
         "platform": {
-            "php": "7.4"
+            "php": "7.3"
         },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
@@ -24,7 +24,7 @@
     },
     "require": {
         "solarium/solarium": "~5",
-        "symfony/event-dispatcher": "^3.4"
+        "symfony/event-dispatcher": "^4.3 || ^5.0 || ^6.0"
     },
     "require-dev": {
         "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master",
