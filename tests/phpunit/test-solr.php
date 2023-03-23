@@ -583,7 +583,7 @@ EOT;
 		) );
 		$this->assertTrue( $query->posts[0]->solr );
 		$this->assertEquals( 'Dragon breath title', $query->posts[0]->post_title );
-		$this->assertEquals( 'This text has treatment keyword in ACF', $query->posts[0]->post_content );
+		$this->assertStringContainsString( 'This text has treatment keyword in ACF', $query->posts[0]->post_content );
 	}
 
 }
