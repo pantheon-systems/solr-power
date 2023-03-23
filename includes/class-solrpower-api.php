@@ -273,7 +273,8 @@ class SolrPower_Api {
 		$this->solr = $solr;
 
 		// Use the PantheonCurl adapter to get https.
-		$this->solr->setAdapter( '\PantheonCurl' );
+		$curl = new PantheonCurl();
+		$this->solr->setAdapter( $curl );
 
 		return $solr;
 	}
