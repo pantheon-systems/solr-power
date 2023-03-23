@@ -258,9 +258,9 @@ class SolrPower_Api {
 		}
 
 		$adapter = new Solarium\Core\Client\Adapter\Curl();
-		$eventDispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();
+		$event_dispatcher = new Symfony\Component\EventDispatcher\EventDispatcher();
 
-		$solr = new Solarium\Client( $adapter, $eventDispatcher, $solarium_config );
+		$solr = new Solarium\Client( $adapter, $event_dispatcher, $solarium_config );
 
 		/**
 		 * Filter solarium client
