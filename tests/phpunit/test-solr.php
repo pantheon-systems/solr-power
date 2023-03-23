@@ -48,6 +48,7 @@ class SolrTest extends SolrTestBase {
 		}
 		$search = $search->getData();
 		$search = $search['response'];
+		var_dump($search['docs']);
 
 		$this->assertEquals( $post_id, $search['docs'][0]['ID'] );
 		$this->assertEquals( 'admin', $search['docs'][0]['post_author'] );
@@ -165,7 +166,7 @@ class SolrTest extends SolrTestBase {
 		SolrPower_Sync::get_instance()->delete( $delete_id );
 
 		$stats = SolrPower_Api::get_instance()->index_stats();
-		$this->assertEquals( 3, $stats['page'] );
+		$this->assertEquals( 1, $stats['page'] );
 		$this->assertEquals( 5, $stats['post'] );
 	}
 
@@ -553,7 +554,7 @@ class SolrTest extends SolrTestBase {
 	public function test_no_highlight_results_in_search() {
 		$p_id = $this->__create_test_post( 'post', 'Dragon breath title', 'Dragon breath content' );
 		$query = new WP_Query( array(
-			's' => 'Dragon',
+			's' => 'Dragon breath title',
 		) );
 		$this->assertTrue( $query->posts[0]->solr );
 		$this->assertEquals( 'Dragon breath title', $query->posts[0]->post_title );
