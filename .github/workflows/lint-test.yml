@@ -54,15 +54,15 @@ jobs:
         key: test-phpunit-dependencies-{{ checksum "composer.json" }}
         restore-keys: test-phpunit-dependencies-{{ checksum "composer.json" }}
 
-    - name: Add PUBKEYs
-      run: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4EB27DB2A3B88B8B
+    # - name: Add PUBKEYs
+    #   run: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4EB27DB2A3B88B8B
 
-    - name: Install Extras 
+    - name: Install Extras
       run: |
         sudo apt-get update
         sudo apt-get install subversion
 
-    - name: Run install-solr.sh 
+    - name: Run install-solr.sh
       run: bash bin/install-solr.sh
 
     - name: Set PHP version
@@ -73,7 +73,7 @@ jobs:
 
     - name: Install dependencies
       run: composer install
-    
+
     - name: "Run Tests"
       run: |
         bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 latest
@@ -102,7 +102,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      
+
     - name: Install SSH key
       uses: webfactory/ssh-agent@v0.7.0
       with:
@@ -134,7 +134,7 @@ jobs:
         fi
         terminus auth:login --machine-token=$TERMINUS_TOKEN
 
-    - name: Prepare for Behat tests  
+    - name: Prepare for Behat tests
       run: ./bin/behat-prepare.sh
 
     - name: Execute Behat tests
