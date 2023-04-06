@@ -3,8 +3,8 @@ Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor
 Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
-Tested up to: 6.0
-Stable tag: 2.4.3
+Tested up to: 6.2
+Stable tag: 2.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
