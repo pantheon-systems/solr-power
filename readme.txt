@@ -228,7 +228,7 @@ To force-commit data when this variable is defined outside of a normal cron run,
 
 == Changelog ==
 
-= 2.4.4 (April 6, 2023) =
+= 2.4.4 (April 7, 2023) =
 * Update Composer dependencies [[#576](https://github.com/pantheon-systems/solr-power/pull/576)] [[#574](https://github.com/pantheon-systems/solr-power/pull/574)] [[#573](https://github.com/pantheon-systems/solr-power/pull/573)]
 * Fix failing tests [[#577](https://github.com/pantheon-systems/solr-power/pull/577)]
 * Update tested up to version
