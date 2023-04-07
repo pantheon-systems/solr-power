@@ -1,10 +1,10 @@
 === Solr Search for WordPress ===
-Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor, danielbachhuber, mattleff, mikengarrett, jazzs3quence
+Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor, danielbachhuber, mattleff, mikengarrett, jazzs3quence, jspellman
 Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
-Tested up to: 6.0
-Stable tag: 2.4.3
+Tested up to: 6.2
+Stable tag: 2.4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -227,6 +227,11 @@ To force-commit data when this variable is defined outside of a normal cron run,
       wp solr commit
 
 == Changelog ==
+
+= 2.4.4 (April 7, 2023) =
+* Update Composer dependencies [[#576](https://github.com/pantheon-systems/solr-power/pull/576)] [[#574](https://github.com/pantheon-systems/solr-power/pull/574)] [[#573](https://github.com/pantheon-systems/solr-power/pull/573)]
+* Fix failing tests [[#577](https://github.com/pantheon-systems/solr-power/pull/577)]
+* Update tested up to version
 
 = 2.4.3 (January 19, 2022) =
 * Include schema.xml in release distribution [[#568](https://github.com/pantheon-systems/solr-power/pull/568)]

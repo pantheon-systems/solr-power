@@ -1,4 +1,8 @@
 ## Changelog ##
+## 2.4.4 (April 7, 2023) ##
+* Update Composer dependencies [[#576](https://github.com/pantheon-systems/solr-power/pull/576)] [[#574](https://github.com/pantheon-systems/solr-power/pull/574)] [[#573](https://github.com/pantheon-systems/solr-power/pull/573)]
+* Fix failing tests [[#577](https://github.com/pantheon-systems/solr-power/pull/577)]
+* Update tested up to version
 
 ## 2.4.3 (January 19, 2022) ##
 * Include schema.xml in release distribution [[#568](https://github.com/pantheon-systems/solr-power/pull/568)]

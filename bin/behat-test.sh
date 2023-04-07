@@ -24,4 +24,8 @@ set -ex
 
 export BEHAT_PARAMS='{"extensions" : {"Behat\\MinkExtension" : {"base_url" : "http://'$TERMINUS_ENV'-'$TERMINUS_SITE'.pantheonsite.io"} }}'
 
+###
+# Install dependencies for tests
+###
+composer install
 ./vendor/bin/behat "$@"

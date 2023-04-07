@@ -24,6 +24,9 @@ fi
 
 set -ex
 
+# Set StrictHostKeyChecking to no
+echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
+
 ###
 # Create a new environment for this particular test run.
 ###
@@ -51,7 +54,20 @@ git clone -b $TERMINUS_ENV $PANTHEON_GIT_URL $PREPARE_DIR
 rm -rf $PREPARE_DIR/wp-content/plugins/solr-power
 cd $BASH_DIR/..
 rsync -av --exclude='node_modules/' --exclude='tests/' ./* $PREPARE_DIR/wp-content/plugins/solr-power
+cd $PREPARE_DIR/wp-content/plugins/solr-power
+
+###
+# Build plugin
+###
+npm ci
+npm run build
+composer install --no-dev -o
+
+# Remove unneeded stuff
 rm -rf $PREPARE_DIR/wp-content/plugins/solr-power/.git
+rm -rf $PREPARE_DIR/wp-content/plugins/solr-power/node_modules/
+rm -rf $PREPARE_DIR/wp-content/plugins/solr-power/tests/
+cd $BASH_DIR/..
 
 # Download the latest Classic Editor release from WordPress.org
 wget -O $PREPARE_DIR/classic-editor.zip https://downloads.wordpress.org/plugin/classic-editor.zip
@@ -75,9 +91,7 @@ terminus build:workflow:wait $TERMINUS_SITE.$TERMINUS_ENV
 ###
 # Set up WordPress, theme, and plugins for the test run
 ###
-{
-  terminus wp $SITE_ENV -- core install --title=$TERMINUS_ENV-$TERMINUS_SITE --url=$PANTHEON_SITE_URL --admin_user=$WORDPRESS_ADMIN_USERNAME --admin_email=$WORDPRESS_ADMIN_EMAIL --admin_password=$WORDPRESS_ADMIN_PASSWORD
-} &> /dev/null
+terminus wp $SITE_ENV -- core install --title=$TERMINUS_ENV-$TERMINUS_SITE --url=$PANTHEON_SITE_URL --admin_user=$WORDPRESS_ADMIN_USERNAME --admin_email=$WORDPRESS_ADMIN_EMAIL --admin_password=$WORDPRESS_ADMIN_PASSWORD
 terminus wp $SITE_ENV -- plugin activate solr-power classic-editor
 terminus wp $SITE_ENV -- theme activate twentyseventeen
 terminus wp $SITE_ENV -- rewrite structure '/%year%/%monthnum%/%day%/%postname%/'

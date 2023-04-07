@@ -1,11 +1,11 @@
 # Solr Search for WordPress #
-**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon), [Outlandish Josh](https://profiles.wordpress.org/outlandish-josh), [10up](https://profiles.wordpress.org/10up), [collinsinternet](https://profiles.wordpress.org/collinsinternet), [andrew.taylor](https://profiles.wordpress.org/andrew.taylor), [danielbachhuber](https://profiles.wordpress.org/danielbachhuber), [mattleff](https://profiles.wordpress.org/mattleff), [mikengarrett](https://profiles.wordpress.org/mikengarrett), [jazzsequence](https://profiles.wordpress.org/jazzs3quence)
-**Tags:** search
-**Requires at least:** 4.6
-**Requires PHP:** 7.1
-**Tested up to:** 6.0
-**Stable tag:** 2.4.3
-**License:** GPLv2 or later
+**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon), [Outlandish Josh](https://profiles.wordpress.org/outlandish-josh), [10up](https://profiles.wordpress.org/10up), [collinsinternet](https://profiles.wordpress.org/collinsinternet), [andrew.taylor](https://profiles.wordpress.org/andrew.taylor), [danielbachhuber](https://profiles.wordpress.org/danielbachhuber), [mattleff](https://profiles.wordpress.org/mattleff), [mikengarrett](https://profiles.wordpress.org/mikengarrett), [jazzsequence](https://profiles.wordpress.org/jazzs3quence), [jspellman](https://profiles.wordpress.org/jspellman/)  
+**Tags:** search  
+**Requires at least:** 4.6  
+**Requires PHP:** 7.1  
+**Tested up to:** 6.2  
+**Stable tag:** 2.4.4  
+**License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
 Improve your user experience with the Apache Solr search engine for your WordPress website.
@@ -13,8 +13,7 @@ Improve your user experience with the Apache Solr search engine for your WordPre
 ## Description ##
 
 [![Actively Maintained](https://img.shields.io/badge/Pantheon-Actively_Maintained-yellow?logo=pantheon&color=FFDC28)](https://pantheon.io/docs/oss-support-levels#actively-maintained-support)
-[![Travis Build Status](https://travis-ci.org/pantheon-systems/solr-power.svg?branch=master)](https://travis-ci.org/pantheon-systems/solr-power)
-[![Circle CI Build Status](https://circleci.com/gh/pantheon-systems/solr-power.svg?style=shield&circle-token=3af522a81a29eab25828a6b0d52e2f1afa7f044b)](https://circleci.com/gh/pantheon-systems/solr-power)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/pantheon-systems/solr-power/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/pantheon-systems/solr-power/tree/main)
 
 Search is critical for your site, but the default search for WordPress leaves a lot to be desired. Improve your user experience with the Apache Solr search engine for your WordPress website.
 
