@@ -58,7 +58,7 @@
 						$upload_dir = wp_upload_dir();
 						$base_dir   = $upload_dir['basedir'];
 						$base_dir   = str_replace( ABSPATH, '/', $base_dir );
-						$dir        = $basedir . '/solr-for-wordpress-on-pantheon/';
+						$dir        = $base_dir . '/solr-for-wordpress-on-pantheon/';
 					}
 					?>
 					<td scope="row" colspan="2">To use a custom schema.xml, upload it to the
