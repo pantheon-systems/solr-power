@@ -32,7 +32,7 @@ Note that dependencies are installed via Composer and the `vendor` directory is 
 1. From `develop`, checkout a new branch `release_X.Y.Z`.
 1. Make a release commit:
     * Drop the `-dev` from the version number in `package.json`, `README.md`, `readme.txt`, and `solr-power.php`.
-    * Update the "Latest" heading in the changelog to the new version number with the date
+    * Update the "Latest" heading in the changelog (both `CHANGELOG.md` and in `readme.txt`) to the new version number with the date
     * Commit these changes with the message `Release X.Y.Z`
     * Push the release branch up.
 1. Open a Pull Request to merge `release_X.Y.Z` into `main`. Your PR should consist of all commits to `develop` since the last release, and one commit to update the version number. The PR name should also be `Release X.Y.Z`.
