@@ -1,27 +1,29 @@
 ## Changelog ##
 
-## 2.4.5 (April 9, 2023) ##
+### Latest ###
+* Updates CONTRIBUTING.md [[#585](https://github.com/pantheon-systems/solr-power/pull/585)]
+* Fixes typo in var which caused undefined notice [[#582](https://github.com/pantheon-systems/solr-power/pull/582)]
+* Update Composer dependencies [[#576](https://github.com/pantheon-systems/solr-power/pull/576)] [[#574](https://github.com/pantheon-systems/solr-power/pull/583)] [[#573](https://github.com/pantheon-systems/solr-power/pull/584)]
+
+### 2.4.5 (April 9, 2023) ###
 * Fixes missing vendor/ directory in previous release [[#580](https://github.com/pantheon-systems/solr-power/pull/580)]
 
-## 2.4.4 (April 7, 2023) ##
+### 2.4.4 (April 7, 2023) ###
 * Update Composer dependencies [[#576](https://github.com/pantheon-systems/solr-power/pull/576)] [[#574](https://github.com/pantheon-systems/solr-power/pull/574)] [[#573](https://github.com/pantheon-systems/solr-power/pull/573)]
 * Fix failing tests [[#577](https://github.com/pantheon-systems/solr-power/pull/577)]
 * Update tested up to version
 
-## 2.4.3 (January 19, 2022) ##
 * Include schema.xml in release distribution [[#568](https://github.com/pantheon-systems/solr-power/pull/568)]
 
-## 2.4.2 (December 2, 2022) ##
+### 2.4.2 (December 2, 2022) ###
 * Re-add changelog heading to readme.txt [[#564](https://github.com/pantheon-systems/solr-power/pull/564)]
 
-## 2.4.1 (December 1, 2022) ##
+### 2.4.1 (December 1, 2022) ###
 * Fixes the WordPress `readme.txt` [[#562](https://github.com/pantheon-systems/solr-power/pull/562/)]
 
-## 2.4.0 (November 30, 2022) ##
 * Adds Github Actions for building tag and deploying to wp.org. Add CONTRIBUTING.md. [[#551](https://github.com/pantheon-systems/solr-power/issues/551)]
 * Added SOLRPOWER_DISABLE_AUTOCOMMIT to disable autocommitting of posts, moved CHANGELOG to it's own file, added `$post->score` value to parsed search results [[#559](https://github.com/pantheon-systems/solr-power/pull/559)]
 
-## 2.3.3 (September 28, 2022) ##
 * Fixes issue where options could not be saved [[#541](https://github.com/pantheon-systems/solr-power/issues/541)]
 * Enforces network activation requirement for WordPress multisite [[#538](https://github.com/pantheon-systems/solr-power/issues/538)]
 

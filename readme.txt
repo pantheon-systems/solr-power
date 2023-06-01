@@ -4,7 +4,7 @@ Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
 Tested up to: 6.2
-Stable tag: 2.4.5
+Stable tag: 2.4.6-dev
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -227,6 +227,11 @@ To force-commit data when this variable is defined outside of a normal cron run,
       wp solr commit
 
 == Changelog ==
+
+= Latest =
+* Updates CONTRIBUTING.md [[#585](https://github.com/pantheon-systems/solr-power/pull/585)]
+* Fixes typo in var which caused undefined notice [[#582](https://github.com/pantheon-systems/solr-power/pull/582)]
+* Update Composer dependencies [[#576](https://github.com/pantheon-systems/solr-power/pull/576)] [[#574](https://github.com/pantheon-systems/solr-power/pull/583)] [[#573](https://github.com/pantheon-systems/solr-power/pull/584)]
 
 = 2.4.5 (April 9, 2023) =
 * Fixes missing vendor/ directory in previous release [[#580](https://github.com/pantheon-systems/solr-power/pull/580)]
