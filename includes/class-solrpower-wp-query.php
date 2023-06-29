@@ -1251,7 +1251,16 @@ class SolrPower_WP_Query {
 	 * @return boolean
 	 */
 	private function is_solr_query( $query ) {
-		return $query->is_search() || $query->get( 'solr_integrate' );
+		$is_solr_query = $query->is_search() || $query->get( 'solr_integrate' );
+		/**
+		 * Filter is_solr_query
+		 *
+		 * Enables the ability to turn off Solr for queries.
+		 *
+		 * @param boolean  $enabled Should Solr run for this query?
+		 * @param WP_Query $query   The WP_Query.
+		 */
+		return apply_filters( 'is_solr_query', $is_solr_query, $query );
 	}
 
 }
