@@ -25,7 +25,7 @@
 					if ( in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) :
 						?>
 						<div class="entry-meta">
-							<span class="cat-links"><?php echo get_the_category_list( _x( ', ', 'Used between list items, there is a space after the comma.', 'solr-for-wordpress-on-pantheon' ) ); ?></span>
+							<span class="cat-links"><?php echo wp_kses_post( get_the_category_list( _x( ', ', 'Used between list items, there is a space after the comma.', 'solr-for-wordpress-on-pantheon' ) ) ); ?></span>
 						</div>
 						<?php
 					endif;
@@ -54,7 +54,7 @@
 						'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'solr-for-wordpress-on-pantheon' ) . ' </span>',
 
 					)
-				);
+				); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				wp_reset_postdata();
 				?>
 			</div>

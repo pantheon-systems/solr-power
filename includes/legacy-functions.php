@@ -39,7 +39,7 @@ function s4wp_search_form() {
 	}
 	$form = '<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="ssearch" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">' . esc_html__( 'Sort By:', 'solr-for-wordpress-on-pantheon' ) . '</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">' . __( 'Order By:', 'solr-for-wordpress-on-pantheon' ) . '</label><select name="order" id="orderselect">%s</select>%s</form>';
 
-	printf( $form, filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_FULL_SPECIAL_CHARS ), $sortval, $orderval, $serverval );
+	printf( $form, filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_FULL_SPECIAL_CHARS ), $sortval, $orderval, $serverval ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
 /**
@@ -319,16 +319,16 @@ function s4wp_print_facet_items( $items, $pre = '<ul>', $post = '</ul>', $before
 	if ( ! $items ) {
 		return;
 	}
-	printf( "%s\n", $pre );
+	printf( "%s\n", wp_kses_post( $pre ) );
 	foreach ( $items as $item ) {
-		printf( "%s<a href=\"%s\">%s (%s)</a>%s\n", $before, $item['link'], $item['name'], $item['count'], $after );
+		printf( "%s<a href=\"%s\">%s (%s)</a>%s\n", $before, $item['link'], $item['name'], $item['count'], wp_kses_post( $after ) );
 		$item_items = isset( $item['items'] ) ? true : false;
 
 		if ( $item_items ) {
 			s4wp_print_facet_items( $item['items'], $nestedpre, $nestedpost, $nestedbefore, $nestedafter, $nestedpre, $nestedpost, $nestedbefore, $nestedafter );
 		}
 	}
-	printf( "%s\n", $post );
+	printf( "%s\n", wp_kses_post( $post ) );
 }
 
 /**

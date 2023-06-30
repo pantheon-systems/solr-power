@@ -72,15 +72,15 @@ class SolrPower {
 			$schema_message = SolrPower_Api::get_instance()->submit_schema();
 			if ( strpos( $schema_message, 'Error' ) ) {
 				// Translators: 1 The error message, 2: The SOLR_PATH constant.
-				$message = wp_kses( __( 'Submitting the schema failed with the message: %1$s<br /><br />%2$s', 'solr-for-wordpress-on-pantheon' ), [ 'br' => [] ] );
-				wp_die( sprintf( $message, esc_html( $schema_message ), $solr_path ) );
+				$message = __( 'Submitting the schema failed with the message: %1$s<br /><br />%2$s', 'solr-for-wordpress-on-pantheon' );
+				wp_die( sprintf( wp_kses( $message, [ 'br' => [] ] ), esc_html( $schema_message ), $solr_path ) );
 			}
 		}
 
 		if ( is_multisite() && ! $networkwide ) {
 			// Translators: 1: The URL to the network admin plugins page.
-			$message = wp_kses_post( __( 'You are attempting to activate the plugin on a multisite as a single-site plugin. For WordPress multisites, you need to activate network-wide. Go to your <a href="%s">your Network Admin Plugins page</a> and click the Network Activate link there.', 'solr-for-wordpress-on-pantheon' ) );
-			wp_die( sprintf( $message, get_admin_url( 1, 'network/plugins.php' ) ) );
+			$message = __( 'You are attempting to activate the plugin on a multisite as a single-site plugin. For WordPress multisites, you need to activate network-wide. Go to your <a href="%s">your Network Admin Plugins page</a> and click the Network Activate link there.', 'solr-for-wordpress-on-pantheon' );
+			wp_die( sprintf( wp_kses_post( $message ), get_admin_url( 1, 'network/plugins.php' ) ) );
 		}
 
 		SolrPower_Options::get_instance()->initalize_options();
@@ -210,9 +210,9 @@ class SolrPower {
 		}
 
 		// If there is a template file then we use it.
-		if ( file_exists( TEMPLATEPATH . '/s4wp_search.php' ) ) {
+		if ( file_exists( get_template_directory() . '/s4wp_search.php' ) ) {
 			// use theme file.
-			include_once( TEMPLATEPATH . '/s4wp_search.php' );
+			include_once( get_template_directory() . '/s4wp_search.php' );
 		} elseif ( file_exists( dirname( __FILE__ ) . '/template/s4wp_search.php' ) ) {
 			// use plugin supplied file.
 			add_action( 'wp_head', array( $this, 'default_head' ) );
