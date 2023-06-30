@@ -92,7 +92,7 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 			echo '<p>';
 			foreach ( explode( '...', $result['teaser'] ) as $this_result ) {
 				if ( ! empty( $this_result ) ) {
-					echo '...' . $this_result . '...<br /><br />'; // phpcs:ignore WordPressDotOrg.sniffs.OutputEscaping.UnescapedOutputParameter
+					echo '...' . $this_result . '...<br /><br />'; // phpcs:ignore WordPressDotOrg.sniffs.OutputEscaping.UnescapedOutputParameter,WordPress.Security.EscapeOutput.OutputNotEscaped
 				}
 			}
 
