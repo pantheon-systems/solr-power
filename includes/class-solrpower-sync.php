@@ -651,7 +651,7 @@ class SolrPower_Sync {
 				$end     = true;
 				$results = sprintf( '{"type": "' . $post_type . '", "last": "%s", "end": true, "percent": "%.2f"}', $last, 100 );
 				if ( $echo ) {
-					echo $results; // phpcs:ignore WordPressDotOrg.sniffs.OutputEscaping.UnescapedOutputParameter
+					echo $results; // phpcs:ignore WordPressDotOrg.sniffs.OutputEscaping.UnescapedOutputParameter,WordPress.Security.EscapeOutput.OutputNotEscaped
 				}
 				die();
 			}
@@ -685,7 +685,7 @@ class SolrPower_Sync {
 			$results = sprintf( '{"type\": "' . $post_type . '", "last": "%s", "end": false, "percent": "%.2f"}', $last, $percent );
 		}
 		if ( $echo ) {
-			echo $results; // phpcs:ignore WordPressDotOrg.sniffs.OutputEscaping.UnescapedOutputParameter
+			echo $results; // phpcs:ignore WordPressDotOrg.sniffs.OutputEscaping.UnescapedOutputParameter,WordPress.Security.EscapeOutput.OutputNotEscaped
 
 			return;
 		}
