@@ -226,6 +226,10 @@ To force-commit data when this variable is defined outside of a normal cron run,
 
       wp solr commit
 
+== Frequently Asked Questions ==
+= Where do I report security bugs found in this plugin? =
+Please report security bugs found in the source code of the Solr Power plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/solr-power). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
+
 == Changelog ==
 
 = Latest =
@@ -233,6 +237,7 @@ To force-commit data when this variable is defined outside of a normal cron run,
 * Fixes typo in var which caused undefined notice [[#582](https://github.com/pantheon-systems/solr-power/pull/582)]
 * Update Composer dependencies [[#576](https://github.com/pantheon-systems/solr-power/pull/576)] [[#574](https://github.com/pantheon-systems/solr-power/pull/583)] [[#573](https://github.com/pantheon-systems/solr-power/pull/584)]
 * Adds WP.org Validation GitHub action [[#590](https://github.com/pantheon-systems/solr-power/pull/590)]
+* Updates security policy [[#589](https://github.com/pantheon-systems/solr-power/pull/589)]
 
 = 2.4.5 (April 9, 2023) =
 * Fixes missing vendor/ directory in previous release [[#580](https://github.com/pantheon-systems/solr-power/pull/580)]
