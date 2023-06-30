@@ -4,6 +4,7 @@
 * Updates CONTRIBUTING.md [[#585](https://github.com/pantheon-systems/solr-power/pull/585)]
 * Fixes typo in var which caused undefined notice [[#582](https://github.com/pantheon-systems/solr-power/pull/582)]
 * Update Composer dependencies [[#576](https://github.com/pantheon-systems/solr-power/pull/576)] [[#574](https://github.com/pantheon-systems/solr-power/pull/583)] [[#573](https://github.com/pantheon-systems/solr-power/pull/584)]
+* Updates security policy [[#589](https://github.com/pantheon-systems/solr-power/pull/589)]
 
 ### 2.4.5 (April 9, 2023) ###
 * Fixes missing vendor/ directory in previous release [[#580](https://github.com/pantheon-systems/solr-power/pull/580)]
