@@ -236,7 +236,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		 *
 		 * @param string $html the search box html.
 		 */
-		echo apply_filters( 'solr_facet_searchbox', wp_kses_post( $html ) );
+		echo wp_kses_post( apply_filters( 'solr_facet_searchbox', $html ) );
 	}
 
 	/**
