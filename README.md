@@ -1,11 +1,11 @@
 # Solr Search for WordPress #
-**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon), [Outlandish Josh](https://profiles.wordpress.org/outlandish-josh), [10up](https://profiles.wordpress.org/10up), [collinsinternet](https://profiles.wordpress.org/collinsinternet), [andrew.taylor](https://profiles.wordpress.org/andrew.taylor), [danielbachhuber](https://profiles.wordpress.org/danielbachhuber), [mattleff](https://profiles.wordpress.org/mattleff), [mikengarrett](https://profiles.wordpress.org/mikengarrett), [jazzsequence](https://profiles.wordpress.org/jazzs3quence), [jspellman](https://profiles.wordpress.org/jspellman/)  
-**Tags:** search  
-**Requires at least:** 4.6  
-**Requires PHP:** 7.1  
-**Tested up to:** 6.2  
-**Stable tag:** 2.4.6-dev  
-**License:** GPLv2 or later  
+**Contributors:** [getpantheon](https://profiles.wordpress.org/getpantheon), [Outlandish Josh](https://profiles.wordpress.org/outlandish-josh), [10up](https://profiles.wordpress.org/10up), [collinsinternet](https://profiles.wordpress.org/collinsinternet), [andrew.taylor](https://profiles.wordpress.org/andrew.taylor), [danielbachhuber](https://profiles.wordpress.org/danielbachhuber), [mattleff](https://profiles.wordpress.org/mattleff), [mikengarrett](https://profiles.wordpress.org/mikengarrett), [jazzsequence](https://profiles.wordpress.org/jazzs3quence), [jspellman](https://profiles.wordpress.org/jspellman/)
+**Tags:** search
+**Requires at least:** 4.6
+**Requires PHP:** 7.1
+**Tested up to:** 6.2
+**Stable tag:** 2.4.6-dev
+**License:** GPLv2 or later
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
 Improve your user experience with the Apache Solr search engine for your WordPress website.
@@ -218,3 +218,7 @@ To force-commit data when this variable is defined outside of a normal cron run,
 ```bash
 wp solr commit
 ```
+
+## Security Policy
+### Reporting Security Bugs
+Please report security bugs found in the Solr Power plugin's source code through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/solr-power). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
