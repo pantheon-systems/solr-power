@@ -321,7 +321,7 @@ function s4wp_print_facet_items( $items, $pre = '<ul>', $post = '</ul>', $before
 	}
 	printf( "%s\n", wp_kses_post( $pre ) );
 	foreach ( $items as $item ) {
-		printf( "%s<a href=\"%s\">%s (%s)</a>%s\n", $before, $item['link'], $item['name'], $item['count'], wp_kses_post( $after ) );
+		printf( "%s<a href=\"%s\">%s (%s)</a>%s\n", wp_kses_post( $before ), esc_url_raw( $item['link'] ), esc_textarea( $item['name'] ), esc_textarea( $item['count'] ), wp_kses_post( $after ) );
 		$item_items = isset( $item['items'] ) ? true : false;
 
 		if ( $item_items ) {
