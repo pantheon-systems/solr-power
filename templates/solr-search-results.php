@@ -43,7 +43,7 @@
 				<?php
 				$big = 999999999; // Need an unlikely integer.
 
-				echo paginate_links(
+				echo paginate_links( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					array(
 						'base'               => str_replace( $big, '%#%', get_pagenum_link( $big, false ) ),
 						'format'             => '?paged=%#%',
@@ -54,7 +54,7 @@
 						'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'solr-for-wordpress-on-pantheon' ) . ' </span>',
 
 					)
-				); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				);
 				wp_reset_postdata();
 				?>
 			</div>

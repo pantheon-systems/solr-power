@@ -62,11 +62,11 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 			</div>
 			<div class="solr_results_headerR">
 				<ol class="solr_sort2">
-					<li class="solr_sort_drop"><a href="<?php echo $results['sorting']['scoredesc'] // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">Relevance<span></span></a></li>
-					<li><a href="<?php echo $results['sorting']['datedesc'] // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">Newest</a></li>
-					<li><a href="<?php echo $results['sorting']['dateasc'] // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">Oldest</a></li>
-					<li><a href="<?php echo $results['sorting']['commentsdesc'] // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">Most Comments</a></li>
-					<li><a href="<?php echo $results['sorting']['commentsasc'] // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">Least Comments</a></li>
+					<li class="solr_sort_drop"><a href="<?php echo $results['sorting']['scoredesc'] // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped,WordPressDotOrg.sniffs.OutputEscaping.UnescapedOutputParameter ?>">Relevance<span></span></a></li>
+					<li><a href="<?php echo $results['sorting']['datedesc'] // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped,WordPressDotOrg.sniffs.OutputEscaping.UnescapedOutputParameter ?>">Newest</a></li>
+					<li><a href="<?php echo $results['sorting']['dateasc'] // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped,WordPressDotOrg.sniffs.OutputEscaping.UnescapedOutputParameter ?>">Oldest</a></li>
+					<li><a href="<?php echo $results['sorting']['commentsdesc'] // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped,WordPressDotOrg.sniffs.OutputEscaping.UnescapedOutputParameter ?>">Most Comments</a></li>
+					<li><a href="<?php echo $results['sorting']['commentsasc'] // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped,WordPressDotOrg.sniffs.OutputEscaping.UnescapedOutputParameter ?>">Least Comments</a></li>
 				</ol>
 				<div class="solr_sort">Sort by:</div>
 			</div>
