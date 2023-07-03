@@ -106,7 +106,7 @@ class SolrPower_Options {
 			update_site_option( $option, $value );
 		}
 		$goback = add_query_arg( 'settings-updated', 'true', wp_get_referer() );
-		wp_redirect( $goback );
+		wp_safe_redirect( $goback );
 		exit;
 	}
 
