@@ -25,7 +25,7 @@
 					if ( in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) :
 						?>
 						<div class="entry-meta">
-							<span class="cat-links"><?php echo get_the_category_list( _x( ', ', 'Used between list items, there is a space after the comma.', 'solr-for-wordpress-on-pantheon' ) ); ?></span>
+							<span class="cat-links"><?php echo wp_kses_post( get_the_category_list( _x( ', ', 'Used between list items, there is a space after the comma.', 'solr-for-wordpress-on-pantheon' ) ) ); ?></span>
 						</div>
 						<?php
 					endif;
@@ -43,7 +43,7 @@
 				<?php
 				$big = 999999999; // Need an unlikely integer.
 
-				echo paginate_links(
+				echo paginate_links( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					array(
 						'base'               => str_replace( $big, '%#%', get_pagenum_link( $big, false ) ),
 						'format'             => '?paged=%#%',
