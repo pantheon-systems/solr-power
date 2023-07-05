@@ -4,7 +4,7 @@
 **Requires at least:** 4.6  
 **Requires PHP:** 7.1  
 **Tested up to:** 6.2  
-**Stable tag:** 2.4.6-dev  
+**Stable tag:** 2.5.0-dev  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -204,16 +204,19 @@ Add the following to your `functions.php` file.
 
 ## Explicit Commit vs Autocommit ##
 
-Once solr has sent the data to the solr server, solr must COMMIT the data to the index and adjust the index and
-relevancy ratings accordingly before that data can appear in search results. By default, Solr Search for WordPress does this when it sends every post. It may be necessary on occasion to disable this behavior (e.g. when importing a lot of posts via CSV). To do this, you need add the following code to your index.php in the root of your site install:
+Once solr has sent the data to the solr server, solr must COMMIT the data to the index and adjust the index and relevancy ratings accordingly before that data can appear in search results. 
+
+By default, Solr Search for WordPress has auto-commit disabled. The index is committed when the uncommitted item is two minutes old, or the cron runs. By default, the cron runs on the Pantheon platform every hour.
+
+When autocommit is enabled, Solr Search for WordPress commits data when it sends every post. When running on Pantheon, we recommend leaving autocommit disabled to aid overall site performance.
+
+To enable autocommit, add the following to `wp-config.php` or an mu-plugin.
 
 ```php
-define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', true );
+define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', false );
 ```
 
-When this variable is defined, Solr Search for WordPress will not commit the index until the uncommitted item is two minutes old or the cron runs. By default, the cron runs on the Pantheon platform every hour.
-
-To force-commit data when this variable is defined outside of a normal cron run, from the command line, you can run the command below or simply force a cron-run.
+To force-commit data outside of a normal cron run, from the command line, you can run the command below or simply force a cron-run.
 
 ```bash
 wp solr commit

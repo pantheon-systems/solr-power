@@ -22,6 +22,11 @@ class SolrTestBase extends WP_UnitTestCase{
 	function setUp() {
 		parent::setUp();
 
+		# Plugin now (2.5.0) defaults to true, but tests expect it.
+		if ( ! defined('SOLRPOWER_DISABLE_AUTOCOMMIT') ) {
+			define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', false);
+		}
+
 		if ( ! SolrPower_API::get_instance()->ping_server() ) {
 			$this->fail( 'Cannot connect to Solr. Solr is required for Solr Power tests.' );
 		}
