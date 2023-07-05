@@ -238,7 +238,7 @@ Please report security bugs found in the source code of the Solr Power plugin th
 * Update Composer dependencies [[#576](https://github.com/pantheon-systems/solr-power/pull/576)] [[#574](https://github.com/pantheon-systems/solr-power/pull/583)] [[#573](https://github.com/pantheon-systems/solr-power/pull/584)]
 * Adds WP.org Validation GitHub action [[#590](https://github.com/pantheon-systems/solr-power/pull/590)]
 * Updates security policy [[#589](https://github.com/pantheon-systems/solr-power/pull/589)]
-* Enable SOLRPOWER_DISABLE_AUTOCOMMIT as true by default
+* Enable SOLRPOWER_DISABLE_AUTOCOMMIT as true by default [[#591](https://github.com/pantheon-systems/solr-power/pull/591)]
 
 = 2.4.5 (April 9, 2023) =
 * Fixes missing vendor/ directory in previous release [[#580](https://github.com/pantheon-systems/solr-power/pull/580)]
