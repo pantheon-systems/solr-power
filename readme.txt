@@ -4,7 +4,7 @@ Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
 Tested up to: 6.2
-Stable tag: 2.4.6-dev
+Stable tag: 2.5.0-dev
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -238,6 +238,7 @@ Please report security bugs found in the source code of the Solr Power plugin th
 * Update Composer dependencies [[#576](https://github.com/pantheon-systems/solr-power/pull/576)] [[#574](https://github.com/pantheon-systems/solr-power/pull/583)] [[#573](https://github.com/pantheon-systems/solr-power/pull/584)]
 * Adds WP.org Validation GitHub action [[#590](https://github.com/pantheon-systems/solr-power/pull/590)]
 * Updates security policy [[#589](https://github.com/pantheon-systems/solr-power/pull/589)]
+* Enable SOLRPOWER_DISABLE_AUTOCOMMIT as true by default
 
 = 2.4.5 (April 9, 2023) =
 * Fixes missing vendor/ directory in previous release [[#580](https://github.com/pantheon-systems/solr-power/pull/580)]

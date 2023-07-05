@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Solr Power
  * Description: Allows WordPress sites to index and search content with ApacheSolr.
- * Version: 2.4.6-dev
+ * Version: 2.5.0-dev
  * Author: Pantheon
  * Author URI: http://pantheon.io
  * Text Domain: solr-for-wordpress-on-pantheon
@@ -10,7 +10,7 @@
  * @package Solr_Power
  **/
 
-define( 'SOLR_POWER_VERSION', '2.4.6-dev' );
+define( 'SOLR_POWER_VERSION', '2.5.0-dev' );
 
 /**
  * Copyright (c) 2011-2022 Pantheon, Matt Weber, Solr Power contributors
@@ -117,6 +117,10 @@ if ( version_compare( PHP_VERSION, '7.1', '<' ) ) {
 
 	define( 'SOLR_POWER_PATH', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
 	define( 'SOLR_POWER_URL', plugin_dir_url( __FILE__ ) );
+
+	if (! defined( 'SOLRPOWER_DISABLE_AUTOCOMMIT' )) {
+		define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', true );
+	}
 
 	require_once( SOLR_POWER_PATH . '/vendor/autoload.php' );
 	require_once( SOLR_POWER_PATH . '/includes/legacy-functions.php' );
