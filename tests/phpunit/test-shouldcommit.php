@@ -28,9 +28,9 @@ class ShouldCommitTest extends WP_UnitTestCase
     public function shouldCommitTestValues(): array
     {
         return [
-            "const is nil"=>[null,true],
-            "const is true"=>[false,true],
-            "const is false"=>[true, false],
+            "const is nil"=>[null, false],
+            "const is true"=>[true, false],
+            "const is false"=>[false, true],
         ];
     }
 }
