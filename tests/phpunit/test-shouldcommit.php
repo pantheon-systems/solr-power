@@ -5,7 +5,7 @@
  */
 class ShouldCommitTest extends WP_UnitTestCase
 {	
-    protected $runTestInSeparateProcess = TRUE;
+    protected $preserveGlobalState = FALSE;
     /**
      * Tests reading, parsing, and validating a sites.yml file.
      *
