@@ -7,9 +7,10 @@ class ShouldCommitTest extends WP_UnitTestCase
 {	
     protected $preserveGlobalState = FALSE;
     /**
-     * Tests reading, parsing, and validating a sites.yml file.
+     * Tests how shouldCommit handles different values for the SOLRPOWER_DISABLE_AUTOCOMMIT constant
      *
      * @dataProvider shouldCommitTestValues
+     * @runInSeparateProcess
      *
      */
     public function testShouldCommit($const_value, $expected): void
@@ -17,14 +18,16 @@ class ShouldCommitTest extends WP_UnitTestCase
         echo "provided: $const_value, exp: $expected".PHP_EOL;
 
         if ( defined('SOLRPOWER_DISABLE_AUTOCOMMIT') ) {
-            echo "ALREADY DEFINED".PHP_EOL;
+            echo "SOLRPOWER_DISABLE_AUTOCOMMIT already defined and '".SOLRPOWER_DISABLE_AUTOCOMMIT."'".PHP_EOL;
         }
+
         if ( ! defined('SOLRPOWER_DISABLE_AUTOCOMMIT') && ! is_null($const_value) ) {
+            echo "Defining as part of test run!".PHP_EOL;
             define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', $const_value);
         }
 
         if ( defined('SOLRPOWER_DISABLE_AUTOCOMMIT') ) {
-            echo print_r(SOLRPOWER_DISABLE_AUTOCOMMIT,true).PHP_EOL;
+            echo var_dump(SOLRPOWER_DISABLE_AUTOCOMMIT).PHP_EOL;
         } else {
             echo "NOT DEFINED".PHP_EOL;
         }
