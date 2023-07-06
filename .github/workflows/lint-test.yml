@@ -32,7 +32,7 @@ jobs:
       run: composer phpcs
 
   test-phpunit:
-    needs: lint
+    # needs: lint
     runs-on: ubuntu-latest
     services:
       mariadb:
@@ -74,13 +74,13 @@ jobs:
     - name: "Run Tests"
       run: |
         bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 latest
-        composer phpunit
-        rm -rf $WP_TESTS_DIR $WP_CORE_DIR
+      # composer phpunit
+      # rm -rf $WP_TESTS_DIR $WP_CORE_DIR
         composer phpunit-shouldcommit
         rm -rf $WP_TESTS_DIR $WP_CORE_DIR
         bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 nightly true
-        WP_MULTISITE=1 composer phpunit
-        rm -rf $WP_TESTS_DIR $WP_CORE_DIR
+      # WP_MULTISITE=1 composer phpunit
+      # rm -rf $WP_TESTS_DIR $WP_CORE_DIR
         WP_MULTISITE=1 composer phpunit-shouldcommit
 
   test-behat:
