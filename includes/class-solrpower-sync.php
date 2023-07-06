@@ -733,17 +733,28 @@ class SolrPower_Sync {
 	 * time-intensive on large or active sites. You can disable commiting
 	 * when the plugin posts data to Solr, but your Solr instance will need
 	 * to have a cron job enabled that does a hard commit on a regular basis.
-	 *
-	 * To disable commiting to Solr, add the following to your wp-config.php
+	 * 
+	 * 
+	 * To enable commiting to Solr, add the following to your wp-config.php
 	 *
 	 * <code>
-	 * define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', true );
+	 * define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', false );
 	 * </code>
+	 * 
+	 * As of 2.5.0, the default behavior is to not auto-commit.
 	 *
 	 * @see https://cwiki.apache.org/confluence/display/solr/UpdateXmlMessages#UpdateXmlMessages-%22commit%22and%22optimize%22
 	 * @return bool Whether to commit immediately when writing site data to Solr.
 	 */
 	function should_commit() {
-		return ! ( defined( 'SOLRPOWER_DISABLE_AUTOCOMMIT' ) && SOLRPOWER_DISABLE_AUTOCOMMIT );
+		$disable_autocommit = ( defined( 'SOLRPOWER_DISABLE_AUTOCOMMIT' ) && SOLRPOWER_DISABLE_AUTOCOMMIT );
+
+		// Auto-commit is explicitly enabled by not disabling it 🤮.
+		if ( ! $disable_autocommit ) {
+			return true;
+		}
+
+		// Do not autocommit, as cron will take care of it.
+		return false;
 	}
 }
