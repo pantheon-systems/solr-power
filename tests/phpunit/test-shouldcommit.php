@@ -10,10 +10,21 @@ class ShouldCommitTest extends WP_UnitTestCase
      */
     public function testShouldCommit($const_value, $expected): void
     {
+        echo "provided: $const_value, exp: $expected".PHP_EOL;
+        
+        if ( defined('SOLRPOWER_DISABLE_AUTOCOMMIT') ) {
+            echo "ALREADY DEFINED".PHP_EOL;
+        }
         if ( ! defined('SOLRPOWER_DISABLE_AUTOCOMMIT') && ! is_null($const_value) ) {
             define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', $const_value);
         }
-        
+
+        if ( defined('SOLRPOWER_DISABLE_AUTOCOMMIT') ) {
+            echo print_r(SOLRPOWER_DISABLE_AUTOCOMMIT,true).PHP_EOL;
+        } else {
+            echo "NOT DEFINED".PHP_EOL;
+        }
+
         $result = SolrPower_Sync::get_instance()->should_commit();
 
         $this->assertEquals($expected, $result);
