@@ -10,7 +10,7 @@
         }
     ],
     "support": {
-      "issues": "https://github.com/pantheon-systems/solr-power/issues"
+        "issues": "https://github.com/pantheon-systems/solr-power/issues"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -45,7 +45,11 @@
         "phpcs": "vendor/bin/phpcs",
         "phpcbf": "vendor/bin/phpcbf",
         "phpunit": "vendor/bin/phpunit",
-        "test": "@phpunit"
+        "phpunit-shouldcommit": "vendor/bin/phpunit --group should-commit",
+        "test": [
+            "@phpunit",
+            "@phpunit-shouldcommit"
+        ]
     },
     "autoload": {
         "classmap": [
