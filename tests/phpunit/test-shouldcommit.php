@@ -2,6 +2,9 @@
 
 class ShouldCommitTest extends WP_UnitTestCase
 {	
+    protected $preserveGlobalState = FALSE;
+    protected $runTestInSeparateProcess = TRUE;
+
     /**
      * Tests reading, parsing, and validating a sites.yml file.
      *
@@ -11,7 +14,7 @@ class ShouldCommitTest extends WP_UnitTestCase
     public function testShouldCommit($const_value, $expected): void
     {
         echo "provided: $const_value, exp: $expected".PHP_EOL;
-        
+
         if ( defined('SOLRPOWER_DISABLE_AUTOCOMMIT') ) {
             echo "ALREADY DEFINED".PHP_EOL;
         }
