@@ -1,9 +1,6 @@
 <?php
 class SolrTestBase extends WP_UnitTestCase{
 
-	protected $preserveGlobalState = TRUE;
-	protected $runTestInSeparateProcess = FALSE;
-
 	/**
 	 * @var integer Term ID of custom taxonomy term.
 	 */
