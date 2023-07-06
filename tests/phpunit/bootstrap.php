@@ -13,6 +13,9 @@ if ( !$_tests_dir ) {
 	$_tests_dir = '/tmp/wordpress-tests-lib';
 }
 
+# Plugin now (2.5.0) defaults to true, but tests expect it.
+define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', false);
+
 define( 'WP_TESTS_PHPUNIT_POLYFILLS_PATH', __DIR__ . '/../../vendor/yoast/phpunit-polyfills/phpunitpolyfills-autoload.php' );
 
 require_once $_tests_dir . '/includes/functions.php';
