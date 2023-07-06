@@ -10,7 +10,6 @@ class ShouldCommitTest extends WP_UnitTestCase
      * Tests how shouldCommit handles different values for the SOLRPOWER_DISABLE_AUTOCOMMIT constant
      *
      * @dataProvider shouldCommitTestValues
-     * @runInSeparateProcess
      *
      */
     public function testShouldCommit($const_value, $expected): void
