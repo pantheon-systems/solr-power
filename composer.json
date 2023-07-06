@@ -47,8 +47,7 @@
         "phpunit": "vendor/bin/phpunit",
         "phpunit-shouldcommit": "vendor/bin/phpunit --group should-commit",
         "test": [
-            "@phpunit",
-            "@phpunit-shouldcommit"
+            "@phpunit"
         ]
     },
     "autoload": {
