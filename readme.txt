@@ -223,7 +223,7 @@ When autocommit is enabled, Solr Search for WordPress does this when it sends ev
 
 To enable autocommit, add the following to `wp-config.php` or an mu-plugin.
 
-      define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', true );
+      define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', false );
 
 To force-commit data outside of a normal cron run, from the command line, you can run the command below or simply force a cron-run.
 
