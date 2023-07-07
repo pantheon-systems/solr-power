@@ -50,8 +50,9 @@ fi
 set -e
 
 install_wp() {
-
+	echo "FOOBAR!"
 	if [ -d $WP_CORE_DIR ]; then
+	echo "$WP_CORE_DIR!"
 		return;
 	fi
 
@@ -89,6 +90,7 @@ install_wp() {
 	fi
 
 	download https://raw.github.com/markoheijnen/wp-mysqli/master/db.php $WP_CORE_DIR/wp-content/db.php
+	
 }
 
 install_test_suite() {

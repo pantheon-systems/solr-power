@@ -742,15 +742,15 @@ class SolrPower_Sync {
 	 * </code>
 	 *
 	 * As of 2.5.0, the default behavior is to not auto-commit.
+	 * Yes, this function could be more concise, but the double-negative logic
+	 * can be confusing so making the logic as explicit as possible.
 	 *
 	 * @see https://cwiki.apache.org/confluence/display/solr/UpdateXmlMessages#UpdateXmlMessages-%22commit%22and%22optimize%22
 	 * @return bool Whether to commit immediately when writing site data to Solr.
 	 */
 	function should_commit() {
-		$disable_autocommit = ( defined( 'SOLRPOWER_DISABLE_AUTOCOMMIT' ) && SOLRPOWER_DISABLE_AUTOCOMMIT );
-
 		// Auto-commit is explicitly enabled by not disabling it 🤮.
-		if ( ! $disable_autocommit ) {
+		if ( defined( 'SOLRPOWER_DISABLE_AUTOCOMMIT' ) && ! SOLRPOWER_DISABLE_AUTOCOMMIT ) {
 			return true;
 		}
 
