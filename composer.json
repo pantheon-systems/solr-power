@@ -51,7 +51,7 @@
             "vendor/bin/phpunit --group should-commit --filter testShouldCommitWhenConstFalse"
         ],
         "test": [
-            "@phpunit-should-commit",
+            "@phpunit-shouldcommit",
             "@phpunit"
         ]
     },
