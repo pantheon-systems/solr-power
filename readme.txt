@@ -443,3 +443,8 @@ Please report security bugs found in the source code of the Solr Power plugin th
 
 = 0.0 =
 * Note this started as a fork of this wonderful project: https://github.com/mattweber/solr-for-wordpress
+
+== Upgrade Notice ==
+
+= 2.5.0-dev =
+Changes the default auto-commit behavior to disabled. See the README for instructions for keeping enabled.
