@@ -208,7 +208,7 @@ Once solr has sent the data to the solr server, solr must COMMIT the data to the
 
 By default, Solr Search for WordPress has auto-commit disabled. The index is committed when the uncommitted item is two minutes old, or the cron runs. By default, the cron runs on the Pantheon platform every hour.
 
-When autocommit is enabled, Solr Search for WordPress does this when it sends every post.
+When autocommit is enabled, Solr Search for WordPress commits data when it sends every post. When running on Pantheon, we recommend leaving autocommit disabled to aid overall site performance.
 
 To enable autocommit, add the following to `wp-config.php` or an mu-plugin.
 
