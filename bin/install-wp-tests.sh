@@ -50,9 +50,7 @@ fi
 set -e
 
 install_wp() {
-	echo "FOOBAR!"
 	if [ -d $WP_CORE_DIR ]; then
-	echo "$WP_CORE_DIR!"
 		return;
 	fi
 
