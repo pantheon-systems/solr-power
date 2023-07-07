@@ -45,8 +45,13 @@
         "phpcs": "vendor/bin/phpcs",
         "phpcbf": "vendor/bin/phpcbf",
         "phpunit": "vendor/bin/phpunit",
-        "phpunit-shouldcommit": "vendor/bin/phpunit --group should-commit",
+        "phpunit-shouldcommit": [
+            "vendor/bin/phpunit --group should-commit --filter testShouldNotCommitWhenConstNull",
+            "vendor/bin/phpunit --group should-commit --filter testShouldNotCommitWhenConstTrue",
+            "vendor/bin/phpunit --group should-commit --filter testShouldCommitWhenConstFalse"
+        ],
         "test": [
+            "@phpunit-should-commit",
             "@phpunit"
         ]
     },
