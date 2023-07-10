@@ -36,9 +36,9 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$this->dummy_query();
-		echo wp_kses_post( $args['before_widget'] );
+		echo $args['before_widget'];
 		if ( ! empty( $instance['title'] ) ) {
-			echo wp_kses_post( $args['before_title'] . $instance['title'] . $args['after_title'] );
+			echo $args['before_title'] . $instance['title'] . $args['after_title'];
 		}
 		$this->facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
 		echo '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="solr_facet">';
@@ -47,7 +47,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		$this->fetch_facets();
 		echo '</div>';
 		echo '</form>';
-		echo wp_kses_post( $args['after_widget'] );
+		echo $args['after_widget'];
 	}
 
 	/**
@@ -190,7 +190,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 
 		} // End foreach().
 		if ( $echo ) {
-			echo $output; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped,WordPressDotOrg.sniffs.OutputEscaping.UnescapedOutputParameter
+			echo $output;
 		} else {
 			return $output;
 		}
@@ -236,7 +236,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		 *
 		 * @param string $html the search box html.
 		 */
-		echo wp_kses_post( apply_filters( 'solr_facet_searchbox', $html ) );
+		echo apply_filters( 'solr_facet_searchbox', $html );
 	}
 
 	/**
