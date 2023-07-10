@@ -104,7 +104,7 @@ class SolrPower_Batch_Index {
 		$this->query_args = $clean_query_args;
 		// Cache the 'paged' value for resuming.
 		delete_option( $this->batch_cache_key );
-		add_option( $this->batch_cache_key, $this->query_args['paged'], '', false );
+		add_option( $this->batch_cache_key, $this->query_args['paged'], null, false );
 		$query          = new WP_Query( $clean_query_args );
 		$this->post_ids = $query->posts;
 		$found_posts    = $query->found_posts;
@@ -206,7 +206,7 @@ class SolrPower_Batch_Index {
 	public function increment_page() {
 		$this->query_args['paged']++;
 		delete_option( $this->batch_cache_key );
-		add_option( $this->batch_cache_key, $this->query_args['paged'], '', false );
+		add_option( $this->batch_cache_key, $this->query_args['paged'], null, false );
 	}
 
 	/**
