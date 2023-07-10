@@ -3,7 +3,7 @@
         'name' => 'pantheon-systems/solr-power',
         'pretty_version' => 'dev-develop',
         'version' => 'dev-develop',
-        'reference' => 'cd77a9ba0a71d398f6d95e702ccf59e3e4536509',
+        'reference' => '314e7dfbb6865a3dd764018879005cd07c54c45d',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'pantheon-systems/solr-power' => array(
             'pretty_version' => 'dev-develop',
             'version' => 'dev-develop',
-            'reference' => 'cd77a9ba0a71d398f6d95e702ccf59e3e4536509',
+            'reference' => '314e7dfbb6865a3dd764018879005cd07c54c45d',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
