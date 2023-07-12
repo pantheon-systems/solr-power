@@ -10,7 +10,7 @@
         }
     ],
     "support": {
-      "issues": "https://github.com/pantheon-systems/solr-power/issues"
+        "issues": "https://github.com/pantheon-systems/solr-power/issues"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -32,7 +32,7 @@
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
         "phpunit/phpunit": "^6 || ^7",
         "phpcompatibility/php-compatibility": "^9.3",
-        "yoast/phpunit-polyfills": "^1.0"
+        "yoast/phpunit-polyfills": "^2.0"
     },
     "scripts": {
         "lint": [
@@ -45,7 +45,15 @@
         "phpcs": "vendor/bin/phpcs",
         "phpcbf": "vendor/bin/phpcbf",
         "phpunit": "vendor/bin/phpunit",
-        "test": "@phpunit"
+        "phpunit-shouldcommit": [
+            "vendor/bin/phpunit --group should-commit --filter testShouldNotCommitWhenConstNull",
+            "vendor/bin/phpunit --group should-commit --filter testShouldNotCommitWhenConstTrue",
+            "vendor/bin/phpunit --group should-commit --filter testShouldCommitWhenConstFalse"
+        ],
+        "test": [
+            "@phpunit-shouldcommit",
+            "@phpunit"
+        ]
     },
     "autoload": {
         "classmap": [

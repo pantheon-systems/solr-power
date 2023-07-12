@@ -1,6 +1,6 @@
 {
   "name": "solr-power",
-  "version": "2.4.5",
+  "version": "2.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/pantheon-systems/solr-power.git"
@@ -15,12 +15,12 @@
   "devDependencies": {
     "grunt": "^1.6.1",
     "grunt-autoprefixer": "~3.0.4",
-    "grunt-contrib-cssmin": "^4.0.0",
+    "grunt-contrib-cssmin": "^5.0.0",
     "grunt-contrib-jshint": "^3.2.0",
     "grunt-contrib-uglify": "~5.2.2",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-sass": "~3.1.0",
     "grunt-wp-readme-to-markdown": "~2.1.0",
-    "node-sass": "^8.0.0"
+    "node-sass": "^9.0.0"
   }
 }
