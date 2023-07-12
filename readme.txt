@@ -4,7 +4,7 @@ Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
 Tested up to: 6.2
-Stable tag: 2.4.6-dev
+Stable tag: 2.5.0-dev
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,8 +78,8 @@ For further documentation, such as available filters and working with the `SolrP
 
 You may notice there are two sets of tests running, on two different services:
 
-* Travis CI runs the [PHPUnit](https://phpunit.de/) test suite against a Solr instance.
-* Circle CI runs the [Behat](http://behat.org/) test suite against a Pantheon site, to ensure the plugin's compatibility with the Pantheon platform.
+* [PHPUnit](https://phpunit.de/) test suite against a Solr instance.
+* The [Behat](http://behat.org/) test suite against a Pantheon site, to ensure the plugin's compatibility with the Pantheon platform.
 
 Both of these test suites can be run locally, with a varying amount of setup.
 
@@ -215,14 +215,17 @@ Add the following to your `functions.php` file.
 
 = Explicit Commit vs Autocommit =
 
-Once solr has sent the data to the solr server, solr must COMMIT the data to the index and adjust the index and
-relevancy ratings accordingly before that data can appear in search results. By default, Solr Search for WordPress does this when it sends every post. It may be necessary on occasion to disable this behavior (e.g. when importing a lot of posts via CSV). To do this, you need add the following code to your index.php in the root of your site install:
+Once solr has sent the data to the solr server, solr must COMMIT the data to the index and adjust the index and relevancy ratings accordingly before that data can appear in search results. 
 
-      define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', true );
+By default, Solr Search for WordPress has auto-commit disabled. The index is committed when the uncommitted item is two minutes old, or the cron runs. By default, the cron runs on the Pantheon platform every hour.
 
-When this variable is defined, Solr Search for WordPress will not commit the index until the uncommitted item is two minutes old or the cron runs. By default, the cron runs on the Pantheon platform every hour.
+When autocommit is enabled, Solr Search for WordPress commits data when it sends every post. When running on Pantheon, we recommend leaving autocommit disabled to aid overall site performance.
 
-To force-commit data when this variable is defined outside of a normal cron run, from the command line, you can run the command below or simply force a cron-run.
+To enable autocommit, add the following to `wp-config.php` or an mu-plugin.
+
+      define( 'SOLRPOWER_DISABLE_AUTOCOMMIT', false );
+
+To force-commit data outside of a normal cron run, from the command line, you can run the command below or simply force a cron-run.
 
       wp solr commit
 
@@ -237,6 +240,7 @@ Please report security bugs found in the source code of the Solr Power plugin th
 * Fixes typo in var which caused undefined notice [[#582](https://github.com/pantheon-systems/solr-power/pull/582)]
 * Update Composer dependencies [[#576](https://github.com/pantheon-systems/solr-power/pull/576)] [[#574](https://github.com/pantheon-systems/solr-power/pull/583)] [[#573](https://github.com/pantheon-systems/solr-power/pull/584)]
 * Updates security policy [[#589](https://github.com/pantheon-systems/solr-power/pull/589)]
+* Disable auto-commit by default. [[#591](https://github.com/pantheon-systems/solr-power/pull/591)]
 
 = 2.4.5 (April 9, 2023) =
 * Fixes missing vendor/ directory in previous release [[#580](https://github.com/pantheon-systems/solr-power/pull/580)]
@@ -438,3 +442,8 @@ Please report security bugs found in the source code of the Solr Power plugin th
 
 = 0.0 =
 * Note this started as a fork of this wonderful project: https://github.com/mattweber/solr-for-wordpress
+
+== Upgrade Notice ==
+
+= 2.5.0-dev =
+Changes the default auto-commit behavior to disabled. See [the README](https://github.com/pantheon-systems/solr-power/#explicit-commit-vs-autocommit) for instructions for keeping enabled.
