@@ -1,6 +1,6 @@
 ## Changelog ##
 
-### 2.5.0-dev ###
+### 2.5.0 ###
 * Updates CONTRIBUTING.md [[#585](https://github.com/pantheon-systems/solr-power/pull/585)] [[#594](https://github.com/pantheon-systems/solr-power/pull/594)]
 * Fixes typo in var which caused undefined notice [[#582](https://github.com/pantheon-systems/solr-power/pull/582)]
 * Update Composer dependencies [[#576](https://github.com/pantheon-systems/solr-power/pull/576)] [[#574](https://github.com/pantheon-systems/solr-power/pull/583)] [[#573](https://github.com/pantheon-systems/solr-power/pull/584)]
