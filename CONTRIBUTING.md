@@ -4,7 +4,7 @@ Since 2.3.3 the default branch is `main`. Please make sure you are working again
 
 ## Workflow
 
-Development and releases are structured around two branches, `develop` and `main`. The `develop` branch is the default branch for the repository, and is the source and destination for feature branches.
+Development and releases are structured around two branches, `develop` and `main`. The `develop` branch is the source and destination for feature branches.
 
 We prefer to squash commits (i.e. avoid merge PRs) from a feature branch into `develop` when merging, and to include the PR # in the commit message. PRs to `develop` should also include any relevent updates to the changelog in readme.txt. For example, if a feature constitutes a minor or major version bump, that version update should be discussed and made as part of approving and merging the feature into `develop`.
 
@@ -31,12 +31,12 @@ Note that dependencies are installed via Composer and the `vendor` directory is 
 
 1. From `develop`, checkout a new branch `release_X.Y.Z`.
 1. Make a release commit:
-    * Drop the `-dev` from the version number in `package.json`, `README.md`, `readme.txt`, and `solr-power.php`.
-    * Update the "Latest" heading in the changelog (both `CHANGELOG.md` and in `readme.txt`) to the new version number with the date
+    * Drop the `-dev` from the version number in `package.json`, `README.md`, `readme.txt`, CHANGELOG.md, and `solr-power.php`. For `readme.txt`, the version number must be updated both at the top of the document as well as the changelog.
+    * Add the date to the `** X.Y.X **` heading in the changelogs in README.md, readme.txt, and any other appropriate location.
     * Commit these changes with the message `Release X.Y.Z`
     * Push the release branch up.
 1. Open a Pull Request to merge `release_X.Y.Z` into `main`. Your PR should consist of all commits to `develop` since the last release, and one commit to update the version number. The PR name should also be `Release X.Y.Z`.
-1. After all tests pass and you have received approval from a [CODEOWNER](./CODEOWNERS), merge the PR into `main`. "Rebase and merge" is preferred in this case. _Never_ squash to `main`.
+1. After all tests pass and you have received approval from a [CODEOWNER](./CODEOWNERS), merge the PR into `main`. "merge" is preferred in this case, not rebase. _Never_ squash to `main`.
 1. Pull `main` locally, create a new tag (based on version number from previous steps), and push up. The tag should _only_ be the version number. It _should not_ be prefixed  `v` (i.e. `X.Y.Z`, not `vX.Y.X`).
 1. Confirm that the necessary assets are present in the newly created tag, and test on a WP install if desired.
 1. Create a [new release](https://github.com/pantheon-systems/solr-power/releases/new) using the tag created in the previous steps, naming the release with the new version number, and targeting the tag created in the previous step. Paste the release changelog from the `Changelog` section of [the readme](readme.txt) into the body of the release, including the links to the closed issues if applicable.
@@ -46,7 +46,7 @@ Note that dependencies are installed via Composer and the `vendor` directory is 
     * `git checkout develop`
     * `git rebase main`
     * Update the version number in all locations, incrementing the version by one patch version, and add the `-dev` flag (e.g. after releasing `1.2.3`, the new verison will be `1.2.4-dev`)
-    * Add a new `** Latest **` heading to the changelog
+    * Add new `** X.Y.X-dev **` headings to the changelogs
     * `git add -A .`
     * `git commit -m "Prepare X.Y.X-dev"`
     * `git push origin develop`
