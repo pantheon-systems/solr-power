@@ -19,3 +19,4 @@ reset_test_environment
 
 echo "Testing with latest WordPress nightly version..."
 bash "${DIRNAME}/install-wp-tests.sh" wordpress_test root root 127.0.0.1 nightly true
+composer test
