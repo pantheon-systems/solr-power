@@ -236,6 +236,7 @@ Please report security bugs found in the source code of the Solr Power plugin th
 == Changelog ==
 
 = 2.5.1-dev =
+* Fix Solr not indexing automatically [[#598](https://github.com/pantheon-systems/solr-power/pull/598)]
 
 = 2.5.0 =
 * Updates CONTRIBUTING.md [[#585](https://github.com/pantheon-systems/solr-power/pull/585)] [[#594](https://github.com/pantheon-systems/solr-power/pull/594)]
