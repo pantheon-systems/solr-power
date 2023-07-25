@@ -433,15 +433,13 @@ class SolrPower_Sync {
 				if ( $commit && $this->should_commit() ) {
 					syslog( LOG_INFO, 'telling Solr to commit' );
 					$update->addCommit();
-					$solr->update( $update );
 				}
 
 				if ( $optimize ) {
-					$update = $solr->createUpdate();
 					$update->addOptimize();
-					$solr->update( $update );
 					syslog( LOG_INFO, 'Optimizing: ' . get_bloginfo( 'wpurl' ) );
 				}
+				$solr->update( $update );
 				wp_cache_delete( 'solr_index_stats', 'solr' );
 			} else {
 				syslog( LOG_ERR, 'failed to get a solr instance created' );
