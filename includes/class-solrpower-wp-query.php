@@ -174,17 +174,17 @@ class SolrPower_WP_Query {
 	function posts_request( $request, $query ) {
 		if ( ! $this->is_solr_query( $query ) || false === SolrPower_Api::get_instance()->ping ) {
 			return $request;
-    }
+		}
 
-    add_filter( 'solr_query', array( SolrPower_Api::get_instance(), 'dismax_query' ), 10, 2 );
+		add_filter( 'solr_query', array( SolrPower_Api::get_instance(), 'dismax_query' ), 10, 2 );
 
 		$solr_options = SolrPower_Options::get_instance()->get_option();
 		$the_page = ( ! $query->get( 'paged' ) ) ? 1 : $query->get( 'paged' );
-    $qry = $this->build_query( $query );
+		$qry = $this->build_query( $query );
 
 		if ( '' === $qry ) { // If we don't have anything to query, let's do a wildcard.
 			$qry = '*';
-    }
+		}
 
 		$posts_per_page = ( ! $query->get( 'posts_per_page' ) ) ? 1 : $query->get( 'posts_per_page' );
 		$this->qry      = $qry;
@@ -235,9 +235,9 @@ class SolrPower_WP_Query {
 			$this->found_posts[ $query->solr_query_id ] = array();
 			$this->reset_vars();
 			return false;
-    }
+		}
 
-    $this->search = $search;
+		$this->search = $search;
 
 		if ( $search->getFacetSet() ) {
 			$this->facets = $search->getFacetSet()->getFacets();
