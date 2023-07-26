@@ -1,5 +1,5 @@
 === Solr Search for WordPress ===
-Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor, danielbachhuber, mattleff, mikengarrett, jazzs3quence, jspellman
+Contributors: getpantheon, Outlandish Josh, 10up, collinsinternet, andrew.taylor, danielbachhuber, mattleff, mikengarrett, jazzs3quence, jspellman, pwtyler
 Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
