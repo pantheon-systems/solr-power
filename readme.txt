@@ -4,7 +4,7 @@ Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
 Tested up to: 6.2
-Stable tag: 2.5.1
+Stable tag: 2.5.2-dev
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -234,6 +234,8 @@ To force-commit data outside of a normal cron run, from the command line, you ca
 Please report security bugs found in the source code of the Solr Power plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/solr-power). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+= 2.5.2-dev =
 
 = 2.5.1 =
 * Fix Solr not indexing automatically [[#598](https://github.com/pantheon-systems/solr-power/pull/598)]
