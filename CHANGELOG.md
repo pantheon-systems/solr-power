@@ -1,6 +1,6 @@
 ## Changelog ##
 
-### 2.5.1-dev ###
+### 2.5.1 ###
 * Fix Solr not indexing automatically [[#598](https://github.com/pantheon-systems/solr-power/pull/598)]
 * Fixed issue with empty/zero value for posts_per_page [[#599](https://github.com/pantheon-systems/solr-power/pull/599)] (props @threeiem)
 
