@@ -36,5 +36,7 @@ jobs:
         git commit -m "Release $VERSION"
         git tag "$VERSION"
         git push --tags
+        gh release create "$VERSION" -t "$VERSION" --generate-notes
       env:
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
