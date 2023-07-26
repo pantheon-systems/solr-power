@@ -186,7 +186,7 @@ class SolrPower_WP_Query {
 			$qry = '*';
 		}
 
-		$posts_per_page = $query->get('posts_per_page', get_option('posts_per_page', 10));
+		$posts_per_page = $query->get( 'posts_per_page', get_option( 'posts_per_page', 10 ) );
 		$this->qry      = $qry;
 		$offset         = $posts_per_page * ( $the_page - 1 );
 		$count          = $posts_per_page;
