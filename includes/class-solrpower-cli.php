@@ -259,7 +259,7 @@ class SolrPower_CLI extends WP_CLI_Command {
 	 * @subcommand commit
 	 */
 	public function commit() {
-		$output = SolrPower_Api::get_instance()->commit_index();
+		$output = SolrPower_Api::get_solr()->commit_index();
 		WP_CLI::success( "Index committed: {$output}" );
 	}
 
