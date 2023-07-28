@@ -13,7 +13,7 @@ Improve your user experience with the Apache Solr search engine for your WordPre
 ## Description ##
 
 [![Actively Maintained](https://img.shields.io/badge/Pantheon-Actively_Maintained-yellow?logo=pantheon&color=FFDC28)](https://pantheon.io/docs/oss-support-levels#actively-maintained-support)
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/pantheon-systems/solr-power/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/pantheon-systems/solr-power/tree/main)
+[![Lint and Test](https://github.com/pantheon-systems/solr-power/actions/workflows/lint-test.yml/badge.svg)](https://github.com/pantheon-systems/solr-power/actions/workflows/lint-test.yml)
 
 Search is critical for your site, but the default search for WordPress leaves a lot to be desired. Improve your user experience with the Apache Solr search engine for your WordPress website.
 
