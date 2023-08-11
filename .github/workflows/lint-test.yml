@@ -129,6 +129,8 @@ jobs:
         fi
         terminus auth:login --machine-token=$TERMINUS_TOKEN
 
+    - name: Validate Fixture WordPress Version
+      run: ./bin/validate-fixture-version.sh
     - name: Prepare for Behat tests
       run: ./bin/behat-prepare.sh
 
