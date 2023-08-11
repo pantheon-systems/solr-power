@@ -69,12 +69,6 @@ rm -rf $PREPARE_DIR/wp-content/plugins/solr-power/node_modules/
 rm -rf $PREPARE_DIR/wp-content/plugins/solr-power/tests/
 cd $BASH_DIR/..
 
-# Download the latest Classic Editor release from WordPress.org
-wget -O $PREPARE_DIR/classic-editor.zip https://downloads.wordpress.org/plugin/classic-editor.zip
-unzip $PREPARE_DIR/classic-editor.zip -d $PREPARE_DIR
-mv $PREPARE_DIR/classic-editor $PREPARE_DIR/wp-content/plugins/
-rm $PREPARE_DIR/classic-editor.zip
-
 ###
 # Push files to the environment
 ###
@@ -92,6 +86,6 @@ terminus build:workflow:wait $TERMINUS_SITE.$TERMINUS_ENV
 # Set up WordPress, theme, and plugins for the test run
 ###
 terminus wp $SITE_ENV -- core install --title=$TERMINUS_ENV-$TERMINUS_SITE --url=$PANTHEON_SITE_URL --admin_user=$WORDPRESS_ADMIN_USERNAME --admin_email=$WORDPRESS_ADMIN_EMAIL --admin_password=$WORDPRESS_ADMIN_PASSWORD
-terminus wp $SITE_ENV -- plugin activate solr-power classic-editor
-terminus wp $SITE_ENV -- theme activate twentyseventeen
+terminus wp $SITE_ENV -- plugin activate solr-power
+terminus wp $SITE_ENV -- theme activate twentytwentythree
 terminus wp $SITE_ENV -- rewrite structure '/%year%/%monthnum%/%day%/%postname%/'
