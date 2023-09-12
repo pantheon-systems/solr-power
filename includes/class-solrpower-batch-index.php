@@ -269,7 +269,7 @@ class SolrPower_Batch_Index {
 		$properties_to_reset = array( 'group_ops', 'stats', 'memcache_debug', 'cache' );
 		$reflection = new ReflectionClass( $wp_object_cache );
 
-		// Set the property to an empty array if it exists and is not private/protected
+		// Set the property to an empty array if it exists and is not private/protected.
 		foreach ( $properties_to_reset as $property_name ) {
 			if ( $reflection->hasProperty( $property_name ) ) {
 				$property = $reflection->getProperty( $property_name );
