@@ -236,6 +236,7 @@ Please report security bugs found in the source code of the Solr Power plugin th
 == Changelog ==
 
 = 2.5.2-dev =
+* Fix incompatability with Object Cache Pro when running "wp solr index"
 
 = 2.5.1 =
 * Fix Solr not indexing automatically [[#598](https://github.com/pantheon-systems/solr-power/pull/598)]
