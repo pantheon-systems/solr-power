@@ -1,5 +1,7 @@
 ## Changelog ##
 
+### 2.5.3-dev ###
+
 ### 2.5.2 (September 12, 2023) ###
 * Fix incompatibility with Object Cache Pro when running "wp solr index" [[#611](https://github.com/pantheon-systems/solr-power/pull/611)]
 
