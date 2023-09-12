@@ -266,11 +266,18 @@ class SolrPower_Batch_Index {
 			return;
 		}
 
-		$wp_object_cache->group_ops      = array();
-		$wp_object_cache->stats          = array();
-		$wp_object_cache->memcache_debug = array();
-		$wp_object_cache->cache          = array();
+		$properties_to_reset = array( 'group_ops', 'stats', 'memcache_debug', 'cache' );
+		$reflection = new ReflectionClass( $wp_object_cache );
 
+		// Set the property to an empty array if it exists and is not private/protected
+		foreach ( $properties_to_reset as $property_name ) {
+			if ( $reflection->hasProperty( $property_name ) ) {
+				$property = $reflection->getProperty( $property_name );
+				if ( ! $property->isPrivate() && ! $property->isProtected() ) {
+					$wp_object_cache->$property_name = array();
+				}
+			}
+		}
 		if ( is_callable( $wp_object_cache, '__remoteset' ) ) {
 			$wp_object_cache->__remoteset();
 		}
