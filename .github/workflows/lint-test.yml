@@ -9,25 +9,22 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    container:
-      image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
-      options: --user root
     name: Lint
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
     - name: Cache dependencies
       uses: actions/cache@v3
       with:
         path: ~/vendor
         key: test-lint-dependencies-{{ checksum "composer.json" }}
         restore-keys: test-lint-dependencies-{{ checksum "composer.json" }}
-
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
     - name: Install dependencies
       run: composer install -n --prefer-dist
-
     - name: Run PHP Lint
       run: composer phpcs
   validate-readme-spacing:
@@ -38,7 +35,6 @@ jobs:
         uses: actions/checkout@v3
       - uses: pantheon-systems/validate-readme-spacing@v1
   test-phpunit:
-    needs: lint
     runs-on: ubuntu-latest
     services:
       mariadb:
@@ -80,7 +76,9 @@ jobs:
       run: bash bin/phpunit-test.sh
 
   test-behat:
-    needs: test-phpunit
+    needs: 
+      - test-phpunit
+      - lint
     runs-on: ubuntu-latest
     container:
       image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
@@ -131,6 +129,8 @@ jobs:
         fi
         terminus auth:login --machine-token=$TERMINUS_TOKEN
 
+    - name: Validate Fixture WordPress Version
+      run: ./bin/validate-fixture-version.sh
     - name: Prepare for Behat tests
       run: ./bin/behat-prepare.sh
 
