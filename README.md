@@ -3,7 +3,7 @@
 **Tags:** search  
 **Requires at least:** 4.6  
 **Requires PHP:** 7.1  
-**Tested up to:** 6.3  
+**Tested up to:** 6.4.1  
 **Stable tag:** 2.5.3-dev  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
@@ -204,7 +204,7 @@ Add the following to your `functions.php` file.
 
 ## Explicit Commit vs Autocommit ##
 
-Once solr has sent the data to the solr server, solr must COMMIT the data to the index and adjust the index and relevancy ratings accordingly before that data can appear in search results. 
+Once solr has sent the data to the solr server, solr must COMMIT the data to the index and adjust the index and relevancy ratings accordingly before that data can appear in search results.
 
 By default, Solr Search for WordPress has auto-commit disabled. The index is committed when the uncommitted item is two minutes old, or the cron runs. By default, the cron runs on the Pantheon platform every hour.
 
