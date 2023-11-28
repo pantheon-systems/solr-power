@@ -1,6 +1,6 @@
 name: Lint and Test
 on:
-  push:
+  pull_request:
     branches:
       - '**'
   schedule:
@@ -76,7 +76,7 @@ jobs:
       run: bash bin/phpunit-test.sh
 
   test-behat:
-    needs: 
+    needs:
       - test-phpunit
       - lint
     runs-on: ubuntu-latest
