@@ -8,3 +8,4 @@ assets/css/*.css.map
 assets/js/*.js
 composer.lock
 .envrc
+/vendor/.gitignore

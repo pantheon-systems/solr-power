@@ -24,11 +24,11 @@
     },
     "require": {
         "solarium/solarium": "^6",
-        "symfony/event-dispatcher": "^3.4"
+        "symfony/event-dispatcher": "^7",
+        "guzzlehttp/guzzle": "^7"
     },
     "require-dev": {
-        "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master",
-        "wp-coding-standards/wpcs": "^2.1",
+        "wp-coding-standards/wpcs": "^3",
         "phpunit/phpunit": "^11",
         "squizlabs/php_codesniffer": "^3.9"
     },
@@ -43,19 +43,13 @@
         "phpcs": "vendor/bin/phpcs",
         "phpcbf": "vendor/bin/phpcbf",
         "phpunit": "vendor/bin/phpunit",
-        "phpunit-shouldcommit": [
-            "vendor/bin/phpunit --group should-commit --filter testShouldNotCommitWhenConstNull",
-            "vendor/bin/phpunit --group should-commit --filter testShouldNotCommitWhenConstTrue",
-            "vendor/bin/phpunit --group should-commit --filter testShouldCommitWhenConstFalse"
-        ],
         "test": [
-            "@phpunit-shouldcommit",
             "@phpunit"
         ]
     },
     "autoload": {
-        "classmap": [
-            "includes"
-        ]
+        "psr-4": {
+            "Pantheon\\": "src/"
+        }
     }
 }
