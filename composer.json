@@ -2,7 +2,7 @@
     "name": "pantheon-systems/solr-power",
     "description": "An open source plugin to connect to Pantheon's Apache Solr search infrastructure, or your own!",
     "type": "wordpress-plugin",
-    "license": "GPL-2.0-or-later",
+    "license": "MIT",
     "authors": [
         {
             "name": "Pantheon",
@@ -16,23 +16,21 @@
     "prefer-stable": true,
     "config": {
         "platform": {
-            "php": "7.1"
+            "php": "8.2"
         },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
     "require": {
-        "solarium/solarium": "~4",
+        "solarium/solarium": "^6",
         "symfony/event-dispatcher": "^3.4"
     },
     "require-dev": {
         "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master",
         "wp-coding-standards/wpcs": "^2.1",
-        "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
-        "phpunit/phpunit": "^6 || ^7",
-        "phpcompatibility/php-compatibility": "^9.3",
-        "yoast/phpunit-polyfills": "^2.0"
+        "phpunit/phpunit": "^11",
+        "squizlabs/php_codesniffer": "^3.9"
     },
     "scripts": {
         "lint": [
