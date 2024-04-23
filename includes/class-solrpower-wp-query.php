@@ -740,7 +740,7 @@ class SolrPower_WP_Query {
 					$multi_query   = array();
 					$multi_query[] = '(' . $field . ':(' . implode( 'OR', $terms ) . '))';
 					if ( $tax_value['include_children'] && is_taxonomy_hierarchical( $tax_value['taxonomy'] ) ) {
-						$multi_query[] = '(parent_' . $field . ':' . implode( 'OR', $terms ) . '))';
+						$multi_query[] = '(parent_' . $field . '(:' . implode( 'OR', $terms ) . '))';
 					}
 					$query[] = '(' . implode( 'OR', $multi_query ) . ')';
 					break;
