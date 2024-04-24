@@ -56,6 +56,9 @@ cd $BASH_DIR/..
 rsync -av --exclude='node_modules/' --exclude='tests/' ./* $PREPARE_DIR/wp-content/plugins/solr-power
 cd $PREPARE_DIR/wp-content/plugins/solr-power
 
+PHP_VERSION="$(terminus env:info $SITE_ENV --field=php_version)"
+echo "PHP Version: $PHP_VERSION"
+
 ###
 # Build plugin
 ###
