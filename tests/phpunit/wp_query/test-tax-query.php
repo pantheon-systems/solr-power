@@ -29,7 +29,6 @@ class SolrTaxQueryTest extends SolrTestBase {
 			),
 		);
 		$query = new WP_Query( $args );
-
 		$this->assertEquals( $p_id, $query->post->ID );
 	}
 

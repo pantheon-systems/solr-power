@@ -20,4 +20,4 @@ set -ex
 ###
 # Delete the environment used for this test run.
 ###
-terminus multidev:delete $SITE_ENV --delete-branch --yes
+terminus multidev:delete $SITE_ENV --delete-branch --yes || true
