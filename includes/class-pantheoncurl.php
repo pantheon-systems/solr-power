@@ -5,7 +5,7 @@
  * @package Solr_Power
  */
 
-use Solarium\Core\Client\Adapter\Curl as Curl;
+use Solarium\Core\Client\Adapter\Curl;
 
 /**
  * Override Solarium so that more options can be set before executing curl.
@@ -23,9 +23,9 @@ class PantheonCurl extends Curl {
 		$handler = parent::createHandle( $request, $endpoint );
 		if ( defined( 'PANTHEON_ENVIRONMENT' ) ) {
 			curl_setopt( $handler, CURLOPT_SSL_VERIFYPEER, false );
-			if ( getenv('JOB_RUNTIME') !== "UJR" && getenv('MTLSPROXY_ENABLED') === 'true' ){
+			if ( getenv( 'JOB_RUNTIME' ) !== 'UJR' && getenv( 'MTLSPROXY_ENABLED' ) === 'true' ) {
 				curl_setopt( $handler, CURLOPT_SSL_VERIFYHOST, 0 );
-			}else {
+			} else {
 				$client_cert = $_SERVER['HOME'] . '/certs/binding.pem';
 				curl_setopt( $handler, CURLOPT_SSLCERT, $client_cert );
 			}
