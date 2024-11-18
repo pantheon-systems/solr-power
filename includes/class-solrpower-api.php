@@ -116,7 +116,7 @@ class SolrPower_Api {
 		}
 
 		$path        = $this->compute_path();
-		$url         = $this->get_default_scheme() . '://' . getenv( 'PANTHEON_INDEX_HOST' ) . ':' . getenv( 'PANTHEON_INDEX_PORT' ) . $path;
+		$url         = $this->get_default_scheme() . '://' . getenv( 'INDEX_PROXY_HOST' ) . ':' . getenv( 'INDEX_PROXY_PORT' ) . $path;
 		$client_cert = self::get_cert_path();
 
 		/*
@@ -139,7 +139,7 @@ class SolrPower_Api {
 		// set URL and other appropriate options.
 		$opts = array(
 			CURLOPT_URL            => $url,
-			CURLOPT_PORT           => getenv( 'PANTHEON_INDEX_PORT' ),
+			CURLOPT_PORT           => getenv( 'INDEX_PROXY_PORT' ),
 			CURLOPT_RETURNTRANSFER => 1,
 			CURLOPT_SSLCERT        => $client_cert,
 			CURLOPT_SSL_VERIFYPEER => false,
@@ -220,8 +220,8 @@ class SolrPower_Api {
 		$solarium_config      = array(
 			'endpoint' => array(
 				'localhost' => array(
-					'host'   => getenv( 'PANTHEON_INDEX_HOST' ),
-					'port'   => getenv( 'PANTHEON_INDEX_PORT' ),
+					'host'   => getenv( 'INDEX_PROXY_HOST' ),
+					'port'   => getenv( 'INDEX_PROXY_PORT' ),
 					'scheme' => $this->get_default_scheme(),
 					'path'   => $this->compute_path(),
 					'ssl'    => array(
@@ -605,8 +605,8 @@ class SolrPower_Api {
 
 		return array(
 			'ping_status' => $ping,
-			'ip_address'  => getenv( 'PANTHEON_INDEX_HOST' ),
-			'port'        => getenv( 'PANTHEON_INDEX_PORT' ),
+			'ip_address'  => getenv( 'INDEX_PROXY_HOST' ),
+			'port'        => getenv( 'INDEX_PROXY_PORT' ),
 			'path'        => $this->compute_path(),
 		);
 
