@@ -4,7 +4,7 @@ Tags: search
 Requires at least: 4.6
 Requires PHP: 7.1
 Tested up to: 6.5.2
-Stable tag: 2.5.4-dev
+Stable tag: 2.6.0-dev
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -205,6 +205,25 @@ Add the following to your `functions.php` file.
       }
       add_filter( 'solr_dismax_query', 'my_solr_dismax_query' );
 
+= ```is_solr_query``` Filter =
+
+The `is_solr_query` filter controls whether Solr should be used for a specific query.
+
+Parameters:
+
+* $enabled (bool): Indicates whether Solr should be used for the query. Defaults to true if the query is a search or if solr_integrate is set in the query.
+* $query (WP_Query): The current WordPress query object.
+
+Return:
+
+* bool: true to enable Solr for the query, false to disable it.
+
+    add_filter( 'is_solr_query', function( $enabled, $query ) {
+        if ( $query->is_category( 'news' ) ) {
+            return false;
+        }
+        return $enabled;
+    }, 10, 2 );
 
 = Common issues =
 
@@ -234,6 +253,10 @@ To force-commit data outside of a normal cron run, from the command line, you ca
 Please report security bugs found in the source code of the Solr Power plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/solr-power). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
 
 == Changelog ==
+
+
+= 2.6.0-dev =
+* Adds `is_solr_query` filter [[#588](https://github.com/pantheon-systems/solr-power/pull/588)] (props [@sboisvert](https://wordpress.org/support/users/sboisvert/))
 
 = 2.5.3 (April 24, 2024) =
 * Fixes a very old bug that would cause tax queries to be built incorrectly. [[#622](https://github.com/pantheon-systems/solr-power/pull/622)] (props [@offshorealert](https://wordpress.org/support/users/offshorealert/))
