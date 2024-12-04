@@ -123,7 +123,6 @@ class SolrPower_Api {
 		$custom_schema_file_path = apply_filters( 'solr_power_customer_schema_file_path', $custom_schema_file_path );
 
 		if ( file_exists( $custom_schema_file_path ) ) {
-			error_log( 'Solr Power: Uploading Schema from custom location' );
 			$schema = $custom_schema_file_path;
 		}
 
