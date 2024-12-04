@@ -206,8 +206,6 @@ Add the following to your `functions.php` file.
 
 = Custom schema file path =
 
-## Custom Schema file path
-
 By default, custom schema is sourced from `wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml`. This can be overridden with an absolute path with the following filter:
 
     add_filter('solr_power_customer_schema_file_path', function($custom_schema_file_path) {
