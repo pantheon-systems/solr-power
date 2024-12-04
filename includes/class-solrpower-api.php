@@ -116,9 +116,9 @@ class SolrPower_Api {
 		$custom_schema_file_path = path_join( $upload_dir['basedir'], 'solr-for-wordpress-on-pantheon/schema.xml' );
 
 		/**
-		 * Filter the custom schema file path
+		 * Override the custom schema file path
 		 *
-		 * @param string $custom_schema_file_path The default message.
+		 * @param string $custom_schema_file_path The absolute path to a customer solr schema file.
 		 */
 		$custom_schema_file_path = apply_filters( 'solr_power_customer_schema_file_path', $custom_schema_file_path );
 
