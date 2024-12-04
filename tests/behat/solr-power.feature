@@ -14,4 +14,4 @@ Feature: Solr Power plugin
   Scenario: I can submit default schema
     Given I am on /wp-admin/admin.php?page=solr-power#top#solr_action
     When I press "s4wp_repost_schema"
-    Then I should see "Schema Upload Success: 200"
+    Then I should see "Schema Upload Success: 200" in the "#message" element
