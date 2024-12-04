@@ -160,7 +160,7 @@ class SolrPower_Api {
 		$curl_opts = curl_getinfo( $ch );
 		fclose( $file );
 		if ( 200 === (int) $curl_opts['http_code'] ) {
-			// Schema Upload Success
+			// Schema Upload Success.
 			$return_value = 'Schema Upload Success: ' . $curl_opts['http_code'];
 			if ( $schema == $custom_schema_file ) {
 				$return_value = 'Custom ' . $return_value;
@@ -168,7 +168,7 @@ class SolrPower_Api {
 			return $return_value;
 		}
 
-		// Schema Upload Failure
+		// Schema Upload Failure.
 		$return_value = 'Schema Upload Error: ' . $curl_opts['http_code'];
 		if ( preg_match( '#<h1>(HTTP Status [\d]+ - )?(.+)</h1>#', $response, $matches ) ) {
 			$return_value .= ' - ' . $matches[2];
