@@ -4,7 +4,7 @@
 **Requires at least:** 4.6  
 **Requires PHP:** 7.1  
 **Tested up to:** 6.7.1  
-**Stable tag:** 2.5.4-dev  
+**Stable tag:** 2.6.0-dev  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -194,6 +194,16 @@ Add the following to your `functions.php` file.
       }
       add_filter( 'solr_dismax_query', 'my_solr_dismax_query' );
 
+
+## Custom Schema file path
+
+By default, custom schema is sourced from `wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml`. This can be overridden with an absolute path with the following filter:
+
+``` php
+add_filter('solr_power_customer_schema_file_path', function($custom_schema_file_path) {
+    return '/absolute/path/to/schema.xml';
+});
+```
 
 ## Common issues ##
 
