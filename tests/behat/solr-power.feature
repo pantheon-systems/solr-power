@@ -12,6 +12,6 @@ Feature: Solr Power plugin
     When I should see "Successful" in the "#solr_info" element
 
   Scenario: I can submit default schema
-    Given I am on /wp-admin/admin.php?page=solr-power#top#solr_action
-    When I press "s4wp_repost_schema"
+    When I go to "/wp-admin/admin.php?page=solr-power#top#solr_action"
+    And I press "s4wp_repost_schema"
     Then I should see "Schema Upload Success: 200" in the "#message" element
