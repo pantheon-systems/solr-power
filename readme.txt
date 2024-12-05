@@ -12,7 +12,6 @@ Improve your user experience with the Apache Solr search engine for your WordPre
 
 == Description ==
 
-[![Travis Build Status](https://travis-ci.org/pantheon-systems/solr-power.svg?branch=master)](https://travis-ci.org/pantheon-systems/solr-power)
 [![Circle CI Build Status](https://circleci.com/gh/pantheon-systems/solr-power.svg?style=shield&circle-token=3af522a81a29eab25828a6b0d52e2f1afa7f044b)](https://circleci.com/gh/pantheon-systems/solr-power)
 
 Search is critical for your site, but the default search for WordPress leaves a lot to be desired. Improve your user experience with the Apache Solr search engine for your WordPress website.
@@ -225,6 +224,20 @@ Return:
         return $enabled;
     }, 10, 2 );
 
+= Custom schema file path =
+
+By default, custom schema is sourced from `wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml`. This can be overridden with an absolute path using the the `solr_power_customer_schema_file_path` filter.
+
+Parameters:
+* $custom_schema_file_path (string): Default path to a custom schema file
+
+Return:
+* string: Absolute path to a custom schema.xml file.
+
+    add_filter('solr_power_customer_schema_file_path', function($custom_schema_file_path) {
+        return '/absolute/path/to/schema.xml';
+    });
+
 = Common issues =
 
 * Failing to post the schema.xml will result in an error during indexing, "Missing `post_date_iso` field."
@@ -254,9 +267,10 @@ Please report security bugs found in the source code of the Solr Power plugin th
 
 == Changelog ==
 
-
 = 2.6.0-dev =
 * Adds `is_solr_query` filter [[#588](https://github.com/pantheon-systems/solr-power/pull/588)] (props [@sboisvert](https://wordpress.org/support/users/sboisvert/))
+* Fixes custom schema file path for Composer Managed and other non-standard uploads directories. [[#637](https://github.com/pantheon-systems/solr-power/pull/637)]
+* Adds filter `solr_power_customer_schema_file_path` to specify an alternative custom schema.xml file. [[#637](https://github.com/pantheon-systems/solr-power/pull/637)]
 
 = 2.5.3 (April 24, 2024) =
 * Fixes a very old bug that would cause tax queries to be built incorrectly. [[#622](https://github.com/pantheon-systems/solr-power/pull/622)] (props [@offshorealert](https://wordpress.org/support/users/offshorealert/))
