@@ -18,4 +18,4 @@ Feature: Solr Power plugin
 
   Scenario: I see the default schema path in the action dashboard
     When I go to "/wp-admin/admin.php?page=solr-power#top#solr_action"
-    Then I should see "To use a custom schema.xml, upload it to the /code/wp-content/uploads/solr-for-wordpress-on-pantheon/ directory."
+    Then I should see "To use a custom schema.xml, upload it to the /code/wp-content/uploads/solr-for-wordpress-on-pantheon directory."
