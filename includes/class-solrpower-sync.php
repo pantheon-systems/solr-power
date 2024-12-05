@@ -104,9 +104,6 @@ class SolrPower_Sync {
 	 */
 	function handle_delete( $post_id ) {
 		$post_info            = get_post( $post_id );
-		$plugin_s4wp_settings = solr_options();
-		$delete_page          = $plugin_s4wp_settings['s4wp_delete_page'];
-		$delete_post          = $plugin_s4wp_settings['s4wp_delete_post'];
 
 		if ( is_multisite() ) {
 			$this->delete( get_current_blog_id() . '_' . $post_info->ID );
