@@ -129,7 +129,7 @@ class SolrPower_Api {
 		 * wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml
 		 * and can be overridden with the filter 'solr_power_customer_schema_file_path'.
 		*/
-		
+
 		$schema = SOLR_POWER_PATH . '/schema.xml';
 		$custom_schema_file_path = self::custom_schema_file_path();
 
