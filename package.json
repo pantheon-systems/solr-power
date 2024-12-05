@@ -1,6 +1,6 @@
 {
   "name": "solr-power",
-  "version": "2.6.0-dev",
+  "version": "2.6.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/pantheon-systems/solr-power.git"
