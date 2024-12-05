@@ -129,7 +129,8 @@ class SolrPower_Api {
 		 * wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml
 		 * and can be overridden with the filter 'solr_power_customer_schema_file_path'.
 		*/
-
+		
+		$schema = SOLR_POWER_PATH . '/schema.xml';
 		$custom_schema_file_path = self::custom_schema_file_path();
 
 		if ( file_exists( $custom_schema_file_path ) ) {
@@ -149,11 +150,11 @@ class SolrPower_Api {
 		}
 
 		if ( ! file_exists( $schema ) ) {
-			return $schema . ' does not exist.';
+			return "Schema '" . $schema . "' does not exist.";
 		}
 
 		if ( ! file_exists( $client_cert ) ) {
-			return $client_cert . ' does not exist.';
+			return "Client cert '" . $client_cert . "' does not exist.";
 		}
 
 		$file = fopen( $schema, 'r' );
