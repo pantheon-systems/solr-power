@@ -588,7 +588,7 @@ EOT;
 
 	public function test_custom_schema_file_path_default() {
 		$expected = "wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml";
-		$actual = SolrPower_Sync::custom_schema_file_path();
+		$actual = SolrPower_Api::custom_schema_file_path();
 		
 		$this->assertContains($expected, $actual);
 	}
@@ -596,7 +596,7 @@ EOT;
 	public function test_custom_schema_file_path_wp_content_moved() {
 		define( 'UPLOADS', trailingslashit( WP_CONTENT_DIR ) . 'files' );
 		$expected = "wp-content/files/solr-for-wordpress-on-pantheon/schema.xml";
-		$actual = SolrPower_Sync::custom_schema_file_path();
+		$actual = SolrPower_Api::custom_schema_file_path();
 
 		$this->assertContains($expected, $actual);
 	}
@@ -609,7 +609,7 @@ EOT;
 				return $expected;
 			},
 		);
-		$actual = SolrPower_Sync::custom_schema_file_path();
+		$actual = SolrPower_Api::custom_schema_file_path();
 
 		$this->assertEquals($expected, $actual);
 	}
