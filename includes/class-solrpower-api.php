@@ -100,6 +100,25 @@ class SolrPower_Api {
 	}
 
 	/**
+	 * Returns the absolute path to look for a custom schema.xml file.
+	 *
+	 * @return string
+	 */
+	public static function custom_schema_file_path() {
+		$upload_dir = wp_upload_dir();
+		$custom_schema_file_path = path_join( $upload_dir['basedir'], 'solr-for-wordpress-on-pantheon/schema.xml' );
+
+		/**
+		 * Override the custom schema file path
+		 *
+		 * @param string $custom_schema_file_path The absolute path to a customer solr schema file.
+		 */
+		$custom_schema_file_path = apply_filters( 'solr_power_customer_schema_file_path', $custom_schema_file_path );
+
+		return $custom_schema_file_path;
+	}
+
+	/**
 	 * Submit the schema to Solr.
 	 */
 	function submit_schema() {
@@ -111,16 +130,7 @@ class SolrPower_Api {
 		 * and can be overridden with the filter 'solr_power_customer_schema_file_path'.
 		*/
 
-		$schema = SOLR_POWER_PATH . '/schema.xml';
-		$upload_dir = wp_upload_dir();
-		$custom_schema_file_path = path_join( $upload_dir['basedir'], 'solr-for-wordpress-on-pantheon/schema.xml' );
-
-		/**
-		 * Override the custom schema file path
-		 *
-		 * @param string $custom_schema_file_path The absolute path to a customer solr schema file.
-		 */
-		$custom_schema_file_path = apply_filters( 'solr_power_customer_schema_file_path', $custom_schema_file_path );
+		$custom_schema_file_path = self::custom_schema_file_path();
 
 		if ( file_exists( $custom_schema_file_path ) ) {
 			$schema = $custom_schema_file_path;

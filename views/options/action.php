@@ -52,8 +52,7 @@
 				</tr>
 				<tr valign="top">
 					<?php
-					$upload_dir = wp_upload_dir();
-					$dir = path_join( $upload_dir['basedir'], 'solr-for-wordpress-on-pantheon/' );
+					$dir = dirname( SolrPower_Api::custom_schema_file_path() );
 					?>
 					<td scope="row" colspan="2">To use a custom schema.xml, upload it to the
 						<b><?php echo esc_html( $dir ); ?></b>

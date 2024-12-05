@@ -11,6 +11,10 @@ Feature: Solr Power plugin
     When I go to "/wp-admin/options-general.php?page=solr-power"
     When I should see "Successful" in the "#solr_info" element
 
+  Scenario: I see the default schema path in the action dashboard
+    When I go to "/wp-admin/admin.php?page=solr-power#top#solr_action"
+    Then I should see "To use a custom schema.xml, upload it to the /code/wp-content/uploads/solr-for-wordpress-on-pantheon/ directory." in the "#solr_action" element
+
   Scenario: I can submit default schema
     When I go to "/wp-admin/admin.php?page=solr-power#top#solr_action"
     And I press "s4wp_repost_schema"
