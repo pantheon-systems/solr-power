@@ -1,5 +1,8 @@
 ## Changelog ##
 
+### 2.6.0-dev ###
+* Adds `is_solr_query` filter [[#588](https://github.com/pantheon-systems/solr-power/pull/588)] (props [@sboisvert](https://wordpress.org/support/users/sboisvert/))
+
 ### 2.5.3 (April 24, 2024) ###
 * Fixes a very old bug that would cause tax queries to be built incorrectly. [[#622](https://github.com/pantheon-systems/solr-power/pull/622)] (props [@offshorealert](https://wordpress.org/support/users/offshorealert/))
 
