@@ -226,7 +226,6 @@ Return:
 
 = Custom schema file path =
 
-
 By default, custom schema is sourced from `wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml`. This can be overridden with an absolute path using the the `solr_power_customer_schema_file_path` filter.
 
 Parameters:
