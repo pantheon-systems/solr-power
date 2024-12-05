@@ -1,45 +1,24 @@
-name: Build and Tag
+name: Build, Tag, and Release
 on:
   push:
     branches:
       - 'main'
 
 permissions:
+  pull-requests: write
   contents: write
 
 jobs:
-  wordpress:
-    name: Release
+  tag:
+    name: Tag and Release
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: install node v12
-      uses: actions/setup-node@v3
+      uses: actions/checkout@v4
+    - name: Build, tag, and release
+      uses: pantheon-systems/plugin-release-actions/build-tag-release@v0
       with:
-        node-version: 12
-
-    - name: Build
-      run: |
-        npm ci
-        npm run build
-        composer install --no-dev -o
-
-    - name: Setup
-      run: 'echo "VERSION=$(jq -r .version ./package.json)" >> $GITHUB_ENV'
-
-    - name: Tag
-      run: |
-        echo "Releasing version $VERSION ..."
-        git config user.name Pantheon Automation
-        git config user.email bot@getpantheon.com
-        git checkout -b "release-$VERSION"
-        git add -f assets/* vendor/
-        git commit -m "Release $VERSION"
-        git tag "$VERSION"
-        git push --tags
-        gh release create "$VERSION" -t "$VERSION" --generate-notes -d
-      env:
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GH_TOKEN: ${{ github.token }}
+        gh_token: ${{ secrets.GITHUB_TOKEN }}
+        build_node_assets: "true"
+        build_composer_assets: "true"
+        draft: "true"

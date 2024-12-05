@@ -37,9 +37,9 @@ Note that dependencies are installed via Composer and the `vendor` directory is 
     * Push the release branch up.
 1. Open a Pull Request to merge `release_X.Y.Z` into `main`. Your PR should consist of all commits to `develop` since the last release, and one commit to update the version number. The PR name should also be `Release X.Y.Z`.
 1. After all tests pass and you have received approval from a [CODEOWNER](./CODEOWNERS), merge the PR into `main`. "merge" is preferred in this case, not rebase. _Never_ squash to `main`.
-1. Pull `main` locally, create a new tag (based on version number from previous steps), and push up. The tag should _only_ be the version number. It _should not_ be prefixed  `v` (i.e. `X.Y.Z`, not `vX.Y.X`).
-1. Confirm that the necessary assets are present in the newly created tag, and test on a WP install if desired.
-1. Create a [new release](https://github.com/pantheon-systems/solr-power/releases/new) using the tag created in the previous steps, naming the release with the new version number, and targeting the tag created in the previous step. Paste the release changelog from the `Changelog` section of [the readme](readme.txt) into the body of the release, including the links to the closed issues if applicable.
+1. CI will build, tag and draft [a release](https://github.com/pantheon-systems/solr-power/releases/).
+1. Review the drafted release, updating release notes if needed, confirm that the necessary assets are present in the newly created tag, and test on a WP install if desired.
+1. Publish the drafted release.
 1. Wait for the [_Release solr-power plugin to wp.org_ action](https://github.com/pantheon-systems/solr-power/actions/workflows/wordpress-plugin-deploy.yml) to finish deploying to the WordPress.org plugin repository. If all goes well, users with SVN commit access for that plugin will receive an emailed diff of changes.
 1. Check WordPress.org: Ensure that the changes are live on [the plugin repository](https://wordpress.org/plugins/solr-power/). This may take a few minutes.
 1. Following the release, prepare the next dev version with the following steps:
