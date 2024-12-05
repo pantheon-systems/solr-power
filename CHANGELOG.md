@@ -1,7 +1,7 @@
 ## Changelog ##
 
 ### 2.6.0-dev ###
-* Adds `is_solr_query` filter [[#588](https://github.com/pantheon-systems/solr-power/pull/588)] (props [@sboisvert](https://wordpress.org/support/users/sboisvert/))
+* Adds `is_solr_query` filter [[#588](https://github.com/pantheon-systems/solr-power/pull/588)] (props [@sboisvert](https://github.com/sboisvert))
 * Fixes custom schema file path for Composer Managed and other non-standard uploads directories. [[#637](https://github.com/pantheon-systems/solr-power/pull/637)]
 * Adds filter `solr_power_customer_schema_file_path` to specify an alternative custom schema.xml file. [[#637](https://github.com/pantheon-systems/solr-power/pull/637)]
 
