@@ -21,4 +21,5 @@ jobs:
         gh_token: ${{ secrets.GITHUB_TOKEN }}
         build_node_assets: "true"
         build_composer_assets: "true"
+        generate_release_notes: "true"
         draft: "true"
