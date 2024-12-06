@@ -52,14 +52,7 @@
 				</tr>
 				<tr valign="top">
 					<?php
-					if ( ! empty( $_ENV['FILEMOUNT'] ) ) {
-						$dir = realpath( ABSPATH ) . '/' . $_ENV['FILEMOUNT'] . '/solr-for-wordpress-on-pantheon/';
-					} else {
-						$upload_dir = wp_upload_dir();
-						$base_dir   = $upload_dir['basedir'];
-						$base_dir   = str_replace( ABSPATH, '/', $base_dir );
-						$dir        = $base_dir . '/solr-for-wordpress-on-pantheon/';
-					}
+					$dir = dirname( SolrPower_Api::custom_schema_file_path() );
 					?>
 					<td scope="row" colspan="2">To use a custom schema.xml, upload it to the
 						<b><?php echo esc_html( $dir ); ?></b>

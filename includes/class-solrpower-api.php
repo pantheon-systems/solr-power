@@ -100,19 +100,41 @@ class SolrPower_Api {
 	}
 
 	/**
+	 * Returns the absolute path to look for a custom schema.xml file.
+	 *
+	 * @return string
+	 */
+	public static function custom_schema_file_path() {
+		$upload_dir = wp_upload_dir();
+		$custom_schema_file_path = path_join( $upload_dir['basedir'], 'solr-for-wordpress-on-pantheon/schema.xml' );
+
+		/**
+		 * Override the custom schema file path
+		 *
+		 * @param string $custom_schema_file_path The absolute path to a customer solr schema file.
+		 */
+		$custom_schema_file_path = apply_filters( 'solr_power_customer_schema_file_path', $custom_schema_file_path );
+
+		return $custom_schema_file_path;
+	}
+
+	/**
 	 * Submit the schema to Solr.
 	 */
 	function submit_schema() {
 		/*
 		 * Solarium does not currently support submitting schemas to the server.
 		 * So we'll do it ourselves.
-		 * Let's check for a custom Schema.xml. It MUST be located in
-		 * wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml.
+		 * Let's check for a custom Schema.xml. It defaults to
+		 * wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml
+		 * and can be overridden with the filter 'solr_power_customer_schema_file_path'.
 		*/
-		if ( ! empty( $_ENV['FILEMOUNT'] ) && is_file( realpath( ABSPATH ) . '/' . $_ENV['FILEMOUNT'] . '/solr-for-wordpress-on-pantheon/schema.xml' ) ) {
-			$schema = realpath( ABSPATH ) . '/' . $_ENV['FILEMOUNT'] . '/solr-for-wordpress-on-pantheon/schema.xml';
-		} else {
-			$schema = SOLR_POWER_PATH . '/schema.xml';
+
+		$schema = SOLR_POWER_PATH . '/schema.xml';
+		$custom_schema_file_path = self::custom_schema_file_path();
+
+		if ( file_exists( $custom_schema_file_path ) ) {
+			$schema = $custom_schema_file_path;
 		}
 
 		$path        = $this->compute_path();
@@ -128,11 +150,11 @@ class SolrPower_Api {
 		}
 
 		if ( ! file_exists( $schema ) ) {
-			return $schema . ' does not exist.';
+			return "Schema '" . $schema . "' does not exist.";
 		}
 
 		if ( ! file_exists( $client_cert ) ) {
-			return $client_cert . ' does not exist.';
+			return "Client cert '" . $client_cert . "' does not exist.";
 		}
 
 		$file = fopen( $schema, 'r' );
@@ -157,14 +179,19 @@ class SolrPower_Api {
 		$curl_opts = curl_getinfo( $ch );
 		fclose( $file );
 		if ( 200 === (int) $curl_opts['http_code'] ) {
+			// Schema Upload Success.
 			$return_value = 'Schema Upload Success: ' . $curl_opts['http_code'];
-		} else {
-			$return_value = 'Schema Upload Error: ' . $curl_opts['http_code'];
-			if ( preg_match( '#<h1>(HTTP Status [\d]+ - )?(.+)</h1>#', $response, $matches ) ) {
-				$return_value .= ' - ' . $matches[2];
+			if ( $schema == $custom_schema_file_path ) {
+				$return_value = 'Custom ' . $return_value;
 			}
+			return $return_value;
 		}
 
+		// Schema Upload Failure.
+		$return_value = 'Schema Upload Error: ' . $curl_opts['http_code'];
+		if ( preg_match( '#<h1>(HTTP Status [\d]+ - )?(.+)</h1>#', $response, $matches ) ) {
+			$return_value .= ' - ' . $matches[2];
+		}
 		return $return_value;
 	}
 
