@@ -1,5 +1,7 @@
 ## Changelog ##
 
+### 2.6.1-dev ###
+
 ### 2.6.0 (December 05, 2024) ###
 * Adds `is_solr_query` filter [[#588](https://github.com/pantheon-systems/solr-power/pull/588)] (props [@sboisvert](https://github.com/sboisvert))
 * Fixes custom schema file path for Composer Managed and other non-standard uploads directories. [[#637](https://github.com/pantheon-systems/solr-power/pull/637)]
