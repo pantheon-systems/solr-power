@@ -5,6 +5,10 @@
  * @package Solr_Power
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Base Solr Power controller.
  */
@@ -68,19 +72,19 @@ class SolrPower {
 
 		// Don't try to send a schema if we're not on Pantheon servers.
 		if ( ! defined( 'SOLR_PATH' ) ) {
-			$solr_path = wp_kses( __( '<code>SOLR_PATH</code> constant not found.', 'solr-for-wordpress-on-pantheon' ), 'code' );
+			$solr_path = wp_kses( __( '<code>SOLR_PATH</code> constant not found.', 'solr-power' ), 'code' );
 			$schema_message = SolrPower_Api::get_instance()->submit_schema();
 			if ( strpos( $schema_message, 'Error' ) ) {
 				// Translators: 1 The error message, 2: The SOLR_PATH constant.
-				$message = wp_kses( __( 'Submitting the schema failed with the message: %1$s<br /><br />%2$s', 'solr-for-wordpress-on-pantheon' ), [ 'br' => [] ] );
-				wp_die( sprintf( $message, esc_html( $schema_message ), $solr_path ) );
+				$message = wp_kses( __( 'Submitting the schema failed with the message: %1$s<br /><br />%2$s', 'solr-power' ), [ 'br' => [] ] );
+				wp_die( wp_kses_post( sprintf( $message, esc_html( $schema_message ), $solr_path ) ) );
 			}
 		}
 
 		if ( is_multisite() && ! $networkwide ) {
 			// Translators: 1: The URL to the network admin plugins page.
-			$message = wp_kses_post( __( 'You are attempting to activate the plugin on a multisite as a single-site plugin. For WordPress multisites, you need to activate network-wide. Go to your <a href="%s">your Network Admin Plugins page</a> and click the Network Activate link there.', 'solr-for-wordpress-on-pantheon' ) );
-			wp_die( sprintf( $message, get_admin_url( 1, 'network/plugins.php' ) ) );
+			$message = wp_kses_post( __( 'You are attempting to activate the plugin on a multisite as a single-site plugin. For WordPress multisites, you need to activate network-wide. Go to your <a href="%s">your Network Admin Plugins page</a> and click the Network Activate link there.', 'solr-power' ) );
+			wp_die( wp_kses_post( sprintf( $message, esc_url( get_admin_url( 1, 'network/plugins.php' ) ) ) ) );
 		}
 
 		SolrPower_Options::get_instance()->initalize_options();
@@ -99,7 +103,7 @@ class SolrPower {
 
 		if ( getenv( 'PANTHEON_ENVIRONMENT' ) !== false && getenv( 'PANTHEON_INDEX_HOST' ) === false ) {
 			$return_value = wp_kses(
-				__( 'Before you can activate this plugin, you must first <a href="https://pantheon.io/docs/articles/sites/apache-solr/">activate Solr</a> in your Pantheon Dashboard.', 'solr-for-wordpress-on-pantheon' ),
+				__( 'Before you can activate this plugin, you must first <a href="https://pantheon.io/docs/articles/sites/apache-solr/">activate Solr</a> in your Pantheon Dashboard.', 'solr-power' ),
 				array(
 					'a' => array(
 						'href' => array(),
@@ -107,7 +111,7 @@ class SolrPower {
 				)
 			);
 		} elseif ( version_compare( $wp_version, '3.0', '<' ) ) {
-			$return_value = esc_html__( 'This plugin requires WordPress 3.0 or greater.', 'solr-for-wordpress-on-pantheon' );
+			$return_value = esc_html__( 'This plugin requires WordPress 3.0 or greater.', 'solr-power' );
 		}
 
 		return $return_value;
@@ -172,7 +176,7 @@ class SolrPower {
 
 		$base_link     = is_multisite() ? network_admin_url( 'admin.php' ) : admin_url( 'admin.php' );
 		$settings_link = add_query_arg( 'page', 'solr-power', $base_link );
-		array_unshift( $links, '<a href="' . esc_url( $settings_link ) . '">' . esc_html__( 'Settings', 'solr-for-wordpress-on-pantheon' ) . '</a>' );
+		array_unshift( $links, '<a href="' . esc_url( $settings_link ) . '">' . esc_html__( 'Settings', 'solr-power' ) . '</a>' );
 
 		return $links;
 	}
@@ -210,9 +214,9 @@ class SolrPower {
 		}
 
 		// If there is a template file then we use it.
-		if ( file_exists( TEMPLATEPATH . '/s4wp_search.php' ) ) {
+		if ( file_exists( get_template_directory() . '/s4wp_search.php' ) ) {
 			// use theme file.
-			include_once( TEMPLATEPATH . '/s4wp_search.php' );
+			include_once( get_template_directory() . '/s4wp_search.php' );
 		} elseif ( file_exists( dirname( __FILE__ ) . '/template/s4wp_search.php' ) ) {
 			// use plugin supplied file.
 			add_action( 'wp_head', array( $this, 'default_head' ) );

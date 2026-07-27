@@ -5,6 +5,10 @@
  * @package Solr_Power
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 ?>
 
 <?php get_header(); ?>
@@ -23,7 +27,7 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 		<div class="solr_search">
 	<?php
 	if ( ! empty( $results['qtime'] ) ) {
-		printf( "<label class='solr_response'>Response time: <span id=\"qrytime\">{$results['qtime']}</span> s</label>" );
+		printf( "<label class='solr_response'>Response time: <span id=\"qrytime\">%s</span> s</label>", esc_html( $results['qtime'] ) );
 	}
 
 	// if server id has been defined keep hold of it.
@@ -37,7 +41,7 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 
 			<form name="searchbox" method="get" id="searchbox" action="">
 					<input id="qrybox" name="s" type="text" class="solr_field" value="<?php echo esc_attr( $results['query'] ); ?>"/>
-					<?php echo $serverval; ?>
+					<?php echo wp_kses_post( $serverval ); ?>
 					<input id="searchbtn" type="submit" value="Search" />
 			</form>
 		</div>
@@ -52,9 +56,9 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 	<?php
 	if ( $results['hits'] && $results['query'] && $results['qtime'] ) {
 		if ( $results['firstresult'] === $results['lastresult'] ) {
-			printf( "Displaying result %s of <span id='resultcnt'>%s</span> hits", $results['firstresult'], $results['hits'] );
+			printf( "Displaying result %s of <span id='resultcnt'>%s</span> hits", esc_html( $results['firstresult'] ), esc_html( $results['hits'] ) );
 		} else {
-			printf( "Displaying results %s-%s of <span id='resultcnt'>%s</span> hits", $results['firstresult'], $results['lastresult'], $results['hits'] );
+			printf( "Displaying results %s-%s of <span id='resultcnt'>%s</span> hits", esc_html( $results['firstresult'] ), esc_html( $results['lastresult'] ), esc_html( $results['hits'] ) );
 		}
 	}
 	?>
@@ -62,11 +66,11 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 			</div>
 			<div class="solr_results_headerR">
 				<ol class="solr_sort2">
-					<li class="solr_sort_drop"><a href="<?php echo $results['sorting']['scoredesc'] ?>">Relevance<span></span></a></li>
-					<li><a href="<?php echo $results['sorting']['datedesc'] ?>">Newest</a></li>
-					<li><a href="<?php echo $results['sorting']['dateasc'] ?>">Oldest</a></li>
-					<li><a href="<?php echo $results['sorting']['commentsdesc'] ?>">Most Comments</a></li>
-					<li><a href="<?php echo $results['sorting']['commentsasc'] ?>">Least Comments</a></li>
+					<li class="solr_sort_drop"><a href="<?php echo esc_url( $results['sorting']['scoredesc'] ); ?>">Relevance<span></span></a></li>
+					<li><a href="<?php echo esc_url( $results['sorting']['datedesc'] ); ?>">Newest</a></li>
+					<li><a href="<?php echo esc_url( $results['sorting']['dateasc'] ); ?>">Oldest</a></li>
+					<li><a href="<?php echo esc_url( $results['sorting']['commentsdesc'] ); ?>">Most Comments</a></li>
+					<li><a href="<?php echo esc_url( $results['sorting']['commentsasc'] ); ?>">Least Comments</a></li>
 				</ol>
 				<div class="solr_sort">Sort by:</div>
 			</div>
@@ -87,29 +91,29 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 		printf( "<ol>\n" );
 		foreach ( $results['results'] as $result ) {
 
-			printf( "<li onclick=\"window.location='%s'\">\n", $result['permalink'] );
-			printf( "<h2><a href='%s'>%s</a></h2>\n", $result['permalink'], $result['title'] );
+			printf( "<li onclick=\"window.location='%s'\">\n", esc_url( $result['permalink'] ) );
+			printf( "<h2><a href='%s'>%s</a></h2>\n", esc_url( $result['permalink'] ), esc_html( $result['title'] ) );
 			echo '<p>';
 			foreach ( explode( '...', $result['teaser'] ) as $this_result ) {
 				if ( ! empty( $this_result ) ) {
-					echo '...' . $this_result . '...<br /><br />';
+					echo '...' . wp_kses_post( $this_result ) . '...<br /><br />';
 				}
 			}
 
 			if ( $result['numcomments'] > 0 ) {
-				printf( "<a href='%s'>(comment match)</a>", $result['comment_link'] );
+				printf( "<a href='%s'>(comment match)</a>", esc_url( $result['comment_link'] ) );
 			}
 
 			echo "</p>\n";
 
 			printf(
 				"<label> By <a href='%s'>%s</a> in %s %s - <a href='%s'>%s comments</a></label>\n",
-				$result['authorlink'],
-				$result['author'],
-				get_the_category_list( ', ', '', $result['id'] ),
-				gmdate( 'm/d/Y', strtotime( $result['date'] ) ),
-				$result['comment_link'],
-				$result['numcomments']
+				esc_url( $result['authorlink'] ),
+				esc_html( $result['author'] ),
+				wp_kses_post( get_the_category_list( ', ', '', $result['id'] ) ),
+				esc_html( gmdate( 'm/d/Y', strtotime( $result['date'] ) ) ),
+				esc_url( $result['comment_link'] ),
+				esc_html( $result['numcomments'] )
 			);
 			printf( "</li>\n" );
 		}

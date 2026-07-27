@@ -5,6 +5,10 @@
  * @package Solr_Power
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Render the Solr search form
  */
@@ -13,9 +17,9 @@ function s4wp_search_form() {
 	$order  = filter_input( INPUT_GET, 'order', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 	$server = filter_input( INPUT_GET, 'server', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
-	$score_str         = esc_html__( 'Score', 'solr-for-wordpress-on-pantheon' );
-	$date_str          = esc_html__( 'Date', 'solr-for-wordpress-on-pantheon' );
-	$last_modified_str = esc_html__( 'Last Modified', 'solr-for-wordpress-on-pantheon' );
+	$score_str         = esc_html__( 'Score', 'solr-power' );
+	$date_str          = esc_html__( 'Date', 'solr-power' );
+	$last_modified_str = esc_html__( 'Last Modified', 'solr-power' );
 
 	if ( 'date' === $sort ) {
 		$sortval = '<option value="score">' . $score_str . '</option><option value="date" selected="selected">' . $date_str . '</option><option value="modified">' . $last_modified_str . '</option>';
@@ -25,8 +29,8 @@ function s4wp_search_form() {
 		$sortval = '<option value="score" selected="selected">' . $score_str . '</option><option value="date">' . $date_str . '</option><option value="modified">' . $last_modified_str . '</option>';
 	}
 
-	$desc_str = esc_html__( 'Descending', 'solr-for-wordpress-on-pantheon' );
-	$asc_str  = esc_html__( 'Ascending', 'solr-for-wordpress-on-pantheon' );
+	$desc_str = esc_html__( 'Descending', 'solr-power' );
+	$asc_str  = esc_html__( 'Ascending', 'solr-power' );
 
 	if ( 'asc' === $order ) {
 		$orderval = '<option value="desc">' . $desc_str . '</option><option value="asc" selected="selected">' . $asc_str . '</option>';
@@ -37,9 +41,9 @@ function s4wp_search_form() {
 	if ( $server ) {
 		$serverval = '<input name="server" type="hidden" value="' . $server . '" />';
 	}
-	$form = '<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="ssearch" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">' . esc_html__( 'Sort By:', 'solr-for-wordpress-on-pantheon' ) . '</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">' . __( 'Order By:', 'solr-for-wordpress-on-pantheon' ) . '</label><select name="order" id="orderselect">%s</select>%s</form>';
+	$form = '<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="ssearch" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">' . esc_html__( 'Sort By:', 'solr-power' ) . '</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">' . __( 'Order By:', 'solr-power' ) . '</label><select name="order" id="orderselect">%s</select>%s</form>';
 
-	printf( $form, filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_FULL_SPECIAL_CHARS ), $sortval, $orderval, $serverval );
+	printf( $form, esc_attr( filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ), wp_kses_post( $sortval ), wp_kses_post( $orderval ), wp_kses_post( isset( $serverval ) ? $serverval : '' ) );
 }
 
 /**
@@ -319,16 +323,16 @@ function s4wp_print_facet_items( $items, $pre = '<ul>', $post = '</ul>', $before
 	if ( ! $items ) {
 		return;
 	}
-	printf( "%s\n", $pre );
+	printf( "%s\n", wp_kses_post( $pre ) );
 	foreach ( $items as $item ) {
-		printf( "%s<a href=\"%s\">%s (%s)</a>%s\n", $before, $item['link'], $item['name'], $item['count'], $after );
+		printf( "%s<a href=\"%s\">%s (%s)</a>%s\n", wp_kses_post( $before ), esc_url( $item['link'] ), esc_html( $item['name'] ), esc_html( $item['count'] ), wp_kses_post( $after ) );
 		$item_items = isset( $item['items'] ) ? true : false;
 
 		if ( $item_items ) {
 			s4wp_print_facet_items( $item['items'], $nestedpre, $nestedpost, $nestedbefore, $nestedafter, $nestedpre, $nestedpost, $nestedbefore, $nestedafter );
 		}
 	}
-	printf( "%s\n", $post );
+	printf( "%s\n", wp_kses_post( $post ) );
 }
 
 /**

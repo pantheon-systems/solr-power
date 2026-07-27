@@ -157,6 +157,7 @@ class SolrPower_Api {
 			return "Client cert '" . $client_cert . "' does not exist.";
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Low-level Solr HTTP client requires direct cURL/stream control.
 		$file = fopen( $schema, 'r' );
 		// set URL and other appropriate options.
 		$opts = array(
@@ -172,11 +173,16 @@ class SolrPower_Api {
 			CURLOPT_INFILESIZE     => filesize( $schema ),
 		);
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_init -- Low-level Solr HTTP client requires direct cURL/stream control.
 		$ch = curl_init();
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt_array -- Low-level Solr HTTP client requires direct cURL/stream control.
 		curl_setopt_array( $ch, $opts );
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec -- Low-level Solr HTTP client requires direct cURL/stream control.
 		$response  = curl_exec( $ch );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo -- Low-level Solr HTTP client requires direct cURL/stream control.
 		$curl_opts = curl_getinfo( $ch );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Low-level Solr HTTP client requires direct cURL/stream control.
 		fclose( $file );
 		if ( 200 === (int) $curl_opts['http_code'] ) {
 			// Schema Upload Success.
