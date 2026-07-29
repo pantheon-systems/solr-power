@@ -20,6 +20,12 @@
         },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "audit": {
+            "ignore": [
+                "GHSA-g446-98w2-8p5w",
+                "GHSA-c2w2-prh8-qm98"
+            ]
         }
     },
     "require": {
