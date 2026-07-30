@@ -137,10 +137,10 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 				} elseif ( false === $found ) {
 					$prev = $pageritm['link'];
 				}
-				$itemlinks[] = sprintf( '<a href="%s">%s</a>', $pageritm['link'], $pageritm['page'] );
+				$itemlinks[] = sprintf( '<a href="%s">%s</a>', esc_url( $pageritm['link'] ), esc_html( $pageritm['page'] ) );
 			} else {
 				$found       = true;
-				$itemlinks[] = sprintf( '<a class="solr_pages_on" href="%s">%s</a>', $pageritm['link'], $pageritm['page'] );
+				$itemlinks[] = sprintf( '<a class="solr_pages_on" href="%s">%s</a>', esc_url( $pageritm['link'] ), esc_html( $pageritm['page'] ) );
 			}
 
 			$pagecnt += 1;
@@ -150,15 +150,15 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 		}
 
 		if ( '' !== $prev ) {
-			printf( '<a href="%s">Previous</a>', $prev );
+			printf( '<a href="%s">Previous</a>', esc_url( $prev ) );
 		}
 
 		foreach ( $itemlinks as $itemlink ) {
-			echo $itemlink;
+			echo wp_kses_post( $itemlink );
 		}
 
 		if ( '' !== $next ) {
-			printf( '<a href="%s">Next</a>', $next );
+			printf( '<a href="%s">Next</a>', esc_url( $next ) );
 		}
 
 		printf( "</div>\n" );
@@ -177,7 +177,7 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 	<?php
 	if ( $results['facets']['selected'] ) {
 		foreach ( $results['facets']['selected'] as $selectedfacet ) {
-			printf( '<li><span></span><a href="%s">%s<b>x</b></a></li>', $selectedfacet['removelink'], $selectedfacet['name'] );
+			printf( '<li><span></span><a href="%s">%s<b>x</b></a></li>', esc_url( $selectedfacet['removelink'] ), esc_html( $selectedfacet['name'] ) );
 		}
 	}
 	?>
@@ -189,7 +189,7 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 		foreach ( $results['facets'] as $facet ) {
 			// don't display facets with only 1 value.
 			if ( isset( $facet['items'] ) and sizeof( $facet['items'] ) > 1 ) {
-				printf( "<li>\n<h3>%s</h3>\n", $facet['name'] );
+				printf( "<li>\n<h3>%s</h3>\n", esc_html( $facet['name'] ) );
 				s4wp_print_facet_items( $facet['items'], '<ol>', '</ol>', '<li>', '</li>', '<li><ol>', '</ol></li>', '<li>', '</li>' );
 				printf( "</li>\n" );
 			}

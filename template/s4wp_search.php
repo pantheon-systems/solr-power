@@ -177,7 +177,7 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 	<?php
 	if ( $results['facets']['selected'] ) {
 		foreach ( $results['facets']['selected'] as $selectedfacet ) {
-			printf( '<li><span></span><a href="%s">%s<b>x</b></a></li>', $selectedfacet['removelink'], $selectedfacet['name'] );
+			printf( '<li><span></span><a href="%s">%s<b>x</b></a></li>', esc_url( $selectedfacet['removelink'] ), esc_html( $selectedfacet['name'] ) );
 		}
 	}
 	?>
@@ -189,7 +189,7 @@ if ( ! isset( $results['results'] ) || null === $results['results'] ) {
 		foreach ( $results['facets'] as $facet ) {
 			// don't display facets with only 1 value.
 			if ( isset( $facet['items'] ) and sizeof( $facet['items'] ) > 1 ) {
-				printf( "<li>\n<h3>%s</h3>\n", $facet['name'] );
+				printf( "<li>\n<h3>%s</h3>\n", esc_html( $facet['name'] ) );
 				s4wp_print_facet_items( $facet['items'], '<ol>', '</ol>', '<li>', '</li>', '<li><ol>', '</ol></li>', '<li>', '</li>' );
 				printf( "</li>\n" );
 			}

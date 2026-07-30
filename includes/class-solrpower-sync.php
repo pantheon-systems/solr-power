@@ -649,7 +649,7 @@ class SolrPower_Sync {
 				$end     = true;
 				$results = sprintf( '{"type": "' . $post_type . '", "last": "%s", "end": true, "percent": "%.2f"}', $last, 100 );
 				if ( $echo ) {
-					echo $results;
+					echo $results; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON progress payload consumed by the admin indexer JS; HTML-escaping would corrupt it.
 				}
 				die();
 			}
@@ -683,7 +683,7 @@ class SolrPower_Sync {
 			$results = sprintf( '{"type\": "' . $post_type . '", "last": "%s", "end": false, "percent": "%.2f"}', $last, $percent );
 		}
 		if ( $echo ) {
-			echo $results;
+			echo $results; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON progress payload consumed by the admin indexer JS; HTML-escaping would corrupt it.
 
 			return;
 		}

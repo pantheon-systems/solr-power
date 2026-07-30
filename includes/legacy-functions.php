@@ -41,8 +41,9 @@ function s4wp_search_form() {
 	if ( $server ) {
 		$serverval = '<input name="server" type="hidden" value="' . $server . '" />';
 	}
-	$form = '<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="ssearch" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">' . esc_html__( 'Sort By:', 'solr-power' ) . '</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">' . __( 'Order By:', 'solr-power' ) . '</label><select name="order" id="orderselect">%s</select>%s</form>';
+	$form = '<form name="searchbox" method="get" id="searchbox" action=""><input type="text" id="qrybox" name="ssearch" value="%s"/><input type="submit" id="searchbtn" /><label for="sortselect" id="sortlabel">' . esc_html__( 'Sort By:', 'solr-power' ) . '</label><select name="sort" id="sortselect">%s</select><label for="orderselect" id="orderlabel">' . esc_html__( 'Order By:', 'solr-power' ) . '</label><select name="order" id="orderselect">%s</select>%s</form>';
 
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $form is a local literal HTML template built above; every interpolated value is escaped at its own placeholder.
 	printf( $form, esc_attr( filter_input( INPUT_GET, 'ssearch', FILTER_SANITIZE_FULL_SPECIAL_CHARS ) ), wp_kses_post( $sortval ), wp_kses_post( $orderval ), wp_kses_post( isset( $serverval ) ? $serverval : '' ) );
 }
 
