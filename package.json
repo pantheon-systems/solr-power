@@ -12,6 +12,9 @@
     "readme": "grunt readme",
     "watch": "grunt watch"
   },
+  "overrides": {
+    "postcss": "8.5.12"
+  },
   "devDependencies": {
     "grunt": "^1.6.1",
     "grunt-autoprefixer": "~3.0.4",
