@@ -13,16 +13,21 @@
     "watch": "grunt watch"
   },
   "devDependencies": {
+    "@lodder/grunt-postcss": "^3.1.1",
+    "autoprefixer": "^10.5.4",
     "grunt": "^1.6.1",
-    "grunt-autoprefixer": "~3.0.4",
     "grunt-contrib-cssmin": "^5.0.0",
     "grunt-contrib-jshint": "^3.2.0",
     "grunt-contrib-uglify": "~5.2.2",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-sass": "~3.1.0",
     "grunt-wp-readme-to-markdown": "~2.1.0",
+    "postcss": "^8.5.23",
     "sass": "^1.82.0"
   },
+  "browserslist": [
+    "last 5 versions"
+  ],
   "overrides": {
     "js-yaml": "3.15.0"
   }
