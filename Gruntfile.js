@@ -63,11 +63,11 @@ module.exports = function( grunt ) {
       /**
        * Auto-prefix CSS Elements after SASS is processed.
        */
-      autoprefixer : {
+      postcss : {
 
           options : {
-              browsers : ['last 5 versions'],
-              map      : true
+              map        : true,
+              processors : [ require( 'autoprefixer' )() ]
           },
 
           files : {
@@ -146,7 +146,7 @@ module.exports = function( grunt ) {
                   'assets/css/scss/*'
               ],
 
-              tasks : ['sass', 'autoprefixer', 'cssmin']
+              tasks : ['sass', 'postcss', 'cssmin']
 
           }
       },
@@ -159,10 +159,10 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-sass' );
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
-	grunt.loadNpmTasks( 'grunt-autoprefixer' );
+	grunt.loadNpmTasks( '@lodder/grunt-postcss' );
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
 	grunt.registerTask( 'readme', ['wp_readme_to_markdown']);
-	grunt.registerTask( 'default', ['jshint', 'uglify:backend','uglify:frontend', 'sass', 'autoprefixer', 'cssmin'] );
+	grunt.registerTask( 'default', ['jshint', 'uglify:backend','uglify:frontend', 'sass', 'postcss', 'cssmin'] );
 
 	grunt.util.linefeed = '\n';
 
