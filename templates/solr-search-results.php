@@ -5,11 +5,15 @@
  * @package Solr_Power
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 ?>
 <div id="solr-search-results">
 	<header class="page-header">
 		<h1 class="page-title">
-			<?php esc_html_e( 'Search Results', 'solr-for-wordpress-on-pantheon' ); ?>
+			<?php esc_html_e( 'Search Results', 'solr-power' ); ?>
 		</h1>
 	</header><!-- .page-header -->
 	<?php
@@ -25,7 +29,7 @@
 					if ( in_array( 'category', get_object_taxonomies( get_post_type() ) ) ) :
 						?>
 						<div class="entry-meta">
-							<span class="cat-links"><?php echo get_the_category_list( _x( ', ', 'Used between list items, there is a space after the comma.', 'solr-for-wordpress-on-pantheon' ) ); ?></span>
+							<span class="cat-links"><?php echo wp_kses_post( get_the_category_list( _x( ', ', 'Used between list items, there is a space after the comma.', 'solr-power' ) ) ); ?></span>
 						</div>
 						<?php
 					endif;
@@ -38,30 +42,32 @@
 			</article><!-- #post-## -->
 		<?php endwhile; ?>
 		<nav class="navigation paging-navigation" role="navigation">
-			<h1 class="screen-reader-text"><?php esc_html_e( 'Posts navigation', 'solr-for-wordpress-on-pantheon' ); ?></h1>
+			<h1 class="screen-reader-text"><?php esc_html_e( 'Posts navigation', 'solr-power' ); ?></h1>
 			<div class="pagination loop-pagination">
 				<?php
 				$big = 999999999; // Need an unlikely integer.
 
-				echo paginate_links(
+				$pagination = paginate_links(
 					array(
 						'base'               => str_replace( $big, '%#%', get_pagenum_link( $big, false ) ),
 						'format'             => '?paged=%#%',
 						'current'            => max( 1, $query->get( 'paged' ) ),
 						'total'              => $query->max_num_pages,
-						'prev_text'          => __( 'Previous page', 'solr-for-wordpress-on-pantheon' ),
-						'next_text'          => __( 'Next page', 'solr-for-wordpress-on-pantheon' ),
-						'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'solr-for-wordpress-on-pantheon' ) . ' </span>',
+						'prev_text'          => __( 'Previous page', 'solr-power' ),
+						'next_text'          => __( 'Next page', 'solr-power' ),
+						'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'solr-power' ) . ' </span>',
 
 					)
 				);
+
+				echo wp_kses_post( $pagination );
 				wp_reset_postdata();
 				?>
 			</div>
 		</nav>
 	<?php else : ?>
 		<article>
-			<p><?php esc_html_e( 'Sorry, no posts matched your criteria.', 'solr-for-wordpress-on-pantheon' ); ?></p>
+			<p><?php esc_html_e( 'Sorry, no posts matched your criteria.', 'solr-power' ); ?></p>
 		</article>
 	<?php endif; ?>
 </div>
