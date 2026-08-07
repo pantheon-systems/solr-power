@@ -54,8 +54,8 @@ class SolrPower_Options {
 	 */
 	function add_pages() {
 		add_menu_page(
-			__( 'Solr Power', 'solr-for-wordpress-on-pantheon' ),
-			__( 'Solr Power', 'solr-for-wordpress-on-pantheon' ),
+			__( 'Solr Power', 'solr-power' ),
+			__( 'Solr Power', 'solr-power' ),
 			'manage_options',
 			'solr-power',
 			array(
@@ -73,7 +73,7 @@ class SolrPower_Options {
 		if ( file_exists( SOLR_POWER_PATH . '/solr-options-page.php' ) ) {
 			include( SOLR_POWER_PATH . '/solr-options-page.php' );
 		} else {
-			esc_html_e( "Couldn't locate the options page.", 'solr-for-wordpress-on-pantheon' );
+			esc_html_e( "Couldn't locate the options page.", 'solr-power' );
 		}
 	}
 
@@ -333,9 +333,9 @@ class SolrPower_Options {
 					return;
 				}
 				if ( SolrPower_Api::get_instance()->ping_server() ) {
-					$this->msg = esc_html__( 'Ping Success!', 'solr-for-wordpress-on-pantheon' );
+					$this->msg = esc_html__( 'Ping Success!', 'solr-power' );
 				} else {
-					$this->msg = esc_html__( 'Ping Failed!', 'solr-for-wordpress-on-pantheon' );
+					$this->msg = esc_html__( 'Ping Failed!', 'solr-power' );
 				}
 				break;
 			case 'init_blogs':
@@ -343,33 +343,33 @@ class SolrPower_Options {
 					return;
 				}
 				SolrPower_Sync::get_instance()->copy_config_to_all_blogs();
-				$this->msg = esc_html__( 'Configuration has been copied to all blogs!', 'solr-for-wordpress-on-pantheon' );
+				$this->msg = esc_html__( 'Configuration has been copied to all blogs!', 'solr-power' );
 				break;
 			case 'optimize':
 				if ( ! $this->check_nonce( 'solr_optimize' ) ) {
 					return;
 				}
 				SolrPower_Api::get_instance()->optimize();
-				$this->msg = esc_html__( 'Index Optimized!', 'solr-for-wordpress-on-pantheon' );
+				$this->msg = esc_html__( 'Index Optimized!', 'solr-power' );
 				break;
 			case 'delete_all':
 				if ( ! $this->check_nonce( 'solr_delete_all' ) ) {
 					return;
 				}
 				SolrPower_Sync::get_instance()->delete_all();
-				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' );
+				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-power' );
 				break;
 			case 'repost_schema':
 				if ( ! $this->check_nonce( 'solr_repost_schema' ) ) {
 					return;
 				}
 				if ( ! getenv( 'PANTHEON_ENVIRONMENT' ) || ! getenv( 'FILEMOUNT' ) ) {
-					$this->msg = esc_html__( 'Schema reposting only works in a Pantheon environment.', 'solr-for-wordpress-on-pantheon' );
+					$this->msg = esc_html__( 'Schema reposting only works in a Pantheon environment.', 'solr-power' );
 					break;
 				}
 				SolrPower_Sync::get_instance()->delete_all();
 				$output    = SolrPower_Api::get_instance()->submit_schema();
-				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' ) . '<br />' . esc_html( $output );
+				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-power' ) . '<br />' . esc_html( $output );
 				break;
 		} // End switch().
 
@@ -386,7 +386,7 @@ class SolrPower_Options {
 		if ( ! isset( $_POST[ $field ] )
 			|| ! wp_verify_nonce( $_POST[ $field ], 'solr_action' )
 		) {
-			$this->msg = esc_html__( 'Action failed. Please try again.', 'solr-for-wordpress-on-pantheon' );
+			$this->msg = esc_html__( 'Action failed. Please try again.', 'solr-power' );
 
 			return false;
 		}

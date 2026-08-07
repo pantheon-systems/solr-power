@@ -1,4 +1,9 @@
 <?php
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $args  = array(
 	// solr_integrate required for Solr.
 	'solr_integrate' => true,
