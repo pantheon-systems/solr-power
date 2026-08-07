@@ -24,9 +24,6 @@ fi
 
 set -ex
 
-# Set StrictHostKeyChecking to no
-echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
-
 ###
 # Create a new environment for this particular test run.
 ###
@@ -83,7 +80,7 @@ git commit -m "Include Solr Power"
 git push
 
 # Sometimes Pantheon takes a little time to refresh the filesystem
-terminus build:workflow:wait $TERMINUS_SITE.$TERMINUS_ENV
+terminus workflow:wait $TERMINUS_SITE.$TERMINUS_ENV
 
 ###
 # Set up WordPress, theme, and plugins for the test run
