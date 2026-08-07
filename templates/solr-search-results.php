@@ -47,7 +47,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php
 				$big = 999999999; // Need an unlikely integer.
 
-				echo wp_kses_post( paginate_links(
+				$pagination = paginate_links(
 					array(
 						'base'               => str_replace( $big, '%#%', get_pagenum_link( $big, false ) ),
 						'format'             => '?paged=%#%',
@@ -58,7 +58,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 						'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'solr-power' ) . ' </span>',
 
 					)
-				) );
+				);
+
+				echo wp_kses_post( $pagination );
 				wp_reset_postdata();
 				?>
 			</div>

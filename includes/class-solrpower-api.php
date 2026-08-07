@@ -179,7 +179,7 @@ class SolrPower_Api {
 		curl_setopt_array( $ch, $opts );
 
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_exec -- Low-level Solr HTTP client requires direct cURL/stream control.
-		$response  = curl_exec( $ch );
+		$response = curl_exec( $ch );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_getinfo -- Low-level Solr HTTP client requires direct cURL/stream control.
 		$curl_opts = curl_getinfo( $ch );
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Low-level Solr HTTP client requires direct cURL/stream control.
