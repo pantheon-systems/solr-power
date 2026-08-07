@@ -5,6 +5,10 @@
  * @package Solr_Power
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Widget for displaying search faceting UI.
  */
@@ -36,9 +40,9 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$this->dummy_query();
-		echo $args['before_widget'];
+		echo wp_kses_post( $args['before_widget'] );
 		if ( ! empty( $instance['title'] ) ) {
-			echo $args['before_title'] . $instance['title'] . $args['after_title'];
+			echo wp_kses_post( $args['before_title'] . $instance['title'] . $args['after_title'] );
 		}
 		$this->facets = filter_input( INPUT_GET, 'facet', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY );
 		echo '<form action="' . esc_url( home_url( '/' ) ) . '" method="get" id="solr_facet">';
@@ -47,7 +51,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		$this->fetch_facets();
 		echo '</div>';
 		echo '</form>';
-		echo $args['after_widget'];
+		echo wp_kses_post( $args['after_widget'] );
 	}
 
 	/**
@@ -60,7 +64,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		?>
 		<p>
 			<label
-				for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'solr-for-wordpress-on-pantheon' ); ?></label>
+				for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_attr_e( 'Title:', 'solr-power' ); ?></label>
 			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
 		</p>
 		<?php
@@ -76,7 +80,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 	public function update( $new_instance, $old_instance ) {
 		$instance = array();
 
-		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? wp_strip_all_tags( $new_instance['title'] ) : '';
 
 		return $instance;
 	}
@@ -190,7 +194,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 
 		} // End foreach().
 		if ( $echo ) {
-			echo $output;
+			echo wp_kses_post( $output );
 		} else {
 			return $output;
 		}
@@ -236,7 +240,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		 *
 		 * @param string $html the search box html.
 		 */
-		echo apply_filters( 'solr_facet_searchbox', $html );
+		echo wp_kses_post( apply_filters( 'solr_facet_searchbox', $html ) );
 	}
 
 	/**

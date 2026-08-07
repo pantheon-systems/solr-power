@@ -159,7 +159,7 @@ class SolrPower_WP_Query {
 		if ( isset( $query->solr_query_id ) ) {
 			return;
 		}
-		$query->solr_query_id = md5( mt_rand() );
+		$query->solr_query_id = md5( wp_rand() );
 	}
 
 
