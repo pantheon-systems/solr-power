@@ -112,6 +112,7 @@ jobs:
       uses: pantheon-systems/terminus-github-actions@8e024bd89ff46ed2aa4e0663c6b54c87a94344f8 # v1.2.7
       with:
         pantheon-machine-token: ${{ secrets.TERMINUS_TOKEN }}
+        terminus-version: 3.6.2
 
     - name: Install SSH key
       uses: webfactory/ssh-agent@a6f90b1f127823b31d4d4a8d96047790581349bd # v0.9.1
