@@ -9,7 +9,6 @@
   "author": "Pantheon <noreply@pantheon.io>",
   "scripts": {
     "build": "grunt default",
-    "readme": "grunt readme",
     "watch": "grunt watch"
   },
   "devDependencies": {
@@ -21,7 +20,6 @@
     "grunt-contrib-uglify": "~5.2.2",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-sass": "~3.1.0",
-    "grunt-wp-readme-to-markdown": "~2.1.0",
     "postcss": "^8.5.23",
     "sass": "^1.82.0"
   },
