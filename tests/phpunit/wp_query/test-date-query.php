@@ -4,13 +4,13 @@ class SolrDateQueryTest extends SolrTestBase {
 
 	public $q;
 
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 		unset( $this->q );
 		$this->q = new WP_Query();
 	}
 
-	function tearDown() {
+	function tearDown(): void {
 		parent::tearDown();
 	}
 

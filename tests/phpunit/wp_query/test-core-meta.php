@@ -25,14 +25,14 @@ class Tests_Solr_MetaQuery extends SolrTestBase {
 		'address'
 	);
 
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 
 		$this->__change_option( 's4wp_index_custom_fields', $this->postmeta );
 
 	}
 
-	function tearDown() {
+	function tearDown(): void {
 		parent::tearDown();
 	}
 
