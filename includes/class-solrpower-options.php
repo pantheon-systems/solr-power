@@ -71,7 +71,7 @@ class SolrPower_Options {
 	 */
 	function options_page() {
 		if ( file_exists( SOLR_POWER_PATH . '/solr-options-page.php' ) ) {
-			include( SOLR_POWER_PATH . '/solr-options-page.php' );
+			include SOLR_POWER_PATH . '/solr-options-page.php';
 		} else {
 			esc_html_e( "Couldn't locate the options page.", 'solr-for-wordpress-on-pantheon' );
 		}
@@ -130,9 +130,9 @@ class SolrPower_Options {
 			while ( $batch_index->have_posts() ) {
 				$result = $batch_index->index_post();
 				if ( 'success' === $result['status'] ) {
-					$success_posts++;
+					++$success_posts;
 				} elseif ( 'failed' === $result['status'] ) {
-					$failed_posts++;
+					++$failed_posts;
 				}
 			}
 			// Iterate to the next set, but don't start it.
@@ -372,7 +372,6 @@ class SolrPower_Options {
 				$this->msg = esc_html__( 'All Indexed Pages Deleted!', 'solr-for-wordpress-on-pantheon' ) . '<br />' . esc_html( $output );
 				break;
 		} // End switch().
-
 	}
 
 	/**
@@ -503,7 +502,6 @@ class SolrPower_Options {
 		$this->add_field( 's4wp_index_comments', 'Index Comments', $page, $section, 'checkbox', 'bool' );
 		$this->add_field( 's4wp_index_custom_fields', 'Index custom fields (comma separated names list)', $page, $section, 'input', 'list2str' );
 		$this->add_field( 's4wp_exclude_pages', 'Excludes Posts or Pages (comma separated ids list)', $page, $section, 'input', 'list2str' );
-
 	}
 
 	/**
@@ -572,7 +570,6 @@ class SolrPower_Options {
 		$this->add_field( 's4wp_facet_on_type', 'Post Type as Facet', $page, $section, 'checkbox', 'bool' );
 		$this->add_field( 's4wp_facet_on_taxonomy', 'Taxonomy as Facet', $page, $section, 'checkbox', 'bool' );
 		$this->add_field( 's4wp_facet_on_custom_fields', 'Custom fields as Facet (comma separated ordered names list)', $page, $section, 'input', 'list2str' );
-
 	}
 
 	/**
@@ -605,5 +602,4 @@ class SolrPower_Options {
 			$args
 		);
 	}
-
 }
