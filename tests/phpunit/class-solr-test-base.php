@@ -19,7 +19,7 @@ class SolrTestBase extends WP_UnitTestCase{
 	/**
 	 * Setup for every test.
 	 */
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 
 		# Plugin now (2.5.0) defaults to true, but tests expect it.
@@ -48,7 +48,7 @@ class SolrTestBase extends WP_UnitTestCase{
 
 	}
 
-	function tearDown() {
+	function tearDown(): void {
 
 		parent::tearDown();
 		global $wpdb;

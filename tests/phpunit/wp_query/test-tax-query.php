@@ -1,13 +1,13 @@
 <?php
 
 class SolrTaxQueryTest extends SolrTestBase {
-	function setUp() {
+	function setUp(): void {
 
 		parent::setUp();
 
 	}
 
-	function tearDown() {
+	function tearDown(): void {
 		parent::tearDown();
 	}
 

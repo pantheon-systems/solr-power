@@ -1,7 +1,7 @@
 <?php
 
 class SolrWPQueryTest extends SolrTestBase {
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 	}
 

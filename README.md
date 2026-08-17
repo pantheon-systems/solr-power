@@ -3,7 +3,7 @@
 **Tags:** search  
 **Requires at least:** 4.6  
 **Requires PHP:** 7.1  
-**Tested up to:** 6.7.1  
+**Tested up to:** 7.0  
 **Stable tag:** 2.6.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
