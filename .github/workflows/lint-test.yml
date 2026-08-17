@@ -110,17 +110,6 @@ jobs:
         key: test-behat-dependencies-{{ checksum "composer.json" }}
         restore-keys: test-behat-dependencies-{{ checksum "composer.json" }}
 
-    - name: Check for $GITHUB_TOKEN
-      run: |
-        if [ -z "$GITHUB_TOKEN" ]; then
-          echo "GITHUB_TOKEN environment variables missing; assuming unauthenticated build"
-          exit 0
-        fi
-        echo "Setting GitHub OAuth token with suppressed ouput"
-        {
-          composer config -g github-oauth.github.com $GITHUB_TOKEN
-        } &> /dev/null
-
     - name: Check for $TERMINUS_TOKEN
       run: |
         if [ -z "$TERMINUS_TOKEN" ]; then
@@ -130,7 +119,9 @@ jobs:
         terminus auth:login --machine-token=$TERMINUS_TOKEN
 
     - name: Validate Fixture WordPress Version
-      run: ./bin/validate-fixture-version.sh
+      uses: pantheon-systems/plugin-release-actions/validate-fixture-version@554b455c9cb024ccf20147a27656fb198ce6f0cc # v0.5.5
+      with:
+        terminus_site: ${{ env.TERMINUS_SITE }}
     - name: Prepare for Behat tests
       run: ./bin/behat-prepare.sh
 

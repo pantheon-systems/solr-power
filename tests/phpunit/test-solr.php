@@ -1,11 +1,11 @@
 <?php
 class SolrTest extends SolrTestBase {
 
-	function setUp() {
+	function setUp(): void {
 		parent::setUp();
 	}
 
-	function tearDown() {
+	function tearDown(): void {
 		parent::tearDown();
 	}
 
@@ -583,14 +583,14 @@ EOT;
 		) );
 		$this->assertTrue( $query->posts[0]->solr );
 		$this->assertEquals( 'Dragon breath title', $query->posts[0]->post_title );
-		$this->assertContains( 'This text has treatment keyword in ACF', $query->posts[0]->post_content );
+		$this->assertStringContainsString( 'This text has treatment keyword in ACF', $query->posts[0]->post_content );
 	}
 
 	public function test_custom_schema_file_path_default() {
 		$expected = "wp-content/uploads/solr-for-wordpress-on-pantheon/schema.xml";
 		$actual = SolrPower_Api::custom_schema_file_path();
 		
-		$this->assertContains($expected, $actual);
+		$this->assertStringContainsString($expected, $actual);
 	}
 
 	public function test_custom_schema_file_path_with_filter() {
