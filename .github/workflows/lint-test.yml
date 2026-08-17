@@ -80,9 +80,6 @@ jobs:
       - test-phpunit
       - lint
     runs-on: ubuntu-latest
-    container:
-      image: quay.io/pantheon-public/build-tools-ci:8.x-php7.4
-      options: --user root
     env:
       TERMINUS_TOKEN: ${{ secrets.TERMINUS_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -92,23 +89,42 @@ jobs:
       WORDPRESS_ADMIN_USERNAME: pantheon
       WORDPRESS_ADMIN_EMAIL: no-reply@getpantheon.com
       WORDPRESS_ADMIN_PASSWORD: solr-power.ci-${{github.run_number}}
+      GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
     name: Behat tests
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # v2
+      with:
+        php-version: '7.4'
+        tools: composer
+        coverage: none
+
+    - name: Setup Node
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      with:
+        node-version: '20'
+
+    - name: Install Terminus
+      uses: pantheon-systems/terminus-github-actions@8e024bd89ff46ed2aa4e0663c6b54c87a94344f8 # v1.2.7
+      with:
+        pantheon-machine-token: ${{ secrets.TERMINUS_TOKEN }}
+        terminus-version: 3.6.2
 
     - name: Install SSH key
-      uses: webfactory/ssh-agent@v0.7.0
+      uses: webfactory/ssh-agent@a6f90b1f127823b31d4d4a8d96047790581349bd # v0.9.1
       with:
         ssh-private-key: ${{ secrets.SITE_OWNER_SSH_PRIVATE_KEY }}
 
     - name: Cache dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 # v5.0.2
       with:
-        path: ~/vendor
-        key: test-behat-dependencies-{{ checksum "composer.json" }}
-        restore-keys: test-behat-dependencies-{{ checksum "composer.json" }}
+        path: vendor
+        key: ${{ runner.os }}-test-behat-${{ hashFiles('composer.json') }}
+        restore-keys: ${{ runner.os }}-test-behat-
 
     - name: Check for $GITHUB_TOKEN
       run: |
@@ -121,14 +137,6 @@ jobs:
           composer config -g github-oauth.github.com $GITHUB_TOKEN
         } &> /dev/null
 
-    - name: Check for $TERMINUS_TOKEN
-      run: |
-        if [ -z "$TERMINUS_TOKEN" ]; then
-          echo "TERMINUS_TOKEN environment variables missing; assuming unauthenticated build"
-          exit 0
-        fi
-        terminus auth:login --machine-token=$TERMINUS_TOKEN
-
     - name: Validate Fixture WordPress Version
       run: ./bin/validate-fixture-version.sh
     - name: Prepare for Behat tests
@@ -138,4 +146,5 @@ jobs:
       run: ./bin/behat-test.sh --strict
 
     - name: Clean up Behat tests
+      if: always()
       run: ./bin/behat-cleanup.sh
