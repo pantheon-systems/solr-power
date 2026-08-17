@@ -16,16 +16,10 @@
     "prefer-stable": true,
     "config": {
         "platform": {
-            "php": "7.2"
+            "php": "7.4"
         },
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
-        },
-        "audit": {
-            "ignore": [
-                "GHSA-g446-98w2-8p5w",
-                "GHSA-c2w2-prh8-qm98"
-            ]
         }
     },
     "require": {
@@ -36,7 +30,7 @@
         "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master",
         "wp-coding-standards/wpcs": "^3.4",
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0.0",
-        "phpunit/phpunit": "^6 || ^7",
+        "phpunit/phpunit": "^6 || ^7 || ^9",
         "phpcompatibility/php-compatibility": "^9.3",
         "yoast/phpunit-polyfills": "^2.0"
     },

@@ -5,17 +5,6 @@ module.exports = function( grunt ) {
 	grunt.initConfig( {
 		pkg:    grunt.file.readJSON( 'package.json' ),
 
-		wp_readme_to_markdown: {
-			options: {
-				screenshot_url: 'https://s.w.org/plugins/{plugin}/{screenshot}.png',
-			},
-			your_target: {
-				files: {
-					'README.md': 'readme.txt'
-				}
-			},
-		},
-
       /**
        * Clean up the JavaScript
        */
@@ -154,14 +143,12 @@ module.exports = function( grunt ) {
 
 	} );
 
-	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown' );
 	grunt.loadNpmTasks( 'grunt-contrib-jshint' );
 	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
 	grunt.loadNpmTasks( 'grunt-sass' );
 	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
 	grunt.loadNpmTasks( '@lodder/grunt-postcss' );
 	grunt.loadNpmTasks( 'grunt-contrib-watch' );
-	grunt.registerTask( 'readme', ['wp_readme_to_markdown']);
 	grunt.registerTask( 'default', ['jshint', 'uglify:backend','uglify:frontend', 'sass', 'postcss', 'cssmin'] );
 
 	grunt.util.linefeed = '\n';
