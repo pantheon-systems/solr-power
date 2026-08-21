@@ -69,7 +69,6 @@ class SolrPower_CLI extends WP_CLI_Command {
 		} else {
 			WP_CLI::error( 'Please specify one or more post ids, or use the --all flag.' );
 		}
-
 	}
 
 	/**
@@ -277,5 +276,4 @@ class SolrPower_CLI extends WP_CLI_Command {
 		$s -= $m * 60;
 		return $h . ':' . sprintf( '%02d', $m ) . ':' . sprintf( '%02d', $s );
 	}
-
 }

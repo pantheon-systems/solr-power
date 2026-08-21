@@ -314,8 +314,17 @@ function s4wp_search_results() {
  * @param string $nestedafter HTML element to render after a nested item.
  * @return string
  */
-function s4wp_print_facet_items( $items, $pre = '<ul>', $post = '</ul>', $before = '<li>', $after = '</li>',
-	$nestedpre = '<ul>', $nestedpost = '</ul>', $nestedbefore = '<li>', $nestedafter = '</li>' ) {
+function s4wp_print_facet_items(
+	$items,
+	$pre = '<ul>',
+	$post = '</ul>',
+	$before = '<li>',
+	$after = '</li>',
+	$nestedpre = '<ul>',
+	$nestedpost = '</ul>',
+	$nestedbefore = '<li>',
+	$nestedafter = '</li>'
+) {
 	if ( ! $items ) {
 		return;
 	}

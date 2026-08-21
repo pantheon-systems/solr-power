@@ -178,10 +178,10 @@ class SolrPower_Sync {
 			$solr   = get_solr();
 			$update = $solr->createUpdate();
 
-			for ( $idx = 0; $idx < count( $postids ); $idx ++ ) {
+			for ( $idx = 0; $idx < count( $postids ); $idx++ ) {
 				$postid      = $ids[ $idx ];
 				$documents[] = $this->build_document( $update->createDocument(), get_blog_post( $blogid, $postid->ID ), $bloginfo->domain, $bloginfo->path );
-				$cnt ++;
+				++$cnt;
 				if ( $cnt == $batchsize ) {
 					$this->post( $documents );
 					$cnt       = 0;
@@ -223,7 +223,9 @@ class SolrPower_Sync {
 	 * @return Solarium\QueryType\Update\Query\Document\Document Generated Solarium document.
 	 */
 	function build_document(
-		Solarium\QueryType\Update\Query\Document\Document $doc, $post_info, $domain = null,
+		Solarium\QueryType\Update\Query\Document\Document $doc,
+		$post_info,
+		$domain = null,
 		$path = null
 	) {
 		$plugin_s4wp_settings = solr_options();
@@ -478,7 +480,6 @@ class SolrPower_Sync {
 
 			return false;
 		}
-
 	}
 
 	/**
@@ -550,14 +551,14 @@ class SolrPower_Sync {
 			foreach ( $bloglist as $bloginfo ) {
 
 				// for each blog we need to import we get their id
-				// and tell wordpress to switch to that blog.
+				// and tell WordPress to switch to that blog.
 				$blog_id = trim( $bloginfo );
 				syslog( LOG_INFO, "switching to blogid $blog_id" );
 
-				// attempt to save some memory by flushing wordpress's cache.
+				// attempt to save some memory by flushing WordPress's cache.
 				wp_cache_flush();
 
-				// everything just works better if we tell wordpress
+				// everything just works better if we tell WordPress
 				// to switch to the blog we're using, this is a multi-site
 				// specific function.
 				switch_to_blog( $blog_id );
@@ -583,7 +584,7 @@ class SolrPower_Sync {
 
 				$postcount = count( $postids );
 				syslog( LOG_INFO, "building $postcount documents for " . substr( get_bloginfo( 'wpurl' ), 7 ) );
-				for ( $idx = 0; $idx < $postcount; $idx ++ ) {
+				for ( $idx = 0; $idx < $postcount; $idx++ ) {
 
 					$postid  = $postids[ $idx ];
 					$last    = $postid;
@@ -605,7 +606,7 @@ class SolrPower_Sync {
 					$solr        = get_solr();
 					$update      = $solr->createUpdate();
 					$documents[] = $this->build_document( $update->createDocument(), get_blog_post( $blog_id, $postid ), substr( get_bloginfo( 'wpurl' ), 7 ), $current_site->path );
-					$cnt ++;
+					++$cnt;
 					if ( $cnt == $batchsize ) {
 						$this->post( $documents, true, false );
 						$this->post( false, true, false );
@@ -655,13 +656,13 @@ class SolrPower_Sync {
 			}
 			$last    = absint( $prev ) + 5;
 			$percent = absint( ( floatval( $last ) / floatval( $query->found_posts ) ) * 100 );
-			for ( $idx = 0; $idx < $postcount; $idx ++ ) {
+			for ( $idx = 0; $idx < $postcount; $idx++ ) {
 				$postid = $posts[ $idx ];
 
 				$solr        = get_solr();
 				$update      = $solr->createUpdate();
 				$documents[] = $this->build_document( $update->createDocument(), get_post( $postid ) );
-				$cnt ++;
+				++$cnt;
 				if ( $cnt == $batchsize ) {
 					$this->post( $documents, true, false );
 					$cnt       = 0;

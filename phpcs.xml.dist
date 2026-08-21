@@ -40,13 +40,7 @@
 	<rule ref="Squiz.PHP.EmbeddedPhp.NoSemicolon">
 		<exclude-pattern>*/*</exclude-pattern>
 	</rule>
-	<rule ref="WordPress.WhiteSpace.DisallowInlineTabs.NonIndentTabsUsed">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
 	<rule ref="WordPress.WP.CapitalPDangit.Misspelled">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="WordPress.PHP.StrictComparisons.LooseComparison">
 		<exclude-pattern>*/*</exclude-pattern>
 	</rule>
 	<rule ref="WordPress.PHP.StrictInArray.MissingTrueStrict">
@@ -56,6 +50,39 @@
 		<exclude-pattern>*/*</exclude-pattern>
 	</rule>
 	<rule ref="Generic.Arrays.DisallowShortArraySyntax.Found">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+
+	<!-- wpcs 3.x moved these sniffs from the WordPress/Generic namespaces into
+	     PHPCSExtra's Universal namespace; re-apply the same repo-wide excludes
+	     under their new names so behavior is unchanged after the 2.x -> 3.x bump. -->
+	<rule ref="Universal.WhiteSpace.DisallowInlineTabs.NonIndentTabsUsed">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="Universal.Operators.StrictComparisons.LooseEqual">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="Universal.Operators.StrictComparisons.LooseNotEqual">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="Universal.Arrays.DisallowShortArraySyntax.Found">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+
+	<!-- wpcs 3.x folded Squiz.Scope.MethodScope, PSR2.Classes.PropertyDeclaration,
+	     and Universal.NamingConventions.NoReservedKeywordParameterNames into
+	     WordPress-Core (they previously lived only in WordPress-Extra, which
+	     this ruleset does not include). Excluding them keeps this legacy
+	     codebase's existing method/property style out of scope for this
+	     dependency bump, matching the pattern of the other legacy excludes
+	     above. -->
+	<rule ref="Squiz.Scope.MethodScope.Missing">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="PSR2.Classes.PropertyDeclaration">
+		<exclude-pattern>*/*</exclude-pattern>
+	</rule>
+	<rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames">
 		<exclude-pattern>*/*</exclude-pattern>
 	</rule>
 </ruleset>
