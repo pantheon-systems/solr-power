@@ -194,6 +194,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 		} else {
 			return $output;
 		}
+
 	}
 
 	/**
@@ -285,6 +286,7 @@ class SolrPower_Facet_Widget extends WP_Widget {
 			$query->set( 's', '*:*' );
 			$query->get_posts();
 		}
+
 	}
 
 	/**

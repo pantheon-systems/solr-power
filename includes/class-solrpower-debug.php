@@ -51,4 +51,5 @@ class SolrPower_Debug extends Debug_Bar_Panel {
 		endforeach;
 		echo '</table>';
 	}
+
 }
