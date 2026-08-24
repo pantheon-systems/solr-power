@@ -216,11 +216,11 @@ class SolrPower {
 		// If there is a template file then we use it.
 		if ( file_exists( get_template_directory() . '/s4wp_search.php' ) ) {
 			// use theme file.
-			include_once( get_template_directory() . '/s4wp_search.php' );
-		} elseif ( file_exists( dirname( __FILE__ ) . '/template/s4wp_search.php' ) ) {
+			include_once get_template_directory() . '/s4wp_search.php';
+		} elseif ( file_exists( __DIR__ . '/template/s4wp_search.php' ) ) {
 			// use plugin supplied file.
 			add_action( 'wp_head', array( $this, 'default_head' ) );
-			include_once( dirname( __FILE__ ) . '/template/s4wp_search.php' );
+			include_once __DIR__ . '/template/s4wp_search.php';
 		} else {
 			// no template files found, just continue on like normal
 			// this should get to the normal WordPress search results.
@@ -265,7 +265,7 @@ class SolrPower {
 	 * Include default css when using the search template.
 	 */
 	public function default_head() {
-		if ( file_exists( dirname( __FILE__ ) . '/template/search.css' ) ) {
+		if ( file_exists( __DIR__ . '/template/search.css' ) ) {
 			wp_enqueue_style( 'solr-search', plugins_url( '/template/search.css', __FILE__ ) );
 		}
 	}
@@ -277,7 +277,7 @@ class SolrPower {
 	 * @return array
 	 */
 	public function add_panel( $panels ) {
-		require_once( SOLR_POWER_PATH . '/includes/class-solrpower-debug.php' );
+		require_once SOLR_POWER_PATH . '/includes/class-solrpower-debug.php';
 		array_push( $panels, new SolrPower_Debug() );
 
 		return $panels;
@@ -368,7 +368,7 @@ class SolrPower {
 		if ( false === $template_file ) {
 			include trailingslashit( SOLR_POWER_PATH ) . $template_path;
 		} else {
-			include( $template_file );
+			include $template_file;
 		}
 		$the_posts    = ob_get_clean();
 		$facet_widget = new SolrPower_Facet_Widget();
@@ -411,5 +411,4 @@ class SolrPower {
 	public static function get_post_statuses() {
 		return apply_filters( 'solr_post_status', array( 'publish' ) );
 	}
-
 }

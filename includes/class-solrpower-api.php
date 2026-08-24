@@ -642,7 +642,6 @@ class SolrPower_Api {
 			'port'        => getenv( 'PANTHEON_INDEX_PORT' ),
 			'path'        => $this->compute_path(),
 		);
-
 	}
 
 	/**
@@ -700,5 +699,4 @@ class SolrPower_Api {
 		}
 		return realpath( ABSPATH . '../certs/binding.pem' );
 	}
-
 }
