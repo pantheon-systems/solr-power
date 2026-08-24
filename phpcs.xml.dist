@@ -69,68 +69,21 @@
 		<exclude-pattern>*/*</exclude-pattern>
 	</rule>
 
-	<!-- wpcs 3.x folded Squiz.Scope.MethodScope, PSR2.Classes.PropertyDeclaration,
-	     and Universal.NamingConventions.NoReservedKeywordParameterNames into
-	     WordPress-Core (they previously lived only in WordPress-Extra, which
-	     this ruleset does not include). Excluding them keeps this legacy
-	     codebase's existing method/property style out of scope for this
-	     dependency bump, matching the pattern of the other legacy excludes
-	     above. -->
+	<!-- wpcs 3.x folded these sniffs into WordPress-Core (they previously
+	     lived only in WordPress-Extra, which this ruleset does not include).
+	     PSR2.Classes.PropertyDeclaration was fixed directly; the two below
+	     are excluded pending follow-up work:
+	     - Squiz.Scope.MethodScope.Missing: ~57 methods across 6 files lack
+	       explicit visibility (legacy PHP4-style declarations). Adding it
+	       requires per-method judgment (public/private/protected), not a
+	       blanket fix — tracked as follow-up work.
+	     - Universal.NamingConventions.NoReservedKeywordParameterNames: flags
+	       an `$echo` parameter on a public method; renaming it is a
+	       signature change best done deliberately, not as a lint drive-by. -->
 	<rule ref="Squiz.Scope.MethodScope.Missing">
 		<exclude-pattern>*/*</exclude-pattern>
 	</rule>
-	<rule ref="PSR2.Classes.PropertyDeclaration">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
 	<rule ref="Universal.NamingConventions.NoReservedKeywordParameterNames">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-
-	<!-- TEMPORARY: wpcs 3.4.1 newly enables/relocates these sniffs, surfacing
-	     ~66 pre-existing style violations across includes/ and other files.
-	     Excluded here to keep the wpcs 3.x dependency bump (VUL-25911) green
-	     on main without bundling an unrelated repo-wide style pass. Follow-up
-	     work on develop removes these excludes and applies the actual fixes. -->
-	<rule ref="PSR2.Methods.FunctionClosingBrace.SpacingBeforeClose">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="Squiz.Functions.MultiLineFunctionDeclaration.OneParamPerLine">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="Squiz.Functions.MultiLineFunctionDeclaration.CloseBracketLine">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="Squiz.Functions.MultiLineFunctionDeclaration.FirstParamSpacing">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="Universal.Operators.DisallowStandalonePostIncrementDecrement.PostIncrementFound">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="Universal.Operators.DisallowStandalonePostIncrementDecrement.PostDecrementFound">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="PEAR.Files.IncludingFile.BracketsNotRequired">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="PSR2.Classes.ClassDeclaration.CloseBraceAfterBody">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="Generic.WhiteSpace.IncrementDecrementSpacing.SpaceAfterIncrement">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="PEAR.Files.IncludingFile.UseRequire">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="Modernize.FunctionCalls.Dirname.FileConstant">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="WordPress.WP.CapitalPDangit.MisspelledInComment">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="PSR12.Classes.ClassInstantiation.MissingParentheses">
-		<exclude-pattern>*/*</exclude-pattern>
-	</rule>
-	<rule ref="Universal.UseStatements.NoUselessAliases.Found">
 		<exclude-pattern>*/*</exclude-pattern>
 	</rule>
 </ruleset>
