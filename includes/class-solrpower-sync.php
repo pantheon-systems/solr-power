@@ -22,7 +22,7 @@ class SolrPower_Sync {
 	 *
 	 * @var string
 	 */
-	var $error_msg;
+	public $error_msg;
 
 	/**
 	 * Grab instance of object.
