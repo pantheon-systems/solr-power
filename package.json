@@ -20,8 +20,8 @@
     "grunt-contrib-uglify": "~5.2.2",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-sass": "~4.1.0",
-    "postcss": "^8.5.29",
-    "sass": "^1.105.1"
+    "postcss": "^8.5.30",
+    "sass": "^1.105.2"
   },
   "browserslist": [
     "last 5 versions"
