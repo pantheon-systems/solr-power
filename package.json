@@ -13,15 +13,15 @@
   },
   "devDependencies": {
     "@lodder/grunt-postcss": "^3.1.1",
-    "autoprefixer": "^10.6.1",
+    "autoprefixer": "^10.6.2",
     "grunt": "^1.6.3",
     "grunt-contrib-cssmin": "^5.0.0",
     "grunt-contrib-jshint": "^3.2.0",
     "grunt-contrib-uglify": "~5.2.2",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-sass": "~4.1.0",
-    "postcss": "^8.5.31",
-    "sass": "^1.106.1"
+    "postcss": "^8.5.32",
+    "sass": "^1.107.1"
   },
   "browserslist": [
     "last 5 versions"
