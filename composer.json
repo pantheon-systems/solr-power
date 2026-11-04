@@ -24,7 +24,7 @@
     },
     "require": {
         "solarium/solarium": "~4",
-        "symfony/event-dispatcher": "^3.4"
+        "symfony/event-dispatcher": "^3.4 || ^4.4"
     },
     "require-dev": {
         "pantheon-systems/pantheon-wordpress-upstream-tests": "dev-master",
