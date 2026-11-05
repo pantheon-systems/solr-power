@@ -12,15 +12,15 @@ jobs:
     name: Lint
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
     - name: Cache dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
       with:
         path: ~/vendor
         key: test-lint-dependencies-{{ checksum "composer.json" }}
         restore-keys: test-lint-dependencies-{{ checksum "composer.json" }}
     - name: Setup PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
       with:
         php-version: '7.4'
     - name: Install dependencies
@@ -32,8 +32,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - uses: pantheon-systems/validate-readme-spacing@v1
+        uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
+      - uses: pantheon-systems/validate-readme-spacing@13c5e619ef5fc39632292f1f5261ab31d1904208 # v1.0.6
   test-phpunit:
     runs-on: ubuntu-latest
     services:
@@ -43,14 +43,14 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
 
     - name: Start MySQL
       run: |
         sudo systemctl start mysql
 
     - name: Cache dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
       with:
         path: ~/vendor
         key: test-phpunit-dependencies-{{ checksum "composer.json" }}
@@ -65,7 +65,7 @@ jobs:
       run: bash bin/install-solr.sh
 
     - name: Set PHP version
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
       with:
         php-version: '8.0'
         coverage: none
@@ -96,15 +96,15 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
 
     - name: Install SSH key
-      uses: webfactory/ssh-agent@v0.7.0
+      uses: webfactory/ssh-agent@836c84ec59a0e7bc0eabc79988384eb567561ee2 # v0.7.0
       with:
         ssh-private-key: ${{ secrets.SITE_OWNER_SSH_PRIVATE_KEY }}
 
     - name: Cache dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@6f8efc29b200d32929f49075959781ed54ec270c # v3.5.0
       with:
         path: ~/vendor
         key: test-behat-dependencies-{{ checksum "composer.json" }}
