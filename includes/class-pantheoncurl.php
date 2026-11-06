@@ -5,7 +5,7 @@
  * @package Solr_Power
  */
 
-use Solarium\Core\Client\Adapter\Curl as Curl;
+use Solarium\Core\Client\Adapter\Curl;
 
 /**
  * Override Solarium so that more options can be set before executing curl.
@@ -22,8 +22,10 @@ class PantheonCurl extends Curl {
 	public function createHandle( $request, $endpoint ) {
 		$handler = parent::createHandle( $request, $endpoint );
 		if ( defined( 'PANTHEON_ENVIRONMENT' ) ) {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt -- Low-level Solr HTTP client requires direct cURL/stream control.
 			curl_setopt( $handler, CURLOPT_SSL_VERIFYPEER, false );
 			$client_cert = $_SERVER['HOME'] . '/certs/binding.pem';
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.curl_curl_setopt -- Low-level Solr HTTP client requires direct cURL/stream control.
 			curl_setopt( $handler, CURLOPT_SSLCERT, $client_cert );
 		}
 
