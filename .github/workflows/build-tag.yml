@@ -2,7 +2,7 @@ name: Build, Tag, and Release
 on:
   push:
     branches:
-      - 'main'
+      - 'release'
 
 permissions:
   pull-requests: write
