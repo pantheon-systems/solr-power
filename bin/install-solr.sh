@@ -14,9 +14,12 @@ is_solr_up(){
 }
 
 wait_for_solr(){
-    while ! is_solr_up; do
+    for _ in $(seq 1 40); do
+        is_solr_up && return 0
         sleep 3
     done
+    echo "Timed out waiting for solr on port ${SOLR_PORT}" >&2
+    exit 1
 }
 
 run() {

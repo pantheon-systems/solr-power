@@ -61,8 +61,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install subversion
 
+    # Solr 3.6.2's Jetty start.jar spins forever on the runner's default Java (25).
     - name: Run install-solr.sh
-      run: bash bin/install-solr.sh
+      run: |
+        export JAVA_HOME="$JAVA_HOME_21_X64"
+        export PATH="$JAVA_HOME/bin:$PATH"
+        bash bin/install-solr.sh
 
     - name: Set PHP version
       uses: shivammathur/setup-php@v2
