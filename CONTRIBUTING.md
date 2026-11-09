@@ -4,13 +4,13 @@ Since 2.3.3 the default branch is `main`. Please make sure you are working again
 
 ## Workflow
 
-Development and releases are structured around two branches, `develop` and `main`. The `develop` branch is the source and destination for feature branches.
+Development and releases are structured around two branches, `main` and `release`. The `main` branch is the source and destination for feature branches.
 
-We prefer to squash commits (i.e. avoid merge PRs) from a feature branch into `develop` when merging, and to include the PR # in the commit message. PRs to `develop` should also include any relevent updates to the changelog in readme.txt. For example, if a feature constitutes a minor or major version bump, that version update should be discussed and made as part of approving and merging the feature into `develop`.
+We prefer to squash commits (i.e. avoid merge PRs) from a feature branch into `main` when merging, and to include the PR # in the commit message. PRs to `main` should also include any relevent updates to the changelog in readme.txt. For example, if a feature constitutes a minor or major version bump, that version update should be discussed and made as part of approving and merging the feature into `main`.
 
-`develop` should be stable and usable, though possibly a few commits ahead of the public release on wp.org.
+`main` should be stable and usable, though possibly a few commits ahead of the public release on wp.org.
 
-The `main` branch matches the latest stable release deployed to [wp.org](wp.org).
+The `release` branch matches the latest stable release deployed to [wp.org](wp.org). Pushes to `release` trigger CI to build, tag and draft a GitHub release.
 
 ## Testing
 
@@ -29,24 +29,24 @@ Note that dependencies are installed via Composer and the `vendor` directory is 
 
 ## Release Process
 
-1. From `develop`, checkout a new branch `release_X.Y.Z`.
+1. From `main`, checkout a new branch `release_X.Y.Z`.
 1. Make a release commit:
     * Drop the `-dev` from the version number in `package.json`, `README.md`, `readme.txt`, CHANGELOG.md, and `solr-power.php`. For `readme.txt`, the version number must be updated both at the top of the document as well as the changelog.
     * Add the date to the `** X.Y.X **` heading in the changelogs in README.md, readme.txt, and any other appropriate location.
     * Commit these changes with the message `Release X.Y.Z`
     * Push the release branch up.
-1. Open a Pull Request to merge `release_X.Y.Z` into `main`. Your PR should consist of all commits to `develop` since the last release, and one commit to update the version number. The PR name should also be `Release X.Y.Z`.
-1. After all tests pass and you have received approval from a [CODEOWNER](./CODEOWNERS), merge the PR into `main`. "merge" is preferred in this case, not rebase. _Never_ squash to `main`.
+1. Open a Pull Request to merge `release_X.Y.Z` into `release`. Your PR should consist of all commits to `main` since the last release, and one commit to update the version number. The PR name should also be `Release X.Y.Z`.
+1. After all tests pass and you have received approval from a [CODEOWNER](./CODEOWNERS), merge the PR into `release`. "merge" is preferred in this case, not rebase. _Never_ squash to `release`.
 1. CI will build, tag and draft [a release](https://github.com/pantheon-systems/solr-power/releases/).
 1. Review the drafted release, updating release notes if needed, confirm that the necessary assets are present in the newly created tag, and test on a WP install if desired.
 1. Publish the drafted release.
 1. Wait for the [_Release solr-power plugin to wp.org_ action](https://github.com/pantheon-systems/solr-power/actions/workflows/wordpress-plugin-deploy.yml) to finish deploying to the WordPress.org plugin repository. If all goes well, users with SVN commit access for that plugin will receive an emailed diff of changes.
 1. Check WordPress.org: Ensure that the changes are live on [the plugin repository](https://wordpress.org/plugins/solr-power/). This may take a few minutes.
 1. Following the release, prepare the next dev version with the following steps:
-    * `git checkout develop`
-    * `git rebase main`
+    * `git checkout main`
+    * `git merge release`
     * Update the version number in all locations, incrementing the version by one patch version, and add the `-dev` flag (e.g. after releasing `1.2.3`, the new verison will be `1.2.4-dev`)
     * Add new `** X.Y.X-dev **` headings to the changelogs
     * `git add -A .`
     * `git commit -m "Prepare X.Y.X-dev"`
-    * `git push origin develop`
+    * `git push origin main`
