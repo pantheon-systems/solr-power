@@ -12,7 +12,7 @@ jobs:
     name: Lint
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v7
     - name: Cache dependencies
       uses: actions/cache@v3
       with:
@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
       - uses: pantheon-systems/validate-readme-spacing@v1
   test-phpunit:
     runs-on: ubuntu-latest
@@ -43,7 +43,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v7
 
     - name: Start MySQL
       run: |
@@ -96,7 +96,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v7
 
     - name: Install SSH key
       uses: webfactory/ssh-agent@v0.7.0
