@@ -40,3 +40,27 @@ updates:
       update-types:
       - minor
       - patch
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "weekly"
+    day: "sunday"
+    time: "06:00"
+    timezone: "UTC"
+  # Match the composer/npm blocks: develop is the integration branch.
+  target-branch: "develop"
+  cooldown:
+    default-days: 3
+  open-pull-requests-limit: 5
+  groups:
+    actions:
+      applies-to: version-updates
+      patterns: ["*"]
+      update-types: ["minor", "patch"]
+    actions-security:
+      applies-to: security-updates
+      patterns: ["*"]
+  commit-message:
+    prefix: "chore"
+    include: "scope"
+  rebase-strategy: "auto"

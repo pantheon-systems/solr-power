@@ -5,6 +5,10 @@
  * @package Solr_Power
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 ?>
 <div id="solr_info" class="solrtab active">
 	<?php
