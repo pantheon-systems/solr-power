@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
     - name: Build, tag, and release
-      uses: pantheon-systems/plugin-release-actions/build-tag-release@v0
+      uses: pantheon-systems/plugin-release-actions/build-tag-release@554b455c9cb024ccf20147a27656fb198ce6f0cc # v0.5.5
       with:
         gh_token: ${{ secrets.GITHUB_TOKEN }}
         build_node_assets: "true"
