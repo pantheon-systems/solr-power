@@ -21,7 +21,7 @@
     "grunt-contrib-watch": "^1.1.0",
     "grunt-sass": "~4.1.0",
     "postcss": "^8.5.31",
-    "sass": "^1.106.1"
+    "sass": "^1.108.1"
   },
   "browserslist": [
     "last 5 versions"
