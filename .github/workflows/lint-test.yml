@@ -103,7 +103,7 @@ jobs:
       uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3.7.0
 
     - name: Install SSH key
-      uses: webfactory/ssh-agent@836c84ec59a0e7bc0eabc79988384eb567561ee2 # v0.7.0
+      uses: webfactory/ssh-agent@e83874834305fe9a4a2997156cb26c5de65a8555 # v0.10.0
       with:
         ssh-private-key: ${{ secrets.SITE_OWNER_SSH_PRIVATE_KEY }}
 
@@ -123,7 +123,7 @@ jobs:
         terminus auth:login --machine-token=$TERMINUS_TOKEN
 
     - name: Validate Fixture WordPress Version
-      uses: pantheon-systems/plugin-release-actions/validate-fixture-version@554b455c9cb024ccf20147a27656fb198ce6f0cc # v0.5.5
+      uses: pantheon-systems/plugin-release-actions/validate-fixture-version@ec0ee6ce8ee49452580d6bfe906ac47bc8527269 # v0.5.7
       with:
         terminus_site: ${{ env.TERMINUS_SITE }}
     - name: Prepare for Behat tests
