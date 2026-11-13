@@ -9,7 +9,7 @@ updates:
     interval: weekly
     timezone: America/Los_Angeles
     day: tuesday
-  target-branch: "develop"
+  target-branch: "main"
   open-pull-requests-limit: 99
   groups:
     composer-minor-patch:
@@ -33,7 +33,7 @@ updates:
     interval: weekly
     timezone: America/Los_Angeles
     day: tuesday
-  target-branch: "develop"
+  target-branch: "main"
   open-pull-requests-limit: 99
   groups:
     npm-minor-patch:
@@ -47,8 +47,8 @@ updates:
     day: "sunday"
     time: "06:00"
     timezone: "UTC"
-  # Match the composer/npm blocks: develop is the integration branch.
-  target-branch: "develop"
+  # Match the composer/npm blocks: main is the integration branch.
+  target-branch: "main"
   cooldown:
     default-days: 3
   open-pull-requests-limit: 5
